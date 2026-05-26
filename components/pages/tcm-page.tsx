@@ -5,8 +5,26 @@ import {
   Search, ChevronLeft, Camera, Scan, User, Brain, 
   BookOpen, MapPin, Pill, FileText, Stethoscope,
   Heart, Dumbbell, Apple, Sparkles, GraduationCap,
-  Calculator, Clock, Zap, Bot, Shield, AlertTriangle
+  Calculator, Clock, Zap, Bot, Shield, AlertTriangle,
+  Box, Download
 } from "lucide-react"
+import dynamic from "next/dynamic"
+
+// 动态导入3D组件（减少初始加载）
+const Body3DViewer = dynamic(
+  () => import("@/components/tcm/body-3d-viewer").then(mod => ({ default: mod.Body3DViewer })),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[500px] bg-[#1a1a2e] rounded-xl flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-[#d4af37] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+          <p className="text-gray-400 text-sm">加载3D模型中...</p>
+        </div>
+      </div>
+    )
+  }
+)
 
 // 隐私保护声明
 const PRIVACY_NOTICE = {
@@ -19,6 +37,7 @@ const PRIVACY_NOTICE = {
 // 中医百科功能
 const TCM_BAIKE = [
   { id: "jingluo", name: "经络穴位", icon: MapPin, desc: "十二经络与常用穴位", color: "#0891b2" },
+  { id: "body3d", name: "3D人体", icon: Box, desc: "3D高清解剖与经络", color: "#8b5cf6", isHot: true },
   { id: "jingdian", name: "经典书城", icon: BookOpen, desc: "中医古籍原文与译文", color: "#0891b2" },
   { id: "jibing", name: "疾病百科", icon: Search, desc: "常见疾病辨证施治", color: "#0891b2" },
   { id: "yian", name: "医案查询", icon: FileText, desc: "名家医案实录", color: "#0891b2" },
@@ -67,6 +86,7 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
   const [selectedAITool, setSelectedAITool] = useState<string | null>(null)
   const [aiResult, setAiResult] = useState<string | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [show3DViewer, setShow3DViewer] = useState(false)
 
   const tabs = [
     { id: "all", name: "全部功能" },
@@ -96,12 +116,25 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
   }
 
   const handleToolClick = (toolId: string) => {
-    if (toolId.startsWith("ai-") || toolId === "ai-analysis") {
+    if (toolId === "body3d") {
+      setShow3DViewer(true)
+    } else if (toolId.startsWith("ai-") || toolId === "ai-analysis") {
       setSelectedAITool(toolId)
       setShowAIPanel(true)
     } else if (onNavigateToTool) {
       onNavigateToTool(toolId)
     }
+  }
+
+  // 3D人体查看器全屏展示
+  if (show3DViewer) {
+    return (
+      <div className="fixed inset-0 z-50 bg-black">
+        <div className="w-full h-full">
+          <Body3DViewer onClose={() => setShow3DViewer(false)} />
+        </div>
+      </div>
+    )
   }
 
   return (

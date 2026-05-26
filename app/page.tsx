@@ -5,9 +5,9 @@ import { BottomNav } from "@/components/bottom-nav"
 import { PaipanPage } from "@/components/pages/paipan-page"
 import { HerbalPage } from "@/components/pages/herbal-page"
 import { TCMPage } from "@/components/pages/tcm-page"
-import { StudyPage } from "@/components/pages/study-page"
+import { AIPage } from "@/components/pages/ai-page"
 import { ProfilePage } from "@/components/pages/profile-page"
-import { LuRenPage } from "@/components/pages/luren-page"
+import { LiurenPage } from "@/components/pages/liuren-page"
 import { LuoPanPage } from "@/components/pages/luopan-page"
 import { ZiWeiPage } from "@/components/pages/ziwei-page"
 import { XiaoLiuRenPage } from "@/components/pages/xiaoliuren-page"
@@ -48,8 +48,8 @@ export default function Home() {
       setActiveTab("paipan")
       setActiveTool(null)
     } else if (toolId === "jingdian") {
-      // 从中医页面跳转到学习
-      setActiveTab("study")
+      // 从中医页面跳转到AI
+      setActiveTab("ai")
       setActiveTool(null)
     } else if (toolId === "jingluo" || toolId === "jibing" || toolId === "yian" || toolId === "zhongyao") {
       // 中医百科相关 - 跳转到经方页面
@@ -69,7 +69,7 @@ export default function Home() {
     if (activeTool) {
       switch (activeTool) {
         case "liuren":
-          return <LuRenPage onBack={handleBackToToolbox} />
+          return <LiurenPage onBack={handleBackToToolbox} />
         case "luopan":
           return <LuoPanPage onBack={handleBackToToolbox} />
         case "ziwei":
@@ -111,8 +111,8 @@ export default function Home() {
         return <TCMPage onNavigateToTool={handleToolNavigate} />
       case "herbal":
         return <HerbalPage />
-      case "study":
-        return <StudyPage />
+      case "ai":
+        return <AIPage />
       case "profile":
         return <ProfilePage />
       default:
