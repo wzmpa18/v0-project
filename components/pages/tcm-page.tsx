@@ -253,7 +253,7 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
             <h3 className="text-[#d4af37] font-bold">AI智能分析</h3>
             <span className="text-xs bg-[#d4af37]/20 text-[#d4af37] px-2 py-0.5 rounded-full">易医结合</span>
           </div>
-          <p className="text-gray-400 text-xs mb-3">结合易学预测工具的断语，进行综合AI分析</p>
+          <p className="text-[#9ca3af] text-xs mb-3">结合易学预测工具的断语，进行综合AI分析</p>
           <div className="grid grid-cols-2 gap-2">
             {AI_ANALYSIS_TYPES.map(item => (
               <button
@@ -265,7 +265,7 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
                 className="bg-[#3a3a3a] rounded-lg p-3 text-left hover:bg-[#4a4a4a] transition-colors"
               >
                 <div className="text-[#f5f5f7] text-sm font-medium">{item.name}</div>
-                <div className="text-gray-500 text-xs mt-1">{item.desc}</div>
+                <div className="text-[#9ca3af] text-xs mt-1">{item.desc}</div>
               </button>
             ))}
           </div>
@@ -301,7 +301,7 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
                     <Shield className="w-4 h-4 text-[#22c55e] mt-0.5 flex-shrink-0" />
                     <div>
                       <div className="text-[#22c55e] text-xs font-medium mb-1">隐私保护声明</div>
-                      <div className="text-gray-400 text-[10px] leading-relaxed">
+                      <div className="text-[#9ca3af] text-[10px] leading-relaxed">
                         {selectedAITool === "ai-tongue" ? PRIVACY_NOTICE.tongueAnalysis : PRIVACY_NOTICE.faceAnalysis}
                       </div>
                     </div>
@@ -330,7 +330,7 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
                       {selectedAITool === "wuxing-therapy" && "根据五行生克制化调理方案"}
                       {selectedAITool === "meridian-time" && "根据当前时辰推荐开穴治疗"}
                     </div>
-                    <div className="text-gray-500 text-xs mt-1">AI分析仅供参考，不能替代专业医师诊断</div>
+                    <div className="text-[#9ca3af] text-xs mt-1">AI分析仅供参考，不能替代专业医师诊断</div>
                   </div>
                 </div>
               </div>
@@ -368,7 +368,7 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
                   {(selectedAITool === "bazi-health" || selectedAITool === "yijing-diagnosis" || selectedAITool === "wuxing-therapy" || selectedAITool === "meridian-time") && (
                     <div className="space-y-3">
                       <div className="bg-[#252525] rounded-xl p-3">
-                        <div className="text-gray-400 text-xs mb-2">请先在排盘工具中获取断语结果</div>
+                        <div className="text-[#9ca3af] text-xs mb-2">请先在排盘工具中获取断语结果</div>
                         <textarea
                           placeholder="粘贴排盘结果或手动输入八字/卦象..."
                           className="w-full bg-[#1a1a1a] rounded-lg p-3 text-[#f5f5f7] text-sm resize-none h-24 outline-none border border-[#3a3a3a] focus:border-[#d4af37]"
@@ -391,7 +391,7 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
                 <div className="flex flex-col items-center py-12">
                   <div className="w-16 h-16 border-4 border-[#0891b2] border-t-transparent rounded-full animate-spin mb-4" />
                   <div className="text-[#f5f5f7]">AI正在分析中...</div>
-                  <div className="text-gray-500 text-sm mt-1">请稍候</div>
+                  <div className="text-[#9ca3af] text-sm mt-1">请稍候</div>
                 </div>
               )}
 
@@ -430,7 +430,7 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
             <AlertTriangle className="w-4 h-4 text-[#f59e0b] mt-0.5 flex-shrink-0" />
             <span className="text-[#f59e0b] text-xs font-medium">重要声明</span>
           </div>
-          <p className="text-gray-500 text-[10px] leading-relaxed">
+          <p className="text-[#6b7280] text-[10px] leading-relaxed">
             {PRIVACY_NOTICE.general}
           </p>
         </div>

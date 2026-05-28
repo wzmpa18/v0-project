@@ -115,7 +115,7 @@ export function AIPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] bg-[#1a1a1a]">
       {/* 顶部标题栏 */}
-      <div className="flex-shrink-0 px-4 py-3 border-b border-[#333] bg-[#1a1a1a]">
+      <div className="flex-shrink-0 px-4 py-3 border-b border-[#4a4a4a] bg-[#1a1a1a]">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#d4af37] to-[#c8102e] flex items-center justify-center">
@@ -123,7 +123,7 @@ export function AIPage() {
             </div>
             <div>
               <h1 className="text-[#f5f5f7] font-medium text-sm">国学AI助手</h1>
-              <p className="text-[#888] text-xs">融合易学与中医智慧</p>
+              <p className="text-[#c5c5c5] text-xs">融合易学与中医智慧</p>
             </div>
           </div>
           {messages.length > 0 && (
@@ -145,7 +145,7 @@ export function AIPage() {
               className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs transition-all ${
                 selectedRole === role.id
                   ? "bg-[#d4af37] text-[#1a1a1a] font-medium"
-                  : "bg-[#252525] text-[#888] border border-[#333]"
+                  : "bg-[#252525] text-[#c5c5c5] border border-[#4a4a4a]"
               }`}
             >
               {role.name}
@@ -163,25 +163,25 @@ export function AIPage() {
               <Sparkles className="w-8 h-8 text-[#d4af37]" />
             </div>
             <h2 className="text-[#f5f5f7] font-medium text-lg mb-2">欢迎使用国学AI助手</h2>
-            <p className="text-[#888] text-sm text-center mb-6 max-w-xs">
+            <p className="text-[#c5c5c5] text-sm text-center mb-6 max-w-xs">
               我可以帮您解答八字命理、中医养生、风水堪舆等传统国学问题
             </p>
             
             {/* 快捷问题 */}
             <div className="w-full max-w-sm space-y-2">
-              <p className="text-[#888] text-xs text-center mb-3">试试这些问题</p>
+              <p className="text-[#c5c5c5] text-xs text-center mb-3">试试这些问题</p>
               {QUICK_QUESTIONS.map((q, i) => (
                 <button
                   key={i}
                   onClick={() => handleQuickQuestion(q.question)}
-                  className="w-full flex items-center gap-3 p-3 bg-[#252525] rounded-xl border border-[#333] hover:border-[#d4af37]/50 transition-all text-left"
+                  className="w-full flex items-center gap-3 p-3 bg-[#252525] rounded-xl border border-[#4a4a4a] hover:border-[#d4af37]/50 transition-all text-left"
                 >
                   <div className="w-8 h-8 rounded-lg bg-[#d4af37]/10 flex items-center justify-center flex-shrink-0">
                     <q.icon className="w-4 h-4 text-[#d4af37]" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-[#f5f5f7] text-sm font-medium">{q.label}</div>
-                    <div className="text-[#888] text-xs truncate">{q.question}</div>
+                    <div className="text-[#c5c5c5] text-xs truncate">{q.question}</div>
                   </div>
                 </button>
               ))}
@@ -257,7 +257,7 @@ export function AIPage() {
       </div>
 
       {/* 输入区域 */}
-      <div className="flex-shrink-0 px-4 py-3 border-t border-[#333] bg-[#1a1a1a]">
+      <div className="flex-shrink-0 px-4 py-3 border-t border-[#4a4a4a] bg-[#1a1a1a]">
         <div className="flex items-end gap-2">
           <div className="flex-1 bg-[#252525] rounded-2xl border border-[#333] focus-within:border-[#d4af37]/50 transition-colors">
             <textarea
@@ -272,7 +272,7 @@ export function AIPage() {
               }}
               placeholder="输入您的问题..."
               rows={1}
-              className="w-full bg-transparent px-4 py-3 text-[#f5f5f7] text-sm placeholder:text-[#555] resize-none outline-none max-h-32"
+              className="w-full bg-transparent px-4 py-3 text-[#f5f5f7] text-sm placeholder:text-[#888] resize-none outline-none max-h-32"
               style={{ minHeight: "44px" }}
             />
           </div>
@@ -284,7 +284,7 @@ export function AIPage() {
             <Send className="w-5 h-5 text-[#1a1a1a]" />
           </button>
         </div>
-        <p className="text-[#555] text-xs text-center mt-2">
+        <p className="text-[#888] text-xs text-center mt-2">
           AI回复仅供参考，不能替代专业人士建议
         </p>
       </div>

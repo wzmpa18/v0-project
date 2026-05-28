@@ -24,12 +24,12 @@
   --secondary: #333333;
   --secondary-foreground: #f5f5f7;
   --muted: #333333;
-  --muted-foreground: #a0a0a0;
+  --muted-foreground: #c5c5c5;
   --accent: #c8102e;
   --accent-foreground: #f5f5f7;
   --destructive: #c8102e;
   --destructive-foreground: #f5f5f7;
-  --border: #3a3a3a;
+  --border: #4a4a4a;
   --input: #333333;
   --ring: #d4af37;
   --radius: 0.5rem;

@@ -17,6 +17,7 @@ import { BaZhaiPage } from "@/components/pages/bazhai-page"
 import { XuanKongPage } from "@/components/pages/xuankong-page"
 import { ZhuGePage } from "@/components/pages/zhuge-page"
 import { AIPage } from "@/components/pages/ai-page"
+import { JingluoPage } from "@/components/pages/jingluo-page"
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("paipan")
@@ -52,7 +53,9 @@ export default function Home() {
       // 从中医页面跳转到学习
       setActiveTab("study")
       setActiveTool(null)
-    } else if (toolId === "jingluo" || toolId === "jibing" || toolId === "yian" || toolId === "zhongyao") {
+    } else if (toolId === "jingluo") {
+      setActiveTool("jingluo")
+    } else if (toolId === "jibing" || toolId === "yian" || toolId === "zhongyao") {
       // 中医百科相关 - 跳转到经方页面
       setActiveTab("herbal")
       setActiveTool(null)
@@ -87,6 +90,8 @@ export default function Home() {
           return <XuanKongPage onBack={handleBackToToolbox} />
         case "zhuge":
           return <ZhuGePage onBack={handleBackToToolbox} />
+        case "jingluo":
+          return <JingluoPage onBack={handleBackToToolbox} />
         default:
           return (
             <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center px-4 bg-[#1a1a1a]">

@@ -61,7 +61,7 @@ export function ProfilePage() {
     <div className="min-h-[calc(100vh-4rem)] pb-24 bg-[#1a1a1a]">
       {/* 用户信息卡片 */}
       <div className="px-4 pt-6 pb-4">
-        <div className="bg-gradient-to-br from-[#252525] to-[#1e1e1e] rounded-2xl p-4 border border-[#333]">
+        <div className="bg-gradient-to-br from-[#252525] to-[#1e1e1e] rounded-2xl p-4 border border-[#4a4a4a]">
           <div className="flex items-center gap-4">
             {/* 头像 */}
             <div className="relative">
@@ -85,7 +85,7 @@ export function ProfilePage() {
                   </span>
                 )}
               </div>
-              <p className="text-[#888] text-sm mt-0.5">探索传统智慧，修身养性</p>
+              <p className="text-[#c5c5c5] text-sm mt-0.5">探索传统智慧，修身养性</p>
               <button className="mt-2 text-[#d4af37] text-xs flex items-center gap-1">
                 编辑资料 <ChevronRight className="w-3 h-3" />
               </button>
@@ -93,11 +93,11 @@ export function ProfilePage() {
           </div>
 
           {/* 用户统计 */}
-          <div className="grid grid-cols-4 gap-2 mt-4 pt-4 border-t border-[#333]">
+          <div className="grid grid-cols-4 gap-2 mt-4 pt-4 border-t border-[#4a4a4a]">
             {USER_STATS.map(stat => (
               <div key={stat.label} className="text-center">
                 <div className="text-[#d4af37] font-bold text-lg">{stat.value}</div>
-                <div className="text-[#888] text-xs">{stat.label}</div>
+                <div className="text-[#c5c5c5] text-xs">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -116,7 +116,7 @@ export function ProfilePage() {
                 <Star className="w-5 h-5 text-[#d4af37]" fill="currentColor" />
                 <span className="text-[#d4af37] font-bold">开通VIP会员</span>
               </div>
-              <p className="text-[#888] text-xs mb-3">解锁全部高级功能，享受专属特权</p>
+              <p className="text-[#c5c5c5] text-xs mb-3">解锁全部高级功能，享受专属特权</p>
               
               <div className="flex flex-wrap gap-2 mb-3">
                 {VIP_BENEFITS.map((benefit, i) => (
@@ -140,8 +140,8 @@ export function ProfilePage() {
       {/* 功能菜单 */}
       {MENU_ITEMS.map(section => (
         <div key={section.section} className="px-4 mb-4">
-          <div className="text-[#888] text-xs mb-2 ml-1">{section.section}</div>
-          <div className="bg-[#252525] rounded-2xl border border-[#333] overflow-hidden">
+          <div className="text-[#c5c5c5] text-xs mb-2 ml-1">{section.section}</div>
+          <div className="bg-[#252525] rounded-2xl border border-[#4a4a4a] overflow-hidden">
             {section.items.map((item, i) => (
               <button
                 key={item.id}
@@ -151,7 +151,7 @@ export function ProfilePage() {
                   }
                 }}
                 className={`w-full flex items-center gap-3 p-4 hover:bg-[#2a2a2a] transition-colors ${
-                  i < section.items.length - 1 ? "border-b border-[#333]" : ""
+                  i < section.items.length - 1 ? "border-b border-[#4a4a4a]" : ""
                 }`}
               >
                 <div className="w-9 h-9 rounded-xl bg-[#1a1a1a] flex items-center justify-center">
@@ -167,7 +167,7 @@ export function ProfilePage() {
                 </div>
                 <div className="flex-1 text-left">
                   <div className="text-[#f5f5f7] text-sm font-medium">{item.name}</div>
-                  <div className="text-[#888] text-xs">{item.desc}</div>
+                  <div className="text-[#c5c5c5] text-xs">{item.desc}</div>
                 </div>
                 {item.id === "theme" ? (
                   <div className={`w-10 h-6 rounded-full transition-colors ${
@@ -188,8 +188,8 @@ export function ProfilePage() {
 
       {/* 版本信息 */}
       <div className="text-center py-4">
-        <p className="text-[#555] text-xs">国学宝典 v1.0.0</p>
-        <p className="text-[#444] text-xs mt-1">传承智慧，启迪人生</p>
+        <p className="text-[#888] text-xs">国学宝典 v1.0.0</p>
+        <p className="text-[#777] text-xs mt-1">传承智慧，启迪人生</p>
       </div>
     </div>
   )
