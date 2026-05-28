@@ -267,7 +267,6 @@ export function HomePage({ onNavigateToTab, onNavigateToTool }: HomePageProps) {
             <button
               key={idx}
               onClick={() => {
-                console.log("[v0] Clicked:", item.label, "tool:", item.tool, "tab:", item.tab, "onNavigateToTool exists:", !!onNavigateToTool)
                 if (item.tool && onNavigateToTool) {
                   onNavigateToTool(item.tool)
                 } else if (item.tab) {
