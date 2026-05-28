@@ -1,6 +1,6 @@
 "use client"
 
-import { Compass, BookOpen, User, Stethoscope, Sparkles } from "lucide-react"
+import { Home, Compass, Stethoscope, Sparkles, Users, User } from "lucide-react"
 
 interface BottomNavProps {
   activeTab: string
@@ -9,8 +9,13 @@ interface BottomNavProps {
 
 const tabs = [
   {
-    id: "paipan",
-    label: "排盘",
+    id: "home",
+    label: "首页",
+    icon: Home,
+  },
+  {
+    id: "yixue",
+    label: "易学",
     icon: Compass,
   },
   {
@@ -19,14 +24,14 @@ const tabs = [
     icon: Stethoscope,
   },
   {
-    id: "herbal",
-    label: "经方",
-    icon: BookOpen,
+    id: "ai",
+    label: "AI助手",
+    icon: Sparkles,
   },
   {
-    id: "ai",
-    label: "AI",
-    icon: Sparkles,
+    id: "community",
+    label: "社群",
+    icon: Users,
   },
   {
     id: "profile",

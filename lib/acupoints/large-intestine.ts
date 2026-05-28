@@ -1,7 +1,7 @@
 // 手阳明大肠经 (20穴)
 import { Acupoint } from './types'
 
-export const LARGE_INTESTINE_MERIDIAN: Acupoint[] = [
+export const largeIntestineMeridian: Acupoint[] = [
   { id: "LI1", name: "商阳", pinyin: "shangyang", code: "LI1", position: [0.63, 0.53, 0.05], meridian: "手阳明大肠经", category: "正经", location: "食指末节桡侧，距指甲角0.1寸", effect: "清热解表，醒脑开窍", method: "浅刺", depth: "0.1寸或点刺出血" },
   { id: "LI2", name: "二间", pinyin: "erjian", code: "LI2", position: [0.61, 0.55, 0.04], meridian: "手阳明大肠经", category: "正经", location: "食指本节前，桡侧凹陷处", effect: "清热解表，利咽消肿", method: "直刺", depth: "0.2-0.3寸" },
   { id: "LI3", name: "三间", pinyin: "sanjian", code: "LI3", position: [0.59, 0.57, 0.03], meridian: "手阳明大肠经", category: "正经", location: "食指本节后，桡侧凹陷处", effect: "清热解表，消肿止痛", method: "直刺", depth: "0.3-0.5寸" },

@@ -2,11 +2,14 @@
 
 import { useState } from "react"
 import { BottomNav } from "@/components/bottom-nav"
+import { HomePage } from "@/components/pages/home-page"
+import { YixuePage } from "@/components/pages/yixue-page"
 import { PaipanPage } from "@/components/pages/paipan-page"
 import { HerbalPage } from "@/components/pages/herbal-page"
 import { TCMPage } from "@/components/pages/tcm-page"
 import { StudyPage } from "@/components/pages/study-page"
 import { ProfilePage } from "@/components/pages/profile-page"
+import { CommunityPage } from "@/components/pages/community-page"
 import { LuRenPage } from "@/components/pages/luren-page"
 import { LuoPanPage } from "@/components/pages/luopan-page"
 import { ZiWeiPage } from "@/components/pages/ziwei-page"
@@ -18,9 +21,10 @@ import { XuanKongPage } from "@/components/pages/xuankong-page"
 import { ZhuGePage } from "@/components/pages/zhuge-page"
 import { AIPage } from "@/components/pages/ai-page"
 import { JingluoPage } from "@/components/pages/jingluo-page"
+import { ShopPage } from "@/components/pages/shop-page"
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState("paipan")
+  const [activeTab, setActiveTab] = useState("home")
   const [activeTool, setActiveTool] = useState<string | null>(null)
 
   // 工具导航处理 - 从排盘页面或中医页面调用
@@ -55,6 +59,8 @@ export default function Home() {
       setActiveTool(null)
     } else if (toolId === "jingluo") {
       setActiveTool("jingluo")
+    } else if (toolId === "shop") {
+      setActiveTool("shop")
     } else if (toolId === "jibing" || toolId === "yian" || toolId === "zhongyao") {
       // 中医百科相关 - 跳转到经方页面
       setActiveTab("herbal")
@@ -92,6 +98,8 @@ export default function Home() {
           return <ZhuGePage onBack={handleBackToToolbox} />
         case "jingluo":
           return <JingluoPage onBack={handleBackToToolbox} />
+        case "shop":
+          return <ShopPage onBack={handleBackToToolbox} />
         default:
           return (
             <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center px-4 bg-[#1a1a1a]">
@@ -111,6 +119,10 @@ export default function Home() {
 
     // 主页面切换
     switch (activeTab) {
+      case "home":
+        return <HomePage onNavigateToTab={setActiveTab} onNavigateToTool={handleToolNavigate} />
+      case "yixue":
+        return <YixuePage onNavigateToTool={handleToolNavigate} />
       case "paipan":
         return <PaipanPage onNavigateToTool={handleToolNavigate} />
       case "tcm":
@@ -121,10 +133,12 @@ export default function Home() {
         return <StudyPage />
       case "ai":
         return <AIPage />
+      case "community":
+        return <CommunityPage />
       case "profile":
         return <ProfilePage />
       default:
-        return <PaipanPage />
+        return <HomePage onNavigateToTab={setActiveTab} />
     }
   }
 

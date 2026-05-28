@@ -1,7 +1,7 @@
 // 足太阳膀胱经 (67穴)
 import { Acupoint } from './types'
 
-export const BLADDER_MERIDIAN: Acupoint[] = [
+export const bladderMeridian: Acupoint[] = [
   { id: "BL1", name: "睛明", pinyin: "jingming", code: "BL1", position: [0.05, 2.02, 0.40], meridian: "足太阳膀胱经", category: "正经", location: "面部，目内眦角稍上方凹陷处", effect: "疏风清热，通络明目", method: "直刺", depth: "0.3-0.5寸", caution: "不可提插，闭眼进针" },
   { id: "BL2", name: "攒竹", pinyin: "cuanzhu", code: "BL2", position: [0.08, 2.08, 0.38], meridian: "足太阳膀胱经", category: "正经", location: "面部，眉头凹陷中，眶上切迹处", effect: "疏风清热，通络明目", method: "平刺或斜刺", depth: "0.3-0.5寸" },
   { id: "BL3", name: "眉冲", pinyin: "meichong", code: "BL3", position: [0.06, 2.15, 0.35], meridian: "足太阳膀胱经", category: "正经", location: "头部，攒竹直上入发际0.5寸", effect: "疏风清热，镇惊安神", method: "平刺", depth: "0.3-0.5寸" },

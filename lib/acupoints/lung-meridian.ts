@@ -1,7 +1,7 @@
 // 手太阴肺经 (11穴)
 import { Acupoint } from './types'
 
-export const LUNG_MERIDIAN: Acupoint[] = [
+export const lungMeridian: Acupoint[] = [
   { id: "LU1", name: "中府", pinyin: "zhongfu", code: "LU1", position: [0.32, 1.52, 0.18], meridian: "手太阴肺经", category: "正经", location: "胸前壁外上方，前正中线旁开6寸，平第1肋间隙", effect: "肃降肺气，和胃利水，止咳平喘，清泻肺热，健脾补气", method: "斜刺或平刺", depth: "0.5-0.8寸" },
   { id: "LU2", name: "云门", pinyin: "yunmen", code: "LU2", position: [0.35, 1.58, 0.15], meridian: "手太阴肺经", category: "正经", location: "胸前壁外上方，锁骨下窝凹陷中，前正中线旁开6寸", effect: "肃降肺气，清热除烦", method: "斜刺", depth: "0.5-0.8寸", caution: "不可深刺，以免伤及肺脏" },
   { id: "LU3", name: "天府", pinyin: "tianfu", code: "LU3", position: [0.38, 1.42, 0.08], meridian: "手太阴肺经", category: "正经", location: "臂内侧面，肱二头肌桡侧缘，腋前纹头下3寸", effect: "清肺凉血，降逆止血", method: "直刺", depth: "0.5-1寸" },

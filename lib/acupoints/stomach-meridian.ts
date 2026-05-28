@@ -1,7 +1,7 @@
 // 足阳明胃经 (45穴)
 import { Acupoint } from './types'
 
-export const STOMACH_MERIDIAN: Acupoint[] = [
+export const stomachMeridian: Acupoint[] = [
   { id: "ST1", name: "承泣", pinyin: "chengqi", code: "ST1", position: [0.10, 2.02, 0.42], meridian: "足阳明胃经", category: "正经", location: "面部，瞳孔直下，眼球与眶下缘之间", effect: "散风清热，明目止泪", method: "直刺或斜刺", depth: "0.3-0.7寸", caution: "不可提插捻转" },
   { id: "ST2", name: "四白", pinyin: "sibai", code: "ST2", position: [0.10, 1.98, 0.42], meridian: "足阳明胃经", category: "正经", location: "面部，瞳孔直下，眶下孔凹陷处", effect: "祛风明目，通络止痛", method: "直刺", depth: "0.3-0.5寸" },
   { id: "ST3", name: "巨髎", pinyin: "juliao", code: "ST3", position: [0.12, 1.95, 0.42], meridian: "足阳明胃经", category: "正经", location: "面部，瞳孔直下，平鼻翼下缘处", effect: "清热熄风，明目退翳", method: "直刺或斜刺", depth: "0.3-0.5寸" },

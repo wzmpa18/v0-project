@@ -1,7 +1,7 @@
 // 手少阴心经 (9穴)
 import { Acupoint } from './types'
 
-export const HEART_MERIDIAN: Acupoint[] = [
+export const heartMeridian: Acupoint[] = [
   { id: "HT1", name: "极泉", pinyin: "jiquan", code: "HT1", position: [0.38, 1.55, 0.02], meridian: "手少阴心经", category: "正经", location: "腋窝顶点，腋动脉搏动处", effect: "宽胸理气，通经活络", method: "直刺", depth: "0.3-0.5寸", caution: "避开腋动脉" },
   { id: "HT2", name: "青灵", pinyin: "qingling", code: "HT2", position: [0.42, 1.42, 0.05], meridian: "手少阴心经", category: "正经", location: "臂内侧，肘横纹上3寸", effect: "理气止痛，通络宁心", method: "直刺", depth: "0.5-1寸" },
   { id: "HT3", name: "少海", pinyin: "shaohai", code: "HT3", position: [0.45, 1.18, 0.08], meridian: "手少阴心经", category: "正经", location: "肘横纹内侧端与肱骨内上髁连线中点处", effect: "宁心安神，通络止痛", method: "直刺", depth: "0.5-1寸" },

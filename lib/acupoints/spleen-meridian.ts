@@ -1,7 +1,7 @@
 // 足太阴脾经 (21穴)
 import { Acupoint } from './types'
 
-export const SPLEEN_MERIDIAN: Acupoint[] = [
+export const spleenMeridian: Acupoint[] = [
   { id: "SP1", name: "隐白", pinyin: "yinbai", code: "SP1", position: [0.08, -0.68, 0.12], meridian: "足太阴脾经", category: "正经", location: "足大趾末节内侧，距趾甲角0.1寸", effect: "调经统血，健脾回阳", method: "浅刺", depth: "0.1寸或点刺出血" },
   { id: "SP2", name: "大都", pinyin: "dadu", code: "SP2", position: [0.06, -0.62, 0.12], meridian: "足太阴脾经", category: "正经", location: "足内侧缘，第1跖趾关节前下方赤白肉际凹陷处", effect: "健脾和中，清热止痛", method: "直刺", depth: "0.3-0.5寸" },
   { id: "SP3", name: "太白", pinyin: "taibai", code: "SP3", position: [0.05, -0.58, 0.10], meridian: "足太阴脾经", category: "正经", location: "足内侧缘，第1跖骨小头后下方凹陷处", effect: "健脾和胃，清热化湿", method: "直刺", depth: "0.3-0.5寸" },
