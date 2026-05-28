@@ -2,25 +2,28 @@
 
 import { useState } from "react"
 import { ChevronLeft, Search, Info, Zap, Clock } from "lucide-react"
-import { HumanBody3D, ACUPOINTS, MERIDIAN_COLORS } from "@/components/tcm/human-body-3d"
+import { HumanBody3D, ALL_ACUPOINTS, MERIDIAN_COLORS } from "@/components/tcm/human-body-3d"
 import { SHICHEN_JINGLUO, getCurrentShichen } from "@/lib/meridian-data"
 
 // 经络列表
 const MERIDIANS = [
-  { id: "all", name: "全部", count: ACUPOINTS.length },
-  { id: "督脉", name: "督脉", count: ACUPOINTS.filter(p => p.meridian === "督脉").length },
-  { id: "任脉", name: "任脉", count: ACUPOINTS.filter(p => p.meridian === "任脉").length },
-  { id: "胆经", name: "胆经", count: ACUPOINTS.filter(p => p.meridian === "胆经").length },
-  { id: "肝经", name: "肝经", count: ACUPOINTS.filter(p => p.meridian === "肝经").length },
-  { id: "肺经", name: "肺经", count: ACUPOINTS.filter(p => p.meridian === "肺经").length },
-  { id: "大肠经", name: "大肠经", count: ACUPOINTS.filter(p => p.meridian === "大肠经").length },
-  { id: "胃经", name: "胃经", count: ACUPOINTS.filter(p => p.meridian === "胃经").length },
-  { id: "脾经", name: "脾经", count: ACUPOINTS.filter(p => p.meridian === "脾经").length },
-  { id: "心经", name: "心经", count: ACUPOINTS.filter(p => p.meridian === "心经").length },
-  { id: "心包经", name: "心包经", count: ACUPOINTS.filter(p => p.meridian === "心包经").length },
-  { id: "膀胱经", name: "膀胱经", count: ACUPOINTS.filter(p => p.meridian === "膀胱经").length },
-  { id: "肾经", name: "肾经", count: ACUPOINTS.filter(p => p.meridian === "肾经").length },
-  { id: "经外奇穴", name: "经外奇穴", count: ACUPOINTS.filter(p => p.meridian === "经外奇穴").length },
+  { id: "all", name: "全部", count: ALL_ACUPOINTS.length },
+  { id: "督脉", name: "督脉", count: ALL_ACUPOINTS.filter(p => p.meridian === "督脉").length },
+  { id: "任脉", name: "任脉", count: ALL_ACUPOINTS.filter(p => p.meridian === "任脉").length },
+  { id: "胆经", name: "胆经", count: ALL_ACUPOINTS.filter(p => p.meridian === "胆经").length },
+  { id: "肝经", name: "肝经", count: ALL_ACUPOINTS.filter(p => p.meridian === "肝经").length },
+  { id: "肺经", name: "肺经", count: ALL_ACUPOINTS.filter(p => p.meridian === "肺经").length },
+  { id: "大肠经", name: "大肠经", count: ALL_ACUPOINTS.filter(p => p.meridian === "大肠经").length },
+  { id: "胃经", name: "胃经", count: ALL_ACUPOINTS.filter(p => p.meridian === "胃经").length },
+  { id: "脾经", name: "脾经", count: ALL_ACUPOINTS.filter(p => p.meridian === "脾经").length },
+  { id: "心经", name: "心经", count: ALL_ACUPOINTS.filter(p => p.meridian === "心经").length },
+  { id: "心包经", name: "心包经", count: ALL_ACUPOINTS.filter(p => p.meridian === "心包经").length },
+  { id: "膀胱经", name: "膀胱经", count: ALL_ACUPOINTS.filter(p => p.meridian === "膀胱经").length },
+  { id: "肾经", name: "肾经", count: ALL_ACUPOINTS.filter(p => p.meridian === "肾经").length },
+  { id: "小肠经", name: "小肠经", count: ALL_ACUPOINTS.filter(p => p.meridian === "小肠经").length },
+  { id: "三焦经", name: "三焦经", count: ALL_ACUPOINTS.filter(p => p.meridian === "三焦经").length },
+  { id: "董氏奇穴", name: "董氏奇穴", count: ALL_ACUPOINTS.filter(p => p.meridian === "董氏奇穴").length },
+  { id: "经外奇穴", name: "经外奇穴", count: ALL_ACUPOINTS.filter(p => p.meridian === "经外奇穴").length },
 ]
 
 interface JingluoPageProps {
@@ -29,14 +32,14 @@ interface JingluoPageProps {
 
 export function JingluoPage({ onBack }: JingluoPageProps) {
   const [selectedMeridian, setSelectedMeridian] = useState<string | null>(null)
-  const [selectedPoint, setSelectedPoint] = useState<typeof ACUPOINTS[0] | null>(null)
+  const [selectedPoint, setSelectedPoint] = useState<typeof ALL_ACUPOINTS[0] | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [showPointList, setShowPointList] = useState(false)
   
   const currentShichen = getCurrentShichen()
   
   // 过滤穴位
-  const filteredPoints = ACUPOINTS.filter(point => {
+  const filteredPoints = ALL_ACUPOINTS.filter(point => {
     const matchMeridian = !selectedMeridian || selectedMeridian === "all" || point.meridian === selectedMeridian
     const matchSearch = !searchQuery || 
       point.name.includes(searchQuery) || 
