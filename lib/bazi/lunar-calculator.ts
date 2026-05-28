@@ -345,14 +345,17 @@ export function calculateBazi(options: BaziOptions): BaziResult {
   // 大运
   const yun = eightChar.getYun(gender === 'male' ? 1 : 0)
   const daYunList = yun.getDaYun()
-  const daYun = daYunList.map((dy: { getStartYear: () => number; getStartAge: () => number; getGanZhi: () => string; getGan: () => string; getZhi: () => string }) => ({
-    startYear: dy.getStartYear(),
-    startAge: dy.getStartAge(),
-    ganZhi: dy.getGanZhi(),
-    gan: dy.getGan(),
-    zhi: dy.getZhi(),
-    shenSha: [] as string[]
-  }))
+  const daYun = daYunList.map((dy: { getStartYear: () => number; getStartAge: () => number; getGanZhi: () => string }) => {
+    const ganZhi = dy.getGanZhi()
+    return {
+      startYear: dy.getStartYear(),
+      startAge: dy.getStartAge(),
+      ganZhi: ganZhi,
+      gan: ganZhi.substring(0, 1),
+      zhi: ganZhi.substring(1, 2),
+      shenSha: [] as string[]
+    }
+  })
 
   // 起运信息
   const qiYun = {
@@ -399,10 +402,14 @@ export function calculateBazi(options: BaziOptions): BaziResult {
   const tiaoHou = getTiaoHou(dayGan, monthZhi)
 
   return {
+    // 基本日期信息
+    solar: { year: solar.getYear(), month: solar.getMonth(), day: solar.getDay() },
+    lunar: { year: lunar.getYear(), month: lunar.getMonth(), day: lunar.getDay(), isLeap: lunar.getMonth() < 0 },
     solarDate: `${solar.getYear()}年${String(solar.getMonth()).padStart(2, '0')}月${String(solar.getDay()).padStart(2, '0')}日`,
     lunarDate: `${lunar.getYearInChinese()}年${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`,
     lunarMonthChinese: lunar.getMonthInChinese() + '月',
     lunarDayChinese: lunar.getDayInChinese(),
+    shengXiao: shengxiaoName,
     shengxiao: shengxiaoName,
     shengxiaoIcon: SHENGXIAO_ICONS[shengxiaoName] || '',
     gender: gender === 'male' ? '乾造' : '坤造',
