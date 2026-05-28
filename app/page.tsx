@@ -170,7 +170,7 @@ export default function Home() {
       case "profile":
         return <ProfilePage />
       default:
-        return <HomePage onNavigateToTab={setActiveTab} />
+        return <HomePage onNavigateToTab={setActiveTab} onNavigateToTool={handleToolNavigate} />
     }
   }
 

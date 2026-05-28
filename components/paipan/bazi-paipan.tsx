@@ -169,12 +169,12 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
   if (!showResult) {
     return (
       <div className="min-h-screen bg-[#1a1a1a] flex flex-col">
-        {/* 头部 */}
-        <header className="flex items-center justify-between px-4 py-3 border-b border-[#333]">
-          <button onClick={onBack} className="p-2 -ml-2 active:opacity-70">
-            <ChevronLeft className="w-6 h-6 text-[#f5f5f7]" />
+        {/* 头部 - 返回按钮醒目 */}
+        <header className="flex items-center justify-between px-4 py-3 border-b border-[#333] sticky top-0 bg-[#1a1a1a] z-10">
+          <button onClick={onBack} className="p-2 -ml-2 active:opacity-70 flex items-center justify-center">
+            <ChevronLeft className="w-7 h-7 text-white" strokeWidth={2.5} />
           </button>
-          <h1 className="text-[#f5f5f7] text-lg font-medium">八字排盘</h1>
+          <h1 className="text-white text-lg font-medium">八字排盘</h1>
           <div className="w-10" />
         </header>
 
@@ -289,15 +289,15 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
   const shengxiao = getShengxiao(result!.year.zhi)
 
   return (
-    <div className="min-h-screen bg-[#f8f6f0] flex flex-col">
-      {/* 头部 */}
-      <header className="flex items-center justify-between px-4 py-3 bg-white">
-        <button onClick={onBack} className="p-2 -ml-2 active:opacity-70">
-          <ChevronLeft className="w-6 h-6 text-gray-800" />
+    <div className="min-h-screen bg-[#f8f6f0] flex flex-col pb-16">
+      {/* 头部 - 深色背景配白色文字 */}
+      <header className="flex items-center justify-between px-4 py-3 bg-[#2a2520] sticky top-0 z-10">
+        <button onClick={onBack} className="p-2 -ml-2 active:opacity-70 flex items-center justify-center">
+          <ChevronLeft className="w-7 h-7 text-white" strokeWidth={2.5} />
         </button>
-        <h1 className="text-gray-800 text-lg font-medium">八字排盘</h1>
+        <h1 className="text-white text-lg font-medium">八字排盘</h1>
         <button className="p-2 -mr-2">
-          <MoreHorizontal className="w-6 h-6 text-gray-400" />
+          <MoreHorizontal className="w-6 h-6 text-[#a0a0a0]" />
         </button>
       </header>
 
@@ -565,6 +565,22 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
             命理分析仅供学术研究参考，不应作为人生重大决策依据
           </p>
         </div>
+      </div>
+
+      {/* 底部固定返回按钮 */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3 flex gap-3 z-20">
+        <button
+          onClick={onBack}
+          className="flex-1 py-3 bg-gray-100 rounded-xl text-gray-700 font-medium active:bg-gray-200"
+        >
+          返回
+        </button>
+        <button
+          onClick={() => setShowResult(false)}
+          className="flex-1 py-3 bg-[#d4af37] rounded-xl text-white font-medium active:opacity-80"
+        >
+          重新排盘
+        </button>
       </div>
     </div>
   )
