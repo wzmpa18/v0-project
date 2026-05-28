@@ -284,7 +284,7 @@ export function HomePage({ onNavigateToTab, onNavigateToTool }: HomePageProps) {
 
       {/* 底部合规声明 */}
       <div className="px-4 pt-4 pb-2">
-        <p className="text-[#555] text-[10px] text-center leading-relaxed">
+        <p className="text-[#888] text-[10px] text-center leading-relaxed">
           本APP中医内容为理论学习，不构成医疗诊断；命理内容为学术交流，不做决策依据。
         </p>
       </div>

@@ -1,7 +1,7 @@
 // 手太阳小肠经 (19穴)
 import { Acupoint } from './types'
 
-export const SMALL_INTESTINE_MERIDIAN: Acupoint[] = [
+export const smallIntestineMeridian: Acupoint[] = [
   { id: "SI1", name: "少泽", pinyin: "shaoze", code: "SI1", position: [0.56, 0.52, 0.08], meridian: "手太阳小肠经", category: "正经", location: "小指末节尺侧，距指甲角0.1寸", effect: "清热利咽，通乳开窍", method: "浅刺", depth: "0.1寸或点刺出血" },
   { id: "SI2", name: "前谷", pinyin: "qiangu", code: "SI2", position: [0.54, 0.55, 0.06], meridian: "手太阳小肠经", category: "正经", location: "小指本节前，第5掌指关节尺侧凹陷处", effect: "清热消肿，安神定志", method: "直刺", depth: "0.2-0.3寸" },
   { id: "SI3", name: "后溪", pinyin: "houxi", code: "SI3", position: [0.52, 0.58, 0.04], meridian: "手太阳小肠经", category: "正经", location: "手掌尺侧，第5掌指关节后方凹陷处", effect: "清心安神，通经活络", method: "直刺", depth: "0.5-1寸" },
