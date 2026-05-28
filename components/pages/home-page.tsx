@@ -255,11 +255,11 @@ export function HomePage({ onNavigateToTab, onNavigateToTool }: HomePageProps) {
         <div className="text-[#888] text-xs mb-3">常用功能</div>
         <div className="grid grid-cols-4 gap-3">
           {[
-            { icon: "🔮", label: "八字排盘", tab: "yixue", tool: null },
-            { icon: "📿", label: "六爻占卜", tab: "yixue", tool: null },
-            { icon: "🧭", label: "奇门遁甲", tab: "yixue", tool: null },
+            { icon: "🔮", label: "八字排盘", tab: null, tool: "bazi" },
+            { icon: "📿", label: "六爻占卜", tab: null, tool: "liuyao" },
+            { icon: "🧭", label: "奇门遁甲", tab: null, tool: "qimen" },
             { icon: "💊", label: "中药查询", tab: "tcm", tool: null },
-            { icon: "📚", label: "经典研读", tab: "yixue", tool: null },
+            { icon: "📚", label: "经典研读", tab: "study", tool: null },
             { icon: "🤖", label: "AI解读", tab: "ai", tool: null },
             { icon: "👥", label: "易友圈", tab: "community", tool: null },
             { icon: "🛒", label: "文创商城", tab: null, tool: "shop" },
@@ -267,9 +267,12 @@ export function HomePage({ onNavigateToTab, onNavigateToTool }: HomePageProps) {
             <button
               key={idx}
               onClick={() => {
+                console.log("[v0] Button clicked:", item.label, "tool:", item.tool, "tab:", item.tab)
                 if (item.tool && onNavigateToTool) {
+                  console.log("[v0] Navigating to tool:", item.tool)
                   onNavigateToTool(item.tool)
                 } else if (item.tab) {
+                  console.log("[v0] Navigating to tab:", item.tab)
                   onNavigateToTab(item.tab)
                 }
               }}
