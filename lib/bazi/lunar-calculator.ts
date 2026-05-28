@@ -359,7 +359,7 @@ export function calculateBazi(options: BaziOptions): BaziResult {
 
   // 起运信息
   const qiYun = {
-    years: yun.getStartYear() - year,
+    years: yun.getStartYear(),
     months: yun.getStartMonth(),
     days: yun.getStartDay(),
     direction: gender === 'male' ? (isYangYear(yearGan) ? '顺行' : '逆行') : (isYangYear(yearGan) ? '逆行' : '顺行') as '顺行' | '逆行'

@@ -152,9 +152,20 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
       }
       
       // 公历/农历模式
+      // 时辰索引转换为小时：子时用0点（早子时），其他时辰用该时辰的起始小时
       const hourMap: Record<number, number> = {
-        0: 23, 1: 1, 2: 3, 3: 5, 4: 7, 5: 9,
-        6: 11, 7: 13, 8: 15, 9: 17, 10: 19, 11: 21
+        0: 0,   // 子时 (23:00-01:00) 用0点计算
+        1: 2,   // 丑时 (01:00-03:00) 用2点计算
+        2: 4,   // 寅时 (03:00-05:00) 用4点计算
+        3: 6,   // 卯时 (05:00-07:00) 用6点计算
+        4: 8,   // 辰时 (07:00-09:00) 用8点计算
+        5: 10,  // 巳时 (09:00-11:00) 用10点计算
+        6: 12,  // 午时 (11:00-13:00) 用12点计算
+        7: 14,  // 未时 (13:00-15:00) 用14点计算
+        8: 16,  // 申时 (15:00-17:00) 用16点计算
+        9: 18,  // 酉时 (17:00-19:00) 用18点计算
+        10: 20, // 戌时 (19:00-21:00) 用20点计算
+        11: 22  // 亥时 (21:00-23:00) 用22点计算
       }
       
       const options: BaziOptions = {
@@ -191,7 +202,7 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
   // 输入界面
   if (!showResult) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] flex flex-col">
+      <div className="min-h-screen bg-[#f8f5f0] flex flex-col pb-6">
         {/* 头部 */}
         <header className="flex items-center justify-between px-4 py-3 bg-[#2a2520] sticky top-0 z-10">
           <button onClick={onBack} className="p-2 -ml-2 active:opacity-70">
