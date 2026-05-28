@@ -22,6 +22,8 @@ import { ZhuGePage } from "@/components/pages/zhuge-page"
 import { AIPage } from "@/components/pages/ai-page"
 import { JingluoPage } from "@/components/pages/jingluo-page"
 import { ShopPage } from "@/components/pages/shop-page"
+import { BaziPaipan } from "@/components/paipan/bazi-paipan"
+import { YixueStudyPage } from "@/components/pages/yixue-study-page"
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("home")
@@ -29,10 +31,20 @@ export default function Home() {
 
   // 工具导航处理 - 从排盘页面或中医页面调用
   const handleToolNavigate = (toolId: string) => {
+    // 八字排盘
     if (toolId === "bazi") {
-      setActiveTab("paipan")
-      setActiveTool(null)
-    } else if (toolId === "liuren") {
+      setActiveTool("bazi")
+    } 
+    // 易学学习分类
+    else if (toolId.startsWith("study-")) {
+      setActiveTool(toolId)
+    }
+    // 古籍阅读
+    else if (toolId.startsWith("book-")) {
+      setActiveTool(toolId)
+    }
+    // 其他排盘工具
+    else if (toolId === "liuren") {
       setActiveTool("liuren")
     } else if (toolId === "luopan") {
       setActiveTool("luopan")
@@ -48,11 +60,14 @@ export default function Home() {
       setActiveTool("bazhai")
     } else if (toolId === "xuankong") {
       setActiveTool("xuankong")
-    } else if (toolId === "zhuge") {
+    } else if (toolId === "zhuge" || toolId === "zhugeshenshu") {
       setActiveTool("zhuge")
     } else if (toolId === "liuyao") {
-      setActiveTab("paipan")
-      setActiveTool(null)
+      setActiveTool("liuyao")
+    } else if (toolId === "qimen" || toolId === "qimen-yin" || toolId === "mingli-qimen" || toolId === "feigong-qimen" || toolId === "qimen-chuanren" || toolId === "shanxiang-qimen") {
+      setActiveTool("qimen")
+    } else if (toolId === "taiyi") {
+      setActiveTool("taiyi")
     } else if (toolId === "jingdian") {
       // 从中医页面跳转到学习
       setActiveTab("study")
@@ -77,6 +92,23 @@ export default function Home() {
   const renderPage = () => {
     // 子工具页面
     if (activeTool) {
+      // 八字排盘
+      if (activeTool === "bazi") {
+        return <BaziPaipan onBack={handleBackToToolbox} onAIAnalysis={() => {
+          setActiveTab("ai")
+          setActiveTool(null)
+        }} />
+      }
+      // 易学学习分类
+      if (activeTool.startsWith("study-")) {
+        const category = activeTool.replace("study-", "")
+        return <YixueStudyPage category={category} onBack={handleBackToToolbox} />
+      }
+      // 古籍阅读
+      if (activeTool.startsWith("book-")) {
+        return <YixueStudyPage category="guji" onBack={handleBackToToolbox} />
+      }
+      
       switch (activeTool) {
         case "liuren":
           return <LuRenPage onBack={handleBackToToolbox} />
