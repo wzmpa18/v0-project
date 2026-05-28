@@ -177,10 +177,7 @@ export default function Home() {
 
   return (
     <PaipanProvider>
-      <main className="min-h-screen bg-[#1a1a1a] relative overflow-hidden">
-        {/* 顶部装饰渐变 */}
-        <div className="fixed top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#1a1a1a] via-[#1a1a1a]/95 to-transparent pointer-events-none z-10" />
-        
+      <main className="min-h-screen bg-[#1a1a1a] relative">
         {/* 页面内容区域 */}
         <div className="pb-20">
           {renderPage()}

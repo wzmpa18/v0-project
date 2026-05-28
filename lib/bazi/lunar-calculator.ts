@@ -244,19 +244,19 @@ export function calculateBazi(options: BaziOptions): BaziResult {
     sect = 2  // 默认晚子时日柱算明天（问真八字的默认设置）
   } = options
 
-  // 创建日期对象
+  // 创建日期对象 - 必须包含时间才能正确计算时柱
   let solar: typeof Solar
   if (isLunar) {
-    const lunar = Lunar.fromYmd(year, month, day)
+    const lunar = Lunar.fromYmdHms(year, month, day, hour, minute, 0)
     solar = lunar.getSolar()
   } else {
-    solar = Solar.fromYmd(year, month, day)
+    solar = Solar.fromYmdHms(year, month, day, hour, minute, 0)
   }
 
   // 获取农历
   const lunar = solar.getLunar()
   
-  // 获取八字
+  // 获取八字 - 使用带时间的方法
   const eightChar = lunar.getEightChar()
   eightChar.setSect(sect)
 

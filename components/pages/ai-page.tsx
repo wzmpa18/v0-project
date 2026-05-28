@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Send, Bot, User, Sparkles, BookOpen, Stethoscope, Compass, Lightbulb, RotateCcw, Copy, Check } from "lucide-react"
+import { Send, Bot, User, Sparkles, BookOpen, Stethoscope, Compass, Lightbulb, RotateCcw, Copy, Check, X } from "lucide-react"
+import { usePaipanContext, formatPaipanForAI } from "@/lib/paipan-context"
 
 // 预设问题
 const QUICK_QUESTIONS = [
@@ -32,8 +33,12 @@ export function AIPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [selectedRole, setSelectedRole] = useState("general")
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [showPaipanHint, setShowPaipanHint] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  
+  // 获取排盘上下文
+  const { lastResult, clearResult } = usePaipanContext()
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -156,6 +161,46 @@ export function AIPage() {
 
       {/* 消息区域 */}
       <div className="flex-1 overflow-y-auto px-4 py-4">
+        {/* 排盘上下文提示卡片 */}
+        {lastResult && showPaipanHint && (
+          <div className="mb-4 p-3 bg-gradient-to-r from-[#d4af37]/10 to-[#c8102e]/10 rounded-xl border border-[#d4af37]/30">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <Compass className="w-4 h-4 text-[#d4af37]" />
+                  <span className="text-[#d4af37] text-sm font-medium">
+                    检测到排盘结果
+                  </span>
+                </div>
+                <p className="text-[#c5c5c5] text-xs mb-2">
+                  {lastResult.type === "bazi" && `四柱：${lastResult.data.year?.gan}${lastResult.data.year?.zhi} ${lastResult.data.month?.gan}${lastResult.data.month?.zhi} ${lastResult.data.day?.gan}${lastResult.data.day?.zhi} ${lastResult.data.hour?.gan}${lastResult.data.hour?.zhi}`}
+                </p>
+                <button
+                  onClick={() => {
+                    const prompt = lastResult.type === "bazi" 
+                      ? `请帮我分析这个八字命盘：${lastResult.data.year?.gan}${lastResult.data.year?.zhi}年 ${lastResult.data.month?.gan}${lastResult.data.month?.zhi}月 ${lastResult.data.day?.gan}${lastResult.data.day?.zhi}日 ${lastResult.data.hour?.gan}${lastResult.data.hour?.zhi}时，日主${lastResult.data.day?.gan}，请从格局、用神、性格、事业、财运、婚姻等方面进行分析。`
+                      : "请帮我分析这个排盘结果"
+                    setInputValue(prompt)
+                    inputRef.current?.focus()
+                  }}
+                  className="px-3 py-1.5 bg-[#d4af37] text-[#1a1a1a] text-xs font-medium rounded-lg"
+                >
+                  让AI分析此命盘
+                </button>
+              </div>
+              <button
+                onClick={() => {
+                  setShowPaipanHint(false)
+                  clearResult()
+                }}
+                className="p-1 text-[#888] hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+        
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full">
             {/* 欢迎界面 */}

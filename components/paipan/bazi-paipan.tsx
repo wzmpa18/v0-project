@@ -7,6 +7,7 @@ import {
   getWuXingColor, getWuXingIcon, SHICHEN_TIMES,
   TIANGAN_WUXING, DIZHI_WUXING, SHENGXIAO_ICONS
 } from "@/lib/bazi/lunar-calculator"
+import { usePaipanContext } from "@/lib/paipan-context"
 
 interface BaziPaipanProps {
   onBack: () => void
@@ -17,7 +18,18 @@ interface BaziPaipanProps {
 const TIANGAN = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸']
 const DIZHI = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
 
+// 时辰名称映射（小时 -> 时辰名）
+const SHICHEN_NAMES: Record<number, string> = {
+  0: '子', 1: '丑', 2: '丑', 3: '寅', 4: '寅', 5: '卯',
+  6: '卯', 7: '辰', 8: '辰', 9: '巳', 10: '巳', 11: '午',
+  12: '午', 13: '未', 14: '未', 15: '申', 16: '申', 17: '酉',
+  18: '酉', 19: '戌', 20: '戌', 21: '亥', 22: '亥', 23: '子'
+}
+
 export function BaziPaipan({ onBack }: BaziPaipanProps) {
+  // 排盘上下文 - 用于AI助手感知
+  const { setLastResult } = usePaipanContext()
+  
   // Tab状态
   const [activeTab, setActiveTab] = useState<"basic" | "chart" | "detail" | "notes">("chart")
   
@@ -158,6 +170,13 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
       const baziResult = calculateBazi(options)
       setResult(baziResult)
       setShowResult(true)
+      
+      // 保存到上下文，供AI助手感知
+      setLastResult({
+        type: "bazi",
+        timestamp: Date.now(),
+        data: baziResult
+      })
     } catch (error) {
       console.error("排盘计算错误:", error)
       setCalcError("排盘计算出错，请检查输入日期是否有效")
@@ -521,10 +540,10 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
               </span>
             </div>
             <div className="text-white/60 text-sm mt-1">
-              农历：{result.lunar.year}年{result.lunar.month}月{result.lunar.day}日
+              农历：{result.lunarDate} {SHICHEN_NAMES[birthHour] || '子'}时
             </div>
             <div className="text-white/40 text-xs">
-              阳历：{result.solar.year}年{String(result.solar.month).padStart(2, '0')}月{String(result.solar.day).padStart(2, '0')}日
+              阳历：{result.solarDate} {String(birthHour).padStart(2, '0')}:00
             </div>
           </div>
           <div className="flex gap-2">
@@ -702,7 +721,6 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
                   <span className="w-1 h-4 bg-[#d4af37] rounded"></span>
                   智能古籍参考
                 </h3>
-                <span className="text-xs text-[#d4af37] bg-[#d4af37]/10 px-2 py-1 rounded">VIP会员</span>
               </div>
               <div className="flex gap-3 overflow-x-auto pb-2">
                 {["穷通宝鉴", "滴天髓", "三命通会", "八字提要"].map((book) => (
@@ -742,19 +760,69 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
         {/* 基本信息Tab */}
         {activeTab === "basic" && (
           <div className="p-4 space-y-4">
-            {/* 出生天体图 */}
+            {/* 出生天体图 - 显示节气信息和五行分布 */}
             <div className="bg-white rounded-xl p-4 shadow-sm">
               <h3 className="text-[#333] font-medium flex items-center gap-2 mb-3">
                 <span className="w-1 h-4 bg-[#d4af37] rounded"></span>
                 出生天体图
               </h3>
-              <div className="bg-[#f8f5f0] rounded-xl p-8 flex items-center justify-center">
-                <div className="text-center">
-                  <p className="text-[#666] mb-2">出生天体图功能</p>
-                  <p className="text-[#999] text-sm mb-4">通过日月星辰的运行规律，便于您了解出生那一时刻的天体状态</p>
-                  <button className="px-6 py-2 bg-[#d4af37] text-white rounded-full">
-                    开通VIP会员
-                  </button>
+              <div className="bg-[#1a1a2e] rounded-xl p-4">
+                {/* 简易天体图 - 显示太阳、月亮位置和五行分布 */}
+                <div className="relative h-48">
+                  {/* 背景星空 */}
+                  <div className="absolute inset-0 overflow-hidden rounded-lg">
+                    {Array.from({ length: 20 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="absolute w-1 h-1 bg-white/30 rounded-full"
+                        style={{
+                          left: `${Math.random() * 100}%`,
+                          top: `${Math.random() * 100}%`,
+                        }}
+                      />
+                    ))}
+                  </div>
+                  
+                  {/* 中心圆环 */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-32 h-32 rounded-full border-2 border-[#d4af37]/30 relative">
+                      {/* 四柱天干在圆环上 */}
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-lg font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[result.year.gan]) }}>
+                        {result.year.gan}
+                      </div>
+                      <div className="absolute top-1/2 -right-3 -translate-y-1/2 text-lg font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[result.month.gan]) }}>
+                        {result.month.gan}
+                      </div>
+                      <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[result.day.gan]) }}>
+                        {result.day.gan}
+                      </div>
+                      <div className="absolute top-1/2 -left-3 -translate-y-1/2 text-lg font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[result.hour.gan]) }}>
+                        {result.hour.gan}
+                      </div>
+                      
+                      {/* 中心日主 */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-full bg-[#d4af37]/20 flex items-center justify-center">
+                          <span className="text-[#d4af37] text-xl font-bold">{result.day.gan}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* 太阳 */}
+                  <div className="absolute top-4 right-8 text-2xl">☀️</div>
+                  {/* 月亮 */}
+                  <div className="absolute bottom-4 left-8 text-2xl">🌙</div>
+                </div>
+                
+                {/* 节气信息 */}
+                <div className="mt-3 text-center">
+                  <div className="text-white/80 text-sm">
+                    节气：{result.jieQi?.prevJie || "小寒"} → {result.jieQi?.nextJie || "大寒"}
+                  </div>
+                  <div className="text-white/50 text-xs mt-1">
+                    日主：{result.day.gan}{TIANGAN_WUXING[result.day.gan]} | 月令：{result.month.zhi}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1044,7 +1112,7 @@ function getShiShen(dayGan: string, gan: string): string {
     '乙': { '甲': '劫财', '乙': '比肩', '丙': '伤官', '丁': '食神', '戊': '正财', '己': '偏财', '庚': '正官', '辛': '七杀', '壬': '正印', '癸': '偏印' },
     '丙': { '甲': '偏印', '乙': '正印', '丙': '比肩', '丁': '劫财', '戊': '食神', '己': '伤官', '庚': '偏财', '辛': '正财', '壬': '七杀', '癸': '正官' },
     '丁': { '甲': '正印', '乙': '偏印', '丙': '劫财', '丁': '比肩', '戊': '伤官', '己': '食神', '庚': '正财', '辛': '偏财', '壬': '正官', '癸': '七杀' },
-    '戊': { '甲': '七杀', '乙': '正官', '丙': '偏印', '丁': '正印', '戊': '比肩', '己': '劫财', '庚': '食神', '辛': '伤官', '壬': '偏财', '癸': '正财' },
+    '戊': { '甲': '七杀', '乙': '正���', '丙': '偏印', '丁': '正印', '戊': '比肩', '己': '劫财', '庚': '食神', '辛': '伤官', '壬': '偏财', '癸': '正财' },
     '己': { '甲': '正官', '乙': '七杀', '丙': '正印', '丁': '偏印', '戊': '劫财', '己': '比肩', '庚': '伤官', '辛': '食神', '壬': '正财', '癸': '偏财' },
     '庚': { '甲': '偏财', '乙': '正财', '丙': '七杀', '丁': '正官', '戊': '偏印', '己': '正印', '庚': '比肩', '辛': '劫财', '壬': '食神', '癸': '伤官' },
     '辛': { '甲': '正财', '乙': '偏财', '丙': '正官', '丁': '七杀', '戊': '正印', '己': '偏印', '庚': '劫财', '辛': '比肩', '壬': '伤官', '癸': '食神' },
