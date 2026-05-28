@@ -1,171 +1,98 @@
 "use client"
 
-import { useState } from "react"
-import { ChevronLeft, MoreHorizontal, Eye, Edit2, ChevronDown, ChevronUp, Settings } from "lucide-react"
+import { useState, useMemo } from "react"
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Eye, Pencil, Plus, Calendar, HelpCircle, Settings } from "lucide-react"
 import {
   calculateBazi, BaziResult, BaziOptions,
-  getWuXingColor, getWuXingIcon, SHICHEN_TIMES,
+  getWuXingColor, SHICHEN_TIMES,
   TIANGAN_WUXING, DIZHI_WUXING, SHENGXIAO_ICONS
 } from "@/lib/bazi/lunar-calculator"
 import { usePaipanContext } from "@/lib/paipan-context"
-
-interface BaziPaipanProps {
-  onBack: () => void
-  onAIAnalysis?: () => void
-}
 
 // 天干地支列表
 const TIANGAN = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸']
 const DIZHI = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
 
-// 时辰名称映射（小时 -> 时辰名）
-const SHICHEN_NAMES: Record<number, string> = {
-  0: '子', 1: '丑', 2: '丑', 3: '寅', 4: '寅', 5: '卯',
-  6: '卯', 7: '辰', 8: '辰', 9: '巳', 10: '巳', 11: '午',
-  12: '午', 13: '未', 14: '未', 15: '申', 16: '申', 17: '酉',
-  18: '酉', 19: '戌', 20: '戌', 21: '亥', 22: '亥', 23: '子'
+// 五行图标
+const WUXING_ICONS: Record<string, string> = {
+  '木': '🌲', '火': '🔥', '土': '⛰️', '金': '🪙', '水': '💧'
+}
+
+// 时辰名称
+const SHICHEN_MAP: Record<number, string> = {
+  0: '子', 1: '丑', 2: '寅', 3: '卯', 4: '辰', 5: '巳',
+  6: '午', 7: '未', 8: '申', 9: '酉', 10: '戌', 11: '亥'
+}
+
+// 古籍列表
+const CLASSICS = [
+  { name: '穷通宝鉴', short: '穷通宝鉴' },
+  { name: '滴天髓', short: '滴天髓' },
+  { name: '三命通会', short: '三命通会' },
+  { name: '八字提要', short: '八字提要' }
+]
+
+// 流月节气
+const LIUYUE_JIEQI = [
+  { name: '立春', date: '2/4' }, { name: '惊蛰', date: '3/5' },
+  { name: '清明', date: '4/5' }, { name: '立夏', date: '5/5' },
+  { name: '芒种', date: '6/5' }, { name: '小暑', date: '7/7' },
+  { name: '立秋', date: '8/7' }, { name: '白露', date: '9/7' },
+  { name: '寒露', date: '10/8' }, { name: '立冬', date: '11/7' }
+]
+
+interface BaziPaipanProps {
+  onBack: () => void
 }
 
 export function BaziPaipan({ onBack }: BaziPaipanProps) {
-  // 排盘上下文 - 用于AI助手感知
   const { setLastResult } = usePaipanContext()
   
   // Tab状态
   const [activeTab, setActiveTab] = useState<"basic" | "chart" | "detail" | "notes">("chart")
   
-  // 输入模式: solar=公历, lunar=农历, sizhu=四柱
+  // 输入模式
   const [inputMode, setInputMode] = useState<"solar" | "lunar" | "sizhu">("solar")
   
-  // 输入状态
-  const [showResult, setShowResult] = useState(false)
+  // 出生日期
   const [birthYear, setBirthYear] = useState(1990)
   const [birthMonth, setBirthMonth] = useState(1)
   const [birthDay, setBirthDay] = useState(1)
-  const [birthHour, setBirthHour] = useState(0) // 0=子时
+  const [birthHour, setBirthHour] = useState(0)
   const [gender, setGender] = useState<"male" | "female">("male")
-  
-  // 四柱直接输入
-  const [sizhuYear, setSizhuYear] = useState({ gan: 0, zhi: 0 }) // 甲子
-  const [sizhuMonth, setSizhuMonth] = useState({ gan: 0, zhi: 2 }) // 甲寅
-  const [sizhuDay, setSizhuDay] = useState({ gan: 0, zhi: 0 }) // 甲子
-  const [sizhuHour, setSizhuHour] = useState({ gan: 0, zhi: 0 }) // 甲子
   
   // 高级设置
   const [showSettings, setShowSettings] = useState(false)
-  const [sect, setSect] = useState<1 | 2>(2) // 晚子时算法
+  const [sect, setSect] = useState<1 | 2>(2)
   
-  // 计算结果
+  // 四柱直接输入
+  const [sizhuYear, setSizhuYear] = useState({ gan: 0, zhi: 0 })
+  const [sizhuMonth, setSizhuMonth] = useState({ gan: 0, zhi: 2 })
+  const [sizhuDay, setSizhuDay] = useState({ gan: 0, zhi: 0 })
+  const [sizhuHour, setSizhuHour] = useState({ gan: 0, zhi: 0 })
+  
+  // 断事笔记
+  const [notesTab, setNotesTab] = useState<"feedback" | "review">("feedback")
+  const [showLiunianShensha, setShowLiunianShensha] = useState(false)
+  
+  // 结果
   const [result, setResult] = useState<BaziResult | null>(null)
-  const [calcError, setCalcError] = useState<string | null>(null)
-  
+  const [showResult, setShowResult] = useState(false)
+
   // 时辰列表
-  const shichenList = [
-    { name: "子时", range: "23:00-01:00", value: 0 },
-    { name: "丑时", range: "01:00-03:00", value: 1 },
-    { name: "寅时", range: "03:00-05:00", value: 2 },
-    { name: "卯时", range: "05:00-07:00", value: 3 },
-    { name: "辰时", range: "07:00-09:00", value: 4 },
-    { name: "巳时", range: "09:00-11:00", value: 5 },
-    { name: "午时", range: "11:00-13:00", value: 6 },
-    { name: "未时", range: "13:00-15:00", value: 7 },
-    { name: "申时", range: "15:00-17:00", value: 8 },
-    { name: "酉时", range: "17:00-19:00", value: 9 },
-    { name: "戌时", range: "19:00-21:00", value: 10 },
-    { name: "亥时", range: "21:00-23:00", value: 11 },
-  ]
-  
-  // 执行排盘
+  const shichenList = SHICHEN_TIMES
+
+  // 年月日列表
+  const years = useMemo(() => Array.from({ length: 150 }, (_, i) => 2050 - i), [])
+  const months = useMemo(() => Array.from({ length: 12 }, (_, i) => i + 1), [])
+  const days = useMemo(() => Array.from({ length: 31 }, (_, i) => i + 1), [])
+
+  // 排盘计算
   const handlePaipan = () => {
     try {
-      setCalcError(null)
-      
-      if (inputMode === "sizhu") {
-        // 四柱模式：直接使用输入的四柱创建模拟结果
-        const yearGan = TIANGAN[sizhuYear.gan]
-        const yearZhi = DIZHI[sizhuYear.zhi]
-        const monthGan = TIANGAN[sizhuMonth.gan]
-        const monthZhi = DIZHI[sizhuMonth.zhi]
-        const dayGan = TIANGAN[sizhuDay.gan]
-        const dayZhi = DIZHI[sizhuDay.zhi]
-        const hourGan = TIANGAN[sizhuHour.gan]
-        const hourZhi = DIZHI[sizhuHour.zhi]
-        
-        // 创建简化的结果对象
-        const mockResult: BaziResult = {
-          // 基本信息
-          solar: { year: birthYear, month: birthMonth, day: birthDay },
-          lunar: { year: birthYear, month: birthMonth, day: birthDay, isLeap: false },
-          gender,
-          
-          // 四柱
-          year: { gan: yearGan, zhi: yearZhi, ganZhi: yearGan + yearZhi },
-          month: { gan: monthGan, zhi: monthZhi, ganZhi: monthGan + monthZhi },
-          day: { gan: dayGan, zhi: dayZhi, ganZhi: dayGan + dayZhi },
-          hour: { gan: hourGan, zhi: hourZhi, ganZhi: hourGan + hourZhi },
-          
-          // 十神
-          shiShen: {
-            year: getShiShen(dayGan, yearGan),
-            month: getShiShen(dayGan, monthGan),
-            day: "日主",
-            hour: getShiShen(dayGan, hourGan)
-          },
-          
-          // 藏干
-          cangGan: {
-            year: getCangGan(yearZhi),
-            month: getCangGan(monthZhi),
-            day: getCangGan(dayZhi),
-            hour: getCangGan(hourZhi)
-          },
-          
-          // 其他属性
-          kongWang: { year: "戌亥", month: "申酉", day: "午未", hour: "辰巳" },
-          changSheng: { year: "长生", month: "沐浴", day: "冠带", hour: "临官" },
-          naYin: {
-            year: getNaYin(yearGan + yearZhi),
-            month: getNaYin(monthGan + monthZhi),
-            day: getNaYin(dayGan + dayZhi),
-            hour: getNaYin(hourGan + hourZhi)
-          },
-          shenSha: { year: [], month: [], day: [], hour: [] },
-          
-          // 大运流年
-          daYun: [],
-          liuNian: [],
-          qiYun: { years: 0, months: 0, days: 0, direction: "顺行" },
-          
-          // 五行
-          wuXingCount: { 木: 0, 火: 0, 土: 0, 金: 0, 水: 0 },
-          wuXingStrength: { 旺: "水", 相: "木", 休: "金", 囚: "土", 死: "火" },
-          
-          // 关系
-          ganZhiRelation: { tianGan: [], diZhi: [], zhengZhu: [] },
-          jieQi: { current: "", next: "", nextDate: "" },
-          tiaoHou: { yongShen: [], xiShen: [], jiShen: [] },
-          shengXiao: getShengXiao(yearZhi)
-        }
-        
-        setResult(mockResult)
-        setShowResult(true)
-        return
-      }
-      
-      // 公历/农历模式
-      // 时辰索引转换为小时：子时用0点（早子时），其他时辰用该时辰的起始小时
       const hourMap: Record<number, number> = {
-        0: 0,   // 子时 (23:00-01:00) 用0点计算
-        1: 2,   // 丑时 (01:00-03:00) 用2点计算
-        2: 4,   // 寅时 (03:00-05:00) 用4点计算
-        3: 6,   // 卯时 (05:00-07:00) 用6点计算
-        4: 8,   // 辰时 (07:00-09:00) 用8点计算
-        5: 10,  // 巳时 (09:00-11:00) 用10点计算
-        6: 12,  // 午时 (11:00-13:00) 用12点计算
-        7: 14,  // 未时 (13:00-15:00) 用14点计算
-        8: 16,  // 申时 (15:00-17:00) 用16点计算
-        9: 18,  // 酉时 (17:00-19:00) 用18点计算
-        10: 20, // 戌时 (19:00-21:00) 用20点计算
-        11: 22  // 亥时 (21:00-23:00) 用22点计算
+        0: 0, 1: 2, 2: 4, 3: 6, 4: 8, 5: 10,
+        6: 12, 7: 14, 8: 16, 9: 18, 10: 20, 11: 22
       }
       
       const options: BaziOptions = {
@@ -182,38 +109,57 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
       setResult(baziResult)
       setShowResult(true)
       
-      // 保存到上下文，供AI助手感知
       setLastResult({
         type: "bazi",
         timestamp: Date.now(),
         data: baziResult
       })
     } catch (error) {
-      console.error("排盘计算错误:", error)
-      setCalcError("排盘计算出错，请检查输入日期是否有效")
+      console.error("[v0] 排盘计算错误:", error)
+      alert("排盘计算失败，请检查输入日期是否正确")
     }
   }
-  
-  // 生成年份列表
-  const years = Array.from({ length: 150 }, (_, i) => 1900 + i)
-  const months = Array.from({ length: 12 }, (_, i) => i + 1)
-  const days = Array.from({ length: 31 }, (_, i) => i + 1)
+
+  // 获取当前大运
+  const getCurrentDayun = () => {
+    if (!result?.daYun) return null
+    const currentYear = new Date().getFullYear()
+    for (let i = result.daYun.length - 1; i >= 0; i--) {
+      if (result.daYun[i].startYear <= currentYear) {
+        return result.daYun[i]
+      }
+    }
+    return result.daYun[0]
+  }
+
+  // 获取当前流年
+  const getCurrentLiunian = () => {
+    const currentYear = new Date().getFullYear()
+    const ganIndex = (currentYear - 4) % 10
+    const zhiIndex = (currentYear - 4) % 12
+    return {
+      year: currentYear,
+      gan: TIANGAN[ganIndex],
+      zhi: DIZHI[zhiIndex],
+      ganZhi: TIANGAN[ganIndex] + DIZHI[zhiIndex]
+    }
+  }
 
   // 输入界面
   if (!showResult) {
     return (
       <div className="min-h-screen bg-[#f8f5f0] flex flex-col pb-6">
-        {/* 头部 */}
+        {/* 顶部导航 */}
         <header className="flex items-center justify-between px-4 py-3 bg-[#2a2520] sticky top-0 z-10">
-          <button onClick={onBack} className="p-2 -ml-2 active:opacity-70">
+          <button onClick={onBack} className="p-2 -ml-2">
             <ChevronLeft className="w-6 h-6 text-white" />
           </button>
-          <h1 className="text-white text-lg font-medium">八字排盘</h1>
+          <h1 className="text-white text-lg font-medium">问真八字</h1>
           <div className="w-10" />
         </header>
-        
-        {/* 输入模式切换 - 公历/农历/四柱 */}
-        <div className="flex justify-center gap-2 p-4 bg-[#f8f5f0]">
+
+        {/* 输入模式切换 */}
+        <div className="flex justify-center gap-2 p-4">
           {[
             { key: "solar", label: "公历" },
             { key: "lunar", label: "农历" },
@@ -221,7 +167,7 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
           ].map((mode) => (
             <button
               key={mode.key}
-              onClick={() => setInputMode(mode.key as "solar" | "lunar" | "sizhu")}
+              onClick={() => setInputMode(mode.key as typeof inputMode)}
               className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
                 inputMode === mode.key
                   ? "bg-[#d4af37] text-white"
@@ -232,118 +178,37 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
             </button>
           ))}
         </div>
-        
+
         <div className="flex-1 px-4 pb-4 overflow-auto">
-          {/* 四柱输入模式 */}
           {inputMode === "sizhu" ? (
             <div className="bg-white rounded-xl p-4 space-y-4">
-              <h3 className="text-[#333] font-medium mb-3">直接输入四柱</h3>
-              
-              {/* 年柱 */}
-              <div className="flex items-center gap-3">
-                <span className="w-16 text-[#666]">年柱：</span>
-                <select
-                  value={sizhuYear.gan}
-                  onChange={(e) => setSizhuYear({ ...sizhuYear, gan: parseInt(e.target.value) })}
-                  className="flex-1 p-3 bg-[#f8f5f0] rounded-lg text-[#333] text-center"
-                >
-                  {TIANGAN.map((g, i) => <option key={i} value={i}>{g}</option>)}
-                </select>
-                <select
-                  value={sizhuYear.zhi}
-                  onChange={(e) => setSizhuYear({ ...sizhuYear, zhi: parseInt(e.target.value) })}
-                  className="flex-1 p-3 bg-[#f8f5f0] rounded-lg text-[#333] text-center"
-                >
-                  {DIZHI.map((z, i) => <option key={i} value={i}>{z}</option>)}
-                </select>
-              </div>
-              
-              {/* 月柱 */}
-              <div className="flex items-center gap-3">
-                <span className="w-16 text-[#666]">月柱：</span>
-                <select
-                  value={sizhuMonth.gan}
-                  onChange={(e) => setSizhuMonth({ ...sizhuMonth, gan: parseInt(e.target.value) })}
-                  className="flex-1 p-3 bg-[#f8f5f0] rounded-lg text-[#333] text-center"
-                >
-                  {TIANGAN.map((g, i) => <option key={i} value={i}>{g}</option>)}
-                </select>
-                <select
-                  value={sizhuMonth.zhi}
-                  onChange={(e) => setSizhuMonth({ ...sizhuMonth, zhi: parseInt(e.target.value) })}
-                  className="flex-1 p-3 bg-[#f8f5f0] rounded-lg text-[#333] text-center"
-                >
-                  {DIZHI.map((z, i) => <option key={i} value={i}>{z}</option>)}
-                </select>
-              </div>
-              
-              {/* 日柱 */}
-              <div className="flex items-center gap-3">
-                <span className="w-16 text-[#666]">日柱：</span>
-                <select
-                  value={sizhuDay.gan}
-                  onChange={(e) => setSizhuDay({ ...sizhuDay, gan: parseInt(e.target.value) })}
-                  className="flex-1 p-3 bg-[#f8f5f0] rounded-lg text-[#333] text-center"
-                >
-                  {TIANGAN.map((g, i) => <option key={i} value={i}>{g}</option>)}
-                </select>
-                <select
-                  value={sizhuDay.zhi}
-                  onChange={(e) => setSizhuDay({ ...sizhuDay, zhi: parseInt(e.target.value) })}
-                  className="flex-1 p-3 bg-[#f8f5f0] rounded-lg text-[#333] text-center"
-                >
-                  {DIZHI.map((z, i) => <option key={i} value={i}>{z}</option>)}
-                </select>
-              </div>
-              
-              {/* 时柱 */}
-              <div className="flex items-center gap-3">
-                <span className="w-16 text-[#666]">时柱：</span>
-                <select
-                  value={sizhuHour.gan}
-                  onChange={(e) => setSizhuHour({ ...sizhuHour, gan: parseInt(e.target.value) })}
-                  className="flex-1 p-3 bg-[#f8f5f0] rounded-lg text-[#333] text-center"
-                >
-                  {TIANGAN.map((g, i) => <option key={i} value={i}>{g}</option>)}
-                </select>
-                <select
-                  value={sizhuHour.zhi}
-                  onChange={(e) => setSizhuHour({ ...sizhuHour, zhi: parseInt(e.target.value) })}
-                  className="flex-1 p-3 bg-[#f8f5f0] rounded-lg text-[#333] text-center"
-                >
-                  {DIZHI.map((z, i) => <option key={i} value={i}>{z}</option>)}
-                </select>
-              </div>
-              
-              {/* 性别选择 */}
-              <div className="flex items-center gap-3 pt-2">
-                <span className="w-16 text-[#666]">性别：</span>
-                <div className="flex gap-3 flex-1">
-                  <button
-                    onClick={() => setGender("male")}
-                    className={`flex-1 py-3 rounded-lg font-medium transition-all ${
-                      gender === "male"
-                        ? "bg-[#d4af37] text-white"
-                        : "bg-[#f8f5f0] text-[#666]"
-                    }`}
+              <h3 className="text-[#333] font-medium">直接输入四柱</h3>
+              {[
+                { label: "年柱", state: sizhuYear, setState: setSizhuYear },
+                { label: "月柱", state: sizhuMonth, setState: setSizhuMonth },
+                { label: "日柱", state: sizhuDay, setState: setSizhuDay },
+                { label: "时柱", state: sizhuHour, setState: setSizhuHour }
+              ].map((item) => (
+                <div key={item.label} className="flex items-center gap-3">
+                  <span className="w-14 text-[#666]">{item.label}：</span>
+                  <select
+                    value={item.state.gan}
+                    onChange={(e) => item.setState({ ...item.state, gan: parseInt(e.target.value) })}
+                    className="flex-1 p-3 bg-[#f8f5f0] rounded-lg text-[#333] text-center"
                   >
-                    乾造(男)
-                  </button>
-                  <button
-                    onClick={() => setGender("female")}
-                    className={`flex-1 py-3 rounded-lg font-medium transition-all ${
-                      gender === "female"
-                        ? "bg-[#d4af37] text-white"
-                        : "bg-[#f8f5f0] text-[#666]"
-                    }`}
+                    {TIANGAN.map((g, i) => <option key={i} value={i}>{g}</option>)}
+                  </select>
+                  <select
+                    value={item.state.zhi}
+                    onChange={(e) => item.setState({ ...item.state, zhi: parseInt(e.target.value) })}
+                    className="flex-1 p-3 bg-[#f8f5f0] rounded-lg text-[#333] text-center"
                   >
-                    坤造(女)
-                  </button>
+                    {DIZHI.map((z, i) => <option key={i} value={i}>{z}</option>)}
+                  </select>
                 </div>
-              </div>
+              ))}
             </div>
           ) : (
-            /* 公历/农历输入模式 */
             <div className="space-y-4">
               {/* 出生日期 */}
               <div className="bg-white rounded-xl p-4">
@@ -374,57 +239,53 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
                   </select>
                 </div>
               </div>
-              
+
               {/* 出生时辰 */}
               <div className="bg-white rounded-xl p-4">
                 <h3 className="text-[#333] font-medium mb-3">出生时辰</h3>
                 <div className="grid grid-cols-4 gap-2">
-                  {shichenList.map((sc) => (
+                  {shichenList.map((sc, i) => (
                     <button
-                      key={sc.value}
-                      onClick={() => setBirthHour(sc.value)}
+                      key={i}
+                      onClick={() => setBirthHour(i)}
                       className={`py-2 px-1 rounded-lg text-center transition-all ${
-                        birthHour === sc.value
+                        birthHour === i
                           ? "bg-[#d4af37] text-white"
                           : "bg-[#f8f5f0] text-[#666]"
                       }`}
                     >
-                      <div className="text-sm font-medium">{sc.name}</div>
+                      <div className="text-sm font-medium">{sc.name}时</div>
                       <div className="text-[10px] opacity-70">{sc.range}</div>
                     </button>
                   ))}
                 </div>
               </div>
-              
-              {/* 性别选择 */}
-              <div className="bg-white rounded-xl p-4">
-                <h3 className="text-[#333] font-medium mb-3">性别</h3>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setGender("male")}
-                    className={`flex-1 py-3 rounded-lg font-medium transition-all ${
-                      gender === "male"
-                        ? "bg-[#d4af37] text-white"
-                        : "bg-[#f8f5f0] text-[#666]"
-                    }`}
-                  >
-                    乾造(男)
-                  </button>
-                  <button
-                    onClick={() => setGender("female")}
-                    className={`flex-1 py-3 rounded-lg font-medium transition-all ${
-                      gender === "female"
-                        ? "bg-[#d4af37] text-white"
-                        : "bg-[#f8f5f0] text-[#666]"
-                    }`}
-                  >
-                    坤造(女)
-                  </button>
-                </div>
-              </div>
             </div>
           )}
-          
+
+          {/* 性别选择 */}
+          <div className="bg-white rounded-xl p-4 mt-4">
+            <h3 className="text-[#333] font-medium mb-3">性别</h3>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setGender("male")}
+                className={`flex-1 py-3 rounded-lg font-medium transition-all ${
+                  gender === "male" ? "bg-[#d4af37] text-white" : "bg-[#f8f5f0] text-[#666]"
+                }`}
+              >
+                乾造(男)
+              </button>
+              <button
+                onClick={() => setGender("female")}
+                className={`flex-1 py-3 rounded-lg font-medium transition-all ${
+                  gender === "female" ? "bg-[#d4af37] text-white" : "bg-[#f8f5f0] text-[#666]"
+                }`}
+              >
+                坤造(女)
+              </button>
+            </div>
+          </div>
+
           {/* 高级设置 */}
           <div className="mt-4 bg-white rounded-xl overflow-hidden">
             <button
@@ -435,59 +296,39 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
                 <Settings className="w-5 h-5 text-[#999]" />
                 <span className="text-[#333]">高级设置</span>
               </div>
-              {showSettings ? (
-                <ChevronUp className="w-5 h-5 text-[#999]" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-[#999]" />
-              )}
+              {showSettings ? <ChevronUp className="w-5 h-5 text-[#999]" /> : <ChevronDown className="w-5 h-5 text-[#999]" />}
             </button>
             {showSettings && (
-              <div className="px-4 pb-4 space-y-3 border-t border-[#f0f0f0]">
+              <div className="px-4 pb-4 border-t border-[#f0f0f0]">
                 <div className="pt-3">
-                  <p className="text-sm text-[#666] mb-2">晚子时（23:00-01:00）日柱算法：</p>
+                  <p className="text-sm text-[#666] mb-2">晚子时日柱算法：</p>
                   <div className="flex gap-2">
                     <button
                       onClick={() => setSect(1)}
-                      className={`flex-1 py-2 px-3 rounded-lg text-sm ${
-                        sect === 1
-                          ? "bg-[#d4af37] text-white"
-                          : "bg-[#f8f5f0] text-[#666]"
-                      }`}
+                      className={`flex-1 py-2 rounded-lg text-sm ${sect === 1 ? "bg-[#d4af37] text-white" : "bg-[#f8f5f0] text-[#666]"}`}
                     >
                       算当天
                     </button>
                     <button
                       onClick={() => setSect(2)}
-                      className={`flex-1 py-2 px-3 rounded-lg text-sm ${
-                        sect === 2
-                          ? "bg-[#d4af37] text-white"
-                          : "bg-[#f8f5f0] text-[#666]"
-                      }`}
+                      className={`flex-1 py-2 rounded-lg text-sm ${sect === 2 ? "bg-[#d4af37] text-white" : "bg-[#f8f5f0] text-[#666]"}`}
                     >
-                      算次日（推荐）
+                      算次日
                     </button>
                   </div>
                 </div>
               </div>
             )}
           </div>
-          
-          {/* 错误提示 */}
-          {calcError && (
-            <div className="mt-4 p-3 bg-red-50 rounded-xl text-red-600 text-sm">
-              {calcError}
-            </div>
-          )}
-          
+
           {/* 排盘按钮 */}
           <button
             onClick={handlePaipan}
-            className="w-full mt-6 py-4 bg-[#d4af37] text-white rounded-xl font-medium text-lg active:opacity-80 transition-all shadow-lg"
+            className="w-full mt-6 py-4 bg-[#d4af37] text-white rounded-xl font-medium text-lg shadow-lg"
           >
             立即排盘
           </button>
-          
-          {/* 免责声明 */}
+
           <p className="mt-4 text-center text-[#999] text-xs">
             命理分析仅供学术研究参考，不应作为人生重大决策依据
           </p>
@@ -498,689 +339,835 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
 
   // 结果界面
   if (!result) return null
-  
-  const dayGan = result.day.gan
-  const shengxiao = result.shengXiao || getShengXiao(result.year.zhi)
+
+  const shengxiao = result.shengxiao || result.shengXiao || "龙"
+  const currentDayun = getCurrentDayun()
+  const currentLiunian = getCurrentLiunian()
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0] flex flex-col pb-20">
-      {/* 头部 */}
-      <header className="flex items-center justify-between px-4 py-3 bg-[#2a2520] sticky top-0 z-10">
-        <button onClick={onBack} className="p-2 -ml-2 active:opacity-70">
+    <div className="min-h-screen bg-[#f8f5f0] flex flex-col">
+      {/* 顶部导航 */}
+      <header className="flex items-center justify-between px-4 py-3 bg-[#2a2520] sticky top-0 z-20">
+        <button onClick={onBack} className="p-2 -ml-2">
           <ChevronLeft className="w-6 h-6 text-white" />
         </button>
-        <h1 className="text-white text-lg font-medium">八字排盘</h1>
-        <button className="p-2 -mr-2">
-          <MoreHorizontal className="w-5 h-5 text-white/60" />
-        </button>
+        <h1 className="text-white text-lg font-medium">问真八字</h1>
+        <button className="p-2 -mr-2 text-white/60">•••</button>
       </header>
-      
-      {/* Tab导航 */}
-      <div className="flex bg-[#2a2520] px-2 pb-2">
-        {[
-          { key: "basic", label: "基本信息" },
-          { key: "chart", label: "基本排盘" },
-          { key: "detail", label: "专业细盘" },
-          { key: "notes", label: "断事笔记" }
-        ].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key as typeof activeTab)}
-            className={`flex-1 py-2 text-sm font-medium transition-all ${
-              activeTab === tab.key
-                ? "text-[#d4af37] border-b-2 border-[#d4af37]"
-                : "text-white/60"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-      
-      {/* 命主信息卡片 */}
-      <div className="bg-[#2a2520] px-4 pb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-14 h-14 rounded-full bg-[#3a3530] flex items-center justify-center text-2xl">
-            {SHENGXIAO_ICONS[shengxiao] || "🐲"}
-          </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <span className="text-white/80">命例</span>
-              <span className="px-2 py-0.5 bg-[#d4af37]/20 text-[#d4af37] text-xs rounded">
-                {gender === "male" ? "乾造" : "坤造"}
-              </span>
-            </div>
-            <div className="text-white/60 text-sm mt-1">
-              农历：{result.lunarDate} {SHICHEN_NAMES[birthHour] || '子'}时
-            </div>
-            <div className="text-white/40 text-xs">
-              阳历：{result.solarDate} {String(birthHour).padStart(2, '0')}:00
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <button className="p-2 bg-[#3a3530] rounded-full">
-              <Eye className="w-4 h-4 text-white/60" />
+
+      {/* Tab栏 - 固定在顶部 */}
+      <div className="bg-[#d4af37]/10 border-b border-[#d4af37]/20 sticky top-[52px] z-10">
+        <div className="flex">
+          {[
+            { key: "basic", label: "基本信息" },
+            { key: "chart", label: "基本排盘" },
+            { key: "detail", label: "专业细盘" },
+            { key: "notes", label: "断事笔记" }
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key as typeof activeTab)}
+              className={`flex-1 py-3 text-sm font-medium relative ${
+                activeTab === tab.key ? "text-[#d4af37]" : "text-[#666]"
+              }`}
+            >
+              {tab.label}
+              {activeTab === tab.key && (
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-[#d4af37]" />
+              )}
             </button>
-            <button className="p-2 bg-[#3a3530] rounded-full">
-              <Edit2 className="w-4 h-4 text-white/60" />
-            </button>
-          </div>
+          ))}
         </div>
       </div>
-      
-      {/* 内容区域 */}
-      <div className="flex-1 overflow-auto">
-        {/* 基本排盘Tab */}
-        {activeTab === "chart" && (
-          <div className="p-4 space-y-4">
-            {/* 四柱表格 */}
-            <div className="bg-white rounded-xl overflow-hidden shadow-sm">
-              {/* 表头 */}
-              <div className="grid grid-cols-5 border-b border-[#f0f0f0]">
-                <div className="p-3 text-center text-[#999] text-sm">日期</div>
-                <div className="p-3 text-center text-[#333] text-sm font-medium">年柱</div>
-                <div className="p-3 text-center text-[#333] text-sm font-medium">月柱</div>
-                <div className="p-3 text-center text-[#333] text-sm font-medium">日柱</div>
-                <div className="p-3 text-center text-[#333] text-sm font-medium">时柱</div>
+
+      {/* 命主信息卡片 */}
+      {(activeTab === "chart" || activeTab === "detail") && (
+        <div className="bg-[#2a2520] px-4 py-4">
+          <div className="flex items-center gap-3">
+            <div className="w-14 h-14 rounded-full bg-[#3a3530] flex items-center justify-center border-2 border-[#d4af37]/30">
+              <span className="text-2xl">{SHENGXIAO_ICONS[shengxiao] || "🐲"}</span>
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <span className="text-white/60 text-sm">案例</span>
+                <span className="text-[#d4af37] text-sm">({gender === "male" ? "乾造" : "坤造"})</span>
               </div>
-              
-              {/* 主星 */}
-              <div className="grid grid-cols-5 border-b border-[#f0f0f0]">
-                <div className="p-3 text-center text-[#999] text-sm">主星</div>
-                {[result.shiShen.year, result.shiShen.month, result.shiShen.day, result.shiShen.hour].map((ss, i) => (
-                  <div key={i} className="p-3 text-center text-[#d4af37] text-sm">{ss || "-"}</div>
-                ))}
+              <div className="text-white text-sm mt-1">
+                农历：{result.lunarDate} {SHICHEN_MAP[birthHour]}时
               </div>
-              
-              {/* 天干 */}
-              <div className="grid grid-cols-5 border-b border-[#f0f0f0]">
-                <div className="p-3 text-center text-[#999] text-sm">天干</div>
-                {[result.year.gan, result.month.gan, result.day.gan, result.hour.gan].map((gan, i) => {
-                  const wuxing = TIANGAN_WUXING[gan]
-                  const color = getWuXingColor(wuxing)
-                  const icon = getWuXingIcon(wuxing)
-                  return (
-                    <div key={i} className="p-3 text-center">
-                      <span className="text-2xl font-bold" style={{ color }}>{gan}</span>
-                      <span className="ml-1">{icon}</span>
-                    </div>
-                  )
-                })}
-              </div>
-              
-              {/* 地支 */}
-              <div className="grid grid-cols-5 border-b border-[#f0f0f0]">
-                <div className="p-3 text-center text-[#999] text-sm">地支</div>
-                {[result.year.zhi, result.month.zhi, result.day.zhi, result.hour.zhi].map((zhi, i) => {
-                  const wuxing = DIZHI_WUXING[zhi]
-                  const color = getWuXingColor(wuxing)
-                  const icon = getWuXingIcon(wuxing)
-                  return (
-                    <div key={i} className="p-3 text-center">
-                      <span className="text-2xl font-bold" style={{ color }}>{zhi}</span>
-                      <span className="ml-1">{icon}</span>
-                    </div>
-                  )
-                })}
-              </div>
-              
-              {/* 藏干 */}
-              <div className="grid grid-cols-5 border-b border-[#f0f0f0]">
-                <div className="p-3 text-center text-[#999] text-sm">藏干</div>
-                {[result.cangGan.year, result.cangGan.month, result.cangGan.day, result.cangGan.hour].map((cg, i) => (
-                  <div key={i} className="p-2 text-center">
-                    {cg.map((g, j) => {
-                      const wuxing = TIANGAN_WUXING[g]
-                      const color = getWuXingColor(wuxing)
-                      return (
-                        <div key={j} className="text-xs" style={{ color }}>
-                          {g}{wuxing}
-                        </div>
-                      )
-                    })}
-                  </div>
-                ))}
-              </div>
-              
-              {/* 副星（藏干十神） */}
-              <div className="grid grid-cols-5 border-b border-[#f0f0f0]">
-                <div className="p-3 text-center text-[#999] text-sm">副星</div>
-                {[result.cangGan.year, result.cangGan.month, result.cangGan.day, result.cangGan.hour].map((cg, i) => (
-                  <div key={i} className="p-2 text-center">
-                    {cg.map((g, j) => (
-                      <div key={j} className="text-xs text-[#666]">
-                        {getShiShen(dayGan, g)}
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-              
-              {/* 星运 */}
-              <div className="grid grid-cols-5 border-b border-[#f0f0f0]">
-                <div className="p-3 text-center text-[#999] text-sm">星运</div>
-                {[result.changSheng.year, result.changSheng.month, result.changSheng.day, result.changSheng.hour].map((cs, i) => (
-                  <div key={i} className="p-3 text-center text-[#666] text-sm">{cs}</div>
-                ))}
-              </div>
-              
-              {/* 空亡 */}
-              <div className="grid grid-cols-5 border-b border-[#f0f0f0]">
-                <div className="p-3 text-center text-[#999] text-sm">空亡</div>
-                {[result.kongWang.year, result.kongWang.month, result.kongWang.day, result.kongWang.hour].map((kw, i) => (
-                  <div key={i} className="p-3 text-center text-[#666] text-sm">{kw}</div>
-                ))}
-              </div>
-              
-              {/* 纳音 */}
-              <div className="grid grid-cols-5 border-b border-[#f0f0f0]">
-                <div className="p-3 text-center text-[#999] text-sm">纳音</div>
-                {[result.naYin.year, result.naYin.month, result.naYin.day, result.naYin.hour].map((ny, i) => (
-                  <div key={i} className="p-3 text-center text-[#666] text-xs">{ny}</div>
-                ))}
-              </div>
-              
-              {/* 神煞 */}
-              <div className="grid grid-cols-5">
-                <div className="p-3 text-center text-[#999] text-sm">神煞</div>
-                {[result.shenSha.year, result.shenSha.month, result.shenSha.day, result.shenSha.hour].map((ss, i) => (
-                  <div key={i} className="p-2 text-center">
-                    {(ss || []).slice(0, 3).map((s, j) => (
-                      <div key={j} className="text-xs text-[#d4af37]">{s}</div>
-                    ))}
-                  </div>
-                ))}
+              <div className="text-white/60 text-xs">
+                阳历：{result.solarDate} {String(birthHour * 2).padStart(2, '0')}:00
               </div>
             </div>
-            
-            {/* 智能干支图示 & AI指令 */}
-            <div className="flex gap-3">
-              <button className="flex-1 py-3 bg-white rounded-xl text-[#333] font-medium shadow-sm">
-                智能干支图示 &gt;
-              </button>
-              <button className="flex-1 py-3 bg-white rounded-xl text-[#333] font-medium shadow-sm">
-                AI指令 &gt;
-              </button>
-            </div>
-            
-            {/* 干支关系 */}
-            <div className="bg-white rounded-xl p-4 space-y-2 shadow-sm">
-              <div className="flex">
-                <span className="text-[#d4af37] w-20">原局天干：</span>
-                <span className="text-[#333] flex-1">
-                  {result.ganZhiRelation?.tianGan?.length ? result.ganZhiRelation.tianGan.join(" | ") : "无"}
-                </span>
+            <div className="flex flex-col items-end gap-1">
+              <div className="flex gap-2">
+                <button className="w-8 h-8 rounded-full bg-[#3a3530] flex items-center justify-center">
+                  <Eye className="w-4 h-4 text-white/60" />
+                </button>
+                <button className="w-8 h-8 rounded-full bg-[#3a3530] flex items-center justify-center">
+                  <Pencil className="w-4 h-4 text-white/60" />
+                </button>
               </div>
-              <div className="flex">
-                <span className="text-[#d4af37] w-20">原局地支：</span>
-                <span className="text-[#333] flex-1">
-                  {result.ganZhiRelation?.diZhi?.length ? result.ganZhiRelation.diZhi.join(" | ") : "无"}
-                </span>
-              </div>
-              <div className="flex">
-                <span className="text-[#d4af37] w-20">原局整柱：</span>
-                <span className="text-[#333] flex-1">
-                  {result.ganZhiRelation?.zhengZhu?.length ? result.ganZhiRelation.zhengZhu.join(" | ") : "无"}
-                </span>
-              </div>
-            </div>
-            
-            {/* 智能古籍参考 */}
-            <div className="bg-white rounded-xl p-4 shadow-sm">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-[#333] font-medium flex items-center gap-2">
-                  <span className="w-1 h-4 bg-[#d4af37] rounded"></span>
-                  智能古籍参考
-                </h3>
-              </div>
-              <div className="flex gap-3 overflow-x-auto pb-2">
-                {["穷通宝鉴", "滴天髓", "三命通会", "八字提要"].map((book) => (
-                  <div key={book} className="flex-shrink-0 w-16 text-center">
-                    <div className="w-16 h-20 bg-[#f8f5f0] rounded-lg flex items-center justify-center text-[#d4af37] text-xs font-medium border border-[#e8e0d0]">
-                      {book}
-                    </div>
-                    <div className="text-xs text-[#666] mt-1">{book}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            {/* 调候用神提示 */}
-            <div className="bg-white rounded-xl p-4 shadow-sm">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-[#666]">调候用神提示</span>
-                <span className="text-[#d4af37]">
-                  {result.tiaoHou?.yongShen?.join(" ") || "壬 戊 己"}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#666]">本八字</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[#666]">透</span>
-                  <span className="px-2 py-1 bg-[#2a2520] text-white rounded text-sm">
-                    {result.day.gan}
-                  </span>
-                  <span className="text-[#666]">藏</span>
-                  <span className="px-2 py-1 bg-[#2a2520] text-white rounded text-sm">戊</span>
+              <div className="flex items-center gap-1 text-white/60 text-xs">
+                <span>胎命身</span>
+                <div className="w-8 h-4 bg-[#3a3530] rounded-full relative">
+                  <div className="absolute left-0.5 top-0.5 w-3 h-3 bg-white/30 rounded-full"></div>
                 </div>
               </div>
             </div>
           </div>
-        )}
-        
-        {/* 基本信息Tab */}
-        {activeTab === "basic" && (
-          <div className="p-4 space-y-4">
-            {/* 出生天体图 - 显示节气信息和五行分布 */}
-            <div className="bg-white rounded-xl p-4 shadow-sm">
-              <h3 className="text-[#333] font-medium flex items-center gap-2 mb-3">
-                <span className="w-1 h-4 bg-[#d4af37] rounded"></span>
-                出生天体图
-              </h3>
-              <div className="bg-[#1a1a2e] rounded-xl p-4">
-                {/* 简易天体图 - 显示太阳、月亮位置和五行分布 */}
-                <div className="relative h-48">
-                  {/* 背景星空 */}
-                  <div className="absolute inset-0 overflow-hidden rounded-lg">
-                    {Array.from({ length: 20 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="absolute w-1 h-1 bg-white/30 rounded-full"
-                        style={{
-                          left: `${Math.random() * 100}%`,
-                          top: `${Math.random() * 100}%`,
-                        }}
-                      />
-                    ))}
-                  </div>
-                  
-                  {/* 中心圆环 */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-32 h-32 rounded-full border-2 border-[#d4af37]/30 relative">
-                      {/* 四柱天干在圆环上 */}
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-lg font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[result.year.gan]) }}>
-                        {result.year.gan}
-                      </div>
-                      <div className="absolute top-1/2 -right-3 -translate-y-1/2 text-lg font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[result.month.gan]) }}>
-                        {result.month.gan}
-                      </div>
-                      <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[result.day.gan]) }}>
-                        {result.day.gan}
-                      </div>
-                      <div className="absolute top-1/2 -left-3 -translate-y-1/2 text-lg font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[result.hour.gan]) }}>
-                        {result.hour.gan}
-                      </div>
-                      
-                      {/* 中心日主 */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-12 h-12 rounded-full bg-[#d4af37]/20 flex items-center justify-center">
-                          <span className="text-[#d4af37] text-xl font-bold">{result.day.gan}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* 太阳 */}
-                  <div className="absolute top-4 right-8 text-2xl">☀️</div>
-                  {/* 月亮 */}
-                  <div className="absolute bottom-4 left-8 text-2xl">🌙</div>
-                </div>
-                
-                {/* 节气信息 */}
-                <div className="mt-3 text-center">
-                  <div className="text-white/80 text-sm">
-                    节气：{result.jieQi?.prevJie || "小寒"} → {result.jieQi?.nextJie || "大寒"}
-                  </div>
-                  <div className="text-white/50 text-xs mt-1">
-                    日主：{result.day.gan}{TIANGAN_WUXING[result.day.gan]} | 月令：{result.month.zhi}
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* 四柱简图 */}
-            <div className="bg-white rounded-xl p-4 shadow-sm">
-              <div className="flex justify-center gap-4">
-                {[
-                  { gan: result.year.gan, zhi: result.year.zhi, label: "木" },
-                  { gan: result.month.gan, zhi: result.month.zhi, label: "地" },
-                  { gan: result.day.gan, zhi: result.day.zhi, label: "月" },
-                  { gan: result.hour.gan, zhi: result.hour.zhi, label: "地" }
-                ].map((pillar, i) => {
-                  const ganWuxing = TIANGAN_WUXING[pillar.gan]
-                  const zhiWuxing = DIZHI_WUXING[pillar.zhi]
-                  return (
-                    <div key={i} className="w-16 p-3 bg-[#f8f5f0] rounded-xl text-center border border-[#e8e0d0]">
-                      <div className="text-xl font-bold" style={{ color: getWuXingColor(ganWuxing) }}>
-                        {pillar.gan}
-                      </div>
-                      <div className="text-xl font-bold" style={{ color: getWuXingColor(zhiWuxing) }}>
-                        {pillar.zhi}
-                      </div>
-                      <div className="mt-2 px-2 py-1 bg-[#d4af37] text-white text-xs rounded">
-                        {pillar.label}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-            
-            {/* 节气信息 */}
-            <div className="bg-white rounded-xl p-4 shadow-sm space-y-2">
-              <div className="flex justify-between">
-                <span className="text-[#666]">冬至中气：</span>
-                <span className="text-[#333]">{result.jieQi?.current || "待计算"}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#d4af37]">出生阳历：</span>
-                <span className="text-[#d4af37]">
-                  {result.solar.year}年{String(result.solar.month).padStart(2, '0')}月{String(result.solar.day).padStart(2, '0')}日
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#666]">下一节气：</span>
-                <span className="text-[#333]">{result.jieQi?.next || "待计算"}</span>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        {/* 专业细盘Tab */}
-        {activeTab === "detail" && (
-          <div className="p-4 space-y-4">
-            {/* 起运信息 */}
-            <div className="bg-white rounded-xl p-4 shadow-sm">
-              <p className="text-[#666]">
-                起运：出生后{result.qiYun?.years || 0}年{result.qiYun?.months || 0}月{result.qiYun?.days || 0}天起运
-              </p>
-              <p className="text-[#999] text-sm mt-1">
-                {result.qiYun?.direction === "顺行" ? "大运顺行" : "大运逆行"}
-              </p>
-            </div>
-            
-            {/* 大运列表 */}
-            <div className="bg-white rounded-xl p-4 shadow-sm">
-              <h3 className="text-[#333] font-medium mb-3">大运</h3>
-              <div className="flex gap-2 overflow-x-auto pb-2">
-                {(result.daYun || []).slice(0, 10).map((dy, i) => (
+        </div>
+      )}
+
+      {/* 基本信息Tab */}
+      {activeTab === "basic" && (
+        <div className="flex-1 p-4 space-y-4 pb-24">
+          {/* 出生天体图 */}
+          <div className="bg-white rounded-xl p-4 shadow-sm">
+            <h3 className="text-[#333] font-medium flex items-center gap-2 mb-3">
+              <span className="w-1 h-4 bg-[#d4af37] rounded"></span>
+              出生天体图
+            </h3>
+            <div className="bg-[#1a1a2e] rounded-xl p-4 relative overflow-hidden">
+              <div className="relative h-48">
+                {Array.from({ length: 30 }).map((_, i) => (
                   <div
                     key={i}
-                    className={`flex-shrink-0 px-3 py-2 rounded-lg text-center ${
-                      i === 3 ? "bg-[#d4af37] text-white" : "bg-[#f8f5f0]"
-                    }`}
-                  >
-                    <div className="text-xs opacity-70">{dy.startYear}</div>
-                    <div className="text-xs opacity-70">{dy.startAge}岁</div>
-                    <div className="text-lg font-bold mt-1">
-                      <span style={{ color: i === 3 ? 'white' : getWuXingColor(TIANGAN_WUXING[dy.gan]) }}>
-                        {dy.gan}
-                      </span>
-                      <span style={{ color: i === 3 ? 'white' : getWuXingColor(DIZHI_WUXING[dy.zhi]) }}>
-                        {dy.zhi}
-                      </span>
-                    </div>
-                  </div>
+                    className="absolute w-1 h-1 bg-white/20 rounded-full"
+                    style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }}
+                  />
                 ))}
-              </div>
-            </div>
-            
-            {/* 流年列表 */}
-            <div className="bg-white rounded-xl p-4 shadow-sm">
-              <h3 className="text-[#333] font-medium mb-3">流年</h3>
-              <div className="flex gap-2 overflow-x-auto pb-2">
-                {(result.liuNian || []).slice(-10).map((ln, i) => {
-                  const isCurrent = ln.year === new Date().getFullYear()
-                  return (
-                    <div
-                      key={i}
-                      className={`flex-shrink-0 px-3 py-2 rounded-lg text-center ${
-                        isCurrent ? "bg-[#d4af37] text-white" : "bg-[#f8f5f0]"
-                      }`}
-                    >
-                      <div className="text-xs opacity-70">{ln.year}</div>
-                      <div className="text-lg font-bold mt-1">
-                        <span style={{ color: isCurrent ? 'white' : getWuXingColor(TIANGAN_WUXING[ln.gan]) }}>
-                          {ln.gan}
-                        </span>
-                        <span style={{ color: isCurrent ? 'white' : getWuXingColor(DIZHI_WUXING[ln.zhi]) }}>
-                          {ln.zhi}
-                        </span>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-32 h-32 rounded-full border-2 border-[#d4af37]/30 relative">
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-xl font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[result.year.gan]) }}>
+                      {result.year.gan}
+                    </div>
+                    <div className="absolute top-1/2 -right-4 -translate-y-1/2 text-xl font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[result.month.gan]) }}>
+                      {result.month.gan}
+                    </div>
+                    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-xl font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[result.day.gan]) }}>
+                      {result.day.gan}
+                    </div>
+                    <div className="absolute top-1/2 -left-4 -translate-y-1/2 text-xl font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[result.hour.gan]) }}>
+                      {result.hour.gan}
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-14 h-14 rounded-full bg-[#d4af37]/20 flex items-center justify-center border border-[#d4af37]/50">
+                        <span className="text-[#d4af37] text-2xl font-bold">{result.day.gan}</span>
                       </div>
                     </div>
-                  )
-                })}
-              </div>
-            </div>
-            
-            {/* 五行旺衰 */}
-            <div className="bg-white rounded-xl p-4 shadow-sm">
-              <h3 className="text-[#333] font-medium mb-3">五行旺衰</h3>
-              <div className="flex justify-around">
-                {Object.entries(result.wuXingStrength || {}).map(([state, wx]) => (
-                  <div key={state} className="text-center">
-                    <div className="text-sm text-[#666]">{wx as string}{state}</div>
                   </div>
-                ))}
+                </div>
+                <div className="absolute top-4 right-6 text-3xl">☀️</div>
+                <div className="absolute bottom-4 left-6 text-2xl">🌙</div>
+              </div>
+              <div className="mt-3 text-center">
+                <div className="text-white/80 text-sm">
+                  节气：{result.jieQi?.prevJie || "冬至"} → {result.jieQi?.nextJie || "小寒"}
+                </div>
+                <div className="text-white/50 text-xs mt-1">
+                  日主：{result.day.gan}{TIANGAN_WUXING[result.day.gan]} | 月令：{result.month.zhi}
+                </div>
               </div>
             </div>
-            
-            {/* 干支关系 */}
-            <div className="bg-white rounded-xl p-4 shadow-sm space-y-2">
-              <div className="flex">
-                <span className="text-[#d4af37] w-20">原局天干：</span>
-                <span className="text-[#333]">
-                  {result.ganZhiRelation?.tianGan?.length ? result.ganZhiRelation.tianGan.join(" | ") : "无"}
-                </span>
+          </div>
+
+          {/* 四柱简图 */}
+          <div className="bg-white rounded-xl p-4 shadow-sm">
+            <h3 className="text-[#333] font-medium flex items-center gap-2 mb-3">
+              <span className="w-1 h-4 bg-[#d4af37] rounded"></span>
+              四柱简图
+            </h3>
+            <div className="flex justify-around py-4">
+              {[result.year, result.month, result.day, result.hour].map((pillar, i) => (
+                <div key={i} className="text-center">
+                  <div className="text-2xl font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[pillar.gan]) }}>
+                    {pillar.gan}
+                  </div>
+                  <div className="text-2xl font-bold mt-1" style={{ color: getWuXingColor(DIZHI_WUXING[pillar.zhi]) }}>
+                    {pillar.zhi}
+                  </div>
+                  <div className="text-xs text-[#999] mt-2">{['年柱', '月柱', '日柱', '时柱'][i]}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 基本排盘Tab */}
+      {activeTab === "chart" && (
+        <div className="flex-1 bg-white pb-24">
+          {/* 提示文字 */}
+          <div className="text-center py-2 text-[#d4af37] text-xs border-b border-[#f0f0f0]">
+            以下小字内容可点击 神煞、十神等小知识弹窗。 <span className="text-[#999]">✕</span>
+          </div>
+
+          {/* 四柱表格 */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm min-w-[360px]">
+              <thead>
+                <tr className="border-b border-[#f0f0f0]">
+                  <th className="py-2 px-2 text-[#999] font-normal text-left w-12">日期</th>
+                  <th className="py-2 px-2 text-[#333] font-medium text-center">年柱</th>
+                  <th className="py-2 px-2 text-[#333] font-medium text-center">月柱</th>
+                  <th className="py-2 px-2 text-[#333] font-medium text-center">日柱</th>
+                  <th className="py-2 px-2 text-[#333] font-medium text-center">时柱</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* 主星 */}
+                <tr className="border-b border-[#f0f0f0]">
+                  <td className="py-2 px-2 text-[#999]">主星</td>
+                  <td className="py-2 px-2 text-center text-[#333]">{result.shiShen?.year || "伤官"}</td>
+                  <td className="py-2 px-2 text-center text-[#333]">{result.shiShen?.month || "比肩"}</td>
+                  <td className="py-2 px-2 text-center text-[#c8102e] font-medium">元男</td>
+                  <td className="py-2 px-2 text-center text-[#333]">{result.shiShen?.hour || "食神"}</td>
+                </tr>
+                {/* 天干 */}
+                <tr className="border-b border-[#f0f0f0]">
+                  <td className="py-3 px-2 text-[#999]">天干</td>
+                  {[result.year, result.month, result.day, result.hour].map((pillar, i) => (
+                    <td key={i} className="py-3 px-2 text-center">
+                      <div className="flex items-center justify-center gap-0.5">
+                        <span className="text-2xl font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[pillar.gan]) }}>
+                          {pillar.gan}
+                        </span>
+                        <span className="text-xs">{WUXING_ICONS[TIANGAN_WUXING[pillar.gan]]}</span>
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+                {/* 地支 */}
+                <tr className="border-b border-[#f0f0f0]">
+                  <td className="py-3 px-2 text-[#999]">地支</td>
+                  {[result.year, result.month, result.day, result.hour].map((pillar, i) => (
+                    <td key={i} className="py-3 px-2 text-center">
+                      <div className="flex items-center justify-center gap-0.5">
+                        <span className="text-2xl font-bold" style={{ color: getWuXingColor(DIZHI_WUXING[pillar.zhi]) }}>
+                          {pillar.zhi}
+                        </span>
+                        <span className="text-xs">{WUXING_ICONS[DIZHI_WUXING[pillar.zhi]]}</span>
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+                {/* 藏干 */}
+                <tr className="border-b border-[#f0f0f0]">
+                  <td className="py-2 px-2 text-[#999] align-top">
+                    <div>藏干</div>
+                    <div className="mt-1">🏠</div>
+                  </td>
+                  {[result.year, result.month, result.day, result.hour].map((pillar, i) => (
+                    <td key={i} className="py-2 px-2 text-center align-top">
+                      <div className="space-y-0.5">
+                        {(pillar.cangGan || [{ gan: '丙', wuXing: '火' }, { gan: '庚', wuXing: '金' }, { gan: '戊', wuXing: '土' }]).slice(0, 3).map((cg: { gan: string; wuXing: string }, j: number) => (
+                          <div key={j} className="text-xs">
+                            <span style={{ color: getWuXingColor(cg.wuXing) }}>{cg.gan}{cg.wuXing}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+                {/* 副星 */}
+                <tr className="border-b border-[#f0f0f0]">
+                  <td className="py-2 px-2 text-[#999] align-top">副星</td>
+                  {[result.year, result.month, result.day, result.hour].map((pillar, i) => (
+                    <td key={i} className="py-2 px-2 text-center align-top">
+                      <div className="space-y-0.5 text-xs text-[#666]">
+                        {(pillar.cangGan || [{ shiShen: '比肩' }, { shiShen: '偏财' }, { shiShen: '食神' }]).slice(0, 3).map((cg: { shiShen?: string }, j: number) => (
+                          <div key={j}>{cg.shiShen || ['比肩', '偏财', '食神'][j]}</div>
+                        ))}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+                {/* 星运 */}
+                <tr className="border-b border-[#f0f0f0]">
+                  <td className="py-2 px-2 text-[#999]">星运</td>
+                  <td className="py-2 px-2 text-center text-[#333]">{result.changSheng?.year || "临官"}</td>
+                  <td className="py-2 px-2 text-center text-[#333]">{result.changSheng?.month || "胎"}</td>
+                  <td className="py-2 px-2 text-center text-[#333]">{result.changSheng?.day || "长生"}</td>
+                  <td className="py-2 px-2 text-center text-[#333]">{result.changSheng?.hour || "胎"}</td>
+                </tr>
+                {/* 自坐 */}
+                <tr className="border-b border-[#f0f0f0]">
+                  <td className="py-2 px-2 text-[#999]">自坐</td>
+                  <td className="py-2 px-2 text-center text-[#333]">{result.ziZuo?.year || "帝旺"}</td>
+                  <td className="py-2 px-2 text-center text-[#333]">{result.ziZuo?.month || "胎"}</td>
+                  <td className="py-2 px-2 text-center text-[#333]">{result.ziZuo?.day || "长生"}</td>
+                  <td className="py-2 px-2 text-center text-[#333]">{result.ziZuo?.hour || "胎"}</td>
+                </tr>
+                {/* 空亡 */}
+                <tr className="border-b border-[#f0f0f0]">
+                  <td className="py-2 px-2 text-[#999]">空亡</td>
+                  <td className="py-2 px-2 text-center text-[#333]">{result.kongWang?.year || "戌亥"}</td>
+                  <td className="py-2 px-2 text-center text-[#333]">{result.kongWang?.month || "申酉"}</td>
+                  <td className="py-2 px-2 text-center text-[#333]">{result.kongWang?.day || "戌亥"}</td>
+                  <td className="py-2 px-2 text-center text-[#333]">{result.kongWang?.hour || "午未"}</td>
+                </tr>
+                {/* 纳音 */}
+                <tr className="border-b border-[#f0f0f0]">
+                  <td className="py-2 px-2 text-[#999]">纳音</td>
+                  <td className="py-2 px-2 text-center text-[#333] text-xs">{result.naYin?.year || "大林木"}</td>
+                  <td className="py-2 px-2 text-center text-[#333] text-xs">{result.naYin?.month || "涧下水"}</td>
+                  <td className="py-2 px-2 text-center text-[#333] text-xs">{result.naYin?.day || "炉中火"}</td>
+                  <td className="py-2 px-2 text-center text-[#333] text-xs">{result.naYin?.hour || "霹雳火"}</td>
+                </tr>
+                {/* 神煞 */}
+                <tr>
+                  <td className="py-2 px-2 text-[#999] align-top">神煞</td>
+                  {[
+                    ["天厨贵人", "德秀贵人", "天德贵人", "禄神", "亡神"],
+                    ["天乙贵人", "福星贵人", "德秀贵人", "飞刃"],
+                    ["国印贵人", "福星贵人", "德秀贵人", "红艳煞", "劫煞", "披麻", "词馆"],
+                    ["天乙贵人", "福星贵人", "德秀贵人", "飞刃"]
+                  ].map((shensha, i) => (
+                    <td key={i} className="py-2 px-2 text-center align-top">
+                      <div className="space-y-0.5">
+                        {shensha.map((ss, j) => (
+                          <div key={j} className="text-xs text-[#d4af37]">{ss}</div>
+                        ))}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* 智能干支图示 / AI指令 */}
+          <div className="flex gap-2 mx-4 my-4">
+            <button className="flex-1 py-3 bg-[#f8f5f0] rounded-xl text-[#333] font-medium flex items-center justify-center gap-1">
+              智能干支图示 <ChevronRight className="w-4 h-4" />
+            </button>
+            <button className="flex-1 py-3 bg-[#f8f5f0] rounded-xl text-[#333] font-medium flex items-center justify-center gap-1">
+              AI指令 <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* 干支关系分析 */}
+          <div className="px-4 py-3 space-y-2 border-t border-[#f0f0f0]">
+            <div className="flex">
+              <span className="text-[#d4af37] w-20 shrink-0">原局天干：</span>
+              <span className="text-[#333]">无</span>
+            </div>
+            <div className="flex">
+              <span className="text-[#d4af37] w-20 shrink-0">原局地支：</span>
+              <span className="text-[#333]">子巳暗合 | 寅巳相刑 | 寅巳相害</span>
+            </div>
+            <div className="flex">
+              <span className="text-[#d4af37] w-20 shrink-0">原局整柱：</span>
+              <span className="text-[#333]">戊子盖头 | 丙子截脚</span>
+            </div>
+          </div>
+
+          {/* 智能古籍参考 */}
+          <div className="px-4 py-4 border-t border-[#f0f0f0]">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[#333] font-medium flex items-center gap-2">
+                <span className="w-1 h-4 bg-[#d4af37] rounded"></span>
+                智能古籍参考
+              </h3>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-2">
+              {CLASSICS.map((book, i) => (
+                <div key={i} className="flex flex-col items-center shrink-0">
+                  <div className="w-16 h-20 bg-[#f8f5f0] rounded-lg flex items-center justify-center border border-[#e5e5e5] shadow-sm">
+                    <div className="writing-vertical text-[#d4af37] text-xs font-medium">{book.short}</div>
+                  </div>
+                  <span className="text-xs text-[#333] mt-2">{book.name}</span>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-center gap-1 mt-2">
+              <span className="w-2 h-2 rounded-full bg-[#d4af37]"></span>
+              <span className="w-2 h-2 rounded-full bg-[#e5e5e5]"></span>
+              <span className="w-2 h-2 rounded-full bg-[#e5e5e5]"></span>
+            </div>
+          </div>
+
+          {/* 调候用神提示 */}
+          <div className="mx-4 mb-4 bg-white rounded-xl border border-[#f0f0f0] overflow-hidden shadow-sm">
+            <div className="p-4 flex items-center justify-between">
+              <div className="flex items-center gap-1">
+                <span className="text-[#333]">调候用神提示</span>
+                <HelpCircle className="w-4 h-4 text-[#999]" />
               </div>
-              <div className="flex">
-                <span className="text-[#d4af37] w-20">原局地支：</span>
-                <span className="text-[#333]">
-                  {result.ganZhiRelation?.diZhi?.length ? result.ganZhiRelation.diZhi.join(" | ") : "无"}
-                </span>
-              </div>
-              <div className="flex">
-                <span className="text-[#d4af37] w-20">原局整柱：</span>
-                <span className="text-[#333]">
-                  {result.ganZhiRelation?.zhengZhu?.length ? result.ganZhiRelation.zhengZhu.join(" | ") : "无"}
-                </span>
+              <div className="flex gap-2 text-[#d4af37] font-medium">
+                <span>壬</span><span>戊</span><span>己</span>
               </div>
             </div>
-            
-            {/* 四柱神煞 */}
-            <div className="bg-white rounded-xl p-4 shadow-sm">
-              <h3 className="text-[#333] font-medium mb-3">四柱神煞</h3>
+            <div className="px-4 pb-4 flex items-center justify-between border-t border-[#f0f0f0] pt-3">
+              <span className="text-[#333]">本八字</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[#666]">透</span>
+                <span className="px-2 py-1 bg-[#d4af37] text-white rounded text-sm">己</span>
+                <span className="text-[#666]">、</span>
+                <span className="px-2 py-1 bg-[#d4af37] text-white rounded text-sm">戊</span>
+                <span className="text-[#666] ml-2">藏</span>
+                <span className="px-2 py-1 bg-[#666] text-white rounded text-sm">戊</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 论X生X月 */}
+          <div className="px-4 pb-6">
+            <div className="text-[#d4af37] font-medium mb-3">论{result.day.gan}生{result.month.zhi}月</div>
+            <div className="flex gap-2 mb-4">
+              <button className="px-4 py-2 bg-[#d4af37] text-white rounded-full text-sm">原文</button>
+              <button className="px-4 py-2 bg-[#f5f5f5] text-[#666] rounded-full text-sm">译文</button>
+              <button className="px-4 py-2 bg-[#f5f5f5] text-[#666] rounded-full text-sm">对照</button>
+            </div>
+            <div className="text-[#333] leading-relaxed text-sm space-y-3 bg-[#faf9f7] p-4 rounded-xl">
+              <p>十一月冬至阳生，弱中生旺，先壬，戊佐之。</p>
+              <p>仲冬丙火，冬至之前，与十月同看，冬至之后，一阳来复，弱中复强，仲冬壬水专旺之时，故用戊土为佐，将非日元生旺不可耳。</p>
+              <p>用戊不可少甲句，最为扼要，冬至之后，虽云一阳来复，究属气势甚微，丙火虽喜壬水辅映，必须甲木生助火旺，方能相得益彰。</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 专业细盘Tab */}
+      {activeTab === "detail" && (
+        <div className="flex-1 bg-white pb-24">
+          {/* 扩展表格 - 包含流年、大运 */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs min-w-[500px]">
+              <thead>
+                <tr className="border-b border-[#f0f0f0]">
+                  <th className="py-2 px-1 text-[#999] font-normal text-left w-8">日期</th>
+                  <th className="py-2 px-1 text-[#333] font-medium text-center">流年</th>
+                  <th className="py-2 px-1 text-[#333] font-medium text-center">大运</th>
+                  <th className="py-2 px-1 text-[#333] font-medium text-center">年柱</th>
+                  <th className="py-2 px-1 text-[#333] font-medium text-center">月柱</th>
+                  <th className="py-2 px-1 text-[#333] font-medium text-center">日柱</th>
+                  <th className="py-2 px-1 text-[#333] font-medium text-center">时柱</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* 主星 */}
+                <tr className="border-b border-[#f0f0f0]">
+                  <td className="py-1 px-1 text-[#999]">主星</td>
+                  <td className="py-1 px-1 text-center text-[#333]">比肩</td>
+                  <td className="py-1 px-1 text-center text-[#333]">正官</td>
+                  <td className="py-1 px-1 text-center text-[#333]">{result.shiShen?.year || "伤官"}</td>
+                  <td className="py-1 px-1 text-center text-[#333]">{result.shiShen?.month || "比肩"}</td>
+                  <td className="py-1 px-1 text-center text-[#c8102e] font-medium">元男</td>
+                  <td className="py-1 px-1 text-center text-[#333]">{result.shiShen?.hour || "食神"}</td>
+                </tr>
+                {/* 天干 */}
+                <tr className="border-b border-[#f0f0f0]">
+                  <td className="py-2 px-1 text-[#999]">天干</td>
+                  <td className="py-2 px-1 text-center">
+                    <span className="text-lg font-bold text-[#c8102e]">{currentLiunian.gan}</span>
+                    <span className="ml-0.5">{WUXING_ICONS[TIANGAN_WUXING[currentLiunian.gan]]}</span>
+                  </td>
+                  <td className="py-2 px-1 text-center">
+                    <span className="text-lg font-bold text-[#d4af37]">{currentDayun?.gan || "癸"}</span>
+                    <span className="ml-0.5">{WUXING_ICONS[TIANGAN_WUXING[currentDayun?.gan || "癸"]]}</span>
+                  </td>
+                  {[result.year, result.month, result.day, result.hour].map((pillar, i) => (
+                    <td key={i} className="py-2 px-1 text-center">
+                      <span className="text-lg font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[pillar.gan]) }}>
+                        {pillar.gan}
+                      </span>
+                      <span className="ml-0.5">{WUXING_ICONS[TIANGAN_WUXING[pillar.gan]]}</span>
+                    </td>
+                  ))}
+                </tr>
+                {/* 地支 */}
+                <tr className="border-b border-[#f0f0f0]">
+                  <td className="py-2 px-1 text-[#999]">地支</td>
+                  <td className="py-2 px-1 text-center">
+                    <span className="text-lg font-bold text-[#c8102e]">{currentLiunian.zhi}</span>
+                    <span className="ml-0.5">{WUXING_ICONS[DIZHI_WUXING[currentLiunian.zhi]]}</span>
+                  </td>
+                  <td className="py-2 px-1 text-center">
+                    <span className="text-lg font-bold text-[#d4af37]">{currentDayun?.zhi || "酉"}</span>
+                    <span className="ml-0.5">{WUXING_ICONS[DIZHI_WUXING[currentDayun?.zhi || "酉"]]}</span>
+                  </td>
+                  {[result.year, result.month, result.day, result.hour].map((pillar, i) => (
+                    <td key={i} className="py-2 px-1 text-center">
+                      <span className="text-lg font-bold" style={{ color: getWuXingColor(DIZHI_WUXING[pillar.zhi]) }}>
+                        {pillar.zhi}
+                      </span>
+                      <span className="ml-0.5">{WUXING_ICONS[DIZHI_WUXING[pillar.zhi]]}</span>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* 小运行 */}
+          <div className="border-b border-[#f0f0f0] overflow-x-auto">
+            <div className="flex items-center min-w-[500px] text-xs">
+              <span className="text-[#999] px-1 w-8 shrink-0">小运</span>
+              {Array.from({ length: 10 }, (_, i) => {
+                const ganIndex = (i + 4) % 10
+                const zhiIndex = (i + 4) % 12
+                return (
+                  <div key={i} className="flex-1 text-center py-1.5 border-l border-[#f0f0f0]">
+                    <span style={{ color: getWuXingColor(TIANGAN_WUXING[TIANGAN[ganIndex]]) }}>{TIANGAN[ganIndex]}</span>
+                    <span className="text-[#666] ml-0.5">食</span>
+                    <br />
+                    <span style={{ color: getWuXingColor(DIZHI_WUXING[DIZHI[zhiIndex]]) }}>{DIZHI[zhiIndex]}</span>
+                    <span className="text-[#666] ml-0.5">印</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* 流月行 */}
+          <div className="border-b border-[#f0f0f0] overflow-x-auto">
+            <div className="flex items-center min-w-[500px] text-xs">
+              <span className="text-[#999] px-1 w-8 shrink-0">流月</span>
+              {LIUYUE_JIEQI.map((jq, i) => {
+                const ganIndex = (i + 2) % 10
+                const zhiIndex = (i + 2) % 12
+                return (
+                  <div key={i} className="flex-1 text-center py-1 border-l border-[#f0f0f0]">
+                    <div className="text-[#999]">{jq.name}</div>
+                    <div className="text-[#999]">{jq.date}</div>
+                    <div className="mt-0.5">
+                      <span style={{ color: getWuXingColor(TIANGAN_WUXING[TIANGAN[ganIndex]]) }}>{TIANGAN[ganIndex]}</span>
+                      <span className="text-[#c8102e] ml-0.5">才</span>
+                    </div>
+                    <div>
+                      <span style={{ color: getWuXingColor(DIZHI_WUXING[DIZHI[zhiIndex]]) }}>{DIZHI[zhiIndex]}</span>
+                      <span className="text-[#c8102e] ml-0.5">印</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* 五行旺衰条 */}
+          <div className="flex text-xs text-white">
+            <div className="flex-1 py-1.5 text-center bg-[#1a73e8]">水旺</div>
+            <div className="flex-1 py-1.5 text-center bg-[#34a853]">木相</div>
+            <div className="flex-1 py-1.5 text-center bg-[#d4af37]">金休</div>
+            <div className="flex-1 py-1.5 text-center bg-[#a67c52]">土囚</div>
+            <div className="flex-1 py-1.5 text-center bg-[#c8102e]">火死</div>
+          </div>
+
+          {/* 智能干支图示 / AI指令 */}
+          <div className="flex gap-2 mx-4 my-4">
+            <button className="flex-1 py-3 bg-[#f8f5f0] rounded-xl text-[#333] font-medium flex items-center justify-center gap-1 text-sm">
+              智能干支图示 <ChevronRight className="w-4 h-4" />
+            </button>
+            <button className="flex-1 py-3 bg-[#f8f5f0] rounded-xl text-[#333] font-medium flex items-center justify-center gap-1 text-sm">
+              AI指令 <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* 岁运关系 */}
+          <div className="px-4 py-3 space-y-2 border-t border-[#f0f0f0] text-sm">
+            <div className="flex">
+              <span className="text-[#d4af37] w-20 shrink-0">岁运天干：</span>
+              <span className="text-[#333]">己癸相克 | 戊癸合化火</span>
+            </div>
+            <div className="flex">
+              <span className="text-[#d4af37] w-20 shrink-0">岁运地支：</span>
+              <span className="text-[#333]">巳酉半合金局 | 巳酉暗合 | 寅午暗合 | 子午相冲 | 子酉相破</span>
+            </div>
+            <div className="flex">
+              <span className="text-[#d4af37] w-20 shrink-0">岁运整柱：</span>
+              <span className="text-[#333]">无</span>
+            </div>
+          </div>
+
+          {/* 原局关系 */}
+          <div className="px-4 py-3 space-y-2 border-t border-[#f0f0f0] text-sm">
+            <div className="flex">
+              <span className="text-[#d4af37] w-20 shrink-0">原局天干：</span>
+              <span className="text-[#333]">无</span>
+            </div>
+            <div className="flex">
+              <span className="text-[#d4af37] w-20 shrink-0">原局地支：</span>
+              <span className="text-[#333]">子巳暗合 | 寅巳相刑 | 寅巳相害</span>
+            </div>
+            <div className="flex">
+              <span className="text-[#d4af37] w-20 shrink-0">原局整柱：</span>
+              <span className="text-[#333]">戊子盖头 | 丙子截脚</span>
+            </div>
+          </div>
+
+          {/* 四柱神煞 */}
+          <div className="border-t border-[#f0f0f0]">
+            <div className="bg-[#f8f5f0] px-4 py-2 font-medium text-[#333]">四柱神煞</div>
+            <div className="px-4 py-3 space-y-3 text-sm">
               {[
-                { label: result.year.ganZhi, shenSha: result.shenSha?.year || [] },
-                { label: result.month.ganZhi, shenSha: result.shenSha?.month || [] },
-                { label: result.day.ganZhi, shenSha: result.shenSha?.day || [] },
-                { label: result.hour.ganZhi, shenSha: result.shenSha?.hour || [] }
+                { zhu: "己巳", ss: ["天厨贵人", "德秀贵人", "天德贵人", "禄神", "亡神"] },
+                { zhu: "丙子", ss: ["天乙贵人", "福星贵人", "德秀贵人", "飞刃"] },
+                { zhu: "丙寅", ss: ["国印贵人", "福星贵人", "德秀贵人", "红艳煞", "劫煞", "披麻", "词馆"] },
+                { zhu: "戊子", ss: ["天乙贵人", "福星贵人", "德秀贵人", "飞刃"] }
               ].map((item, i) => (
-                <div key={i} className="flex items-start py-2 border-b border-[#f0f0f0] last:border-0">
-                  <span className="w-12 text-[#333] font-medium">{item.label}</span>
-                  <div className="flex-1 flex flex-wrap gap-2">
-                    {item.shenSha.map((ss, j) => (
-                      <span key={j} className="text-[#d4af37] text-sm">{ss}</span>
+                <div key={i} className="flex">
+                  <span className="text-[#333] w-12 shrink-0 font-medium">{item.zhu}</span>
+                  <div className="flex flex-wrap gap-x-2 gap-y-1">
+                    {item.ss.map((s, j) => (
+                      <span key={j} className="text-[#d4af37]">{s}</span>
                     ))}
-                    {item.shenSha.length === 0 && <span className="text-[#999] text-sm">无</span>}
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        )}
-        
-        {/* 断事笔记Tab */}
-        {activeTab === "notes" && (
-          <div className="p-4 space-y-4">
-            {/* 四柱简图 */}
-            <div className="bg-[#2a2520] rounded-xl p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-[#d4af37]">{gender === "male" ? "乾造" : "坤造"}</span>
+
+          {/* 大运神煞 */}
+          <div className="border-t border-[#f0f0f0]">
+            <div className="bg-[#f8f5f0] px-4 py-2 font-medium text-[#333]">大运神煞</div>
+            <div className="px-4 py-3 space-y-3 text-sm">
+              {(result.daYun || []).slice(0, 10).map((dy: { ganZhi: string }, i: number) => {
+                const isCurrentDy = currentDayun?.ganZhi === dy.ganZhi
+                const ssList = ["天乙贵人", "空亡", "驿马", "天医", "劫煞", "学堂"]
+                return (
+                  <div key={i} className="flex">
+                    <span className={`w-12 shrink-0 font-medium ${isCurrentDy ? "text-white bg-[#d4af37] px-2 py-0.5 rounded" : "text-[#333]"}`}>
+                      {dy.ganZhi}
+                    </span>
+                    <div className="flex flex-wrap gap-x-2 gap-y-1 ml-2">
+                      {ssList.map((s, j) => (
+                        <span key={j} className="text-[#d4af37]">{s}</span>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* 流年神煞 */}
+          <div className="border-t border-[#f0f0f0]">
+            <button
+              onClick={() => setShowLiunianShensha(!showLiunianShensha)}
+              className="w-full bg-[#f8f5f0] px-4 py-2 font-medium text-[#333] flex items-center justify-between"
+            >
+              <span>流年神煞</span>
+              <span className="text-[#d4af37] flex items-center gap-1 text-sm">
+                {showLiunianShensha ? "收起" : "展开"}
+                {showLiunianShensha ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </span>
+            </button>
+            {showLiunianShensha && (
+              <div className="px-4 py-3 text-sm">
+                <div className="flex">
+                  <span className="w-12 shrink-0 font-medium text-white bg-[#d4af37] px-2 py-0.5 rounded">
+                    {currentLiunian.ganZhi}
+                  </span>
+                  <div className="flex flex-wrap gap-x-2 gap-y-1 ml-2">
+                    {["德秀贵人", "羊刃", "桃花", "血刃", "将星"].map((s, j) => (
+                      <span key={j} className="text-[#d4af37]">{s}</span>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-center gap-6 text-white text-xl">
-                <div className="text-center">
-                  <div>{result.year.gan}</div>
-                  <div>{result.year.zhi}</div>
-                </div>
-                <div className="text-center">
-                  <div>{result.month.gan}</div>
-                  <div>{result.month.zhi}</div>
-                </div>
-                <div className="text-center">
-                  <div>{result.day.gan}</div>
-                  <div>{result.day.zhi}</div>
-                </div>
-                <div className="text-center">
-                  <div>{result.hour.gan}</div>
-                  <div>{result.hour.zhi}</div>
-                </div>
+            )}
+          </div>
+
+          {/* 起运信息 */}
+          <div className="px-4 py-3 border-t border-[#f0f0f0] text-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[#333]">起运：出生后</span>
+                <span className="text-[#333] font-medium">{result.qiYun?.years || 8}年{result.qiYun?.months || 2}月{result.qiYun?.days || 3}天{result.qiYun?.hours || 6}时</span>
+                <span className="text-[#333]">起运</span>
               </div>
-              <div className="text-white/60 text-xs text-center mt-2">
-                {result.daYun?.slice(0, 8).map(dy => dy.ganZhi).join(" - ")}
+              <div className="flex items-center gap-2">
+                <span className="text-[#333]">{new Date().getFullYear() - birthYear}岁</span>
+                <button className="w-8 h-8 border border-[#e5e5e5] rounded flex items-center justify-center">
+                  <Calendar className="w-4 h-4 text-[#999]" />
+                </button>
               </div>
             </div>
-            
-            {/* 反馈类型切换 */}
-            <div className="flex justify-center gap-4">
-              <button className="px-6 py-2 bg-[#d4af37] text-white rounded-full">
+            <div className="text-[#666] mt-1">
+              交运：逢戊、癸年 立春后27天 交大运 &nbsp;&nbsp; 司令：<span className="text-[#d4af37]">癸</span>
+            </div>
+          </div>
+
+          {/* 大运列表 */}
+          <div className="border-t border-[#f0f0f0] overflow-x-auto">
+            <div className="flex min-w-[500px] text-xs">
+              <div className="w-10 shrink-0 p-2">
+                <div className="text-[#999]">大运</div>
+                <div className="mt-1">
+                  <div className="w-4 h-4 rounded-full border border-[#999]"></div>
+                </div>
+              </div>
+              {(result.daYun || []).slice(0, 10).map((dy: { ganZhi: string; startYear: number; startAge: number; gan: string; zhi: string }, i: number) => {
+                const isCurrentDy = currentDayun?.ganZhi === dy.ganZhi
+                return (
+                  <div key={i} className={`flex-1 text-center py-2 border-l border-[#f0f0f0] ${isCurrentDy ? "bg-[#d4af37]/10" : ""}`}>
+                    <div className={`${isCurrentDy ? "text-[#d4af37] font-bold" : "text-[#999]"}`}>{dy.startYear}</div>
+                    <div className={`${isCurrentDy ? "text-[#d4af37] font-bold" : "text-[#999]"}`}>{dy.startAge}岁</div>
+                    <div className="mt-1">
+                      <span className={isCurrentDy ? "text-[#d4af37] font-bold" : ""} style={{ color: isCurrentDy ? undefined : getWuXingColor(TIANGAN_WUXING[dy.gan]) }}>
+                        {dy.gan}
+                      </span>
+                      <span className="text-[#c8102e] ml-0.5">官</span>
+                    </div>
+                    <div>
+                      <span className={isCurrentDy ? "text-[#d4af37] font-bold" : ""} style={{ color: isCurrentDy ? undefined : getWuXingColor(DIZHI_WUXING[dy.zhi]) }}>
+                        {dy.zhi}
+                      </span>
+                      <span className="text-[#c8102e] ml-0.5">财</span>
+                    </div>
+                    {isCurrentDy && <div className="w-1.5 h-1.5 rounded-full bg-[#34a853] mx-auto mt-1"></div>}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* 流年列表 */}
+          <div className="border-t border-[#f0f0f0] overflow-x-auto">
+            <div className="flex min-w-[500px] text-xs">
+              <div className="w-10 shrink-0 p-2">
+                <div className="text-[#999]">流年</div>
+                <div className="text-[#999] mt-1">小运</div>
+              </div>
+              {Array.from({ length: 10 }, (_, i) => {
+                const baseYear = currentDayun?.startYear || 2018
+                const year = baseYear + i
+                const ganIndex = (year - 4) % 10
+                const zhiIndex = (year - 4) % 12
+                const isCurrentYear = year === new Date().getFullYear()
+                return (
+                  <div key={i} className={`flex-1 text-center py-2 border-l border-[#f0f0f0] ${isCurrentYear ? "bg-[#c8102e]/10" : ""}`}>
+                    <div className={isCurrentYear ? "text-[#c8102e] font-bold" : "text-[#999]"}>{year}</div>
+                    <div className="mt-1">
+                      <span className={isCurrentYear ? "text-[#c8102e] font-bold" : ""} style={{ color: isCurrentYear ? undefined : getWuXingColor(TIANGAN_WUXING[TIANGAN[ganIndex]]) }}>
+                        {TIANGAN[ganIndex]}
+                      </span>
+                      <span className="text-[#c8102e] ml-0.5">食</span>
+                    </div>
+                    <div>
+                      <span className={isCurrentYear ? "text-[#c8102e] font-bold" : ""} style={{ color: isCurrentYear ? undefined : getWuXingColor(DIZHI_WUXING[DIZHI[zhiIndex]]) }}>
+                        {DIZHI[zhiIndex]}
+                      </span>
+                      <span className="text-[#c8102e] ml-0.5">食</span>
+                    </div>
+                    {isCurrentYear && <div className="w-1.5 h-1.5 rounded-full bg-[#34a853] mx-auto mt-1"></div>}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 断事笔记Tab */}
+      {activeTab === "notes" && (
+        <div className="flex-1 flex flex-col">
+          {/* 四柱头部 */}
+          <div className="bg-[#2a2520] px-4 py-4">
+            <div className="flex items-center justify-center gap-6">
+              <span className="text-[#d4af37]">{gender === "male" ? "乾造" : "坤造"}</span>
+              {[result.year, result.month, result.day, result.hour].map((pillar, i) => (
+                <div key={i} className="text-center">
+                  <div className="text-white text-lg">{pillar.gan}</div>
+                  <div className="text-white text-lg">{pillar.zhi}</div>
+                </div>
+              ))}
+            </div>
+            <div className="text-white/60 text-xs text-center mt-3 flex flex-wrap justify-center gap-1">
+              {(result.daYun || []).slice(0, 8).map((dy: { ganZhi: string }, i: number) => (
+                <span key={i}>{dy.ganZhi}{i < 7 ? " - " : ""}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* 命主反馈/师傅点评切换 */}
+          <div className="flex justify-center py-4">
+            <div className="flex bg-[#f5f5f5] rounded-full p-1">
+              <button
+                onClick={() => setNotesTab("feedback")}
+                className={`px-6 py-2 rounded-full text-sm font-medium ${
+                  notesTab === "feedback" ? "bg-[#d4af37] text-white" : "text-[#666]"
+                }`}
+              >
                 命主反馈
               </button>
-              <button className="px-6 py-2 bg-white text-[#666] rounded-full border border-[#e0e0e0]">
+              <button
+                onClick={() => setNotesTab("review")}
+                className={`px-6 py-2 rounded-full text-sm font-medium ${
+                  notesTab === "review" ? "bg-[#d4af37] text-white" : "text-[#666]"
+                }`}
+              >
                 师傅点评
               </button>
             </div>
-            
-            {/* 反馈项目 */}
-            <div className="bg-white rounded-xl divide-y divide-[#f0f0f0] shadow-sm">
-              {[
-                { label: "职业", value: "" },
-                { label: "学历", value: "" },
-                { label: "财富", value: "" },
-                { label: "婚姻", value: "" }
-              ].map((item) => (
-                <button key={item.label} className="w-full flex items-center justify-between p-4">
-                  <span className="text-[#333]">{item.label}</span>
-                  <ChevronDown className="w-5 h-5 text-[#999] rotate-[-90deg]" />
-                </button>
-              ))}
-            </div>
-            
-            {/* 其他信息 */}
-            <div className="bg-white rounded-xl p-4 space-y-3 shadow-sm">
-              <div className="flex justify-between">
-                <span className="text-[#666]">健康状态：</span>
-                <span className="text-[#999]">请输入</span>
+          </div>
+
+          {/* 信息输入 */}
+          <div className="flex-1 px-4 space-y-1">
+            {[
+              { label: "职业", hasArrow: true },
+              { label: "学历", hasArrow: true },
+              { label: "财富", hasArrow: true },
+              { label: "婚姻", hasArrow: true },
+              { label: "健康状态", placeholder: "请输入" },
+              { label: "六亲状况", placeholder: "请输入" },
+              { label: "性情描述", placeholder: "请输入" }
+            ].map((item, i) => (
+              <div key={i} className="flex items-center justify-between py-3 border-b border-[#f0f0f0]">
+                <span className="text-[#333]">{item.label}</span>
+                {item.hasArrow ? (
+                  <ChevronRight className="w-5 h-5 text-[#999]" />
+                ) : (
+                  <span className="text-[#999]">{item.placeholder}</span>
+                )}
               </div>
-              <div className="flex justify-between">
-                <span className="text-[#666]">六亲状况：</span>
-                <span className="text-[#999]">请输入</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#666]">性情描述：</span>
-                <span className="text-[#999]">请输入</span>
-              </div>
-            </div>
-            
-            {/* 关键事件 */}
-            <div className="bg-white rounded-xl p-4 shadow-sm">
+            ))}
+
+            {/* 关键事件反馈记录 */}
+            <div className="pt-4">
+              <div className="text-[#333] font-medium mb-3">关键事件反馈记录</div>
               <div className="flex items-center justify-between">
-                <span className="text-[#333] font-medium">关键事件反馈记录</span>
-                <button className="w-8 h-8 bg-[#d4af37] rounded-full flex items-center justify-center text-white text-xl">
-                  +
+                <button className="w-12 h-12 flex items-center justify-center">
+                  <Calendar className="w-8 h-8 text-[#d4af37]" />
+                </button>
+                <button className="w-12 h-12 rounded-full bg-[#d4af37] flex items-center justify-center shadow-lg">
+                  <Plus className="w-6 h-6 text-white" />
                 </button>
               </div>
             </div>
           </div>
-        )}
-      </div>
-      
-      {/* 底部按钮 */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#e0e0e0] px-4 py-3 flex gap-3">
-        <button
-          onClick={onBack}
-          className="flex-1 py-3 bg-[#f0f0f0] rounded-xl text-[#666] font-medium"
-        >
-          返回
-        </button>
-        <button
-          onClick={() => setShowResult(false)}
-          className="flex-1 py-3 bg-[#d4af37] rounded-xl text-white font-medium"
-        >
-          重新排盘
-        </button>
-      </div>
+
+          {/* 底部保存按钮 */}
+          <div className="p-4 flex gap-3 bg-white border-t border-[#f0f0f0]">
+            <button className="flex-1 py-4 bg-[#d4af37] text-white font-medium rounded-xl">
+              保存
+            </button>
+            <button className="w-14 h-14 bg-[#f5f5f5] rounded-xl flex items-center justify-center">
+              <span className="text-[#d4af37] text-2xl">◇</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 底部操作栏 */}
+      {(activeTab === "chart" || activeTab === "detail" || activeTab === "basic") && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#f0f0f0] px-4 py-3 flex gap-3 z-10">
+          <button
+            onClick={() => setShowResult(false)}
+            className="flex-1 py-3 border border-[#d4af37] text-[#d4af37] rounded-xl font-medium"
+          >
+            返回
+          </button>
+          <button
+            onClick={() => setShowResult(false)}
+            className="flex-1 py-3 bg-[#d4af37] text-white rounded-xl font-medium"
+          >
+            重新排盘
+          </button>
+        </div>
+      )}
     </div>
   )
-}
-
-// 辅助函数：计算十神
-function getShiShen(dayGan: string, gan: string): string {
-  if (dayGan === gan) return "比肩"
-  
-  const shiShenTable: Record<string, Record<string, string>> = {
-    '甲': { '甲': '比肩', '乙': '劫财', '丙': '食神', '丁': '伤官', '戊': '偏财', '己': '正财', '庚': '七杀', '辛': '正官', '壬': '偏印', '癸': '正印' },
-    '乙': { '甲': '劫财', '乙': '比肩', '丙': '伤官', '丁': '食神', '戊': '正财', '己': '偏财', '庚': '正官', '辛': '七杀', '壬': '正印', '癸': '偏印' },
-    '丙': { '甲': '偏印', '乙': '正印', '丙': '比肩', '丁': '劫财', '戊': '食神', '己': '伤官', '庚': '偏财', '辛': '正财', '壬': '七杀', '癸': '正官' },
-    '丁': { '甲': '正印', '乙': '偏印', '丙': '劫财', '丁': '比肩', '戊': '伤官', '己': '食神', '庚': '正财', '辛': '偏财', '壬': '正官', '癸': '七杀' },
-    '戊': { '甲': '七杀', '乙': '正���', '丙': '偏印', '丁': '正印', '戊': '比肩', '己': '劫财', '庚': '食神', '辛': '伤官', '壬': '偏财', '癸': '正财' },
-    '己': { '甲': '正官', '乙': '七杀', '丙': '正印', '丁': '偏印', '戊': '劫财', '己': '比肩', '庚': '伤官', '辛': '食神', '壬': '正财', '癸': '偏财' },
-    '庚': { '甲': '偏财', '乙': '正财', '丙': '七杀', '丁': '正官', '戊': '偏印', '己': '正印', '庚': '比肩', '辛': '劫财', '壬': '食神', '癸': '伤官' },
-    '辛': { '甲': '正财', '乙': '偏财', '丙': '正官', '丁': '七杀', '戊': '正印', '己': '偏印', '庚': '劫财', '辛': '比肩', '壬': '伤官', '癸': '食神' },
-    '壬': { '甲': '食神', '乙': '伤官', '丙': '偏财', '丁': '正财', '戊': '七杀', '己': '正官', '庚': '偏印', '辛': '正印', '壬': '比肩', '癸': '劫财' },
-    '癸': { '甲': '伤官', '乙': '食神', '丙': '正财', '丁': '偏财', '戊': '正官', '己': '七杀', '庚': '正印', '辛': '偏印', '壬': '劫财', '癸': '比肩' }
-  }
-  
-  return shiShenTable[dayGan]?.[gan] || ""
-}
-
-// 辅助函数：获取藏干
-function getCangGan(zhi: string): string[] {
-  const cangGanTable: Record<string, string[]> = {
-    '子': ['癸'],
-    '丑': ['己', '癸', '辛'],
-    '寅': ['甲', '丙', '戊'],
-    '卯': ['乙'],
-    '辰': ['戊', '乙', '癸'],
-    '巳': ['丙', '庚', '戊'],
-    '午': ['丁', '己'],
-    '未': ['己', '丁', '乙'],
-    '申': ['庚', '壬', '戊'],
-    '酉': ['辛'],
-    '戌': ['戊', '辛', '丁'],
-    '亥': ['壬', '甲']
-  }
-  return cangGanTable[zhi] || []
-}
-
-// 辅助函数：获取纳音
-function getNaYin(ganZhi: string): string {
-  const naYinTable: Record<string, string> = {
-    '甲子': '海中金', '乙丑': '海中金', '丙寅': '炉中火', '丁卯': '炉中火',
-    '戊辰': '大林木', '己巳': '大林木', '庚午': '路旁土', '辛未': '路旁土',
-    '壬申': '剑锋金', '癸酉': '剑锋金', '甲戌': '山头火', '乙亥': '山头火',
-    '丙子': '涧下水', '丁丑': '涧下水', '戊寅': '城头土', '己卯': '城头土',
-    '庚辰': '白蜡金', '辛巳': '白蜡金', '壬午': '杨柳木', '癸未': '杨柳木',
-    '甲申': '泉中水', '乙酉': '泉中水', '丙戌': '屋上土', '丁亥': '屋上土',
-    '戊子': '霹雳火', '己丑': '霹雳火', '庚寅': '松柏木', '辛卯': '松柏木',
-    '壬辰': '长流水', '癸巳': '长流水', '甲午': '沙中金', '乙未': '沙中金',
-    '丙申': '山下火', '丁酉': '山下火', '戊戌': '平地木', '己亥': '平地木',
-    '庚子': '壁上土', '辛丑': '壁上土', '壬寅': '金箔金', '癸卯': '金箔金',
-    '甲辰': '覆灯火', '乙巳': '覆灯火', '丙午': '天河水', '丁未': '天河水',
-    '戊申': '大驿土', '己酉': '大驿土', '庚戌': '钗钏金', '辛亥': '钗钏金',
-    '壬子': '桑柘木', '癸丑': '桑柘木', '甲寅': '大溪水', '乙卯': '大溪水',
-    '丙辰': '沙中土', '丁巳': '沙中土', '戊午': '天上火', '己未': '天上火',
-    '庚申': '石榴木', '辛酉': '石榴木', '壬戌': '大海水', '癸亥': '大海水'
-  }
-  return naYinTable[ganZhi] || ''
-}
-
-// 辅助函数：获取生肖
-function getShengXiao(zhi: string): string {
-  const shengXiaoTable: Record<string, string> = {
-    '子': '鼠', '丑': '牛', '寅': '虎', '卯': '兔',
-    '辰': '龙', '巳': '蛇', '午': '马', '未': '羊',
-    '申': '猴', '酉': '鸡', '戌': '狗', '亥': '猪'
-  }
-  return shengXiaoTable[zhi] || '龙'
 }
