@@ -1,0 +1,33 @@
+// 督脉 - 28穴
+import { Acupoint } from "./types"
+
+export const governorVessel: Acupoint[] = [
+  { id: "GV1", name: "长强", pinyin: "Changqiang", meridian: "督脉", code: "GV", location: "尾骨端与肛门连线中点", position: [0, -0.2, -0.12], indication: "泄泻、痢疾、便秘、便血、痔疾、脱肛、癫狂、痫证、腰脊强痛", method: "斜刺0.5-1寸", category: "络穴" },
+  { id: "GV2", name: "腰俞", pinyin: "Yaoshu", meridian: "督脉", code: "GV", location: "骶部，后正中线上，骶管裂孔处", position: [0, -0.15, -0.1], indication: "月经不调、腰脊强痛、下肢痿痹、癫痫", method: "向上斜刺0.5-1寸", category: "" },
+  { id: "GV3", name: "腰阳关", pinyin: "Yaoyangguan", meridian: "督脉", code: "GV", location: "腰部，后正中线上，第4腰椎棘突下凹陷中", position: [0, 0.05, -0.08], indication: "腰骶痛、下肢痿痹、月经不调、遗精、阳痿", method: "直刺0.5-1寸", category: "" },
+  { id: "GV4", name: "命门", pinyin: "Mingmen", meridian: "督脉", code: "GV", location: "腰部，后正中线上，第2腰椎棘突下凹陷中", position: [0, 0.15, -0.08], indication: "腰脊强痛、下肢痿痹、遗精、阳痿、遗尿、带下、月经不调、泄泻、头痛、耳鸣", method: "直刺0.5-1寸", category: "" },
+  { id: "GV5", name: "悬枢", pinyin: "Xuanshu", meridian: "督脉", code: "GV", location: "腰部，后正中线上，第1腰椎棘突下凹陷中", position: [0, 0.2, -0.08], indication: "腰脊强痛、腹痛、泄泻、痢疾", method: "直刺0.5-1寸", category: "" },
+  { id: "GV6", name: "脊中", pinyin: "Jizhong", meridian: "督脉", code: "GV", location: "背部，后正中线上，第11胸椎棘突下凹陷中", position: [0, 0.3, -0.08], indication: "腰脊强痛、泄泻、痢疾、黄疸、痔疾、癫痫", method: "斜刺0.5-1寸", category: "" },
+  { id: "GV7", name: "中枢", pinyin: "Zhongshu", meridian: "督脉", code: "GV", location: "背部，后正中线上，第10胸椎棘突下凹陷中", position: [0, 0.35, -0.08], indication: "腰脊强痛、黄疸、呕吐、腹满、不嗜食", method: "斜刺0.5-1寸", category: "" },
+  { id: "GV8", name: "筋缩", pinyin: "Jinsuo", meridian: "督脉", code: "GV", location: "背部，后正中线上，第9胸椎棘突下凹陷中", position: [0, 0.4, -0.08], indication: "癫痫、抽搐、脊强、胃痛", method: "斜刺0.5-1寸", category: "" },
+  { id: "GV9", name: "至阳", pinyin: "Zhiyang", meridian: "督脉", code: "GV", location: "背部，后正中线上，第7胸椎棘突下凹陷中", position: [0, 0.45, -0.08], indication: "咳嗽、气喘、黄疸、胸胁胀满、脊背强痛", method: "斜刺0.5-1寸", category: "" },
+  { id: "GV10", name: "灵台", pinyin: "Lingtai", meridian: "督脉", code: "GV", location: "背部，后正中线上，第6胸椎棘突下凹陷中", position: [0, 0.5, -0.08], indication: "咳嗽、气喘、项强、脊痛、疔疮", method: "斜刺0.5-1寸", category: "" },
+  { id: "GV11", name: "神道", pinyin: "Shendao", meridian: "督脉", code: "GV", location: "背部，后正中线上，第5胸椎棘突下凹陷中", position: [0, 0.55, -0.08], indication: "心悸、怔忡、失眠、健忘、咳嗽、脊背强痛", method: "斜刺0.5-1寸", category: "" },
+  { id: "GV12", name: "身柱", pinyin: "Shenzhu", meridian: "督脉", code: "GV", location: "背部，后正中线上，第3胸椎棘突下凹陷中", position: [0, 0.6, -0.08], indication: "咳嗽、气喘、癫狂、痫证、腰脊强痛、疔疮发背", method: "斜刺0.5-1寸", category: "" },
+  { id: "GV13", name: "陶道", pinyin: "Taodao", meridian: "督脉", code: "GV", location: "背部，后正中线上，第1胸椎棘突下凹陷中", position: [0, 0.65, -0.08], indication: "头痛、恶寒发热、疟疾、脊强、咳嗽", method: "斜刺0.5-1寸", category: "" },
+  { id: "GV14", name: "大椎", pinyin: "Dazhui", meridian: "督脉", code: "GV", location: "背部，后正中线上，第7颈椎棘突下凹陷中", position: [0, 0.7, -0.08], indication: "热病、疟疾、咳嗽、气喘、骨蒸潮热、项强、肩背痛、腰脊强、风疹、癫痫", method: "斜刺0.5-1寸", category: "" },
+  { id: "GV15", name: "哑门", pinyin: "Yamen", meridian: "督脉", code: "GV", location: "项部，后发际正中直上0.5寸，第1颈椎下", position: [0, 0.78, -0.06], indication: "暴喑、舌强不语、癫狂、痫证、头痛、颈项强痛", method: "伏案正坐，头微前倾，向下颌方向缓慢刺入0.5-1寸", category: "" },
+  { id: "GV16", name: "风府", pinyin: "Fengfu", meridian: "督脉", code: "GV", location: "项部，后发际正中直上1寸，枕外隆凸直下两侧斜方肌之间凹陷中", position: [0, 0.82, -0.05], indication: "头痛、项强、眩晕、咽喉肿痛、失音、中风、癫狂、痫证", method: "伏案正坐，头微前倾，向下颌方向缓慢刺入0.5-1寸", category: "" },
+  { id: "GV17", name: "脑户", pinyin: "Naohu", meridian: "督脉", code: "GV", location: "头部，后发际正中直上2.5寸，枕外隆凸上缘凹陷中", position: [0, 0.88, -0.04], indication: "头痛、头重、癫痫、目黄、面赤、项强", method: "平刺0.5-0.8寸", category: "" },
+  { id: "GV18", name: "强间", pinyin: "Qiangjian", meridian: "督脉", code: "GV", location: "头部，后发际正中直上4寸", position: [0, 0.92, -0.02], indication: "头痛、目眩、颈项强痛、癫狂", method: "平刺0.5-0.8寸", category: "" },
+  { id: "GV19", name: "后顶", pinyin: "Houding", meridian: "督脉", code: "GV", location: "头部，后发际正中直上5.5寸", position: [0, 0.95, 0], indication: "头痛、眩晕、项强、癫狂、痫证", method: "平刺0.5-0.8寸", category: "" },
+  { id: "GV20", name: "百会", pinyin: "Baihui", meridian: "督脉", code: "GV", location: "头部，前发际正中直上5寸，或两耳尖连线中点", position: [0, 0.98, 0.02], indication: "头痛、眩晕、中风、失语、癫狂、痫证、健忘、失眠、脱肛、阴挺、久泻久痢", method: "平刺0.5-0.8寸", category: "" },
+  { id: "GV21", name: "前顶", pinyin: "Qianding", meridian: "督脉", code: "GV", location: "头部，前发际正中直上3.5寸", position: [0, 0.96, 0.05], indication: "头痛、眩晕、鼻渊、目赤肿痛、小儿惊风、癫痫", method: "平刺0.5-0.8寸", category: "" },
+  { id: "GV22", name: "囟会", pinyin: "Xinhui", meridian: "督脉", code: "GV", location: "头部，前发际正中直上2寸", position: [0, 0.94, 0.08], indication: "头痛、眩晕、鼻渊、目赤肿痛、癫狂、痫证、小儿惊风", method: "平刺0.5-0.8寸", category: "" },
+  { id: "GV23", name: "上星", pinyin: "Shangxing", meridian: "督脉", code: "GV", location: "头部，前发际正中直上1寸", position: [0, 0.92, 0.1], indication: "头痛、目眩、目赤肿痛、鼻渊、鼻衄、癫狂、痫证、小儿惊风、热病", method: "平刺0.5-0.8寸", category: "" },
+  { id: "GV24", name: "神庭", pinyin: "Shenting", meridian: "督脉", code: "GV", location: "头部，前发际正中直上0.5寸", position: [0, 0.9, 0.12], indication: "头痛、眩晕、失眠、癫狂、痫证、目赤肿痛、鼻渊、鼻衄", method: "平刺0.5-0.8寸", category: "" },
+  { id: "GV25", name: "素髎", pinyin: "Suliao", meridian: "督脉", code: "GV", location: "面部，鼻尖正中央", position: [0, 0.84, 0.15], indication: "鼻渊、鼻衄、鼻塞、酒糟鼻、昏迷、惊厥、新生儿窒息", method: "向上斜刺0.3-0.5寸或点刺出血", category: "" },
+  { id: "GV26", name: "水沟", pinyin: "Shuigou", meridian: "督脉", code: "GV", location: "面部，人中沟上1/3与下2/3交点处", position: [0, 0.8, 0.13], indication: "昏迷、晕厥、中风、中暑、癫狂、痫证、急惊风、口眼歪斜、腰脊强痛", method: "向上斜刺0.3-0.5寸", category: "" },
+  { id: "GV27", name: "兑端", pinyin: "Duiduan", meridian: "督脉", code: "GV", location: "面部，上唇尖端，人中沟下端皮肤与唇红组织移行处", position: [0, 0.78, 0.12], indication: "癫狂、齿龈肿痛、口歪、昏迷、鼻渊", method: "斜刺0.2-0.3寸或点刺出血", category: "" },
+  { id: "GV28", name: "龈交", pinyin: "Yinjiao", meridian: "督脉", code: "GV", location: "上唇内面，上唇系带与齿龈相接处", position: [0, 0.78, 0.1], indication: "齿龈肿痛、口臭、鼻渊、面赤颊肿、唇吻强急、癫狂、项强", method: "向上斜刺0.2-0.3寸或点刺出血", category: "" },
+]

@@ -1,0 +1,32 @@
+// 足少阴肾经 - 27穴
+import { Acupoint } from "./types"
+
+export const kidneyMeridian: Acupoint[] = [
+  { id: "KI1", name: "涌泉", pinyin: "Yongquan", meridian: "足少阴肾经", code: "KI", location: "足底部，卷足时足前部凹陷处", position: [0.08, -0.95, 0.02], indication: "头痛、头晕、失眠、癫狂、小儿惊风、昏厥", method: "直刺0.5-1寸", category: "井穴" },
+  { id: "KI2", name: "然谷", pinyin: "Rangu", meridian: "足少阴肾经", code: "KI", location: "足内侧缘，足舟骨粗隆下方", position: [0.1, -0.92, 0.04], indication: "月经不调、阴挺、遗精、消渴、泄泻", method: "直刺0.5-0.8寸", category: "荥穴" },
+  { id: "KI3", name: "太溪", pinyin: "Taixi", meridian: "足少阴肾经", code: "KI", location: "足内侧，内踝后方，内踝尖与跟腱之间凹陷处", position: [0.1, -0.88, 0.03], indication: "头痛目眩、咽喉肿痛、牙痛、耳聋耳鸣、咳嗽气喘、月经不调、失眠、遗精、阳痿", method: "直刺0.5-1寸", category: "输穴、原穴" },
+  { id: "KI4", name: "大钟", pinyin: "Dazhong", meridian: "足少阴肾经", code: "KI", location: "足内侧，内踝后下方，跟骨上缘", position: [0.1, -0.9, 0.01], indication: "咳血、气喘、腰脊强痛、痴呆、足跟痛", method: "直刺0.3-0.5寸", category: "络穴" },
+  { id: "KI5", name: "水泉", pinyin: "Shuiquan", meridian: "足少阴肾经", code: "KI", location: "足内侧，太溪直下1寸", position: [0.1, -0.89, 0.02], indication: "月经不调、痛经、阴挺、小便不利", method: "直刺0.3-0.5寸", category: "郄穴" },
+  { id: "KI6", name: "照海", pinyin: "Zhaohai", meridian: "足少阴肾经", code: "KI", location: "足内侧，内踝尖下方凹陷处", position: [0.1, -0.87, 0.05], indication: "咽喉干痛、目赤肿痛、失眠、月经不调、痛经、带下、阴挺、小便频数", method: "直刺0.5-0.8寸", category: "八脉交会穴" },
+  { id: "KI7", name: "复溜", pinyin: "Fuliu", meridian: "足少阴肾经", code: "KI", location: "小腿内侧，太溪直上2寸", position: [0.1, -0.82, 0.03], indication: "水肿、腹胀、泄泻、盗汗、自汗、脚气、腿肿", method: "直刺0.5-1寸", category: "经穴" },
+  { id: "KI8", name: "交信", pinyin: "Jiaoxin", meridian: "足少阴肾经", code: "KI", location: "小腿内侧，复溜前0.5寸", position: [0.12, -0.82, 0.04], indication: "月经不调、崩漏、阴挺、泄泻、便秘", method: "直刺0.5-1寸", category: "阴跷脉郄穴" },
+  { id: "KI9", name: "筑宾", pinyin: "Zhubin", meridian: "足少阴肾经", code: "KI", location: "小腿内侧，太溪与阴谷连线上，太溪上5寸", position: [0.1, -0.75, 0.02], indication: "癫狂、疝气、呕吐、小腿内侧痛", method: "直刺0.5-1寸", category: "阴维脉郄穴" },
+  { id: "KI10", name: "阴谷", pinyin: "Yingu", meridian: "足少阴肾经", code: "KI", location: "腘窝内侧，半腱肌腱与半膜肌腱之间", position: [0.1, -0.55, 0.02], indication: "阳痿、疝气、月经不调、崩漏、小便难、膝股内侧痛", method: "直刺1-1.5寸", category: "合穴" },
+  { id: "KI11", name: "横骨", pinyin: "Henggu", meridian: "足少阴肾经", code: "KI", location: "下腹部，脐下5寸，前正中线旁开0.5寸", position: [0.05, -0.15, 0.12], indication: "少腹痛、遗精、阳痿、遗尿、小便不利", method: "直刺1-1.5寸", category: "冲脉交会穴" },
+  { id: "KI12", name: "大赫", pinyin: "Dahe", meridian: "足少阴肾经", code: "KI", location: "下腹部，脐下4寸，前正中线旁开0.5寸", position: [0.05, -0.1, 0.12], indication: "遗精、阳痿、带下、月经不调、痛经", method: "直刺1-1.5寸", category: "冲脉交会穴" },
+  { id: "KI13", name: "气穴", pinyin: "Qixue", meridian: "足少阴肾经", code: "KI", location: "下腹部，脐下3寸，前正中线旁开0.5寸", position: [0.05, -0.05, 0.12], indication: "月经不调、带下、小便不利、泄泻、腰脊痛", method: "直刺1-1.5寸", category: "冲脉交会穴" },
+  { id: "KI14", name: "四满", pinyin: "Siman", meridian: "足少阴肾经", code: "KI", location: "下腹部，脐下2寸，前正中线旁开0.5寸", position: [0.05, 0, 0.12], indication: "月经不调、崩漏、带下、遗精、疝气、便秘", method: "直刺1-1.5寸", category: "冲脉交会穴" },
+  { id: "KI15", name: "中注", pinyin: "Zhongzhu", meridian: "足少阴肾经", code: "KI", location: "下腹部，脐下1寸，前正中线旁开0.5寸", position: [0.05, 0.05, 0.12], indication: "月经不调、腰腹疼痛、便秘", method: "直刺1-1.5寸", category: "冲脉交会穴" },
+  { id: "KI16", name: "肓俞", pinyin: "Huangshu", meridian: "足少阴肾经", code: "KI", location: "腹中部，脐中旁开0.5寸", position: [0.05, 0.1, 0.12], indication: "腹痛、腹胀、呕吐、泄泻、便秘", method: "直刺1-1.5寸", category: "冲脉交会穴" },
+  { id: "KI17", name: "商曲", pinyin: "Shangqu", meridian: "足少阴肾经", code: "KI", location: "上腹部，脐上2寸，前正中线旁开0.5寸", position: [0.05, 0.15, 0.12], indication: "腹痛、泄泻、便秘、腹中积聚", method: "直刺1-1.5寸", category: "冲脉交会穴" },
+  { id: "KI18", name: "石关", pinyin: "Shiguan", meridian: "足少阴肾经", code: "KI", location: "上腹部，脐上3寸，前正中线旁开0.5寸", position: [0.05, 0.2, 0.12], indication: "呕吐、腹痛、便秘、产后腹痛", method: "直刺1-1.5寸", category: "冲脉交会穴" },
+  { id: "KI19", name: "阴都", pinyin: "Yindu", meridian: "足少阴肾经", code: "KI", location: "上腹部，脐上4寸，前正中线旁开0.5寸", position: [0.05, 0.25, 0.12], indication: "腹胀、肠鸣、腹痛、便秘", method: "直刺1-1.5寸", category: "冲脉交会穴" },
+  { id: "KI20", name: "腹通谷", pinyin: "Futonggu", meridian: "足少阴肾经", code: "KI", location: "上腹部，脐上5寸，前正中线旁开0.5寸", position: [0.05, 0.3, 0.12], indication: "腹痛、腹胀、呕吐、心痛", method: "直刺1-1.5寸", category: "冲脉交会穴" },
+  { id: "KI21", name: "幽门", pinyin: "Youmen", meridian: "足少阴肾经", code: "KI", location: "上腹部，脐上6寸，前正中线旁开0.5寸", position: [0.05, 0.35, 0.12], indication: "腹痛、呕吐、泄泻、痢疾", method: "直刺1-1.5寸", category: "冲脉交会穴" },
+  { id: "KI22", name: "步廊", pinyin: "Bulang", meridian: "足少阴肾经", code: "KI", location: "胸部，第5肋间隙，前正中线旁开2寸", position: [0.1, 0.4, 0.12], indication: "胸痛、咳嗽、气喘、呕吐、不嗜食", method: "斜刺或平刺0.5-0.8寸", category: "" },
+  { id: "KI23", name: "神封", pinyin: "Shenfeng", meridian: "足少阴肾经", code: "KI", location: "胸部，第4肋间隙，前正中线旁开2寸", position: [0.1, 0.45, 0.12], indication: "咳嗽、气喘、胸胁胀满、呕吐、不嗜食", method: "斜刺或平刺0.5-0.8寸", category: "" },
+  { id: "KI24", name: "灵墟", pinyin: "Lingxu", meridian: "足少阴肾经", code: "KI", location: "胸部，第3肋间隙，前正中线旁开2寸", position: [0.1, 0.5, 0.12], indication: "咳嗽、气喘、胸胁胀痛、呕吐", method: "斜刺或平刺0.5-0.8寸", category: "" },
+  { id: "KI25", name: "神藏", pinyin: "Shencang", meridian: "足少阴肾经", code: "KI", location: "胸部，第2肋间隙，前正中线旁开2寸", position: [0.1, 0.55, 0.12], indication: "咳嗽、气喘、胸痛", method: "斜刺或平刺0.5-0.8寸", category: "" },
+  { id: "KI26", name: "彧中", pinyin: "Yuzhong", meridian: "足少阴肾经", code: "KI", location: "胸部，第1肋间隙，前正中线旁开2寸", position: [0.1, 0.6, 0.12], indication: "咳嗽、气喘、胸胁胀满", method: "斜刺或平刺0.5-0.8寸", category: "" },
+  { id: "KI27", name: "俞府", pinyin: "Shufu", meridian: "足少阴肾经", code: "KI", location: "胸部，锁骨下缘，前正中线旁开2寸", position: [0.1, 0.65, 0.12], indication: "咳嗽、气喘、胸痛、呕吐、不嗜食", method: "斜刺或平刺0.5-0.8寸", category: "" },
+]
