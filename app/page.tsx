@@ -16,6 +16,7 @@ import { MeiHuaPage } from "@/components/pages/meihua-page"
 import { BaZhaiPage } from "@/components/pages/bazhai-page"
 import { XuanKongPage } from "@/components/pages/xuankong-page"
 import { ZhuGePage } from "@/components/pages/zhuge-page"
+import { AIPage } from "@/components/pages/ai-page"
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("paipan")
@@ -113,6 +114,8 @@ export default function Home() {
         return <HerbalPage />
       case "study":
         return <StudyPage />
+      case "ai":
+        return <AIPage />
       case "profile":
         return <ProfilePage />
       default:
