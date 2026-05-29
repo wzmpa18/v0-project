@@ -182,6 +182,7 @@ export interface BaziResult {
     years: number
     months: number
     days: number
+    hours: number
     direction: '顺行' | '逆行'
   }
   
@@ -362,7 +363,8 @@ export function calculateBazi(options: BaziOptions): BaziResult {
     years: yun.getStartYear(),
     months: yun.getStartMonth(),
     days: yun.getStartDay(),
-    direction: gender === 'male' ? (isYangYear(yearGan) ? '顺行' : '逆行') : (isYangYear(yearGan) ? '逆行' : '顺行') as '顺行' | '逆行'
+    hours: yun.getStartHour ? yun.getStartHour() : 0,
+    direction: (gender === 'male' ? (isYangYear(yearGan) ? '顺行' : '逆行') : (isYangYear(yearGan) ? '逆行' : '顺行')) as '顺行' | '逆行'
   }
 
   // 流年（从出生年到当前年 + 未来10年）

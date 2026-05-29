@@ -4,7 +4,7 @@ import { useState, useMemo } from "react"
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Eye, Pencil, Plus, Calendar, HelpCircle, Settings } from "lucide-react"
 import {
   calculateBazi, BaziResult, BaziOptions,
-  getWuXingColor, SHICHEN_TIMES,
+  getWuXingColor,
   TIANGAN_WUXING, DIZHI_WUXING, SHENGXIAO_ICONS
 } from "@/lib/bazi/lunar-calculator"
 import { usePaipanContext } from "@/lib/paipan-context"
@@ -23,6 +23,22 @@ const SHICHEN_MAP: Record<number, string> = {
   0: '子', 1: '丑', 2: '寅', 3: '卯', 4: '辰', 5: '巳',
   6: '午', 7: '未', 8: '申', 9: '酉', 10: '戌', 11: '亥'
 }
+
+// 时辰列表（含时间范围），索引 0=子 ... 11=亥
+const SHICHEN_LIST: { name: string; range: string }[] = [
+  { name: '子', range: '23-1' },
+  { name: '丑', range: '1-3' },
+  { name: '寅', range: '3-5' },
+  { name: '卯', range: '5-7' },
+  { name: '辰', range: '7-9' },
+  { name: '巳', range: '9-11' },
+  { name: '午', range: '11-13' },
+  { name: '未', range: '13-15' },
+  { name: '申', range: '15-17' },
+  { name: '酉', range: '17-19' },
+  { name: '戌', range: '19-21' },
+  { name: '亥', range: '21-23' },
+]
 
 // 古籍列表
 const CLASSICS = [
@@ -43,9 +59,10 @@ const LIUYUE_JIEQI = [
 
 interface BaziPaipanProps {
   onBack: () => void
+  onAIAnalysis?: () => void
 }
 
-export function BaziPaipan({ onBack }: BaziPaipanProps) {
+export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
   const { setLastResult } = usePaipanContext()
   
   // Tab状态
@@ -79,8 +96,8 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
   const [result, setResult] = useState<BaziResult | null>(null)
   const [showResult, setShowResult] = useState(false)
 
-  // 时辰列表
-  const shichenList = SHICHEN_TIMES
+  // 时辰列表（子=0 ... 亥=11）
+  const shichenList = SHICHEN_LIST
 
   // 年月日列表
   const years = useMemo(() => Array.from({ length: 150 }, (_, i) => 2050 - i), [])
@@ -558,14 +575,17 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
                     <div>藏干</div>
                     <div className="mt-1">🏠</div>
                   </td>
-                  {[result.year, result.month, result.day, result.hour].map((pillar, i) => (
+                  {(["year", "month", "day", "hour"] as const).map((key, i) => (
                     <td key={i} className="py-2 px-2 text-center align-top">
                       <div className="space-y-0.5">
-                        {(pillar.cangGan || [{ gan: '丙', wuXing: '火' }, { gan: '庚', wuXing: '金' }, { gan: '戊', wuXing: '土' }]).slice(0, 3).map((cg: { gan: string; wuXing: string }, j: number) => (
-                          <div key={j} className="text-xs">
-                            <span style={{ color: getWuXingColor(cg.wuXing) }}>{cg.gan}{cg.wuXing}</span>
-                          </div>
-                        ))}
+                        {(result.cangGan?.[key] || []).map((gan: string, j: number) => {
+                          const wx = TIANGAN_WUXING[gan] || ""
+                          return (
+                            <div key={j} className="text-xs">
+                              <span style={{ color: getWuXingColor(wx) }}>{gan}{wx}</span>
+                            </div>
+                          )
+                        })}
                       </div>
                     </td>
                   ))}
@@ -573,11 +593,11 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
                 {/* 副星 */}
                 <tr className="border-b border-[#f0f0f0]">
                   <td className="py-2 px-2 text-[#999] align-top">副星</td>
-                  {[result.year, result.month, result.day, result.hour].map((pillar, i) => (
+                  {(["year", "month", "day", "hour"] as const).map((key, i) => (
                     <td key={i} className="py-2 px-2 text-center align-top">
                       <div className="space-y-0.5 text-xs text-[#666]">
-                        {(pillar.cangGan || [{ shiShen: '比肩' }, { shiShen: '偏财' }, { shiShen: '食神' }]).slice(0, 3).map((cg: { shiShen?: string }, j: number) => (
-                          <div key={j}>{cg.shiShen || ['比肩', '偏财', '食神'][j]}</div>
+                        {(result.cangGanShiShen?.[key] || []).map((ss: string, j: number) => (
+                          <div key={j}>{ss}</div>
                         ))}
                       </div>
                     </td>
@@ -618,15 +638,10 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
                 {/* 神煞 */}
                 <tr>
                   <td className="py-2 px-2 text-[#999] align-top">神煞</td>
-                  {[
-                    ["天厨贵人", "德秀贵人", "天德贵人", "禄神", "亡神"],
-                    ["天乙贵人", "福星贵人", "德秀贵人", "飞刃"],
-                    ["国印贵人", "福星贵人", "德秀贵人", "红艳煞", "劫煞", "披麻", "词馆"],
-                    ["天乙贵人", "福星贵人", "德秀贵人", "飞刃"]
-                  ].map((shensha, i) => (
+                  {(["year", "month", "day", "hour"] as const).map((key, i) => (
                     <td key={i} className="py-2 px-2 text-center align-top">
                       <div className="space-y-0.5">
-                        {shensha.map((ss, j) => (
+                        {(result.shenSha?.[key] || []).map((ss: string, j: number) => (
                           <div key={j} className="text-xs text-[#d4af37]">{ss}</div>
                         ))}
                       </div>
@@ -642,7 +657,10 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
             <button className="flex-1 py-3 bg-[#f8f5f0] rounded-xl text-[#333] font-medium flex items-center justify-center gap-1">
               智能干支图示 <ChevronRight className="w-4 h-4" />
             </button>
-            <button className="flex-1 py-3 bg-[#f8f5f0] rounded-xl text-[#333] font-medium flex items-center justify-center gap-1">
+            <button
+              onClick={() => onAIAnalysis?.()}
+              className="flex-1 py-3 bg-[#f8f5f0] rounded-xl text-[#333] font-medium flex items-center justify-center gap-1"
+            >
               AI指令 <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -651,15 +669,15 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
           <div className="px-4 py-3 space-y-2 border-t border-[#f0f0f0]">
             <div className="flex">
               <span className="text-[#d4af37] w-20 shrink-0">原局天干：</span>
-              <span className="text-[#333]">无</span>
+              <span className="text-[#333]">{result.ganZhiRelation?.tianGan?.length ? result.ganZhiRelation.tianGan.join(" | ") : "无"}</span>
             </div>
             <div className="flex">
               <span className="text-[#d4af37] w-20 shrink-0">原局地支：</span>
-              <span className="text-[#333]">子巳暗合 | 寅巳相刑 | 寅巳相害</span>
+              <span className="text-[#333]">{result.ganZhiRelation?.diZhi?.length ? result.ganZhiRelation.diZhi.join(" | ") : "无"}</span>
             </div>
             <div className="flex">
               <span className="text-[#d4af37] w-20 shrink-0">原局整柱：</span>
-              <span className="text-[#333]">戊子盖头 | 丙子截脚</span>
+              <span className="text-[#333]">{result.ganZhiRelation?.zhengZhu?.length ? result.ganZhiRelation.zhengZhu.join(" | ") : "无"}</span>
             </div>
           </div>
 
@@ -869,7 +887,7 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
           <div className="px-4 py-3 space-y-2 border-t border-[#f0f0f0] text-sm">
             <div className="flex">
               <span className="text-[#d4af37] w-20 shrink-0">岁运天干：</span>
-              <span className="text-[#333]">己癸相克 | 戊癸合化火</span>
+              <span className="text-[#333]">��癸相克 | 戊癸合化火</span>
             </div>
             <div className="flex">
               <span className="text-[#d4af37] w-20 shrink-0">岁运地支：</span>
@@ -885,15 +903,15 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
           <div className="px-4 py-3 space-y-2 border-t border-[#f0f0f0] text-sm">
             <div className="flex">
               <span className="text-[#d4af37] w-20 shrink-0">原局天干：</span>
-              <span className="text-[#333]">无</span>
+              <span className="text-[#333]">{result.ganZhiRelation?.tianGan?.length ? result.ganZhiRelation.tianGan.join(" | ") : "无"}</span>
             </div>
             <div className="flex">
               <span className="text-[#d4af37] w-20 shrink-0">原局地支：</span>
-              <span className="text-[#333]">子巳暗合 | 寅巳相刑 | 寅巳相害</span>
+              <span className="text-[#333]">{result.ganZhiRelation?.diZhi?.length ? result.ganZhiRelation.diZhi.join(" | ") : "无"}</span>
             </div>
             <div className="flex">
               <span className="text-[#d4af37] w-20 shrink-0">原局整柱：</span>
-              <span className="text-[#333]">戊子盖头 | 丙子截脚</span>
+              <span className="text-[#333]">{result.ganZhiRelation?.zhengZhu?.length ? result.ganZhiRelation.zhengZhu.join(" | ") : "无"}</span>
             </div>
           </div>
 
@@ -901,21 +919,20 @@ export function BaziPaipan({ onBack }: BaziPaipanProps) {
           <div className="border-t border-[#f0f0f0]">
             <div className="bg-[#f8f5f0] px-4 py-2 font-medium text-[#333]">四柱神煞</div>
             <div className="px-4 py-3 space-y-3 text-sm">
-              {[
-                { zhu: "己巳", ss: ["天厨贵人", "德秀贵人", "天德贵人", "禄神", "亡神"] },
-                { zhu: "丙子", ss: ["天乙贵人", "福星贵人", "德秀贵人", "飞刃"] },
-                { zhu: "丙寅", ss: ["国印贵人", "福星贵人", "德秀贵人", "红艳煞", "劫煞", "披麻", "词馆"] },
-                { zhu: "戊子", ss: ["天乙贵人", "福星贵人", "德秀贵人", "飞刃"] }
-              ].map((item, i) => (
-                <div key={i} className="flex">
-                  <span className="text-[#333] w-12 shrink-0 font-medium">{item.zhu}</span>
-                  <div className="flex flex-wrap gap-x-2 gap-y-1">
-                    {item.ss.map((s, j) => (
-                      <span key={j} className="text-[#d4af37]">{s}</span>
-                    ))}
+              {(["year", "month", "day", "hour"] as const).map((key, i) => {
+                const pillar = [result.year, result.month, result.day, result.hour][i]
+                const ss = result.shenSha?.[key] || []
+                return (
+                  <div key={i} className="flex">
+                    <span className="text-[#333] w-12 shrink-0 font-medium">{pillar.ganZhi}</span>
+                    <div className="flex flex-wrap gap-x-2 gap-y-1">
+                      {ss.length ? ss.map((s: string, j: number) => (
+                        <span key={j} className="text-[#d4af37]">{s}</span>
+                      )) : <span className="text-[#999]">无</span>}
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
 
