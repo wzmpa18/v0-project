@@ -152,13 +152,18 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
   // 获取当前流年
   const getCurrentLiunian = () => {
     const currentYear = new Date().getFullYear()
+    const found = result?.liuNian?.find((ln) => ln.year === currentYear)
+    if (found) return found
     const ganIndex = (currentYear - 4) % 10
     const zhiIndex = (currentYear - 4) % 12
     return {
       year: currentYear,
       gan: TIANGAN[ganIndex],
       zhi: DIZHI[zhiIndex],
-      ganZhi: TIANGAN[ganIndex] + DIZHI[zhiIndex]
+      ganZhi: TIANGAN[ganIndex] + DIZHI[zhiIndex],
+      age: 0,
+      ganShiShen: "",
+      zhiShiShen: "",
     }
   }
 
@@ -372,8 +377,8 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
         <button className="p-2 -mr-2 text-white/60">•••</button>
       </header>
 
-      {/* Tab栏 - 固定在顶部 */}
-      <div className="bg-[#d4af37]/10 border-b border-[#d4af37]/20 sticky top-[52px] z-10">
+      {/* Tab栏 - 随内容滚动 */}
+      <div className="bg-[#d4af37]/10 border-b border-[#d4af37]/20">
         <div className="flex">
           {[
             { key: "basic", label: "基本信息" },
@@ -522,24 +527,24 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
 
           {/* 四柱表格 */}
           <div className="overflow-x-auto">
-            <table className="w-full text-sm min-w-[360px]">
+            <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-[#f0f0f0]">
-                  <th className="py-2 px-2 text-[#999] font-normal text-left w-12">日期</th>
-                  <th className="py-2 px-2 text-[#333] font-medium text-center">年柱</th>
-                  <th className="py-2 px-2 text-[#333] font-medium text-center">月柱</th>
-                  <th className="py-2 px-2 text-[#333] font-medium text-center">日柱</th>
-                  <th className="py-2 px-2 text-[#333] font-medium text-center">时柱</th>
+                  <th className="py-2 px-1 text-[#999] font-normal text-left w-8">日期</th>
+                  <th className="py-2 px-1 text-[#333] font-medium text-center">年柱</th>
+                  <th className="py-2 px-1 text-[#333] font-medium text-center">月柱</th>
+                  <th className="py-2 px-1 text-[#333] font-medium text-center">日柱</th>
+                  <th className="py-2 px-1 text-[#333] font-medium text-center">时柱</th>
                 </tr>
               </thead>
               <tbody>
                 {/* 主星 */}
                 <tr className="border-b border-[#f0f0f0]">
-                  <td className="py-2 px-2 text-[#999]">主星</td>
-                  <td className="py-2 px-2 text-center text-[#333]">{result.shiShen?.year || "伤官"}</td>
-                  <td className="py-2 px-2 text-center text-[#333]">{result.shiShen?.month || "比肩"}</td>
-                  <td className="py-2 px-2 text-center text-[#c8102e] font-medium">元男</td>
-                  <td className="py-2 px-2 text-center text-[#333]">{result.shiShen?.hour || "食神"}</td>
+                  <td className="py-2 px-1 text-[#999]">主星</td>
+                  <td className="py-2 px-1 text-center text-[#333]">{result.shiShen?.year || "—"}</td>
+                  <td className="py-2 px-1 text-center text-[#333]">{result.shiShen?.month || "—"}</td>
+                  <td className="py-2 px-1 text-center text-[#c8102e] font-medium">{gender === "male" ? "元男" : "元女"}</td>
+                  <td className="py-2 px-1 text-center text-[#333]">{result.shiShen?.hour || "—"}</td>
                 </tr>
                 {/* 天干 */}
                 <tr className="border-b border-[#f0f0f0]">
@@ -768,12 +773,12 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
                 {/* 主星 */}
                 <tr className="border-b border-[#f0f0f0]">
                   <td className="py-1 px-1 text-[#999]">主星</td>
-                  <td className="py-1 px-1 text-center text-[#333]">比肩</td>
-                  <td className="py-1 px-1 text-center text-[#333]">正官</td>
-                  <td className="py-1 px-1 text-center text-[#333]">{result.shiShen?.year || "伤官"}</td>
-                  <td className="py-1 px-1 text-center text-[#333]">{result.shiShen?.month || "比肩"}</td>
-                  <td className="py-1 px-1 text-center text-[#c8102e] font-medium">元男</td>
-                  <td className="py-1 px-1 text-center text-[#333]">{result.shiShen?.hour || "食神"}</td>
+                  <td className="py-1 px-1 text-center text-[#333]">{currentLiunian.ganShiShen || "—"}</td>
+                  <td className="py-1 px-1 text-center text-[#333]">{currentDayun?.ganShiShen || "—"}</td>
+                  <td className="py-1 px-1 text-center text-[#333]">{result.shiShen?.year || "—"}</td>
+                  <td className="py-1 px-1 text-center text-[#333]">{result.shiShen?.month || "—"}</td>
+                  <td className="py-1 px-1 text-center text-[#c8102e] font-medium">{gender === "male" ? "元男" : "元女"}</td>
+                  <td className="py-1 px-1 text-center text-[#333]">{result.shiShen?.hour || "—"}</td>
                 </tr>
                 {/* 天干 */}
                 <tr className="border-b border-[#f0f0f0]">
@@ -819,44 +824,69 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
             </table>
           </div>
 
+          {/* 大运行 */}
+          <div className="border-b border-[#f0f0f0] overflow-x-auto">
+            <div className="flex items-center min-w-[500px] text-xs">
+              <span className="text-[#999] px-1 w-8 shrink-0">大运</span>
+              {(result.daYun || []).slice(0, 10).map((dy, i) => (
+                <div key={i} className="flex-1 text-center py-1 border-l border-[#f0f0f0]">
+                  <div className="text-[#999] text-[10px]">{dy.startAge}岁</div>
+                  <div>
+                    <span style={{ color: getWuXingColor(TIANGAN_WUXING[dy.gan]) }}>{dy.gan}</span>
+                    <span className="text-[#666] ml-0.5">{dy.ganShiShen?.slice(-1) || ""}</span>
+                  </div>
+                  <div>
+                    <span style={{ color: getWuXingColor(DIZHI_WUXING[dy.zhi]) }}>{dy.zhi}</span>
+                    <span className="text-[#666] ml-0.5">{dy.zhiShiShen?.slice(-1) || ""}</span>
+                  </div>
+                  <div className="text-[#999] text-[10px]">{dy.startYear}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* 小运行 */}
           <div className="border-b border-[#f0f0f0] overflow-x-auto">
             <div className="flex items-center min-w-[500px] text-xs">
               <span className="text-[#999] px-1 w-8 shrink-0">小运</span>
-              {Array.from({ length: 10 }, (_, i) => {
-                const ganIndex = (i + 4) % 10
-                const zhiIndex = (i + 4) % 12
-                return (
+              {(result.xiaoYun || []).length > 0 ? (
+                (result.xiaoYun || []).slice(0, 10).map((xy, i) => (
                   <div key={i} className="flex-1 text-center py-1.5 border-l border-[#f0f0f0]">
-                    <span style={{ color: getWuXingColor(TIANGAN_WUXING[TIANGAN[ganIndex]]) }}>{TIANGAN[ganIndex]}</span>
-                    <span className="text-[#666] ml-0.5">食</span>
+                    <div className="text-[#999] text-[10px]">{xy.age}岁</div>
+                    <span style={{ color: getWuXingColor(TIANGAN_WUXING[xy.gan]) }}>{xy.gan}</span>
+                    <span className="text-[#666] ml-0.5">{xy.ganShiShen?.slice(-1) || ""}</span>
                     <br />
-                    <span style={{ color: getWuXingColor(DIZHI_WUXING[DIZHI[zhiIndex]]) }}>{DIZHI[zhiIndex]}</span>
-                    <span className="text-[#666] ml-0.5">印</span>
+                    <span style={{ color: getWuXingColor(DIZHI_WUXING[xy.zhi]) }}>{xy.zhi}</span>
+                    <span className="text-[#666] ml-0.5">{xy.zhiShiShen?.slice(-1) || ""}</span>
                   </div>
-                )
-              })}
+                ))
+              ) : (
+                <span className="text-[#999] px-2 py-2">—</span>
+              )}
             </div>
           </div>
 
-          {/* 流月行 */}
+          {/* 流月行（当前流年） */}
           <div className="border-b border-[#f0f0f0] overflow-x-auto">
             <div className="flex items-center min-w-[500px] text-xs">
               <span className="text-[#999] px-1 w-8 shrink-0">流月</span>
               {LIUYUE_JIEQI.map((jq, i) => {
-                const ganIndex = (i + 2) % 10
-                const zhiIndex = (i + 2) % 12
+                // 五虎遁：依当前流年天干推正月(寅)起干
+                const yinStartMap: Record<string, number> = { 甲: 2, 己: 2, 乙: 4, 庚: 4, 丙: 6, 辛: 6, 丁: 8, 壬: 8, 戊: 0, 癸: 0 }
+                const base = yinStartMap[currentLiunian.gan] ?? 0
+                const ganIndex = (base + i) % 10
+                const zhiIndex = (2 + i) % 12
+                const g = TIANGAN[ganIndex]
+                const z = DIZHI[zhiIndex]
                 return (
                   <div key={i} className="flex-1 text-center py-1 border-l border-[#f0f0f0]">
                     <div className="text-[#999]">{jq.name}</div>
-                    <div className="text-[#999]">{jq.date}</div>
+                    <div className="text-[#999] text-[10px]">{jq.date}</div>
                     <div className="mt-0.5">
-                      <span style={{ color: getWuXingColor(TIANGAN_WUXING[TIANGAN[ganIndex]]) }}>{TIANGAN[ganIndex]}</span>
-                      <span className="text-[#c8102e] ml-0.5">才</span>
+                      <span style={{ color: getWuXingColor(TIANGAN_WUXING[g]) }}>{g}</span>
                     </div>
                     <div>
-                      <span style={{ color: getWuXingColor(DIZHI_WUXING[DIZHI[zhiIndex]]) }}>{DIZHI[zhiIndex]}</span>
-                      <span className="text-[#c8102e] ml-0.5">印</span>
+                      <span style={{ color: getWuXingColor(DIZHI_WUXING[z]) }}>{z}</span>
                     </div>
                   </div>
                 )

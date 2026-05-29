@@ -14,6 +14,12 @@
 // @ts-expect-error - lunar-javascript 没有类型定义
 import { Solar, Lunar, EightChar } from 'lunar-javascript'
 
+// 地支本气（藏干主气），用于大运/流年/小运的地支十神
+const ZHI_BENQI: Record<string, string> = {
+  '子': '癸', '丑': '己', '寅': '甲', '卯': '乙', '辰': '戊', '巳': '丙',
+  '午': '丁', '未': '己', '申': '庚', '酉': '辛', '戌': '戊', '亥': '壬'
+}
+
 // 五行颜色映射
 export const WUXING_COLORS: Record<string, string> = {
   '木': '#22c55e', // 绿色
@@ -165,7 +171,20 @@ export interface BaziResult {
     ganZhi: string
     gan: string
     zhi: string
+    ganShiShen: string
+    zhiShiShen: string
     shenSha: string[]
+  }>
+
+  // 小运（童限）
+  xiaoYun: Array<{
+    year: number
+    age: number
+    ganZhi: string
+    gan: string
+    zhi: string
+    ganShiShen: string
+    zhiShiShen: string
   }>
   
   // 流年
@@ -175,6 +194,8 @@ export interface BaziResult {
     gan: string
     zhi: string
     age: number
+    ganShiShen: string
+    zhiShiShen: string
   }>
   
   // 起运信息
@@ -343,20 +364,51 @@ export function calculateBazi(options: BaziOptions): BaziResult {
     hour: getShenSha(eightChar, 'hour')
   }
 
-  // 大运
+  // 大运（lunar 的第一步为空干支的童限期，需过滤，童限由小运体现）
   const yun = eightChar.getYun(gender === 'male' ? 1 : 0)
   const daYunList = yun.getDaYun()
-  const daYun = daYunList.map((dy: { getStartYear: () => number; getStartAge: () => number; getGanZhi: () => string }) => {
+  const daYun = daYunList
+    .filter((dy: { getGanZhi: () => string }) => (dy.getGanZhi() || '').length >= 2)
+    .map((dy: { getStartYear: () => number; getStartAge: () => number; getGanZhi: () => string }) => {
     const ganZhi = dy.getGanZhi()
+    const gan = ganZhi.substring(0, 1)
+    const zhi = ganZhi.substring(1, 2)
     return {
       startYear: dy.getStartYear(),
       startAge: dy.getStartAge(),
       ganZhi: ganZhi,
-      gan: ganZhi.substring(0, 1),
-      zhi: ganZhi.substring(1, 2),
+      gan,
+      zhi,
+      // 大运天干十神（空运无干支时为空）
+      ganShiShen: gan ? getShiShen(dayGan, gan) : '',
+      // 大运地支藏干本气十神
+      zhiShiShen: zhi ? getShiShen(dayGan, ZHI_BENQI[zhi] || zhi) : '',
       shenSha: [] as string[]
     }
   })
+
+  // 小运（取第一步大运之前的小运，即童限）
+  let xiaoYun: Array<{ year: number; age: number; ganZhi: string; gan: string; zhi: string; ganShiShen: string; zhiShiShen: string }> = []
+  try {
+    const firstDaYun = daYunList[0]
+    const xyList = firstDaYun && firstDaYun.getXiaoYun ? firstDaYun.getXiaoYun() : []
+    xiaoYun = xyList.map((xy: { getYear: () => number; getAge: () => number; getGanZhi: () => string }) => {
+      const gz = xy.getGanZhi()
+      const g = gz.substring(0, 1)
+      const z = gz.substring(1, 2)
+      return {
+        year: xy.getYear(),
+        age: xy.getAge(),
+        ganZhi: gz,
+        gan: g,
+        zhi: z,
+        ganShiShen: g ? getShiShen(dayGan, g) : '',
+        zhiShiShen: z ? getShiShen(dayGan, ZHI_BENQI[z] || z) : ''
+      }
+    })
+  } catch {
+    xiaoYun = []
+  }
 
   // 起运信息
   const qiYun = {
@@ -381,7 +433,9 @@ export function calculateBazi(options: BaziOptions): BaziResult {
       ganZhi: lnGanZhi,
       gan,
       zhi,
-      age: y - year + 1
+      age: y - year + 1,
+      ganShiShen: gan ? getShiShen(dayGan, gan) : '',
+      zhiShiShen: zhi ? getShiShen(dayGan, ZHI_BENQI[zhi] || zhi) : ''
     })
   }
 
@@ -440,6 +494,7 @@ export function calculateBazi(options: BaziOptions): BaziResult {
     ziZuo: changSheng, // 自坐与十二长生相同
     shenSha,
     daYun,
+    xiaoYun,
     liuNian,
     qiYun,
     wuXingCount,
@@ -516,7 +571,7 @@ function getChangSheng(dayGan: string, zhi: string): string {
   const yinGanStart: Record<string, number> = {
     '乙': 6,  // 午
     '丁': 9,  // 酉
-    '己': 9,  // 酉
+    '���': 9,  // 酉
     '辛': 0,  // 子
     '癸': 3   // 卯
   }
@@ -728,7 +783,7 @@ function getTiaoHou(dayGan: string, monthZhi: string): { yongShen: string[]; xiS
       '寅': { yong: ['丙', '癸'], xi: ['戊'] },
       '卯': { yong: ['丙', '癸'], xi: ['戊'] },
       '辰': { yong: ['癸', '丙'], xi: ['戊'] },
-      '巳': { yong: ['癸', '丙'], xi: ['己'] },
+      '巳': { yong: ['癸', '��'], xi: ['己'] },
       '午': { yong: ['癸', '丙'], xi: ['己'] },
       '未': { yong: ['癸', '丙'], xi: ['己'] },
       '申': { yong: ['丙', '癸'], xi: ['己'] },
