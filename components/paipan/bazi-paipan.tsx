@@ -4,9 +4,10 @@ import { useState, useMemo } from "react"
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Eye, Pencil, Plus, Calendar, HelpCircle, Settings } from "lucide-react"
 import {
   calculateBazi, BaziResult, BaziOptions,
-  getWuXingColor,
+  getWuXingColor, getGanZhiRelation,
   TIANGAN_WUXING, DIZHI_WUXING, SHENGXIAO_ICONS
 } from "@/lib/bazi/lunar-calculator"
+import { getTiaoHouText, getYongShenStatus } from "@/lib/bazi/tiaohou-text"
 import { usePaipanContext } from "@/lib/paipan-context"
 
 // 天干地支列表
@@ -67,6 +68,8 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
   
   // Tab状态
   const [activeTab, setActiveTab] = useState<"basic" | "chart" | "detail" | "notes">("chart")
+  // 古籍原文/译文切换
+  const [classicView, setClassicView] = useState<"yuanwen" | "yiwen">("yuanwen")
   
   // 输入模式
   const [inputMode, setInputMode] = useState<"solar" | "lunar" | "sizhu">("solar")
@@ -711,44 +714,67 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
             </div>
           </div>
 
-          {/* 调候用神提示 */}
-          <div className="mx-4 mb-4 bg-white rounded-xl border border-[#f0f0f0] overflow-hidden shadow-sm">
-            <div className="p-4 flex items-center justify-between">
-              <div className="flex items-center gap-1">
-                <span className="text-[#333]">调候用神提示</span>
-                <HelpCircle className="w-4 h-4 text-[#999]" />
-              </div>
-              <div className="flex gap-2 text-[#d4af37] font-medium">
-                <span>壬</span><span>戊</span><span>己</span>
-              </div>
-            </div>
-            <div className="px-4 pb-4 flex items-center justify-between border-t border-[#f0f0f0] pt-3">
-              <span className="text-[#333]">本八字</span>
-              <div className="flex items-center gap-2">
-                <span className="text-[#666]">透</span>
-                <span className="px-2 py-1 bg-[#d4af37] text-white rounded text-sm">己</span>
-                <span className="text-[#666]">、</span>
-                <span className="px-2 py-1 bg-[#d4af37] text-white rounded text-sm">戊</span>
-                <span className="text-[#666] ml-2">藏</span>
-                <span className="px-2 py-1 bg-[#666] text-white rounded text-sm">戊</span>
-              </div>
-            </div>
-          </div>
+          {(() => {
+            const yongShen = result.tiaoHou?.yongShen || []
+            const xiShen = result.tiaoHou?.xiShen || []
+            const ganList = [result.year.gan, result.month.gan, result.day.gan, result.hour.gan]
+            const cangGanList = [
+              ...(result.cangGan?.year || []),
+              ...(result.cangGan?.month || []),
+              ...(result.cangGan?.day || []),
+              ...(result.cangGan?.hour || []),
+            ]
+            const statuses = getYongShenStatus(yongShen, ganList, cangGanList)
+            const text = getTiaoHouText(result.day.gan, result.month.zhi, yongShen, xiShen)
+            return (
+              <>
+                {/* 调候用神提示（依真实八字） */}
+                <div className="mx-3 mb-4 bg-white rounded-xl border border-[#f0f0f0] overflow-hidden shadow-sm">
+                  <div className="p-3 flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      <span className="text-[#333]">调候用神</span>
+                      <HelpCircle className="w-4 h-4 text-[#999]" />
+                    </div>
+                    <div className="flex gap-1.5 text-[#d4af37] font-medium">
+                      {yongShen.length ? yongShen.map((g, i) => <span key={i}>{g}</span>) : <span className="text-[#999]">中和</span>}
+                    </div>
+                  </div>
+                  <div className="px-3 pb-3 flex items-center justify-between border-t border-[#f0f0f0] pt-3 flex-wrap gap-2">
+                    <span className="text-[#333] shrink-0">本命用神</span>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {statuses.map((s, i) => (
+                        <span key={i} className="flex items-center gap-1">
+                          <span className={`px-2 py-1 rounded text-sm text-white ${s.status === "透" ? "bg-[#d4af37]" : s.status === "藏" ? "bg-[#888]" : "bg-[#ccc]"}`}>{s.gan}</span>
+                          <span className="text-[#666] text-xs">{s.status}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
 
-          {/* 论X生X月 */}
-          <div className="px-4 pb-6">
-            <div className="text-[#d4af37] font-medium mb-3">论{result.day.gan}生{result.month.zhi}月</div>
-            <div className="flex gap-2 mb-4">
-              <button className="px-4 py-2 bg-[#d4af37] text-white rounded-full text-sm">原文</button>
-              <button className="px-4 py-2 bg-[#f5f5f5] text-[#666] rounded-full text-sm">译文</button>
-              <button className="px-4 py-2 bg-[#f5f5f5] text-[#666] rounded-full text-sm">对照</button>
-            </div>
-            <div className="text-[#333] leading-relaxed text-sm space-y-3 bg-[#faf9f7] p-4 rounded-xl">
-              <p>十一月冬至阳生，弱中生旺，先壬，戊佐之。</p>
-              <p>仲冬丙火，冬至之前，与十月同看，冬至之后，一阳来复，弱中复强，仲冬壬水专旺之时，故用戊土为佐，将非日元生旺不可耳。</p>
-              <p>用戊不可少甲句，最为扼要，冬至之后，虽云一阳来复，究属气势甚微，丙火虽喜壬水辅映，必须甲木生助火旺，方能相得益彰。</p>
-            </div>
-          </div>
+                {/* 论X生X月（依真实日主月令动态生成） */}
+                <div className="px-3 pb-6">
+                  <div className="text-[#d4af37] font-medium mb-3">{text.title}</div>
+                  <div className="flex gap-2 mb-3">
+                    <button
+                      onClick={() => setClassicView("yuanwen")}
+                      className={`px-4 py-1.5 rounded-full text-sm ${classicView === "yuanwen" ? "bg-[#d4af37] text-white" : "bg-[#f5f5f5] text-[#666]"}`}
+                    >原文</button>
+                    <button
+                      onClick={() => setClassicView("yiwen")}
+                      className={`px-4 py-1.5 rounded-full text-sm ${classicView === "yiwen" ? "bg-[#d4af37] text-white" : "bg-[#f5f5f5] text-[#666]"}`}
+                    >译文</button>
+                  </div>
+                  <div className="text-[#333] leading-relaxed text-sm space-y-2 bg-[#faf9f7] p-3 rounded-xl">
+                    {(classicView === "yuanwen" ? text.yuanWen : text.yiWen).map((p, i) => (
+                      <p key={i}>{p}</p>
+                    ))}
+                  </div>
+                  <p className="text-[#999] text-xs mt-2">* 依据《穷通宝鉴》调候用神原理，结合本命日主与月令实时推演</p>
+                </div>
+              </>
+            )
+          })()}
         </div>
       )}
 

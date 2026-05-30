@@ -48,55 +48,95 @@ export function AIPage() {
     scrollToBottom()
   }, [messages])
 
-  const generateAIResponse = async (userMessage: string): Promise<string> => {
-    // 模拟AI响应（实际项目中应调用AI API）
-    await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000))
-    
-    const roleResponses: Record<string, string[]> = {
-      general: [
-        `感谢您的提问。根据传统国学智慧，我来为您分析：\n\n${userMessage.includes("八字") ? "八字命理是中国传统命理学的核心，通过年、月、日、时四柱八字来推演人生命运。建议您提供准确的出生时间以获得更精确的分析。" : ""}\n\n${userMessage.includes("中医") || userMessage.includes("症状") ? "从中医角度来看，您描述的症状可能与脾胃功能有关。建议进行详细的四诊（望闻问切）后再做判断。" : ""}\n\n如需进一步了解，请随时提问。\n\n**温馨提示**：本分析仅供参考，不能替代专业医师诊断或面对面咨询。`,
-        `您好！这是一个很好的问题。\n\n从传统智慧的角度来看：\n\n1. **理论基础**：中国传统文化强调天人合一，认为人与自然息息相关。\n\n2. **实践应用**：无论是易学还是中医，都需要结合具体情况进行分析。\n\n3. **现代视角**：我们可以将传统智慧与现代科学相结合，取其精华。\n\n希望这个解答对您有所帮助！`,
-      ],
-      bazi: [
-        `【命理分析】\n\n根据您提供的信息，我来进行八字命理分析：\n\n**四柱排盘**\n通过干支纪年法，我们可以推算出四柱八字，从而分析命主的先天格局。\n\n**五行分析**\n五行的平衡与否直接影响命主的性格特点和人生运势。\n\n**大运流年**\n结合大运和流年，我们可以看出不同人生阶段的运势起伏。\n\n**建议**\n请提供准确的出生年月日时（最好精确到时辰），以便进行更详细的分析。\n\n*注：命理分析仅供参考，人生还需靠自己努力。*`,
-      ],
-      tcm: [
-        `【中医辨证分析】\n\n根据您描述的症状，初步分析如下：\n\n**主要表现**\n您提到的症状需要结合舌象、脉象综合判断。\n\n**可能证型**\n从症状来看，可能涉及以下几种证型：\n- 脾胃虚弱\n- 气血不足\n- 痰湿内蕴\n\n**调理建议**\n1. **饮食调理**：清淡饮食，避免生冷油腻\n2. **作息规律**：早睡早起，避免熬夜\n3. **适度运动**：太极、八段锦等柔和运动\n\n**推荐方药**（仅供参考）\n四君子汤加减：人参、白术、茯苓、甘草\n\n*重要提示：以上分析仅供学习参考，如有身体不适请及时就医。*`,
-      ],
-      fengshui: [
-        `【风水堪舆分析】\n\n风水学是中国传统文化的重要组成部分，讲究人与环境的和谐统一。\n\n**基本原则**\n- 藏风聚气\n- 山环水抱\n- 明堂开阔\n\n**居家风水**\n住宅的朝向、格局、采光等都会影响居住者的运势。\n\n**化解方法**\n如有不利因素，可通过摆设、颜色等方式进行调整。\n\n如需详细分析，请提供房屋的朝向、户型图等信息。\n\n*温馨提示：风水学需结合实际情况综合分析，不可盲目迷信。*`,
-      ],
-    }
-    
-    const responses = roleResponses[selectedRole] || roleResponses.general
-    return responses[Math.floor(Math.random() * responses.length)]
-  }
-
   const handleSend = async () => {
     if (!inputValue.trim() || isLoading) return
-    
+
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
       content: inputValue.trim(),
       timestamp: new Date(),
     }
-    
-    setMessages(prev => [...prev, userMessage])
+
+    // 构建发往 API 的历史（ModelMessage 格式）
+    const history = [...messages, userMessage].map((m) => ({ role: m.role, content: m.content }))
+    const baziContext = lastResult ? formatPaipanForAI(lastResult) : ""
+
+    setMessages((prev) => [...prev, userMessage])
     setInputValue("")
     setIsLoading(true)
-    
+
+    const assistantId = (Date.now() + 1).toString()
+    let assistantCreated = false
+
     try {
-      const response = await generateAIResponse(userMessage.content)
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: response,
-        timestamp: new Date(),
+      const res = await fetch("/api/bazi-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: history, role: selectedRole, baziContext }),
+      })
+
+      if (!res.ok || !res.body) throw new Error("请求失败")
+
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ""
+      let fullText = ""
+
+      const pushDelta = (delta: string) => {
+        fullText += delta
+        if (!assistantCreated) {
+          assistantCreated = true
+          setMessages((prev) => [
+            ...prev,
+            { id: assistantId, role: "assistant", content: fullText, timestamp: new Date() },
+          ])
+        } else {
+          setMessages((prev) =>
+            prev.map((m) => (m.id === assistantId ? { ...m, content: fullText } : m)),
+          )
+        }
       }
-      setMessages(prev => [...prev, assistantMessage])
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split("\n")
+        buffer = lines.pop() || ""
+        for (const line of lines) {
+          const trimmed = line.trim()
+          if (!trimmed.startsWith("data:")) continue
+          const data = trimmed.slice(5).trim()
+          if (data === "[DONE]") continue
+          try {
+            const chunk = JSON.parse(data)
+            if ((chunk.type === "text-delta" || chunk.type === "text") && chunk.delta) {
+              pushDelta(chunk.delta)
+            }
+          } catch {
+            /* 忽略无法解析的片段 */
+          }
+        }
+      }
+
+      if (!assistantCreated) {
+        setMessages((prev) => [
+          ...prev,
+          { id: assistantId, role: "assistant", content: "（未收到回复，请重试）", timestamp: new Date() },
+        ])
+      }
     } catch (error) {
-      console.error("AI response error:", error)
+      console.error("[v0] AI response error:", error)
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: assistantId,
+          role: "assistant",
+          content: "抱歉，AI 服务暂时不可用，请稍后再试。",
+          timestamp: new Date(),
+        },
+      ])
     } finally {
       setIsLoading(false)
     }
