@@ -42,6 +42,22 @@ const SHICHEN_LIST: { name: string; range: string }[] = [
   { name: '亥', range: '21-23' },
 ]
 
+// 基本信息表格：行
+function InfoRow({ children, striped, index }: { children: React.ReactNode; striped?: boolean; index?: number }) {
+  const bg = striped && (index ?? 0) % 2 === 1 ? "bg-[#f3f3f3]" : "bg-white"
+  return <div className={`flex ${bg} px-4 py-3`}>{children}</div>
+}
+
+// 基本信息表格：单元格
+function InfoCell({ label, value, full }: { label: string; value: React.ReactNode; full?: boolean }) {
+  return (
+    <div className={`flex items-baseline gap-2 ${full ? "w-full" : "w-1/2"}`}>
+      <span className="text-[#999] whitespace-nowrap">{label}：</span>
+      <span className="text-[#333] break-all">{value}</span>
+    </div>
+  )
+}
+
 // 古籍列表
 const CLASSICS = [
   { name: '穷通宝鉴', short: '穷通宝鉴' },
@@ -773,10 +789,10 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
             </table>
           </div>
 
-          {/* 智能干支图示 / AI指令 */}
+          {/* 智能四柱图示 / AI指令 */}
           <div className="flex gap-2 mx-4 my-4">
             <button className="flex-1 py-3 bg-[#f8f5f0] rounded-xl text-[#333] font-medium flex items-center justify-center gap-1">
-              智能干支图示 <ChevronRight className="w-4 h-4" />
+              智能四柱图示 <ChevronRight className="w-4 h-4" />
             </button>
             <button
               onClick={() => onAIAnalysis?.()}
@@ -786,41 +802,34 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
             </button>
           </div>
 
-          {/* 干支关系分析 */}
-          <div className="px-4 py-3 space-y-2 border-t border-[#f0f0f0]">
-            <div className="flex">
-              <span className="text-[#d4af37] w-20 shrink-0">原局天干：</span>
-              <span className="text-[#333]">{result.ganZhiRelation?.tianGan?.length ? result.ganZhiRelation.tianGan.join(" | ") : "无"}</span>
+          {/* 天干留意 / 地支留意 */}
+          <div className="px-4 py-3 space-y-3 border-t border-[#f0f0f0]">
+            <div className="flex items-start gap-3">
+              <span className="shrink-0 px-2.5 py-1 rounded-md bg-[#f3eddf] text-[#b8902f] text-sm">天干留意</span>
+              <span className="text-[#333] leading-relaxed">{result.ganZhiRelation?.tianGan?.length ? result.ganZhiRelation.tianGan.join(";") : "无"}</span>
             </div>
-            <div className="flex">
-              <span className="text-[#d4af37] w-20 shrink-0">原局地支：</span>
-              <span className="text-[#333]">{result.ganZhiRelation?.diZhi?.length ? result.ganZhiRelation.diZhi.join(" | ") : "无"}</span>
-            </div>
-            <div className="flex">
-              <span className="text-[#d4af37] w-20 shrink-0">原局整柱：</span>
-              <span className="text-[#333]">{result.ganZhiRelation?.zhengZhu?.length ? result.ganZhiRelation.zhengZhu.join(" | ") : "无"}</span>
+            <div className="flex items-start gap-3">
+              <span className="shrink-0 px-2.5 py-1 rounded-md bg-[#f3eddf] text-[#b8902f] text-sm">地支留意</span>
+              <span className="text-[#333] leading-relaxed">{result.ganZhiRelation?.diZhi?.length ? result.ganZhiRelation.diZhi.join(";") : "无"}</span>
             </div>
           </div>
 
           {/* 智能古籍参考 */}
-          <div className="px-4 py-4 border-t border-[#f0f0f0]">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-[#333] font-medium flex items-center gap-2">
-                <span className="w-1 h-4 bg-[#d4af37] rounded"></span>
-                智能古籍参考
-              </h3>
+          <div className="mt-2 relative">
+            <div className="bg-[#3a2f1e] py-3 text-center text-white/90 font-medium relative">
+              智能古籍参考
+              <span className="absolute top-0 right-0 bg-[#c9a227] text-white text-[10px] px-3 py-1 rounded-bl-lg">VIP会员</span>
             </div>
-            <div className="flex gap-3 overflow-x-auto pb-2">
+            <div className="flex gap-3 overflow-x-auto px-4 py-4 bg-white">
               {CLASSICS.map((book, i) => (
                 <div key={i} className="flex flex-col items-center shrink-0">
-                  <div className="w-16 h-20 bg-[#f8f5f0] rounded-lg flex items-center justify-center border border-[#e5e5e5] shadow-sm">
-                    <div className="writing-vertical text-[#d4af37] text-xs font-medium">{book.short}</div>
+                  <div className={`w-20 h-20 rounded-xl flex items-center justify-center ${i === 0 ? "bg-white border border-[#eee] shadow-sm" : "bg-[#6b5836]"}`}>
+                    <div className={`text-sm font-medium ${i === 0 ? "text-[#b8902f]" : "text-white"}`}>{book.short}</div>
                   </div>
-                  <span className="text-xs text-[#333] mt-2">{book.name}</span>
                 </div>
               ))}
             </div>
-            <div className="flex justify-center gap-1 mt-2">
+            <div className="flex justify-center gap-1 pb-2 bg-white">
               <span className="w-2 h-2 rounded-full bg-[#d4af37]"></span>
               <span className="w-2 h-2 rounded-full bg-[#e5e5e5]"></span>
               <span className="w-2 h-2 rounded-full bg-[#e5e5e5]"></span>
@@ -845,7 +854,7 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
                 <div className="mx-3 mb-4 bg-white rounded-xl border border-[#f0f0f0] overflow-hidden shadow-sm">
                   <div className="p-3 flex items-center justify-between">
                     <div className="flex items-center gap-1">
-                      <span className="text-[#333]">调候用神</span>
+                      <span className="text-[#333] font-medium">调候用神提示</span>
                       <HelpCircle className="w-4 h-4 text-[#999]" />
                     </div>
                     <div className="flex gap-1.5 text-[#d4af37] font-medium">
@@ -853,7 +862,7 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
                     </div>
                   </div>
                   <div className="px-3 pb-3 flex items-center justify-between border-t border-[#f0f0f0] pt-3 flex-wrap gap-2">
-                    <span className="text-[#333] shrink-0">本命用神</span>
+                    <span className="text-[#333] shrink-0">本八字</span>
                     <div className="flex items-center gap-1.5 flex-wrap">
                       {statuses.map((s, i) => (
                         <span key={i} className="flex items-center gap-1">
