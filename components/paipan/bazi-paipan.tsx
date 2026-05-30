@@ -543,48 +543,39 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
               <tbody>
                 {/* 主星 */}
                 <tr className="border-b border-[#f0f0f0]">
-                  <td className="py-2 px-1 text-[#999]">主星</td>
-                  <td className="py-2 px-1 text-center text-[#333]">{result.shiShen?.year || "—"}</td>
-                  <td className="py-2 px-1 text-center text-[#333]">{result.shiShen?.month || "—"}</td>
-                  <td className="py-2 px-1 text-center text-[#c8102e] font-medium">{gender === "male" ? "元男" : "元女"}</td>
-                  <td className="py-2 px-1 text-center text-[#333]">{result.shiShen?.hour || "—"}</td>
+                  <td className="py-1 px-1 text-[#999]">主星</td>
+                  <td className="py-1 px-1 text-center text-[#333]">{result.shiShen?.year || "—"}</td>
+                  <td className="py-1 px-1 text-center text-[#333]">{result.shiShen?.month || "—"}</td>
+                  <td className="py-1 px-1 text-center text-[#c8102e] font-medium">{gender === "male" ? "元男" : "元女"}</td>
+                  <td className="py-1 px-1 text-center text-[#333]">{result.shiShen?.hour || "—"}</td>
                 </tr>
                 {/* 天干 */}
                 <tr className="border-b border-[#f0f0f0]">
-                  <td className="py-3 px-2 text-[#999]">天干</td>
+                  <td className="py-1.5 px-2 text-[#999]">天干</td>
                   {[result.year, result.month, result.day, result.hour].map((pillar, i) => (
-                    <td key={i} className="py-3 px-2 text-center">
-                      <div className="flex items-center justify-center gap-0.5">
-                        <span className="text-2xl font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[pillar.gan]) }}>
-                          {pillar.gan}
-                        </span>
-                        <span className="text-xs">{WUXING_ICONS[TIANGAN_WUXING[pillar.gan]]}</span>
-                      </div>
+                    <td key={i} className="py-1.5 px-2 text-center">
+                      <span className="text-2xl font-bold" style={{ color: getWuXingColor(TIANGAN_WUXING[pillar.gan]) }}>
+                        {pillar.gan}
+                      </span>
                     </td>
                   ))}
                 </tr>
                 {/* 地支 */}
                 <tr className="border-b border-[#f0f0f0]">
-                  <td className="py-3 px-2 text-[#999]">地支</td>
+                  <td className="py-1.5 px-2 text-[#999]">地支</td>
                   {[result.year, result.month, result.day, result.hour].map((pillar, i) => (
-                    <td key={i} className="py-3 px-2 text-center">
-                      <div className="flex items-center justify-center gap-0.5">
-                        <span className="text-2xl font-bold" style={{ color: getWuXingColor(DIZHI_WUXING[pillar.zhi]) }}>
-                          {pillar.zhi}
-                        </span>
-                        <span className="text-xs">{WUXING_ICONS[DIZHI_WUXING[pillar.zhi]]}</span>
-                      </div>
+                    <td key={i} className="py-1.5 px-2 text-center">
+                      <span className="text-2xl font-bold" style={{ color: getWuXingColor(DIZHI_WUXING[pillar.zhi]) }}>
+                        {pillar.zhi}
+                      </span>
                     </td>
                   ))}
                 </tr>
                 {/* 藏干 */}
                 <tr className="border-b border-[#f0f0f0]">
-                  <td className="py-2 px-2 text-[#999] align-top">
-                    <div>藏干</div>
-                    <div className="mt-1">🏠</div>
-                  </td>
+                  <td className="py-1.5 px-2 text-[#999] align-top">藏干</td>
                   {(["year", "month", "day", "hour"] as const).map((key, i) => (
-                    <td key={i} className="py-2 px-2 text-center align-top">
+                    <td key={i} className="py-1 px-2 text-center align-top">
                       <div className="space-y-0.5">
                         {(result.cangGan?.[key] || []).map((gan: string, j: number) => {
                           const wx = TIANGAN_WUXING[gan] || ""
@@ -600,9 +591,9 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
                 </tr>
                 {/* 副星 */}
                 <tr className="border-b border-[#f0f0f0]">
-                  <td className="py-2 px-2 text-[#999] align-top">副星</td>
+                  <td className="py-1 px-2 text-[#999] align-top">副星</td>
                   {(["year", "month", "day", "hour"] as const).map((key, i) => (
-                    <td key={i} className="py-2 px-2 text-center align-top">
+                    <td key={i} className="py-1 px-2 text-center align-top">
                       <div className="space-y-0.5 text-xs text-[#666]">
                         {(result.cangGanShiShen?.[key] || []).map((ss: string, j: number) => (
                           <div key={j}>{ss}</div>
@@ -613,41 +604,41 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
                 </tr>
                 {/* 星运 */}
                 <tr className="border-b border-[#f0f0f0]">
-                  <td className="py-2 px-2 text-[#999]">星运</td>
-                  <td className="py-2 px-2 text-center text-[#333]">{result.changSheng?.year || "临官"}</td>
-                  <td className="py-2 px-2 text-center text-[#333]">{result.changSheng?.month || "胎"}</td>
-                  <td className="py-2 px-2 text-center text-[#333]">{result.changSheng?.day || "长生"}</td>
-                  <td className="py-2 px-2 text-center text-[#333]">{result.changSheng?.hour || "胎"}</td>
+                  <td className="py-1 px-2 text-[#999]">星运</td>
+                  <td className="py-1 px-2 text-center text-[#333]">{result.changSheng?.year || "—"}</td>
+                  <td className="py-1 px-2 text-center text-[#333]">{result.changSheng?.month || "—"}</td>
+                  <td className="py-1 px-2 text-center text-[#333]">{result.changSheng?.day || "—"}</td>
+                  <td className="py-1 px-2 text-center text-[#333]">{result.changSheng?.hour || "—"}</td>
                 </tr>
                 {/* 自坐 */}
                 <tr className="border-b border-[#f0f0f0]">
-                  <td className="py-2 px-2 text-[#999]">自坐</td>
-                  <td className="py-2 px-2 text-center text-[#333]">{result.ziZuo?.year || "帝旺"}</td>
-                  <td className="py-2 px-2 text-center text-[#333]">{result.ziZuo?.month || "胎"}</td>
-                  <td className="py-2 px-2 text-center text-[#333]">{result.ziZuo?.day || "长生"}</td>
-                  <td className="py-2 px-2 text-center text-[#333]">{result.ziZuo?.hour || "胎"}</td>
+                  <td className="py-1 px-2 text-[#999]">自坐</td>
+                  <td className="py-1 px-2 text-center text-[#333]">{result.ziZuo?.year || "—"}</td>
+                  <td className="py-1 px-2 text-center text-[#333]">{result.ziZuo?.month || "—"}</td>
+                  <td className="py-1 px-2 text-center text-[#333]">{result.ziZuo?.day || "—"}</td>
+                  <td className="py-1 px-2 text-center text-[#333]">{result.ziZuo?.hour || "—"}</td>
                 </tr>
                 {/* 空亡 */}
                 <tr className="border-b border-[#f0f0f0]">
-                  <td className="py-2 px-2 text-[#999]">空亡</td>
-                  <td className="py-2 px-2 text-center text-[#333]">{result.kongWang?.year || "戌亥"}</td>
-                  <td className="py-2 px-2 text-center text-[#333]">{result.kongWang?.month || "申酉"}</td>
-                  <td className="py-2 px-2 text-center text-[#333]">{result.kongWang?.day || "戌亥"}</td>
-                  <td className="py-2 px-2 text-center text-[#333]">{result.kongWang?.hour || "午未"}</td>
+                  <td className="py-1 px-2 text-[#999]">空亡</td>
+                  <td className="py-1 px-2 text-center text-[#333]">{result.kongWang?.year || "—"}</td>
+                  <td className="py-1 px-2 text-center text-[#333]">{result.kongWang?.month || "—"}</td>
+                  <td className="py-1 px-2 text-center text-[#333]">{result.kongWang?.day || "—"}</td>
+                  <td className="py-1 px-2 text-center text-[#333]">{result.kongWang?.hour || "—"}</td>
                 </tr>
                 {/* 纳音 */}
                 <tr className="border-b border-[#f0f0f0]">
-                  <td className="py-2 px-2 text-[#999]">纳音</td>
-                  <td className="py-2 px-2 text-center text-[#333] text-xs">{result.naYin?.year || "大林木"}</td>
-                  <td className="py-2 px-2 text-center text-[#333] text-xs">{result.naYin?.month || "涧下水"}</td>
-                  <td className="py-2 px-2 text-center text-[#333] text-xs">{result.naYin?.day || "炉中火"}</td>
-                  <td className="py-2 px-2 text-center text-[#333] text-xs">{result.naYin?.hour || "霹雳火"}</td>
+                  <td className="py-1 px-2 text-[#999]">纳音</td>
+                  <td className="py-1 px-2 text-center text-[#333] text-xs">{result.naYin?.year || "—"}</td>
+                  <td className="py-1 px-2 text-center text-[#333] text-xs">{result.naYin?.month || "—"}</td>
+                  <td className="py-1 px-2 text-center text-[#333] text-xs">{result.naYin?.day || "—"}</td>
+                  <td className="py-1 px-2 text-center text-[#333] text-xs">{result.naYin?.hour || "—"}</td>
                 </tr>
                 {/* 神煞 */}
                 <tr>
-                  <td className="py-2 px-2 text-[#999] align-top">神煞</td>
+                  <td className="py-1 px-2 text-[#999] align-top">神煞</td>
                   {(["year", "month", "day", "hour"] as const).map((key, i) => (
-                    <td key={i} className="py-2 px-2 text-center align-top">
+                    <td key={i} className="py-1 px-2 text-center align-top">
                       <div className="space-y-0.5">
                         {(result.shenSha?.[key] || []).map((ss: string, j: number) => (
                           <div key={j} className="text-xs text-[#d4af37]">{ss}</div>
@@ -966,7 +957,7 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
               <span className="text-[#333]">{result.ganZhiRelation?.diZhi?.length ? result.ganZhiRelation.diZhi.join(" | ") : "无"}</span>
             </div>
             <div className="flex">
-              <span className="text-[#d4af37] w-20 shrink-0">原局整柱：</span>
+              <span className="text-[#d4af37] w-20 shrink-0">原局整柱��</span>
               <span className="text-[#333]">{result.ganZhiRelation?.zhengZhu?.length ? result.ganZhiRelation.zhengZhu.join(" | ") : "无"}</span>
             </div>
           </div>

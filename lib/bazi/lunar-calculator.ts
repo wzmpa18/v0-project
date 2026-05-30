@@ -13,6 +13,7 @@
 
 // @ts-expect-error - lunar-javascript 没有类型定义
 import { Solar, Lunar, EightChar } from 'lunar-javascript'
+import { getPillarShenSha, getShenShaForGanZhi } from './shensha'
 
 // 地支本气（藏干主气），用于大运/流年/小运的地支十神
 const ZHI_BENQI: Record<string, string> = {
@@ -85,7 +86,11 @@ export const SHICHEN_TIMES: Record<string, string> = {
 }
 
 export interface BaziResult {
+  // 结构化日期
+  solar: { year: number; month: number; day: number }
+  lunar: { year: number; month: number; day: number; isLeap: boolean }
   // 基本信息
+  shengXiao: string      // 生肖（别名）
   solarDate: string      // 公历日期
   lunarDate: string      // 农历日期
   lunarMonthChinese: string // 农历月份（如：腊月）
@@ -356,17 +361,14 @@ export function calculateBazi(options: BaziOptions): BaziResult {
     hour: eightChar.getTimeDiShi ? eightChar.getTimeDiShi() : getChangSheng(dayGan, hourZhi)
   }
 
-  // 神煞
-  const shenSha = {
-    year: getShenSha(eightChar, 'year'),
-    month: getShenSha(eightChar, 'month'),
-    day: getShenSha(eightChar, 'day'),
-    hour: getShenSha(eightChar, 'hour')
-  }
+  // 神煞（lunar-javascript 无神煞 API，使用本地《协纪辨方书》规则计算）
+  const shenShaCtx = { yearGan, monthGan, dayGan, hourGan, yearZhi, monthZhi, dayZhi, hourZhi }
+  const shenSha = getPillarShenSha(shenShaCtx)
 
   // 大运（lunar 的第一步为空干支的童限期，需过滤，童限由小运体现）
   const yun = eightChar.getYun(gender === 'male' ? 1 : 0)
-  const daYunList = yun.getDaYun()
+  // 请求 13 步（含 1 步童限空运），过滤后约 12 步大运，覆盖约 120 岁
+  const daYunList = yun.getDaYun(13)
   const daYun = daYunList
     .filter((dy: { getGanZhi: () => string }) => (dy.getGanZhi() || '').length >= 2)
     .map((dy: { getStartYear: () => number; getStartAge: () => number; getGanZhi: () => string }) => {
@@ -383,7 +385,8 @@ export function calculateBazi(options: BaziOptions): BaziResult {
       ganShiShen: gan ? getShiShen(dayGan, gan) : '',
       // 大运地支藏干本气十神
       zhiShiShen: zhi ? getShiShen(dayGan, ZHI_BENQI[zhi] || zhi) : '',
-      shenSha: [] as string[]
+      // 大运神煞（按本柱干支查，参照原局年干/日干、月支）
+      shenSha: (gan && zhi) ? getShenShaForGanZhi(gan, zhi, shenShaCtx) : ([] as string[])
     }
   })
 
@@ -419,7 +422,7 @@ export function calculateBazi(options: BaziOptions): BaziResult {
     direction: (gender === 'male' ? (isYangYear(yearGan) ? '顺行' : '逆行') : (isYangYear(yearGan) ? '逆行' : '顺行')) as '顺行' | '逆行'
   }
 
-  // 流年（从出生年到当前年 + 未来10年）
+  // 流年（从出生年到���前年 + 未来10年）
   const currentYear = new Date().getFullYear()
   const liuNian: BaziResult['liuNian'] = []
   for (let y = year; y <= currentYear + 10; y++) {
@@ -491,7 +494,13 @@ export function calculateBazi(options: BaziOptions): BaziResult {
       hour: hourXunKong
     },
     changSheng,
-    ziZuo: changSheng, // 自坐与十二长生相同
+    // 自坐：各柱天干对本柱地支的十二长生（区别于星运用日干查）
+    ziZuo: {
+      year: getChangSheng(yearGan, yearZhi),
+      month: getChangSheng(monthGan, monthZhi),
+      day: getChangSheng(dayGan, dayZhi),
+      hour: getChangSheng(hourGan, hourZhi),
+    },
     shenSha,
     daYun,
     xiaoYun,
@@ -517,7 +526,7 @@ function getShiShen(dayGan: string, gan: string): string {
     '戊': { '甲': '七杀', '乙': '正官', '丙': '偏印', '丁': '正印', '戊': '比肩', '己': '劫财', '庚': '食神', '辛': '伤官', '壬': '偏财', '癸': '正财' },
     '己': { '甲': '正官', '乙': '七杀', '丙': '正印', '丁': '偏印', '戊': '劫财', '己': '比肩', '庚': '伤官', '辛': '食神', '壬': '正财', '癸': '偏财' },
     '庚': { '甲': '偏财', '乙': '正财', '丙': '七杀', '丁': '正官', '戊': '偏印', '己': '正印', '庚': '比肩', '辛': '劫财', '壬': '食神', '癸': '伤官' },
-    '辛': { '甲': '正财', '乙': '偏财', '丙': '正官', '丁': '七杀', '戊': '正印', '己': '偏印', '庚': '劫财', '辛': '比肩', '壬': '伤官', '癸': '食神' },
+    '辛': { '甲': '正财', '乙': '偏财', '丙': '正官', '丁': '七杀', '戊': '正印', '己': '偏印', '庚': '劫财', '辛': '比肩', '壬': '伤官', '��': '食神' },
     '壬': { '甲': '食神', '乙': '伤官', '丙': '偏财', '丁': '正财', '戊': '七杀', '己': '正官', '庚': '偏印', '辛': '正印', '壬': '比肩', '癸': '劫财' },
     '癸': { '甲': '伤官', '乙': '食神', '丙': '正财', '丁': '偏财', '戊': '正官', '己': '七杀', '庚': '正印', '辛': '偏印', '壬': '劫财', '癸': '比肩' }
   }
@@ -601,38 +610,6 @@ function isYangYear(yearGan: string): boolean {
 }
 
 /**
- * 获取神煞
- */
-function getShenSha(eightChar: typeof EightChar, position: 'year' | 'month' | 'day' | 'hour'): string[] {
-  const shenShaList: string[] = []
-  
-  try {
-    let shenshas: string[] = []
-    switch (position) {
-      case 'year':
-        shenshas = eightChar.getYearShenSha() || []
-        break
-      case 'month':
-        shenshas = eightChar.getMonthShenSha() || []
-        break
-      case 'day':
-        shenshas = eightChar.getDayShenSha() || []
-        break
-      case 'hour':
-        shenshas = eightChar.getTimeShenSha() || []
-        break
-    }
-    if (Array.isArray(shenshas)) {
-      shenShaList.push(...shenshas)
-    }
-  } catch {
-    // 神煞计算可能失败，返回空数组
-  }
-  
-  return shenShaList
-}
-
-/**
  * 统计五行
  */
 function countWuXing(ganZhiList: string[]): Record<string, number> {
@@ -671,7 +648,7 @@ function getWuXingStrength(monthZhi: string): { wang: string; xiang: string; xiu
 /**
  * 获取干支关系
  */
-function getGanZhiRelation(gans: string[], zhis: string[]): { tianGan: string[]; diZhi: string[]; zhengZhu: string[] } {
+export function getGanZhiRelation(gans: string[], zhis: string[]): { tianGan: string[]; diZhi: string[]; zhengZhu: string[] } {
   const tianGan: string[] = []
   const diZhi: string[] = []
   const zhengZhu: string[] = []
