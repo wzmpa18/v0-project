@@ -1042,13 +1042,19 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
             </div>
           </div>
 
-          {/* 五行旺衰条 */}
+          {/* 五行旺衰条（按本命月令真实推算） */}
           <div className="flex text-xs text-white">
-            <div className="flex-1 py-1.5 text-center bg-[#1a73e8]">水旺</div>
-            <div className="flex-1 py-1.5 text-center bg-[#34a853]">木相</div>
-            <div className="flex-1 py-1.5 text-center bg-[#d4af37]">金休</div>
-            <div className="flex-1 py-1.5 text-center bg-[#a67c52]">土囚</div>
-            <div className="flex-1 py-1.5 text-center bg-[#c8102e]">火死</div>
+            {([
+              ["旺", result.wuXingStrength?.wang],
+              ["相", result.wuXingStrength?.xiang],
+              ["休", result.wuXingStrength?.xiu],
+              ["囚", result.wuXingStrength?.qiu],
+              ["死", result.wuXingStrength?.si],
+            ] as const).map(([status, el], i) => (
+              <div key={i} className="flex-1 py-1.5 text-center" style={{ backgroundColor: WU_XING_COLOR[el ?? ""] ?? "#999" }}>
+                {(el ?? "—") + status}
+              </div>
+            ))}
           </div>
 
           {/* 智能干支图示 / AI指令 */}
