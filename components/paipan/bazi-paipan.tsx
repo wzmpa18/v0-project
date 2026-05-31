@@ -1065,7 +1065,7 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
           <div className="px-4 py-3 space-y-2 border-t border-[#f0f0f0] text-sm">
             <div className="flex">
               <span className="text-[#d4af37] w-20 shrink-0">岁运天干：</span>
-              <span className="text-[#333]">��癸相克 | 戊癸合化火</span>
+              <span className="text-[#333]">戊癸相克 | 戊癸合化火</span>
             </div>
             <div className="flex">
               <span className="text-[#d4af37] w-20 shrink-0">岁运地支：</span>
@@ -1088,7 +1088,7 @@ export function BaziPaipan({ onBack, onAIAnalysis }: BaziPaipanProps) {
               <span className="text-[#333]">{result.ganZhiRelation?.diZhi?.length ? result.ganZhiRelation.diZhi.join(" | ") : "无"}</span>
             </div>
             <div className="flex">
-              <span className="text-[#d4af37] w-20 shrink-0">原局整柱��</span>
+              <span className="text-[#d4af37] w-20 shrink-0">原局整柱：</span>
               <span className="text-[#333]">{result.ganZhiRelation?.zhengZhu?.length ? result.ganZhiRelation.zhengZhu.join(" | ") : "无"}</span>
             </div>
           </div>
