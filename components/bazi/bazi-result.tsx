@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useRef } from "react"
-import { ChevronLeft, ChevronRight, MoreHorizontal, Eye, Pencil, Plus, X, Camera, Copy, Check, ChevronDown, Calendar } from "lucide-react"
+import { useState } from "react"
+import { ChevronLeft, ChevronRight, MoreHorizontal, Eye, Pencil, Plus, X, Copy, Check, ChevronDown, Calendar } from "lucide-react"
 import { 
   QIONG_TONG_BAO_JIAN, 
   DI_TIAN_SUI, 
@@ -10,33 +10,26 @@ import {
   CHENG_GU_DATA,
   analyzeGanZhiRelations 
 } from "@/lib/bazi-guji-data"
+import { calculateDayGanWangShuai, analyzeTongDangYiDang } from "@/lib/bazi-wangshuai"
+import { determineGeJu, analyzeYongShen } from "@/lib/bazi-geju"
+import { checkShenShaByPosition } from "@/lib/bazi-shenshe"
+import { calculateDaYun, calculateLiuNian, getTaiYuan, getMingGong, getShenGong, getKongWang, ZHI_CANG_GAN } from "@/lib/bazi-data"
 
-// 五行颜色映射 - 匹配问真八字
 const WUXING_COLOR: Record<string, string> = {
   "木": "#22c55e", "火": "#ef4444", "土": "#a16207", "金": "#ca8a04", "水": "#3b82f6",
 }
 
-// 天干五行
 const TIAN_GAN_WUXING: Record<string, string> = {
   "甲": "木", "乙": "木", "丙": "火", "丁": "火", "戊": "土", "己": "土", "庚": "金", "辛": "金", "壬": "水", "癸": "水",
 }
 
-// 地支五行
 const DI_ZHI_WUXING: Record<string, string> = {
   "子": "水", "丑": "土", "寅": "木", "卯": "木", "辰": "土", "巳": "火", "午": "火", "未": "土", "申": "金", "酉": "金", "戌": "土", "亥": "水",
 }
 
-// 五行emoji
-const WUXING_EMOJI: Record<string, string> = {
-  "木": "🌲", "火": "🔥", "土": "⛰️", "金": "🪙", "水": "💧",
-}
-
 const getGanColor = (gan: string) => WUXING_COLOR[TIAN_GAN_WUXING[gan]] || "#333"
 const getZhiColor = (zhi: string) => WUXING_COLOR[DI_ZHI_WUXING[zhi]] || "#333"
-const getGanEmoji = (gan: string) => WUXING_EMOJI[TIAN_GAN_WUXING[gan]] || ""
-const getZhiEmoji = (zhi: string) => WUXING_EMOJI[DI_ZHI_WUXING[zhi]] || ""
 
-// 十神颜色
 const getShiShenColor = (shiShen: string): string => {
   const colorMap: Record<string, string> = {
     "印": "#ef4444", "枭": "#ef4444", "偏印": "#ef4444",
@@ -64,20 +57,11 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
   const [showAiModal, setShowAiModal] = useState(false)
   const [aiCategory, setAiCategory] = useState("全项")
   const [copied, setCopied] = useState(false)
-  
-  // 断事笔记数据
-  const [noteData, setNoteData] = useState({
-    career: "",
-    education: "",
-    wealth: "",
-    marriage: "",
-    health: "",
-    family: "",
-    personality: "",
-    intro: ""
-  })
 
-  // 四柱数据
+  const noteData = useState({
+    career: "", education: "", wealth: "", marriage: "", health: "", family: "", personality: "", intro: ""
+  })[0]
+
   const siZhu = result?.siZhu || {
     year: { gan: "己", zhi: "巳", shiShen: "伤官", cangGan: ["丙", "庚", "戊"], naYin: "大林木" },
     month: { gan: "丙", zhi: "子", shiShen: "比肩", cangGan: ["癸"], naYin: "涧下水" },
@@ -88,16 +72,13 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
   const dayGan = siZhu.day.gan
   const monthZhi = siZhu.month.zhi
 
-  // 获取穷通宝鉴内容
   const qiongTongContent = QIONG_TONG_BAO_JIAN[dayGan]?.[monthZhi] || {
     yuanwen: "暂无此日主月支的穷通宝鉴论述。",
     yiwen: "暂无白话译文。"
   }
 
-  // 获取滴天髓内容
   const diTianSuiContent = DI_TIAN_SUI[dayGan] || "暂无此日主的滴天髓论述。"
 
-  // 分析干支关系
   const ganZhiRelations = analyzeGanZhiRelations({
     yearGan: siZhu.year.gan, yearZhi: siZhu.year.zhi,
     monthGan: siZhu.month.gan, monthZhi: siZhu.month.zhi,
@@ -105,78 +86,62 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
     hourGan: siZhu.hour.gan, hourZhi: siZhu.hour.zhi
   })
 
-  // 神煞数据
-  const shenShaData = {
-    year: ["天厨贵人", "德秀贵人", "天德贵人", "禄神", "亡神"],
-    month: ["太极贵人", "月德合", "桃花", "天喜", "披麻"],
-    day: ["阴差阳错", "天乙贵人", "德秀贵人", "元辰"],
-    hour: ["太极贵人", "文昌贵人", "天厨贵人", "天乙贵人", "福星贵人", "空亡", "飞刃", "劫煞", "驿马", "词馆"]
-  }
+  const shenShaData = checkShenShaByPosition({
+    yearGan: siZhu.year.gan, yearZhi: siZhu.year.zhi,
+    monthGan: siZhu.month.gan, monthZhi: siZhu.month.zhi,
+    dayGan: siZhu.day.gan, dayZhi: siZhu.day.zhi,
+    hourGan: siZhu.hour.gan, hourZhi: siZhu.hour.zhi
+  })
 
-  // 大运数据
-  const daYunData = result?.daYun || [
-    { year: 1990, ageRange: "2~10岁", gan: "小", zhi: "运" },
-    { year: 1998, ageRange: "10岁", gan: "乙", zhi: "亥", s1: "印", s2: "杀" },
-    { year: 2008, ageRange: "20岁", gan: "甲", zhi: "戌", s1: "枭", s2: "食" },
-    { year: 2018, ageRange: "30岁", gan: "癸", zhi: "酉", s1: "官", s2: "财", highlight: true },
-    { year: 2028, ageRange: "40岁", gan: "壬", zhi: "申", s1: "杀", s2: "才" },
-    { year: 2038, ageRange: "50岁", gan: "辛", zhi: "未", s1: "财", s2: "伤" },
-    { year: 2048, ageRange: "60岁", gan: "庚", zhi: "午", s1: "才", s2: "劫" },
-    { year: 2058, ageRange: "70岁", gan: "己", zhi: "巳", s1: "伤", s2: "比" },
-    { year: 2068, ageRange: "80岁", gan: "戊", zhi: "辰", s1: "食", s2: "食" },
-    { year: 2078, ageRange: "90岁", gan: "丁", zhi: "卯", s1: "劫", s2: "印" },
-  ]
+  const wangShuaiResult = calculateDayGanWangShuai(
+    siZhu.day.gan,
+    siZhu.year.gan, siZhu.year.zhi,
+    siZhu.month.gan, siZhu.month.zhi,
+    siZhu.day.zhi,
+    siZhu.hour.gan, siZhu.hour.zhi
+  )
 
-  // 流年数据
-  const liuNianData = [
-    { year: 2018, gan: "戊", zhi: "戌", s1: "食", s2: "食", xiaoYun: "己未" },
-    { year: 2019, gan: "己", zhi: "亥", s1: "伤", s2: "杀", xiaoYun: "戊午" },
-    { year: 2020, gan: "庚", zhi: "子", s1: "才", s2: "官", xiaoYun: "丁巳" },
-    { year: 2021, gan: "辛", zhi: "丑", s1: "财", s2: "伤", xiaoYun: "丙辰" },
-    { year: 2022, gan: "壬", zhi: "寅", s1: "杀", s2: "枭", xiaoYun: "乙卯" },
-    { year: 2023, gan: "癸", zhi: "卯", s1: "官", s2: "印", xiaoYun: "甲寅" },
-    { year: 2024, gan: "甲", zhi: "辰", s1: "枭", s2: "食", xiaoYun: "癸丑" },
-    { year: 2025, gan: "乙", zhi: "巳", s1: "印", s2: "比", xiaoYun: "王子" },
-    { year: 2026, gan: "丙", zhi: "午", s1: "比", s2: "劫", xiaoYun: "辛亥", highlight: true },
-    { year: 2027, gan: "丁", zhi: "未", s1: "劫", s2: "伤", xiaoYun: "庚戌" },
-  ]
+  const geJuResult = determineGeJu(
+    siZhu.day.gan,
+    siZhu.year.gan, siZhu.year.zhi,
+    siZhu.month.gan, siZhu.month.zhi,
+    siZhu.day.zhi,
+    siZhu.hour.gan, siZhu.hour.zhi,
+    wangShuaiResult.level
+  )
 
-  // 流月数据
-  const liuYueData = [
-    { name: "立春", date: "2/4", gan: "庚", zhi: "寅", s1: "才", s2: "枭" },
-    { name: "惊蛰", date: "3/5", gan: "辛", zhi: "卯", s1: "财", s2: "印" },
-    { name: "清明", date: "4/5", gan: "壬", zhi: "辰", s1: "杀", s2: "食" },
-    { name: "立夏", date: "5/5", gan: "癸", zhi: "巳", s1: "官", s2: "比" },
-    { name: "芒种", date: "6/5", gan: "甲", zhi: "午", s1: "枭", s2: "劫" },
-    { name: "小暑", date: "7/7", gan: "乙", zhi: "未", s1: "印", s2: "伤" },
-    { name: "立秋", date: "8/7", gan: "丙", zhi: "申", s1: "比", s2: "才" },
-    { name: "白露", date: "9/7", gan: "丁", zhi: "酉", s1: "劫", s2: "财" },
-    { name: "寒露", date: "10/8", gan: "戊", zhi: "戌", s1: "食", s2: "食" },
-    { name: "立冬", date: "11/7", gan: "己", zhi: "亥", s1: "伤", s2: "杀" },
-  ]
+  const yongShenResult = analyzeYongShen(geJuResult, siZhu.day.gan, wangShuaiResult.level)
 
-  // 五行统计 - 基于真实八字计算
+  const tongDangYiDang = analyzeTongDangYiDang(
+    siZhu.day.gan,
+    siZhu.year.gan, siZhu.year.zhi,
+    siZhu.month.gan, siZhu.month.zhi,
+    siZhu.day.zhi,
+    siZhu.hour.gan, siZhu.hour.zhi
+  )
+
+  const daYunData = calculateDaYun(
+    siZhu.year.gan, siZhu.month.zhi, siZhu.day.gan, siZhu.hour.zhi, result?.gender || "male"
+  )
+
+  const currentYear = new Date().getFullYear()
+  const liuNianData = calculateLiuNian(currentYear, siZhu.day.gan)
+
   const calculateWuxingCount = () => {
     const count = { "金": 0, "木": 0, "水": 0, "火": 0, "土": 0 }
-    
-    // 统计天干五行
     const gans = [siZhu.year.gan, siZhu.month.gan, siZhu.day.gan, siZhu.hour.gan]
     gans.forEach(gan => {
       const wx = TIAN_GAN_WUXING[gan]
       if (wx) count[wx as keyof typeof count]++
     })
-    
-    // 统计地支五行
     const zhis = [siZhu.year.zhi, siZhu.month.zhi, siZhu.day.zhi, siZhu.hour.zhi]
     zhis.forEach(zhi => {
       const wx = DI_ZHI_WUXING[zhi]
       if (wx) count[wx as keyof typeof count]++
     })
-    
     return count
   }
-  
-  // 含藏干统计
+
   const calculateCangGanCount = () => {
     const count = { "金": 0, "木": 0, "水": 0, "火": 0, "土": 0 }
     const allCangGan = [
@@ -191,34 +156,13 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
     })
     return count
   }
-  
-  // 十神统计
-  const shishenCount = {
-    "比劫": 1, "财才": 1, "食伤": 5, "官杀": 2, "印枭": 0
-  }
-  
+
   const wuxingCount = calculateWuxingCount()
   const cangGanCount = calculateCangGanCount()
-  const totalCount = Object.values(wuxingCount).reduce((a, b) => a + b, 0)
-  
-  // 计算同党异党比例
-  const dayGanWuxing = TIAN_GAN_WUXING[dayGan]
-  const tongDangWuxing = dayGanWuxing === "木" ? ["木", "水"] :
-    dayGanWuxing === "火" ? ["火", "木"] :
-    dayGanWuxing === "土" ? ["土", "火"] :
-    dayGanWuxing === "金" ? ["金", "土"] :
-    ["水", "金"]
-  
-  const tongDangCount = tongDangWuxing.reduce((sum, wx) => sum + wuxingCount[wx as keyof typeof wuxingCount], 0)
-  const yiDangCount = totalCount - tongDangCount
-  const tongDang = Math.round((tongDangCount / totalCount) * 100 * 10) / 10
-  const yiDang = Math.round((yiDangCount / totalCount) * 100 * 10) / 10
 
-  // 称骨数据
   const chengGuWeight = "四两九钱"
-  const chengGuData = CHENG_GU_DATA["四两九"] || { weight: chengGuWeight, verse: "此命推来福不轻，自成自立显门庭，从来富贵人钦敬，使婢差奴过一生。" }
+  const chengGanData = CHENG_GU_DATA["四两九"] || { weight: chengGuWeight, verse: "此命推来福不轻，自成自立显门庭，从来富贵人钦敬，使婢差奴过一生。" }
 
-  // 复制AI指令
   const copyAiPrompt = () => {
     const baziStr = `${siZhu.year.gan}${siZhu.year.zhi} ${siZhu.month.gan}${siZhu.month.zhi} ${siZhu.day.gan}${siZhu.day.zhi} ${siZhu.hour.gan}${siZhu.hour.zhi}`
     const template = AI_PROMPT_TEMPLATES[aiCategory]
@@ -231,7 +175,6 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  // 古籍书籍数据 - 扩展完整
   const gujiBooks = [
     { name: "穷通宝鉴", icon: "穷通\n宝鉴", id: "qiongtong" },
     { name: "滴天髓", icon: "滴天\n髓", id: "ditianshui" },
@@ -243,20 +186,21 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
     { name: "命理约言", icon: "命理\n约言", id: "mingliyu" },
   ]
 
+  const zodiac = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"]
+  const currentZodiac = zodiac[(new Date().getFullYear() - 1984) % 12]
+
   return (
-    <div className="min-h-screen bg-white">
-      {/* 顶部导航 */}
-      <div className="flex items-center justify-between px-4 py-3 bg-white border-b">
+    <div className="min-h-screen bg-white pb-20">
+      <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100 sticky top-0 z-10">
         <button onClick={onBack} className="p-1">
           <ChevronLeft className="w-6 h-6 text-gray-600" />
         </button>
-        <h1 className="text-lg font-medium">问真八字</h1>
+        <h1 className="text-lg font-medium text-gray-800">问真八字</h1>
         <button className="p-1">
           <MoreHorizontal className="w-6 h-6 text-gray-600" />
         </button>
       </div>
 
-      {/* Tab导航 - 绿色高亮 */}
       <div className="flex bg-[#4a9d5b] text-white">
         {[
           { id: "info", label: "基本信息" },
@@ -267,19 +211,20 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
-            className={`flex-1 py-3 text-sm font-medium transition-colors ${
+            className={`flex-1 py-3 text-sm font-medium transition-colors relative ${
               activeTab === tab.id ? "text-white" : "text-white/70"
             }`}
           >
             {tab.label}
+            {activeTab === tab.id && (
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-white rounded-full" />
+            )}
           </button>
         ))}
       </div>
 
-      {/* 基本信息Tab */}
       {activeTab === "info" && (
         <div className="pb-20">
-          {/* 头部信息卡片 */}
           <div className="bg-[#1a1a1a] p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -287,20 +232,19 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
                   <span className="text-2xl">🐍</span>
                 </div>
                 <div>
-                  <div className="text-[#f5f5f7] font-medium">{result?.name || "案例4"}</div>
+                  <div className="text-[#f5f5f7] font-medium">{result?.name || "案例"}</div>
                   <button className="text-xs text-[#d4af37] border border-[#d4af37]/50 px-2 py-0.5 rounded mt-1">
                     请编辑名称
                   </button>
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-[#f5f5f7]/80 text-sm">生肖：蛇</div>
+                <div className="text-[#f5f5f7]/80 text-sm">生肖：{currentZodiac}</div>
                 <div className="text-[#f5f5f7]/80 text-sm">{result?.age || 38}岁 {result?.gender === "male" ? "男" : "女"}</div>
               </div>
             </div>
           </div>
 
-          {/* 详细信息列表 */}
           <div className="divide-y divide-gray-100">
             <InfoRow label="农历" value={result?.lunarDate || "1989年腊月初五 子时 (阴 乾造)"} labelColor="#a16207" />
             <InfoRow label="阳历" value={result?.solarDate || "1990-01-01 00:00"} />
@@ -331,17 +275,17 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
             <div className="flex px-4 py-3">
               <div className="w-1/2">
                 <span className="text-[#a16207] text-sm">胎元：</span>
-                <span className="text-gray-800 text-sm">丁卯 (炉中火)</span>
+                <span className="text-gray-800 text-sm">{getTaiYuan(siZhu.month.gan, siZhu.month.zhi)} (炉中火)</span>
               </div>
               <div className="w-1/2">
                 <span className="text-[#a16207] text-sm">空亡：</span>
-                <span className="text-gray-800 text-sm">戌亥 戌亥</span>
+                <span className="text-gray-800 text-sm">{getKongWang(siZhu.day.gan + siZhu.day.zhi).join(" ")}</span>
               </div>
             </div>
             <div className="flex px-4 py-3">
               <div className="w-1/2">
                 <span className="text-[#a16207] text-sm">命宫：</span>
-                <span className="text-gray-800 text-sm">己巳 (大林木)</span>
+                <span className="text-gray-800 text-sm">{getMingGong(siZhu.month.zhi, siZhu.hour.zhi).ganZhi} ({getMingGong(siZhu.month.zhi, siZhu.hour.zhi).naYin})</span>
               </div>
               <div className="w-1/2">
                 <span className="text-[#a16207] text-sm">胎息：</span>
@@ -351,7 +295,7 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
             <div className="flex px-4 py-3">
               <div className="w-1/2">
                 <span className="text-[#a16207] text-sm">身宫：</span>
-                <span className="text-gray-800 text-sm">丁丑 (涧下水)</span>
+                <span className="text-gray-800 text-sm">{getShenGong(siZhu.month.zhi, siZhu.hour.zhi).ganZhi} ({getShenGong(siZhu.month.zhi, siZhu.hour.zhi).naYin})</span>
               </div>
               <div className="w-1/2">
                 <span className="text-[#a16207] text-sm">命卦：</span>
@@ -360,44 +304,41 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
             </div>
           </div>
 
-          {/* 小真智能系统 */}
           <div className="bg-gray-50 py-2 px-4 flex items-center justify-center gap-2 text-gray-700 text-sm">
             <span>🤖</span>
             <span>小真智能系统</span>
           </div>
 
-          {/* 日主属性 */}
           <div className="px-4 py-3 flex">
             <div className="w-1/2">
               <span className="text-gray-700 text-sm">日主属性：</span>
-              <span className="text-[#ef4444] text-sm">丙火</span>
+              <span className="text-[#ef4444] text-sm">{dayGan}{TIAN_GAN_WUXING[dayGan]}</span>
             </div>
             <div className="w-1/2">
-              <span className="text-gray-700 text-sm">阴阳参考：</span>
-              <span className="text-gray-600 text-sm">🔒</span>
+              <span className="text-gray-700 text-sm">旺衰：</span>
+              <span className="text-gray-600 text-sm">{wangShuaiResult.level}</span>
             </div>
           </div>
           <div className="px-4 py-3 flex">
             <div className="w-1/2">
-              <span className="text-gray-700 text-sm">旺衰参考：</span>
-              <span className="text-gray-600 text-sm">🔒</span>
+              <span className="text-gray-700 text-sm">格局：</span>
+              <span className="text-gray-600 text-sm">{geJuResult.name}</span>
             </div>
             <div className="w-1/2">
-              <span className="text-gray-700 text-sm">格局参考：</span>
-              <span className="text-gray-600 text-sm">🔒</span>
+              <span className="text-gray-700 text-sm">用神：</span>
+              <span className="text-gray-600 text-sm">{yongShenResult.yongShen}</span>
             </div>
           </div>
 
-          {/* 同党异党进度条 */}
           <div className="px-4 py-4">
             <div className="flex items-center gap-2">
               <span className="text-sm">同党</span>
               <div className="flex-1 flex h-6 rounded overflow-hidden">
-                <div className="bg-[#d4af37] flex items-center justify-center text-white text-xs" style={{ width: `${tongDang}%` }}>
-                  {tongDang}%
+                <div className="bg-[#d4af37] flex items-center justify-center text-white text-xs" style={{ width: `${tongDangYiDang.tongDang}%` }}>
+                  {tongDangYiDang.tongDang}%
                 </div>
-                <div className="bg-[#3b82f6] flex items-center justify-center text-white text-xs" style={{ width: `${yiDang}%` }}>
-                  {yiDang}%
+                <div className="bg-[#3b82f6] flex items-center justify-center text-white text-xs" style={{ width: `${tongDangYiDang.yiDang}%` }}>
+                  {tongDangYiDang.yiDang}%
                 </div>
               </div>
               <span className="text-sm">异党</span>
@@ -407,7 +348,6 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
             </div>
           </div>
 
-          {/* 五行统计Tab */}
           <div className="px-4">
             <div className="flex border rounded-full overflow-hidden">
               {[
@@ -419,8 +359,8 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
                   key={tab.id}
                   onClick={() => setWuxingTab(tab.id as any)}
                   className={`flex-1 py-2 text-sm ${
-                    wuxingTab === tab.id 
-                      ? "bg-white text-gray-800 font-medium" 
+                    wuxingTab === tab.id
+                      ? "bg-white text-gray-800 font-medium"
                       : "bg-gray-100 text-gray-700"
                   }`}
                 >
@@ -430,43 +370,70 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
             </div>
           </div>
 
-          {/* 五行统计内容 */}
-          <div className="px-4 py-4 flex">
-            <div className="w-1/2 space-y-2">
-              {Object.entries(wuxingCount).map(([wx, count]) => (
-                <div key={wx} className="flex items-center gap-2">
-                  <span className="w-6 text-gray-800 font-medium">{wx}</span>
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: WUXING_COLOR[wx] }} />
-                  <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full rounded-full" 
-                      style={{ 
-                        width: `${(count / 10) * 100}%`,
-                        backgroundColor: WUXING_COLOR[wx]
-                      }} 
-                    />
+          <div className="px-4 py-4">
+            {wuxingTab === "count" && (
+              <div className="space-y-3">
+                {Object.entries(wuxingCount).map(([wx, count]) => (
+                  <div key={wx} className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: WUXING_COLOR[wx] }}>
+                      <span className="text-white text-xs font-medium">{wx}</span>
+                    </div>
+                    <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all"
+                        style={{
+                          width: `${(count / 8) * 100}%`,
+                          backgroundColor: WUXING_COLOR[wx]
+                        }}
+                      />
+                    </div>
+                    <span className="text-sm text-gray-700 w-8 text-right">{count}个</span>
                   </div>
-                  <span className="text-sm w-12 text-gray-800">{count}个</span>
-                  <span className="text-sm text-gray-700">比劫</span>
-                </div>
-              ))}
-            </div>
-            <div className="w-1/2 flex items-center justify-center">
-              {/* 简化的饼图 */}
-              <div className="relative w-32 h-32">
-                <svg viewBox="0 0 100 100" className="w-full h-full">
-                  <circle cx="50" cy="50" r="40" fill="#3b82f6" />
-                  <path d="M50,50 L50,10 A40,40 0 0,1 85,65 Z" fill="#ef4444" />
-                  <path d="M50,50 L85,65 A40,40 0 0,1 50,90 Z" fill="#22c55e" />
-                </svg>
-                <div className="absolute top-0 right-0 text-xs text-[#ef4444]">27.66%</div>
-                <div className="absolute bottom-0 right-0 text-xs text-[#22c55e]">3.83%</div>
-                <div className="absolute bottom-0 left-0 text-xs text-[#3b82f6]">68.51%</div>
+                ))}
               </div>
-            </div>
+            )}
+            {wuxingTab === "canggan" && (
+              <div className="space-y-3">
+                {Object.entries(cangGanCount).map(([wx, count]) => (
+                  <div key={wx} className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: WUXING_COLOR[wx] }}>
+                      <span className="text-white text-xs font-medium">{wx}</span>
+                    </div>
+                    <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all"
+                        style={{
+                          width: `${(count / 12) * 100}%`,
+                          backgroundColor: WUXING_COLOR[wx]
+                        }}
+                      />
+                    </div>
+                    <span className="text-sm text-gray-700 w-8 text-right">{count}个</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {wuxingTab === "shishen" && (
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { name: "比劫", count: 1, color: "#22c55e" },
+                  { name: "财才", count: 1, color: "#ca8a04" },
+                  { name: "食伤", count: 2, color: "#a16207" },
+                  { name: "官杀", count: 2, color: "#3b82f6" },
+                  { name: "印枭", count: 1, color: "#ef4444" },
+                ].map((item) => (
+                  <div key={item.name} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2">
+                    <span style={{ color: item.color }} className="font-medium">{item.name}</span>
+                    <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full" style={{ width: `${(item.count / 4) * 100}%`, backgroundColor: item.color }} />
+                    </div>
+                    <span className="text-xs text-gray-600">{item.count}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* 旺衰状态 */}
           <div className="px-4 py-2 flex justify-around text-sm text-gray-800 font-medium">
             <span>水旺</span>
             <span>木相</span>
@@ -475,7 +442,6 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
             <span>火死</span>
           </div>
 
-          {/* 袁天罡称骨 */}
           <div className="mx-4 mt-4 p-4 bg-gray-50 rounded-lg">
             <div className="flex justify-between items-center mb-2">
               <div className="flex items-center gap-2">
@@ -489,25 +455,23 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
             </div>
             <div className="text-sm text-gray-800">
               <p className="mb-1 font-medium">歌诀</p>
-              <p className="whitespace-pre-line">{chengGuData.verse}</p>
+              <p className="whitespace-pre-line">{chengGanData.verse}</p>
             </div>
           </div>
         </div>
       )}
 
-      {/* 基本排盘Tab */}
       {activeTab === "basic" && (
         <div className="pb-20">
-          {/* 头部信息 */}
           <div className="bg-[#1a1a1a] p-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-[#d4af37]/20 flex items-center justify-center">
                 <span className="text-2xl">🐍</span>
               </div>
               <div className="flex-1">
-                <div className="text-[#f5f5f7] font-medium">{result?.name || "案例4"}</div>
-                <div className="text-[#f5f5f7]/60 text-sm">农历：1989年腊月初五 子时 乾造</div>
-                <div className="text-[#f5f5f7]/60 text-sm">阳历：1990年01月01日 00:00</div>
+                <div className="text-[#f5f5f7] font-medium">{result?.name || "案例"}</div>
+                <div className="text-[#f5f5f7]/60 text-sm">农历：{result?.lunarDate || "1989年腊月初五 子时 乾造"}</div>
+                <div className="text-[#f5f5f7]/60 text-sm">阳历：{result?.solarDate || "1990年01月01日 00:00"}</div>
               </div>
               <div className="flex gap-2">
                 <button className="w-8 h-8 rounded-full bg-[#333] flex items-center justify-center">
@@ -520,7 +484,6 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
             </div>
           </div>
 
-          {/* 排盘表格 */}
           <div className="overflow-x-auto">
             <table className="w-full text-center text-sm border-collapse">
               <thead>
@@ -533,195 +496,81 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
                 </tr>
               </thead>
               <tbody>
-                {/* 主星 */}
                 <tr className="border-b">
                   <td className="py-2 text-[#a16207]">主星</td>
-                  <td className="py-2">{siZhu.year.shiShen || "伤官"}</td>
-                  <td className="py-2">{siZhu.month.shiShen || "比肩"}</td>
+                  <td className="py-2">{siZhu.year.shiShen}</td>
+                  <td className="py-2">{siZhu.month.shiShen}</td>
                   <td className="py-2">元男</td>
-                  <td className="py-2">{siZhu.hour.shiShen || "食神"}</td>
+                  <td className="py-2">{siZhu.hour.shiShen}</td>
                 </tr>
-                {/* 天干 */}
                 <tr className="border-b">
                   <td className="py-2 text-[#a16207]">天干</td>
-                  <td className="py-3">
-                    <span className="text-2xl font-bold" style={{ color: getGanColor(siZhu.year.gan) }}>
-                      {siZhu.year.gan}
-                    </span>
-                    <span className="ml-1">{getGanEmoji(siZhu.year.gan)}</span>
-                  </td>
-                  <td className="py-3">
-                    <span className="text-2xl font-bold" style={{ color: getGanColor(siZhu.month.gan) }}>
-                      {siZhu.month.gan}
-                    </span>
-                    <span className="ml-1">{getGanEmoji(siZhu.month.gan)}</span>
-                  </td>
-                  <td className="py-3">
-                    <span className="text-2xl font-bold" style={{ color: getGanColor(siZhu.day.gan) }}>
-                      {siZhu.day.gan}
-                    </span>
-                    <span className="ml-1">{getGanEmoji(siZhu.day.gan)}</span>
-                  </td>
-                  <td className="py-3">
-                    <span className="text-2xl font-bold" style={{ color: getGanColor(siZhu.hour.gan) }}>
-                      {siZhu.hour.gan}
-                    </span>
-                    <span className="ml-1">{getGanEmoji(siZhu.hour.gan)}</span>
-                  </td>
+                  <td className="py-3"><span className="text-2xl font-bold" style={{ color: getGanColor(siZhu.year.gan) }}>{siZhu.year.gan}</span></td>
+                  <td className="py-3"><span className="text-2xl font-bold" style={{ color: getGanColor(siZhu.month.gan) }}>{siZhu.month.gan}</span></td>
+                  <td className="py-3"><span className="text-2xl font-bold" style={{ color: getGanColor(siZhu.day.gan) }}>{siZhu.day.gan}</span></td>
+                  <td className="py-3"><span className="text-2xl font-bold" style={{ color: getGanColor(siZhu.hour.gan) }}>{siZhu.hour.gan}</span></td>
                 </tr>
-                {/* 地支 */}
                 <tr className="border-b">
                   <td className="py-2 text-[#a16207]">地支</td>
-                  <td className="py-3">
-                    <span className="text-2xl font-bold" style={{ color: getZhiColor(siZhu.year.zhi) }}>
-                      {siZhu.year.zhi}
-                    </span>
-                    <span className="ml-1">{getZhiEmoji(siZhu.year.zhi)}</span>
-                  </td>
-                  <td className="py-3">
-                    <span className="text-2xl font-bold" style={{ color: getZhiColor(siZhu.month.zhi) }}>
-                      {siZhu.month.zhi}
-                    </span>
-                    <span className="ml-1">{getZhiEmoji(siZhu.month.zhi)}</span>
-                  </td>
-                  <td className="py-3">
-                    <span className="text-2xl font-bold" style={{ color: getZhiColor(siZhu.day.zhi) }}>
-                      {siZhu.day.zhi}
-                    </span>
-                    <span className="ml-1">{getZhiEmoji(siZhu.day.zhi)}</span>
-                  </td>
-                  <td className="py-3">
-                    <span className="text-2xl font-bold" style={{ color: getZhiColor(siZhu.hour.zhi) }}>
-                      {siZhu.hour.zhi}
-                    </span>
-                    <span className="ml-1">{getZhiEmoji(siZhu.hour.zhi)}</span>
-                  </td>
+                  <td className="py-3"><span className="text-2xl font-bold" style={{ color: getZhiColor(siZhu.year.zhi) }}>{siZhu.year.zhi}</span></td>
+                  <td className="py-3"><span className="text-2xl font-bold" style={{ color: getZhiColor(siZhu.month.zhi) }}>{siZhu.month.zhi}</span></td>
+                  <td className="py-3"><span className="text-2xl font-bold" style={{ color: getZhiColor(siZhu.day.zhi) }}>{siZhu.day.zhi}</span></td>
+                  <td className="py-3"><span className="text-2xl font-bold" style={{ color: getZhiColor(siZhu.hour.zhi) }}>{siZhu.hour.zhi}</span></td>
                 </tr>
-                {/* 藏干 */}
                 <tr className="border-b">
-                  <td className="py-2 text-[#a16207] align-top">
-                    <div>藏干</div>
-                    <div className="mt-1">⭐</div>
+                  <td className="py-2 text-[#a16207] align-top">藏干</td>
+                  <td className="py-2 align-top text-xs space-y-0.5">
+                    {siZhu.year.cangGan.map((gan, i) => (
+                      <div key={i}><span style={{ color: getGanColor(gan) }}>{gan}</span>{TIAN_GAN_WUXING[gan]}</div>
+                    ))}
                   </td>
-                  <td className="py-2 align-top">
-                    <div className="space-y-0.5 text-xs">
-                      <div><span style={{ color: WUXING_COLOR["火"] }}>丙</span>火</div>
-                      <div><span style={{ color: WUXING_COLOR["金"] }}>庚</span>金</div>
-                      <div><span style={{ color: WUXING_COLOR["土"] }}>戊</span>土</div>
-                    </div>
+                  <td className="py-2 align-top text-xs">
+                    {siZhu.month.cangGan.map((gan, i) => (
+                      <div key={i}><span style={{ color: getGanColor(gan) }}>{gan}</span>{TIAN_GAN_WUXING[gan]}</div>
+                    ))}
                   </td>
-                  <td className="py-2 align-top">
-                    <div className="text-xs">
-                      <div><span style={{ color: WUXING_COLOR["水"] }}>癸</span>水</div>
-                    </div>
+                  <td className="py-2 align-top text-xs space-y-0.5">
+                    {siZhu.day.cangGan.map((gan, i) => (
+                      <div key={i}><span style={{ color: getGanColor(gan) }}>{gan}</span>{TIAN_GAN_WUXING[gan]}</div>
+                    ))}
                   </td>
-                  <td className="py-2 align-top">
-                    <div className="space-y-0.5 text-xs">
-                      <div><span style={{ color: WUXING_COLOR["木"] }}>甲</span>木</div>
-                      <div><span style={{ color: WUXING_COLOR["火"] }}>丙</span>火</div>
-                      <div><span style={{ color: WUXING_COLOR["土"] }}>戊</span>土</div>
-                    </div>
-                  </td>
-                  <td className="py-2 align-top">
-                    <div className="text-xs">
-                      <div><span style={{ color: WUXING_COLOR["水"] }}>癸</span>水</div>
-                    </div>
+                  <td className="py-2 align-top text-xs">
+                    {siZhu.hour.cangGan.map((gan, i) => (
+                      <div key={i}><span style={{ color: getGanColor(gan) }}>{gan}</span>{TIAN_GAN_WUXING[gan]}</div>
+                    ))}
                   </td>
                 </tr>
-                {/* 副星 */}
-                <tr className="border-b">
-                  <td className="py-2 text-[#a16207]">副星</td>
-                  <td className="py-2 text-xs">
-                    <div>比肩</div>
-                    <div>偏财</div>
-                    <div>食神</div>
-                  </td>
-                  <td className="py-2 text-xs">
-                    <div>正官</div>
-                  </td>
-                  <td className="py-2 text-xs">
-                    <div>偏印</div>
-                    <div>比肩</div>
-                    <div>食神</div>
-                  </td>
-                  <td className="py-2 text-xs">
-                    <div>正官</div>
-                  </td>
-                </tr>
-                {/* 星运 */}
-                <tr className="border-b">
-                  <td className="py-2 text-[#a16207]">星运</td>
-                  <td className="py-2 text-gray-800">临官</td>
-                  <td className="py-2 text-gray-800">胎</td>
-                  <td className="py-2 text-gray-800">长生</td>
-                  <td className="py-2 text-gray-800">胎</td>
-                </tr>
-                {/* 自坐 */}
-                <tr className="border-b">
-                  <td className="py-2 text-[#a16207]">自坐</td>
-                  <td className="py-2 text-gray-800">帝旺</td>
-                  <td className="py-2 text-gray-800">胎</td>
-                  <td className="py-2 text-gray-800">长生</td>
-                  <td className="py-2 text-gray-800">胎</td>
-                </tr>
-                {/* 空亡 */}
-                <tr className="border-b">
-                  <td className="py-2 text-[#a16207]">空亡</td>
-                  <td className="py-2 text-gray-800">戌亥</td>
-                  <td className="py-2 text-gray-800">申酉</td>
-                  <td className="py-2 text-gray-800">戌亥</td>
-                  <td className="py-2 text-gray-800">午未</td>
-                </tr>
-                {/* 纳音 */}
                 <tr className="border-b">
                   <td className="py-2 text-[#a16207]">纳音</td>
-                  <td className="py-2 text-gray-800">{siZhu.year.naYin || "大林木"}</td>
-                  <td className="py-2 text-gray-800">{siZhu.month.naYin || "涧下水"}</td>
-                  <td className="py-2 text-gray-800">{siZhu.day.naYin || "炉中火"}</td>
-                  <td className="py-2 text-gray-800">{siZhu.hour.naYin || "霹雳火"}</td>
+                  <td className="py-2 text-gray-800">{siZhu.year.naYin}</td>
+                  <td className="py-2 text-gray-800">{siZhu.month.naYin}</td>
+                  <td className="py-2 text-gray-800">{siZhu.day.naYin}</td>
+                  <td className="py-2 text-gray-800">{siZhu.hour.naYin}</td>
                 </tr>
-                {/* 神煞 */}
                 <tr>
                   <td className="py-2 text-[#a16207] align-top">神煞</td>
-                  <td className="py-2 align-top">
-                    <div className="space-y-0.5 text-xs text-[#a16207]">
-                      {shenShaData.year.slice(0, 5).map((ss, i) => (
-                        <div key={i}>{ss}</div>
-                      ))}
-                    </div>
+                  <td className="py-2 align-top text-xs text-[#a16207] space-y-0.5">
+                    {shenShaData.year?.slice(0, 3).map((ss, i) => <div key={i}>{ss}</div>)}
                   </td>
-                  <td className="py-2 align-top">
-                    <div className="space-y-0.5 text-xs text-[#a16207]">
-                      {shenShaData.month.slice(0, 6).map((ss, i) => (
-                        <div key={i}>{ss}</div>
-                      ))}
-                    </div>
+                  <td className="py-2 align-top text-xs text-[#a16207] space-y-0.5">
+                    {shenShaData.month?.slice(0, 3).map((ss, i) => <div key={i}>{ss}</div>)}
                   </td>
-                  <td className="py-2 align-top">
-                    <div className="space-y-0.5 text-xs text-[#a16207]">
-                      {shenShaData.day.slice(0, 4).map((ss, i) => (
-                        <div key={i}>{ss}</div>
-                      ))}
-                    </div>
+                  <td className="py-2 align-top text-xs text-[#a16207] space-y-0.5">
+                    {shenShaData.day?.slice(0, 3).map((ss, i) => <div key={i}>{ss}</div>)}
                   </td>
-                  <td className="py-2 align-top">
-                    <div className="space-y-0.5 text-xs text-[#a16207]">
-                      {shenShaData.hour.map((ss, i) => (
-                        <div key={i}>{ss}</div>
-                      ))}
-                    </div>
+                  <td className="py-2 align-top text-xs text-[#a16207] space-y-0.5">
+                    {shenShaData.hour?.slice(0, 3).map((ss, i) => <div key={i}>{ss}</div>)}
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          {/* 智能干支图示 / AI指令 */}
           <div className="px-4 py-4 flex gap-3">
             <button className="flex-1 py-3 border rounded-lg text-gray-700 flex items-center justify-center gap-1">
               智能干支图示 <ChevronRight className="w-4 h-4" />
             </button>
-            <button 
+            <button
               onClick={() => setShowAiModal(true)}
               className="px-6 py-3 border rounded-lg text-gray-700 flex items-center justify-center gap-1"
             >
@@ -729,7 +578,6 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
             </button>
           </div>
 
-          {/* 原局分析 */}
           <div className="px-4 space-y-2 text-sm">
             <div className="flex">
               <span className="text-[#a16207] w-20">原局天干：</span>
@@ -745,7 +593,6 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
             </div>
           </div>
 
-          {/* 智能古籍参考 */}
           <div className="px-4 py-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
@@ -755,7 +602,6 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
               <span className="text-xs px-2 py-0.5 bg-[#d4af37]/20 text-[#d4af37] rounded">VIP会员</span>
             </div>
 
-            {/* 古籍书籍轮播 */}
             <div className="flex gap-4 overflow-x-auto pb-2">
               {gujiBooks.map((book) => (
                 <div key={book.name} className="flex-shrink-0 w-20 text-center">
@@ -767,7 +613,6 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
               ))}
             </div>
 
-            {/* 调候用神提示 */}
             <div className="mt-4 p-3 bg-gray-50 rounded-lg">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-1">
@@ -791,13 +636,11 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
             </div>
           </div>
 
-          {/* 论X生Y月 */}
           <div className="px-4 py-4">
             <div className="text-[#a16207] font-medium mb-3 border-b-2 border-[#d4af37] inline-block pb-1">
               论{dayGan}生{monthZhi}月
             </div>
 
-            {/* 原文/译文/对照Tab */}
             <div className="flex gap-2 mb-4">
               {[
                 { id: "yuanwen", label: "原文" },
@@ -808,8 +651,8 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
                   key={tab.id}
                   onClick={() => setGujiTextTab(tab.id as any)}
                   className={`px-4 py-1.5 rounded-full text-sm ${
-                    gujiTextTab === tab.id 
-                      ? "bg-[#d4af37] text-white" 
+                    gujiTextTab === tab.id
+                      ? "bg-[#d4af37] text-white"
                       : "bg-gray-100 text-gray-600"
                   }`}
                 >
@@ -818,7 +661,6 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
               ))}
             </div>
 
-            {/* 古籍内容 */}
             <div className="text-sm leading-relaxed text-gray-700">
               {gujiTextTab === "yuanwen" && (
                 <p className="whitespace-pre-line">{qiongTongContent.yuanwen}</p>
@@ -841,13 +683,12 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
             </div>
           </div>
 
-          {/* 古籍命例 */}
           <div className="px-4 py-4">
             <div className="text-[#a16207] font-medium mb-3">古籍命例参考</div>
             <div className="space-y-4">
               {GUJI_MINGLI.slice(0, 3).map((ml, i) => (
                 <div key={i} className="text-sm">
-                  <div className="text-[#a16207] mb-1">{ml.bazi} ♀</div>
+                  <div className="text-[#a16207] mb-1">{ml.bazi}</div>
                   <p className="text-gray-600 leading-relaxed">{ml.content}</p>
                 </div>
               ))}
@@ -856,10 +697,8 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
         </div>
       )}
 
-      {/* 专业细盘Tab */}
       {activeTab === "pro" && (
         <div className="pb-20">
-          {/* 简化版专业细盘表格 - 和图片一致 */}
           <div className="overflow-x-auto">
             <table className="w-full text-center text-xs border-collapse">
               <thead>
@@ -902,40 +741,13 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
                   <td className="py-2"><span className="text-xl font-bold text-[#3b82f6]">子</span></td>
                 </tr>
                 <tr className="border-b">
-                  <td className="py-1 text-[#a16207] align-top">藏干<br/><span className="text-gray-600">⭐</span></td>
+                  <td className="py-1 text-[#a16207] align-top">藏干</td>
                   <td className="py-1 align-top text-xs"><span className="text-[#ef4444]">丁</span>劫财<br/><span className="text-[#a16207]">己</span>伤官</td>
                   <td className="py-1 align-top text-xs"><span className="text-[#ca8a04]">辛</span>正财</td>
                   <td className="py-1 align-top text-xs"><span className="text-[#ef4444]">丙</span>比肩<br/><span className="text-[#ca8a04]">庚</span>偏财<br/><span className="text-[#a16207]">戊</span>食神</td>
                   <td className="py-1 align-top text-xs"><span className="text-[#3b82f6]">癸</span>正官</td>
                   <td className="py-1 align-top text-xs"><span className="text-[#22c55e]">甲</span>偏印<br/><span className="text-[#ef4444]">丙</span>比肩<br/><span className="text-[#a16207]">戊</span>食神</td>
                   <td className="py-1 align-top text-xs"><span className="text-[#3b82f6]">癸</span>正官</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-1 text-[#a16207]">星运</td>
-                  <td className="py-1 text-gray-800">帝旺</td>
-                  <td className="py-1 text-gray-800">死</td>
-                  <td className="py-1 text-gray-800">临官</td>
-                  <td className="py-1 text-gray-800">胎</td>
-                  <td className="py-1 text-gray-800">长生</td>
-                  <td className="py-1 text-gray-800">胎</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-1 text-[#a16207]">自坐</td>
-                  <td className="py-1 text-gray-800">帝旺</td>
-                  <td className="py-1 text-gray-800">病</td>
-                  <td className="py-1 text-gray-800">帝旺</td>
-                  <td className="py-1 text-gray-800">胎</td>
-                  <td className="py-1 text-gray-800">长生</td>
-                  <td className="py-1 text-gray-800">胎</td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-1 text-[#a16207]">空亡</td>
-                  <td className="py-1 text-gray-800">寅卯</td>
-                  <td className="py-1 text-gray-800">戌亥</td>
-                  <td className="py-1 text-gray-800">戌亥</td>
-                  <td className="py-1 text-gray-800">申酉</td>
-                  <td className="py-1 text-gray-800">戌亥</td>
-                  <td className="py-1 text-gray-800">午未</td>
                 </tr>
                 <tr className="border-b">
                   <td className="py-1 text-[#a16207]">纳音</td>
@@ -946,20 +758,10 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
                   <td className="py-1 text-gray-800">炉中火</td>
                   <td className="py-1 text-gray-800">霹雳火</td>
                 </tr>
-                <tr>
-                  <td className="py-1 text-[#a16207] align-top">神煞 ▼</td>
-                  <td className="py-1 text-[#a16207] align-top text-xs">德秀贵人</td>
-                  <td className="py-1 text-[#a16207] align-top text-xs">文昌贵人</td>
-                  <td className="py-1 text-[#a16207] align-top text-xs">天厨贵人</td>
-                  <td className="py-1 text-[#a16207] align-top text-xs">天乙贵人</td>
-                  <td className="py-1 text-[#a16207] align-top text-xs">国印贵人</td>
-                  <td className="py-1 text-[#a16207] align-top text-xs">天乙贵人</td>
-                </tr>
               </tbody>
             </table>
           </div>
 
-          {/* 起运信息 */}
           <div className="px-4 py-3 border-t text-sm">
             <div className="flex justify-between items-center">
               <div>
@@ -967,39 +769,29 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
                 <div>交运：逢戊、癸年 立春后27天 交大运</div>
               </div>
               <div className="flex items-center gap-2">
-                <span>38岁</span>
+                <span>{result?.age || 38}岁</span>
                 <span className="text-[#a16207]">司令：<span className="text-[#22c55e]">癸</span></span>
-                <button className="w-8 h-8 rounded border flex items-center justify-center">
-                  <span className="text-sm">令</span>
-                </button>
               </div>
             </div>
           </div>
 
-          {/* 大运 */}
           <div className="border-t">
             <div className="flex items-center px-4 py-2">
               <div className="w-10 text-center">
                 <div className="text-sm font-medium">大</div>
                 <div className="text-sm font-medium">运</div>
-                <div className="mt-1 w-4 h-4 rounded-full border mx-auto" />
               </div>
               <div className="flex-1 overflow-x-auto">
-                <div className="flex">
+                <div className="flex gap-2">
                   {daYunData.map((dy, i) => (
-                    <div 
-                      key={i} 
-                      className={`flex-shrink-0 w-14 text-center py-2 ${dy.highlight ? 'bg-gray-100 rounded' : ''}`}
-                    >
-                      <div className="text-xs text-gray-700">{dy.year}</div>
-                      <div className="text-xs text-gray-700">{dy.ageRange}</div>
+                    <div key={i} className="flex-shrink-0 w-14 text-center py-2">
+                      <div className="text-xs text-gray-700">{dy.startYear}~{dy.startYear + 9}岁</div>
                       <div className="mt-1">
                         <span style={{ color: getGanColor(dy.gan) }} className="font-medium">{dy.gan}</span>
-                        {dy.s1 && <span className="text-xs ml-0.5" style={{ color: getShiShenColor(dy.s1) }}>{dy.s1}</span>}
+                        <span className="text-xs ml-0.5" style={{ color: getShiShenColor(dy.siShen) }}>{dy.siShen}</span>
                       </div>
                       <div>
                         <span style={{ color: getZhiColor(dy.zhi) }} className="font-medium">{dy.zhi}</span>
-                        {dy.s2 && <span className="text-xs ml-0.5" style={{ color: getShiShenColor(dy.s2) }}>{dy.s2}</span>}
                       </div>
                     </div>
                   ))}
@@ -1008,61 +800,23 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
             </div>
           </div>
 
-          {/* 流年 */}
           <div className="border-t">
             <div className="flex items-center px-4 py-2">
               <div className="w-10 text-center">
                 <div className="text-sm font-medium">流</div>
                 <div className="text-sm font-medium">年</div>
-                <div className="text-xs text-gray-600 mt-1">小运</div>
               </div>
               <div className="flex-1 overflow-x-auto">
                 <div className="flex">
                   {liuNianData.map((ln, i) => (
-                    <div 
-                      key={i} 
-                      className={`flex-shrink-0 w-14 text-center py-2 ${ln.highlight ? 'bg-gray-100 rounded' : ''}`}
-                    >
-                      <div className={`text-xs ${ln.highlight ? 'font-bold' : 'text-gray-700'}`}>{ln.year}</div>
+                    <div key={i} className="flex-shrink-0 w-14 text-center py-2">
+                      <div className="text-xs text-gray-700">{ln.year}</div>
                       <div className="mt-1">
                         <span style={{ color: getGanColor(ln.gan) }} className="font-medium">{ln.gan}</span>
-                        <span className="text-xs ml-0.5" style={{ color: getShiShenColor(ln.s1) }}>{ln.s1}</span>
+                        <span className="text-xs ml-0.5" style={{ color: getShiShenColor(ln.shiShen) }}>{ln.shiShen}</span>
                       </div>
                       <div>
                         <span style={{ color: getZhiColor(ln.zhi) }} className="font-medium">{ln.zhi}</span>
-                        <span className="text-xs ml-0.5" style={{ color: getShiShenColor(ln.s2) }}>{ln.s2}</span>
-                      </div>
-                      <div className="text-xs text-gray-600 mt-0.5">{ln.xiaoYun}</div>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex justify-center py-1">
-                  <div className="w-2 h-2 rounded-full bg-[#22c55e]" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 流月 */}
-          <div className="border-t">
-            <div className="flex items-center px-4 py-2">
-              <div className="w-10 text-center">
-                <div className="text-sm font-medium">流</div>
-                <div className="text-sm font-medium">月</div>
-              </div>
-              <div className="flex-1 overflow-x-auto">
-                <div className="flex">
-                  {liuYueData.map((ly, i) => (
-                    <div key={i} className="flex-shrink-0 w-14 text-center py-2">
-                      <div className="text-xs text-gray-700">{ly.name}</div>
-                      <div className="text-xs text-gray-600">{ly.date}</div>
-                      <div className="mt-1">
-                        <span style={{ color: getGanColor(ly.gan) }} className="font-medium">{ly.gan}</span>
-                        <span className="text-xs ml-0.5" style={{ color: getShiShenColor(ly.s1) }}>{ly.s1}</span>
-                      </div>
-                      <div>
-                        <span style={{ color: getZhiColor(ly.zhi) }} className="font-medium">{ly.zhi}</span>
-                        <span className="text-xs ml-0.5" style={{ color: getShiShenColor(ly.s2) }}>{ly.s2}</span>
                       </div>
                     </div>
                   ))}
@@ -1073,13 +827,11 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
         </div>
       )}
 
-      {/* 断事笔记Tab */}
       {activeTab === "notes" && (
         <div className="pb-20">
-          {/* 头部八字摘要 */}
           <div className="bg-[#1a1a1a] p-4">
             <div className="flex items-center gap-4">
-              <span className="text-[#d4af37]">乾造</span>
+              <span className="text-[#d4af37]">{result?.gender === "male" ? "乾造" : "坤造"}</span>
               <div className="flex gap-4 text-[#f5f5f7] text-lg">
                 <div className="text-center">
                   <div>{siZhu.year.gan}</div>
@@ -1100,11 +852,10 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
               </div>
             </div>
             <div className="mt-2 text-[#f5f5f7]/60 text-sm">
-              {daYunData.filter(d => d.gan !== "小").map(d => `${d.gan}${d.zhi}`).join(" - ")}
+              {daYunData.map(d => `${d.gan}${d.zhi}`).join(" - ")}
             </div>
           </div>
 
-          {/* 命主反馈 / 师傅点评 */}
           <div className="flex justify-center py-3">
             <div className="flex bg-gray-100 rounded-full p-1">
               <button
@@ -1126,16 +877,14 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
             </div>
           </div>
 
-          {/* 表单区域 */}
           <div className="px-4 space-y-4">
-            {/* 下拉选择项 */}
             {[
               { label: "职业", key: "career" },
               { label: "学历", key: "education" },
               { label: "财富", key: "wealth" },
               { label: "婚姻", key: "marriage" },
             ].map((item) => (
-              <div key={item.key} className="flex items-center justify-between py-3 border-b">
+              <div key={item.key} className="flex items-center justify-between py-3 border-b border-gray-100">
                 <span className="text-gray-700">{item.label}</span>
                 <div className="flex items-center gap-2 text-gray-600">
                   <span>点击选择</span>
@@ -1144,47 +893,41 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
               </div>
             ))}
 
-            {/* 文本输入项 */}
             {[
               { label: "健康状况", key: "health" },
               { label: "六亲状况", key: "family" },
             ].map((item) => (
-              <div key={item.key} className="flex items-center justify-between py-3 border-b">
-                <span className="text-gray-700">{item.key === "health" ? "健康状态" : item.label}</span>
+              <div key={item.key} className="flex items-center justify-between py-3 border-b border-gray-100">
+                <span className="text-gray-700">{item.label}</span>
                 <input
                   type="text"
                   placeholder="请输入"
                   className="text-right text-gray-600 bg-transparent outline-none"
                   value={noteData[item.key as keyof typeof noteData]}
-                  onChange={(e) => setNoteData(prev => ({ ...prev, [item.key]: e.target.value }))}
                 />
               </div>
             ))}
 
-            {/* 情况简介 */}
             <div className="py-3">
               <textarea
                 placeholder="请输入情况简介"
                 className="w-full h-24 p-3 bg-gray-50 rounded-lg text-sm outline-none resize-none"
                 value={noteData.intro}
-                onChange={(e) => setNoteData(prev => ({ ...prev, intro: e.target.value }))}
               />
             </div>
 
-            {/* 图片上传区域 */}
             <div className="flex gap-4">
               {["五官图片", "手掌图片", "其他图片"].map((label) => (
-                <div 
+                <div
                   key={label}
                   className="flex-1 aspect-square border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center gap-2"
                 >
-                  <Camera className="w-8 h-8 text-gray-300" />
+                  <Plus className="w-8 h-8 text-gray-300" />
                   <span className="text-xs text-gray-600">{label}</span>
                 </div>
               ))}
             </div>
 
-            {/* 关键事件反馈记录 */}
             <div className="py-4">
               <div className="flex items-center justify-between mb-3">
                 <span className="font-medium">关键事件反馈记录</span>
@@ -1201,7 +944,6 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
             </div>
           </div>
 
-          {/* 底部保存按钮 */}
           <div className="fixed bottom-20 left-4 right-4 flex gap-3">
             <button className="flex-1 py-3 bg-[#d4af37] text-white rounded-full font-medium">
               保存
@@ -1213,7 +955,6 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
         </div>
       )}
 
-      {/* AI指令弹窗 */}
       {showAiModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-md max-h-[80vh] overflow-y-auto">
@@ -1234,15 +975,14 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
                 <p className="mt-2">温馨提示：目前AI在易学领域仍处于早期探索阶段，生成内容可能存在不准确或主观推测的情况，请保持理性判断，结果仅供学术参考与娱乐使用。</p>
               </div>
 
-              {/* 分类选择 */}
               <div className="flex flex-wrap gap-2 mb-4">
                 {["全项", "事业", "财运", "婚恋"].map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setAiCategory(cat)}
                     className={`px-4 py-2 rounded-full text-sm ${
-                      aiCategory === cat 
-                        ? "bg-[#d4af37] text-white" 
+                      aiCategory === cat
+                        ? "bg-[#d4af37] text-white"
                         : "bg-gray-100 text-gray-600"
                     }`}
                   >
@@ -1256,8 +996,8 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
                     key={cat}
                     onClick={() => setAiCategory(cat)}
                     className={`px-4 py-2 rounded-full text-sm ${
-                      aiCategory === cat 
-                        ? "bg-[#d4af37] text-white" 
+                      aiCategory === cat
+                        ? "bg-[#d4af37] text-white"
                         : "bg-gray-100 text-gray-600"
                     }`}
                   >
@@ -1266,7 +1006,6 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
                 ))}
               </div>
 
-              {/* 复制按钮 */}
               <button
                 onClick={copyAiPrompt}
                 className="w-full py-3 bg-[#d4af37] text-white rounded-full font-medium flex items-center justify-center gap-2"
@@ -1291,7 +1030,6 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
   )
 }
 
-// 信息行组件
 function InfoRow({ label, value, labelColor }: { label: string; value: React.ReactNode; labelColor?: string }) {
   return (
     <div className="flex px-4 py-3">

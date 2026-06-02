@@ -8,6 +8,16 @@ export const TIAN_GAN = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛",
 // 地支
 export const DI_ZHI = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
 
+// 六十甲子
+export const JIA_ZI = [
+  "甲子", "乙丑", "丙寅", "丁卯", "戊辰", "己巳", "庚午", "辛未", "壬申", "癸酉",
+  "甲戌", "乙亥", "丙子", "丁丑", "戊寅", "己卯", "庚辰", "辛巳", "壬午", "癸未",
+  "甲申", "乙酉", "丙戌", "丁亥", "戊子", "己丑", "庚寅", "辛卯", "壬辰", "癸巳",
+  "甲午", "乙未", "丙申", "丁酉", "戊戌", "己亥", "庚子", "辛丑", "壬寅", "癸卯",
+  "甲辰", "乙巳", "丙午", "丁未", "戊申", "己酉", "庚戌", "辛亥", "壬子", "癸丑",
+  "甲寅", "乙卯", "丙辰", "丁巳", "戊午", "己未", "庚申", "辛酉", "壬戌", "癸亥"
+]
+
 // 天干五行
 export const GAN_WUXING: Record<string, string> = {
   甲: "木", 乙: "木", 丙: "火", 丁: "火", 戊: "土",
@@ -20,23 +30,35 @@ export const ZHI_WUXING: Record<string, string> = {
   午: "火", 未: "土", 申: "金", 酉: "金", 戌: "土", 亥: "水"
 }
 
-// 地支藏干
-export const ZHI_CANG_GAN: Record<string, string[]> = {
-  子: ["癸"],
-  丑: ["己", "癸", "辛"],
-  寅: ["甲", "丙", "戊"],
-  卯: ["乙"],
-  辰: ["戊", "乙", "癸"],
-  巳: ["丙", "戊", "庚"],
-  午: ["丁", "己"],
-  未: ["己", "丁", "乙"],
-  申: ["庚", "壬", "戊"],
-  酉: ["辛"],
-  戌: ["戊", "辛", "丁"],
-  亥: ["壬", "甲"]
+// 天干阴阳
+export const GAN_YIN_YANG: Record<string, string> = {
+  甲: "阳", 乙: "阴", 丙: "阳", 丁: "阴", 戊: "阳",
+  己: "阴", 庚: "阳", 辛: "阴", 壬: "阳", 癸: "阴"
 }
 
-// 六十甲子纳音
+// 地支阴阳
+export const ZHI_YIN_YANG: Record<string, string> = {
+  子: "阳", 丑: "阴", 寅: "阳", 卯: "阴", 辰: "阳", 巳: "阴",
+  午: "阳", 未: "阴", 申: "阳", 酉: "阴", 戌: "阳", 亥: "阴"
+}
+
+// 地支藏干 - 参考《渊海子平》
+export const ZHI_CANG_GAN: Record<string, { gan: string; wuxing: string; power: number }[]> = {
+  子: [{ gan: "癸", wuxing: "水", power: 1 }],
+  丑: [{ gan: "己", wuxing: "土", power: 0.6 }, { gan: "癸", wuxing: "水", power: 0.3 }, { gan: "辛", wuxing: "金", power: 0.1 }],
+  寅: [{ gan: "甲", wuxing: "木", power: 0.6 }, { gan: "丙", wuxing: "火", power: 0.3 }, { gan: "戊", wuxing: "土", power: 0.1 }],
+  卯: [{ gan: "乙", wuxing: "木", power: 1 }],
+  辰: [{ gan: "戊", wuxing: "土", power: 0.6 }, { gan: "乙", wuxing: "木", power: 0.3 }, { gan: "癸", wuxing: "水", power: 0.1 }],
+  巳: [{ gan: "丙", wuxing: "火", power: 0.6 }, { gan: "戊", wuxing: "土", power: 0.2 }, { gan: "庚", wuxing: "金", power: 0.2 }],
+  午: [{ gan: "丁", wuxing: "火", power: 0.7 }, { gan: "己", wuxing: "土", power: 0.3 }],
+  未: [{ gan: "己", wuxing: "土", power: 0.6 }, { gan: "丁", wuxing: "火", power: 0.3 }, { gan: "乙", wuxing: "木", power: 0.1 }],
+  申: [{ gan: "庚", wuxing: "金", power: 0.6 }, { gan: "壬", wuxing: "水", power: 0.3 }, { gan: "戊", wuxing: "土", power: 0.1 }],
+  酉: [{ gan: "辛", wuxing: "金", power: 1 }],
+  戌: [{ gan: "戊", wuxing: "土", power: 0.6 }, { gan: "辛", wuxing: "金", power: 0.3 }, { gan: "丁", wuxing: "火", power: 0.1 }],
+  亥: [{ gan: "壬", wuxing: "水", power: 0.7 }, { gan: "甲", wuxing: "木", power: 0.3 }]
+}
+
+// 六十甲子纳音 - 参考《渊海子平》
 export const JIAZI_NAYIN: Record<string, string> = {
   "甲子": "海中金", "乙丑": "海中金",
   "丙寅": "炉中火", "丁卯": "炉中火",
@@ -70,7 +92,21 @@ export const JIAZI_NAYIN: Record<string, string> = {
   "壬戌": "大海水", "癸亥": "大海水"
 }
 
-// 十神计算
+// 十二长生状态 - 参考《渊海子平》
+export const SHI_ER_CHANG_SHENG: Record<string, string[]> = {
+  木: ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"],
+  火: ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"],
+  土: ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"],
+  金: ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"],
+  水: ["长生", "沐浴", "冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝", "胎", "养"]
+}
+
+// 五行长生位 - 参考《渊海子平》
+export const CHANG_SHENG_WEI: Record<string, string> = {
+  木: "亥", 火: "寅", 土: "申", 金: "巳", 水: "申"
+}
+
+// 十神计算 - 参考《渊海子平》子平法
 export function getShiShen(dayGan: string, targetGan: string): string {
   const ganOrder = TIAN_GAN
   const dayIdx = ganOrder.indexOf(dayGan)
@@ -79,33 +115,30 @@ export function getShiShen(dayGan: string, targetGan: string): string {
   const dayWuxing = GAN_WUXING[dayGan]
   const targetWuxing = GAN_WUXING[targetGan]
   
-  // 阴阳
-  const dayYinYang = dayIdx % 2 // 0阳1阴
+  const dayYinYang = dayIdx % 2
   const targetYinYang = targetIdx % 2
   const sameYinYang = dayYinYang === targetYinYang
   
-  // 五行生克关系
   const wuxingOrder = ["木", "火", "土", "金", "水"]
   const dayWuxingIdx = wuxingOrder.indexOf(dayWuxing)
   const targetWuxingIdx = wuxingOrder.indexOf(targetWuxing)
   
-  // 同我
   if (dayWuxing === targetWuxing) {
     return sameYinYang ? "比肩" : "劫财"
   }
-  // 我生
+  
   if ((dayWuxingIdx + 1) % 5 === targetWuxingIdx) {
     return sameYinYang ? "食神" : "伤官"
   }
-  // 生我
+  
   if ((targetWuxingIdx + 1) % 5 === dayWuxingIdx) {
     return sameYinYang ? "偏印" : "正印"
   }
-  // 我克
+  
   if ((dayWuxingIdx + 2) % 5 === targetWuxingIdx) {
     return sameYinYang ? "偏财" : "正财"
   }
-  // 克我
+  
   if ((targetWuxingIdx + 2) % 5 === dayWuxingIdx) {
     return sameYinYang ? "七杀" : "正官"
   }
@@ -113,111 +146,42 @@ export function getShiShen(dayGan: string, targetGan: string): string {
   return "比肩"
 }
 
-// 神煞数据
-export const SHEN_SHA = {
-  // 天德贵人（按月支）
-  tianDe: { 寅: "丁", 卯: "申", 辰: "壬", 巳: "辛", 午: "亥", 未: "甲", 申: "癸", 酉: "寅", 戌: "丙", 亥: "乙", 子: "巳", 丑: "庚" },
-  // 月德贵人（按月支）
-  yueDe: { 寅: "丙", 卯: "甲", 辰: "壬", 巳: "庚", 午: "丙", 未: "甲", 申: "壬", 酉: "庚", 戌: "丙", 亥: "甲", 子: "壬", 丑: "庚" },
-  // 驿马（按年支或日支）
-  yiMa: { 申: "寅", 子: "寅", 辰: "寅", 寅: "申", 午: "申", 戌: "申", 亥: "巳", 卯: "巳", 未: "巳", 巳: "亥", 酉: "亥", 丑: "亥" },
-  // 桃花（按年支或日支）
-  taoHua: { 申: "酉", 子: "酉", 辰: "酉", 寅: "卯", 午: "卯", 戌: "卯", 亥: "子", 卯: "子", 未: "子", 巳: "午", 酉: "午", 丑: "午" },
-  // 华盖（按年支或日支）
-  huaGai: { 申: "丑", 子: "辰", 辰: "辰", 寅: "戌", 午: "戌", 戌: "戌", 亥: "未", 卯: "未", 未: "未", 巳: "丑", 酉: "丑", 丑: "丑" },
-  // 天医（按月支）
-  tianYi: { 寅: "丑", 卯: "寅", 辰: "卯", 巳: "辰", 午: "巳", 未: "午", 申: "未", 酉: "申", 戌: "酉", 亥: "戌", 子: "亥", 丑: "子" },
-  // 文昌（按年干）
-  wenChang: { 甲: "巳", 乙: "午", 丙: "申", 丁: "酉", 戊: "申", 己: "酉", 庚: "亥", 辛: "子", 壬: "寅", 癸: "卯" },
-  // 将星（按年支或日支）
-  jiangXing: { 申: "子", 子: "子", 辰: "子", 寅: "午", 午: "午", 戌: "午", 亥: "卯", 卯: "卯", 未: "卯", 巳: "酉", 酉: "酉", 丑: "酉" }
+// 获取地支中每个藏干的十神
+export function getCangGanShiShen(dayGan: string, zhi: string): { gan: string; shiShen: string; wuxing: string; power: number }[] {
+  const cangGanList = ZHI_CANG_GAN[zhi] || []
+  return cangGanList.map(item => ({
+    ...item,
+    shiShen: getShiShen(dayGan, item.gan)
+  }))
 }
 
-// 空亡计算（按日柱）
+// 计算某五行在某地支的长生状态
+export function getChangShengStatus(wuxing: string, zhi: string): string {
+  const changShengIdx = DI_ZHI.indexOf(CHANG_SHENG_WEI[wuxing])
+  const zhiIdx = DI_ZHI.indexOf(zhi)
+  const statusIdx = (zhiIdx - changShengIdx + 12) % 12
+  return SHI_ER_CHANG_SHENG[wuxing][statusIdx]
+}
+
+// 空亡计算（按日柱）- 参考《渊海子平》
 export function getKongWang(dayGanZhi: string): string[] {
-  const jiazi60 = [
-    "甲子", "乙丑", "丙寅", "丁卯", "戊辰", "己巳", "庚午", "辛未", "壬申", "癸酉",
-    "甲戌", "乙亥", "丙子", "丁丑", "戊寅", "己卯", "庚辰", "辛巳", "壬午", "癸未",
-    "甲申", "乙酉", "丙戌", "丁亥", "戊子", "己丑", "庚寅", "辛卯", "壬辰", "癸巳",
-    "甲午", "乙未", "丙申", "丁酉", "戊戌", "己亥", "庚子", "辛丑", "壬寅", "癸卯",
-    "甲辰", "乙巳", "丙午", "丁未", "戊申", "己酉", "庚戌", "辛亥", "壬子", "癸丑",
-    "甲寅", "乙卯", "丙辰", "丁巳", "戊午", "己未", "庚申", "辛酉", "壬戌", "癸亥"
-  ]
-  
   const kongWangMap: Record<number, string[]> = {
-    0: ["戌", "亥"], // 甲子旬
-    1: ["申", "酉"], // 甲戌旬
-    2: ["午", "未"], // 甲申旬
-    3: ["辰", "巳"], // 甲午旬
-    4: ["寅", "卯"], // 甲辰旬
-    5: ["子", "丑"]  // 甲寅旬
+    0: ["戌", "亥"],
+    1: ["申", "酉"],
+    2: ["午", "未"],
+    3: ["辰", "巳"],
+    4: ["寅", "卯"],
+    5: ["子", "丑"]
   }
   
-  const idx = jiazi60.indexOf(dayGanZhi)
+  const idx = JIA_ZI.indexOf(dayGanZhi)
   if (idx === -1) return []
   
   const xunIdx = Math.floor(idx / 10)
   return kongWangMap[xunIdx] || []
 }
 
-// 检查神煞
-export function checkShenSha(bazi: { yearGan: string, yearZhi: string, monthGan: string, monthZhi: string, dayGan: string, dayZhi: string, hourGan: string, hourZhi: string }) {
-  const result: string[] = []
-  const allZhi = [bazi.yearZhi, bazi.monthZhi, bazi.dayZhi, bazi.hourZhi]
-  const allGan = [bazi.yearGan, bazi.monthGan, bazi.dayGan, bazi.hourGan]
-  
-  // 天德
-  const tianDeGan = SHEN_SHA.tianDe[bazi.monthZhi as keyof typeof SHEN_SHA.tianDe]
-  if (tianDeGan && allGan.includes(tianDeGan)) {
-    result.push("天德贵人")
-  }
-  
-  // 月德
-  const yueDeGan = SHEN_SHA.yueDe[bazi.monthZhi as keyof typeof SHEN_SHA.yueDe]
-  if (yueDeGan && allGan.includes(yueDeGan)) {
-    result.push("月德贵人")
-  }
-  
-  // 驿马
-  const yiMaZhi = SHEN_SHA.yiMa[bazi.yearZhi as keyof typeof SHEN_SHA.yiMa]
-  if (yiMaZhi && allZhi.includes(yiMaZhi)) {
-    result.push("驿马")
-  }
-  
-  // 桃花
-  const taoHuaZhi = SHEN_SHA.taoHua[bazi.yearZhi as keyof typeof SHEN_SHA.taoHua]
-  if (taoHuaZhi && allZhi.includes(taoHuaZhi)) {
-    result.push("桃花")
-  }
-  
-  // 华盖
-  const huaGaiZhi = SHEN_SHA.huaGai[bazi.yearZhi as keyof typeof SHEN_SHA.huaGai]
-  if (huaGaiZhi && allZhi.includes(huaGaiZhi)) {
-    result.push("华盖")
-  }
-  
-  // 天医
-  const tianYiZhi = SHEN_SHA.tianYi[bazi.monthZhi as keyof typeof SHEN_SHA.tianYi]
-  if (tianYiZhi && allZhi.includes(tianYiZhi)) {
-    result.push("天医")
-  }
-  
-  // 文昌
-  const wenChangZhi = SHEN_SHA.wenChang[bazi.yearGan as keyof typeof SHEN_SHA.wenChang]
-  if (wenChangZhi && allZhi.includes(wenChangZhi)) {
-    result.push("文昌")
-  }
-  
-  // 将星
-  const jiangXingZhi = SHEN_SHA.jiangXing[bazi.yearZhi as keyof typeof SHEN_SHA.jiangXing]
-  if (jiangXingZhi && allZhi.includes(jiangXingZhi)) {
-    result.push("将星")
-  }
-  
-  return result
-}
-
-// 计算胎元（月干进一位 + 月支进三位）
+// 计算胎元（月干进一位 + 月支进三位）- 参考《渊海子平》
 export function getTaiYuan(monthGan: string, monthZhi: string): string {
   const ganIdx = TIAN_GAN.indexOf(monthGan)
   const zhiIdx = DI_ZHI.indexOf(monthZhi)
@@ -228,42 +192,200 @@ export function getTaiYuan(monthGan: string, monthZhi: string): string {
   return taiGan + taiZhi
 }
 
-// 计算命宫
-export function getMingGong(monthZhi: string, hourZhi: string): string {
+// 计算命宫 - 参考《渊海子平》
+export function getMingGong(monthZhi: string, hourZhi: string): { ganZhi: string; naYin: string } {
   const monthIdx = DI_ZHI.indexOf(monthZhi)
   const hourIdx = DI_ZHI.indexOf(hourZhi)
   
-  // 命宫地支 = 14 - 月支序数 - 时支序数
   let mingZhiIdx = (14 - monthIdx - hourIdx) % 12
   if (mingZhiIdx < 0) mingZhiIdx += 12
   
   const mingZhi = DI_ZHI[mingZhiIdx]
   
-  // 命宫天干需要根据年干推算
-  // 简化处理：根据地支配天干
-  const zhiGanMap: Record<string, string> = {
-    子: "癸", 丑: "己", 寅: "甲", 卯: "乙", 辰: "戊", 巳: "丙",
-    午: "丁", 未: "己", 申: "庚", 酉: "辛", 戌: "戊", 亥: "壬"
+  const zhiGanMap: Record<string, string[]> = {
+    子: ["甲", "丙", "戊", "庚", "壬"],
+    丑: ["乙", "丁", "己", "辛", "癸"],
+    寅: ["甲", "丙", "戊", "庚", "壬"],
+    卯: ["乙", "丁", "己", "辛", "癸"],
+    辰: ["甲", "丙", "戊", "庚", "壬"],
+    巳: ["乙", "丁", "己", "辛", "癸"],
+    午: ["甲", "丙", "戊", "庚", "壬"],
+    未: ["乙", "丁", "己", "辛", "癸"],
+    申: ["甲", "丙", "戊", "庚", "壬"],
+    酉: ["乙", "丁", "己", "辛", "癸"],
+    戌: ["甲", "丙", "戊", "庚", "壬"],
+    亥: ["乙", "丁", "己", "辛", "癸"]
   }
   
-  return zhiGanMap[mingZhi] + mingZhi
+  const mingGan = zhiGanMap[mingZhi][0]
+  const ganZhi = mingGan + mingZhi
+  
+  return {
+    ganZhi,
+    naYin: JIAZI_NAYIN[ganZhi] || ""
+  }
 }
 
-// 计算身宫
-export function getShenGong(monthZhi: string, hourZhi: string): string {
+// 计算身宫 - 参考《渊海子平》
+export function getShenGong(monthZhi: string, hourZhi: string): { ganZhi: string; naYin: string } {
   const monthIdx = DI_ZHI.indexOf(monthZhi)
   const hourIdx = DI_ZHI.indexOf(hourZhi)
   
-  // 身宫地支 = 月支序数 + 时支序数 - 2
   let shenZhiIdx = (monthIdx + hourIdx - 2) % 12
   if (shenZhiIdx < 0) shenZhiIdx += 12
   
   const shenZhi = DI_ZHI[shenZhiIdx]
   
-  const zhiGanMap: Record<string, string> = {
-    子: "癸", 丑: "己", 寅: "甲", 卯: "乙", 辰: "戊", 巳: "丙",
-    午: "丁", 未: "己", 申: "庚", 酉: "辛", 戌: "戊", 亥: "壬"
+  const zhiGanMap: Record<string, string[]> = {
+    子: ["甲", "丙", "戊", "庚", "壬"],
+    丑: ["乙", "丁", "己", "辛", "癸"],
+    寅: ["甲", "丙", "戊", "庚", "壬"],
+    卯: ["乙", "丁", "己", "辛", "癸"],
+    辰: ["甲", "丙", "戊", "庚", "壬"],
+    巳: ["乙", "丁", "己", "辛", "癸"],
+    午: ["甲", "丙", "戊", "庚", "壬"],
+    未: ["乙", "丁", "己", "辛", "癸"],
+    申: ["甲", "丙", "戊", "庚", "壬"],
+    酉: ["乙", "丁", "己", "辛", "癸"],
+    戌: ["甲", "丙", "戊", "庚", "壬"],
+    亥: ["乙", "丁", "己", "辛", "癸"]
   }
   
-  return zhiGanMap[shenZhi] + shenZhi
+  const shenGan = zhiGanMap[shenZhi][0]
+  const ganZhi = shenGan + shenZhi
+  
+  return {
+    ganZhi,
+    naYin: JIAZI_NAYIN[ganZhi] || ""
+  }
+}
+
+// 大运计算 - 参考《渊海子平》
+export function calculateDaYun(
+  yearGan: string,
+  monthZhi: string,
+  dayGan: string,
+  hourZhi: string,
+  gender: "male" | "female"
+): Array<{ startYear: number; gan: string; zhi: string; siShen: string; ageRange: string }> {
+  const daYun = []
+  const ganOrder = TIAN_GAN
+  const zhiOrder = DI_ZHI
+  
+  const monthIdx = zhiOrder.indexOf(monthZhi)
+  const yearGanIdx = ganOrder.indexOf(yearGan)
+  
+  let startGanIdx = yearGanIdx
+  let startZhiIdx = monthIdx
+  
+  if (gender === "male") {
+    startGanIdx = (yearGanIdx + 1) % 10
+    startZhiIdx = (monthIdx + 1) % 12
+  } else {
+    startGanIdx = (yearGanIdx - 1 + 10) % 10
+    startZhiIdx = (monthIdx - 1 + 12) % 12
+  }
+  
+  for (let i = 0; i < 10; i++) {
+    const gan = ganOrder[(startGanIdx + i) % 10]
+    const zhi = zhiOrder[(startZhiIdx + i) % 12]
+    const shiShen = getShiShen(dayGan, gan)
+    
+    daYun.push({
+      startYear: 10 + i * 10,
+      gan,
+      zhi,
+      shiShen,
+      ageRange: `${10 + i * 10}~${20 + i * 10}岁`
+    })
+  }
+  
+  return daYun
+}
+
+// 流年计算
+export function calculateLiuNian(
+  startYear: number,
+  dayGan: string
+): Array<{ year: number; gan: string; zhi: string; shiShen: string }> {
+  const liuNian = []
+  const ganOrder = TIAN_GAN
+  const zhiOrder = DI_ZHI
+  
+  for (let i = 0; i < 10; i++) {
+    const year = startYear + i
+    const ganIdx = year % 10
+    const zhiIdx = year % 12
+    
+    const gan = ganOrder[ganIdx]
+    const zhi = zhiOrder[zhiIdx]
+    const shiShen = getShiShen(dayGan, gan)
+    
+    liuNian.push({ year, gan, zhi, shiShen })
+  }
+  
+  return liuNian
+}
+
+// 计算起运年龄 - 参考《渊海子平》
+export function calculateQiYunAge(
+  birthMonth: number,
+  birthDay: number,
+  jieQiDay: number,
+  gender: "male" | "female"
+): { years: number; months: number; days: number } {
+  let daysFromJieQi = birthDay - jieQiDay
+  
+  if (gender === "male") {
+    daysFromJieQi = jieQiDay - birthDay
+  }
+  
+  const totalDays = daysFromJieQi + (30 - jieQiDay)
+  const years = Math.floor(totalDays / 365)
+  const remainingDays = totalDays % 365
+  const months = Math.floor(remainingDays / 30)
+  const days = remainingDays % 30
+  
+  return { years: years + 1, months, days }
+}
+
+// 五行统计
+export function calculateWuxingCount(
+  yearGan: string, yearZhi: string,
+  monthGan: string, monthZhi: string,
+  dayGan: string, dayZhi: string,
+  hourGan: string, hourZhi: string
+): Record<string, number> {
+  const count = { "金": 0, "木": 0, "水": 0, "火": 0, "土": 0 }
+  
+  const gans = [yearGan, monthGan, dayGan, hourGan]
+  gans.forEach(gan => {
+    const wx = GAN_WUXING[gan]
+    if (wx) count[wx]++
+  })
+  
+  const zhis = [yearZhi, monthZhi, dayZhi, hourZhi]
+  zhis.forEach(zhi => {
+    const wx = ZHI_WUXING[zhi]
+    if (wx) count[wx]++
+  })
+  
+  return count
+}
+
+// 含藏干的五行统计
+export function calculateWuxingWithCangGan(
+  yearZhi: string, monthZhi: string, dayZhi: string, hourZhi: string
+): Record<string, number> {
+  const count = { "金": 0, "木": 0, "水": 0, "火": 0, "土": 0 }
+  
+  const allZhi = [yearZhi, monthZhi, dayZhi, hourZhi]
+  allZhi.forEach(zhi => {
+    const cangGanList = ZHI_CANG_GAN[zhi] || []
+    cangGanList.forEach(item => {
+      count[item.wuxing] += item.power
+    })
+  })
+  
+  return count
 }
