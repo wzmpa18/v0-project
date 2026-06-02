@@ -78,6 +78,7 @@ const ZHONGYI_TOOLS = [
   { id: "jingfang", name: "经方本草", icon: BookOpen, color: "#16a34a" },
   { id: "jingluo", name: "经络穴位", icon: MapPin, color: "#0ea5e9" },
   { id: "tizhi", name: "体质辨识", icon: User, color: "#f59e0b" },
+  { id: "tcm-study", name: "学习中心", icon: GraduationCap, color: "#8b5cf6", isNew: true },
 ]
 
 function FlowerIcon(props: any) {
@@ -147,6 +148,7 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
       "hehuoren": "/hehuoren",
       "xiaochengxu": "/xiaochengxu",
       "zaixian": "/zaixian",
+      "tcm-study": "/tcm-study",
     }
     const route = routeMap[toolId]
     if (route) {
@@ -222,12 +224,12 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
             <Heart className="w-5 h-5 text-red-500" />
             <h2 className="text-gray-800 font-bold">中医养生</h2>
           </div>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-5 gap-3">
             {ZHONGYI_TOOLS.map((tool) => (
               <button
                 key={tool.id}
                 onClick={() => handleToolClick(tool.id)}
-                className="flex flex-col items-center py-2"
+                className="flex flex-col items-center py-2 relative"
               >
                 <div 
                   className="w-12 h-12 rounded-full flex items-center justify-center mb-1"
@@ -242,6 +244,11 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
                 <span className="text-xs text-gray-700 text-center leading-tight">
                   {tool.name}
                 </span>
+                {tool.isNew && (
+                  <div className="absolute top-0 right-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-1.5 py-0.5 rounded-full shadow-sm">
+                    NEW
+                  </div>
+                )}
               </button>
             ))}
           </div>

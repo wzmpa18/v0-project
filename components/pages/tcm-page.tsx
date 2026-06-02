@@ -708,10 +708,10 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
                 <div className="flex items-start gap-2">
                   <Shield className="w-4 h-4 text-[#22c55e] mt-0.5 flex-shrink-0" />
                   <div>
-                    <div className="text-[#22c55e] text-xs font-medium mb-1">隐私保护声明</div>
-                    <div className="text-gray-400 text-[10px] leading-relaxed">
-                      {selectedAITool === "ai-tongue" ? PRIVACY_NOTICE.tongueAnalysis : PRIVACY_NOTICE.faceAnalysis}
-                    </div>
+                    <div className="text-[#22c55e] text-xs font-medium mb-1">隐私保护</div>
+                    <p className="text-gray-400 text-xs">
+                      所有分析均在本地设备完成，图片不会上传至任何服务器
+                    </p>
                   </div>
                 </div>
               </div>
@@ -773,6 +773,7 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
                 </div>
               </div>
             )}
+          </div>
           </div>
         </div>
       )}
