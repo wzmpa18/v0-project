@@ -522,3 +522,61 @@ export function analyzeYongShen(
   
   return { yongShen, xiShen, jiShen, explanation }
 }
+
+// 简化版本的格局判定
+export function determineGeJu(bazi: {
+  yearGan: string; yearZhi: string;
+  monthGan: string; monthZhi: string;
+  dayGan: string; dayZhi: string;
+  hourGan: string; hourZhi: string;
+}) {
+  const monthShiShen = getShiShen(bazi.dayGan, bazi.monthGan)
+  let name = "正格"
+  let type = "正格"
+  let description = "需结合月令藏干透干情况综合判断"
+  
+  if (monthShiShen && monthShiShen !== "比肩" && monthShiShen !== "劫财") {
+    if (monthShiShen === "正官") {
+      name = "正官格"
+      type = "正官格"
+      description = "月令正官得用，为人正直，适合公职"
+    } else if (monthShiShen === "七杀") {
+      name = "偏官格"
+      type = "偏官格"
+      description = "月令七杀得用，性格果断，适合武职"
+    } else if (monthShiShen === "正印") {
+      name = "正印格"
+      type = "正印格"
+      description = "月令正印得用，仁慈善良，学识渊博"
+    } else if (monthShiShen === "偏印") {
+      name = "偏印格"
+      type = "偏印格"
+      description = "月令偏印得用，思维敏捷，具有独特见解"
+    } else if (monthShiShen === "食神") {
+      name = "食神格"
+      type = "食神格"
+      description = "月令食神得用，聪明才智，多才多艺"
+    } else if (monthShiShen === "伤官") {
+      name = "伤官格"
+      type = "伤官格"
+      description = "月令伤官得用，才华横溢，创造力强"
+    } else if (monthShiShen === "正财") {
+      name = "正财格"
+      type = "正财格"
+      description = "月令正财得用，勤俭务实，善于理财"
+    } else if (monthShiShen === "偏财") {
+      name = "偏财格"
+      type = "偏财格"
+      description = "月令偏财得用，慷慨大方，财运亨通"
+    }
+  }
+  
+  return {
+    name,
+    type,
+    description,
+    yongShen: "需结合旺衰分析",
+    xiShen: "需结合格局分析",
+    jiShen: "需结合格局分析"
+  }
+}

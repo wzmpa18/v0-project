@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Lunar, Solar } from "lunar-javascript"
 import {
   Calendar,
@@ -80,6 +81,7 @@ function FlowerIcon(props: any) {
 }
 
 export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
+  const router = useRouter()
   const [todayInfo, setTodayInfo] = useState<any>(null)
 
   useEffect(() => {
@@ -99,7 +101,9 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
   }, [])
 
   const handleToolClick = (toolId: string) => {
-    if (onNavigateToTool) {
+    if (toolId === "bazi") {
+      router.push("/bazi")
+    } else if (onNavigateToTool) {
       onNavigateToTool(toolId)
     }
   }
@@ -107,9 +111,9 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-b from-gray-50 to-white overflow-y-auto">
       {/* 标题区域 */}
-      <div className="bg-white pt-12 pb-4">
-        <h1 className="text-2xl font-bold text-center text-gray-800">热卜排盘</h1>
-      </div>
+  <div className="bg-white pt-12 pb-4">
+    <h1 className="text-2xl font-bold text-center text-gray-800">易学排盘</h1>
+  </div>
 
       {/* 日期信息卡片 */}
       <div className="px-4 mb-4">

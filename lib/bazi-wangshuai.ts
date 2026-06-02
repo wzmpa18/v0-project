@@ -328,3 +328,35 @@ export function analyzeTongDangYiDang(
     yiDangWuxing
   }
 }
+
+// 计算旺衰（简化版本）
+export function calculateWangShuai(bazi: {
+  yearGan: string; yearZhi: string;
+  monthGan: string; monthZhi: string;
+  dayGan: string; dayZhi: string;
+  hourGan: string; hourZhi: string;
+}) {
+  const season = getSeason(bazi.monthZhi)
+  const dayWuxing = GAN_WUXING[bazi.dayGan]
+  const wangxiang = WUXING_WANGXIANG[dayWuxing]?.[season]
+  
+  const deLing = wangxiang === "旺" || wangxiang === "相"
+  const deDi = [bazi.yearZhi, bazi.dayZhi, bazi.hourZhi].some(zhi => ZHI_WUXING[zhi] === dayWuxing)
+  const deShi = [bazi.yearGan, bazi.monthGan, bazi.hourGan].some(gan => GAN_WUXING[gan] === dayWuxing)
+  
+  let level: string
+  if (deLing && deDi && deShi) level = "极旺"
+  else if (deLing && deDi) level = "太旺"
+  else if (deLing || deDi) level = "偏旺"
+  else if (deDi || deShi) level = "中和"
+  else if (!deLing && !deDi && !deShi) level = "偏弱"
+  else level = "中和"
+  
+  return {
+    riZhu: `${bazi.dayGan}${bazi.dayZhi}`,
+    level,
+    deLing,
+    deDi,
+    deShi
+  }
+}
