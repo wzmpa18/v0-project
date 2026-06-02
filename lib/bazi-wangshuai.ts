@@ -101,7 +101,12 @@ export function calculateDayGanWangShuai(
   dayZhi: string,
   hourGan: string, hourZhi: string
 ): { level: WangShuaiLevel; score: number; details: string[] } {
-  const dayWuxing = GAN_WUXING[dayGan]
+  // 防御性检查
+  if (!dayGan || !yearGan || !yearZhi || !monthGan || !monthZhi || !dayZhi || !hourGan || !hourZhi) {
+    return { level: "中和", score: 0, details: ["数据不完整，无法计算旺衰"] }
+  }
+  
+  const dayWuxing = GAN_WUXING[dayGan] || ""
   const score = calculateWuxingScore(
     dayWuxing, dayGan,
     yearGan, yearZhi,
@@ -167,20 +172,22 @@ function generateWangShuaiDetails(
   }
   
   // 检查天干助力
-  const ganHelpers = [yearGan, monthGan, hourGan].filter(gan => GAN_WUXING[gan] === dayWuxing)
+  const validGans = [yearGan, monthGan, hourGan].filter(gan => gan && GAN_WUXING[gan])
+  const ganHelpers = validGans.filter(gan => GAN_WUXING[gan] === dayWuxing)
   if (ganHelpers.length > 0) {
     details.push(`天干得${ganHelpers.join("、")}助力，增力${ganHelpers.length * 10}分`)
   }
   
   // 检查地支助力
-  const zhiHelpers = [yearZhi, monthZhi, dayZhi, hourZhi].filter(zhi => ZHI_WUXING[zhi] === dayWuxing)
+  const validZhis = [yearZhi, monthZhi, dayZhi, hourZhi].filter(zhi => zhi && ZHI_WUXING[zhi])
+  const zhiHelpers = validZhis.filter(zhi => ZHI_WUXING[zhi] === dayWuxing)
   if (zhiHelpers.length > 0) {
     details.push(`地支得${zhiHelpers.join("、")}助力`)
   }
   
   // 检查藏干助力
   let cangGanHelpers: string[] = []
-  [yearZhi, monthZhi, dayZhi, hourZhi].forEach(zhi => {
+  validZhis.forEach(zhi => {
     const cangGanList = ZHI_CANG_GAN[zhi] || []
     cangGanList.forEach(cangGan => {
       if (cangGan.wuxing === dayWuxing) {
