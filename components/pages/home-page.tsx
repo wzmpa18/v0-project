@@ -26,6 +26,7 @@ import {
   Coins,
   Headphones,
   MessageCircle,
+  Heart,
 } from "lucide-react"
 
 interface HomePageProps {
@@ -69,6 +70,14 @@ const YI_XUE_TOOLS = [
   { id: "hehuoren", name: "合伙人", icon: Users, color: "#06b6d4" },
   { id: "xiaochengxu", name: "小程序开发", icon: Smartphone, color: "#8b5cf6" },
   { id: "zaixian", name: "在线客服", icon: Headphones, color: "#0891b2" },
+]
+
+// 中医板块工具
+const ZHONGYI_TOOLS = [
+  { id: "zhongyi", name: "中医诊疗", icon: Heart, color: "#dc2626" },
+  { id: "jingfang", name: "经方本草", icon: BookOpen, color: "#16a34a" },
+  { id: "jingluo", name: "经络穴位", icon: MapPin, color: "#0ea5e9" },
+  { id: "tizhi", name: "体质辨识", icon: User, color: "#f59e0b" },
 ]
 
 function FlowerIcon(props: any) {
@@ -142,6 +151,14 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
     const route = routeMap[toolId]
     if (route) {
       router.push(route)
+    } else if (toolId === "zhongyi" || toolId === "jingfang" || toolId === "jingluo" || toolId === "tizhi") {
+      // 中医工具暂时导航到demo页面，后续完善
+      if (onNavigateToTool) {
+        onNavigateToTool(toolId)
+      } else {
+        // 默认导航到经方本草页面，先检查有没有专门的中医页面
+        router.push("/herbal")
+      }
     }
   }
 
@@ -198,8 +215,45 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
 
 
 
-      {/* 工具网格 */}
+      {/* 中医板块 */}
+      <div className="px-4 mb-4">
+        <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-4 border border-red-100">
+          <div className="flex items-center gap-2 mb-3">
+            <Heart className="w-5 h-5 text-red-500" />
+            <h2 className="text-gray-800 font-bold">中医养生</h2>
+          </div>
+          <div className="grid grid-cols-4 gap-3">
+            {ZHONGYI_TOOLS.map((tool) => (
+              <button
+                key={tool.id}
+                onClick={() => handleToolClick(tool.id)}
+                className="flex flex-col items-center py-2"
+              >
+                <div 
+                  className="w-12 h-12 rounded-full flex items-center justify-center mb-1"
+                  style={{ backgroundColor: `${tool.color}15` }}
+                >
+                  <tool.icon 
+                    className="w-6 h-6"
+                    style={{ color: tool.color }}
+                    strokeWidth={1.5}
+                  />
+                </div>
+                <span className="text-xs text-gray-700 text-center leading-tight">
+                  {tool.name}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 易学工具网格 */}
       <div className="px-4 pb-24">
+        <div className="flex items-center gap-2 mb-3">
+          <Compass className="w-5 h-5 text-blue-500" />
+          <h2 className="text-gray-800 font-bold">易学工具</h2>
+        </div>
         <div className="grid grid-cols-4 gap-4">
           {YI_XUE_TOOLS.map((tool, index) => (
             <button
