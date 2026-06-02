@@ -8,7 +8,9 @@ import {
   Calculator, Clock, Zap, Bot, Shield, AlertTriangle,
   X, CheckCircle, Info, ChevronRight
 } from "lucide-react"
-import { CONSTITUTIONS, COMMON_ACUPOINTS, COMMON_HERBS, CLASSIC_FORMULAS } from "@/lib/tcm-data"
+import { CONSTITUTIONS } from "@/lib/tcm-complete-data"
+import { ACUPOINTS } from "@/lib/tcm-acupoints"
+import { HERBS, FORMULAS } from "@/lib/tcm-complete-data"
 import { SHICHEN_JINGLUO, getCurrentShichen } from "@/lib/meridian-data"
 
 // 隐私保护声明
@@ -346,7 +348,7 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
       </div>
 
       <div className="space-y-3">
-        {COMMON_ACUPOINTS.filter((acupoint: any) => 
+        {ACUPOINTS.filter((acupoint: any) => 
           !searchQuery || 
           acupoint.name.includes(searchQuery) || 
           acupoint.meridian.includes(searchQuery)
@@ -431,7 +433,7 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
       </div>
 
       <div className="space-y-3">
-        {COMMON_HERBS.filter((herb: any) => 
+        {HERBS.filter((herb: any) => 
           !searchQuery || 
           herb.name.includes(searchQuery) || 
           herb.functions.some((f: string) => f.includes(searchQuery))
@@ -532,7 +534,7 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
       </div>
 
       <div className="space-y-3">
-        {CLASSIC_FORMULAS.filter((formula: any) => 
+        {FORMULAS.filter((formula: any) => 
           !searchQuery || 
           formula.name.includes(searchQuery) || 
           formula.functions.some((f: string) => f.includes(searchQuery))
@@ -569,17 +571,19 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
               <div className="bg-amber-50 rounded-xl p-4">
                 <div className="text-sm font-medium text-amber-900 mb-2">组成</div>
                 <div className="flex flex-wrap gap-2">
-                  {selectedFormula.composition.map((c: any, i: number) => (
+                  {selectedFormula.ingredients.map((c: any, i: number) => (
                     <span key={i} className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm">
-                      {c.herb} {c.amount}
+                      {c.name} {c.amount}
                     </span>
                   ))}
                 </div>
               </div>
-              <div className="bg-blue-50 rounded-xl p-4">
-                <div className="text-sm font-medium text-blue-900 mb-2">用法</div>
-                <div className="text-sm text-blue-700">{selectedFormula.method}</div>
-              </div>
+              {selectedFormula.method && (
+                <div className="bg-blue-50 rounded-xl p-4">
+                  <div className="text-sm font-medium text-blue-900 mb-2">用法</div>
+                  <div className="text-sm text-blue-700">{selectedFormula.method}</div>
+                </div>
+              )}
               <div className="bg-green-50 rounded-xl p-4">
                 <div className="text-sm font-medium text-green-900 mb-2">功效</div>
                 <div className="flex flex-wrap gap-2">
@@ -592,23 +596,6 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
                 <div className="text-sm font-medium text-purple-900 mb-2">主治</div>
                 <div className="text-sm text-purple-700">{selectedFormula.indications.join('、')}</div>
               </div>
-              <div className="bg-gray-50 rounded-xl p-4">
-                <div className="text-sm font-medium text-gray-800 mb-2">方解</div>
-                <div className="text-sm text-gray-600">{selectedFormula.analysis}</div>
-              </div>
-              {selectedFormula.modifications && (
-                <div className="bg-orange-50 rounded-xl p-4">
-                  <div className="text-sm font-medium text-orange-900 mb-2">加减运用</div>
-                  <div className="space-y-2">
-                    {selectedFormula.modifications.map((m: any, i: number) => (
-                      <div key={i} className="text-sm text-orange-700">
-                        <span className="font-medium">{m.condition}：</span>
-                        {m.change}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
