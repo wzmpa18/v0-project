@@ -523,8 +523,8 @@ export function analyzeYongShen(
   return { yongShen, xiShen, jiShen, explanation }
 }
 
-// 简化版本的格局判定
-export function determineGeJu(bazi: {
+// 简化版本的格局判定（新增的函数名）
+export function determineGeJuSimple(bazi: {
   yearGan: string; yearZhi: string;
   monthGan: string; monthZhi: string;
   dayGan: string; dayZhi: string;

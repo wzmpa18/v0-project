@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { calculateBazi, TIAN_GAN, DI_ZHI, JIA_ZI, GAN_WUXING, ZHI_WUXING, GAN_YIN_YANG, ZHI_YIN_YANG, JIAZI_NAYIN, ZHI_CANG_GAN, getShiShen, getCangGanShiShen, getKongWang, getTaiYuan, getMingGong, getShenGong, calculateDaYun, calculateLiuNian, calculateWuxingCount, calculateWuxingWithCangGan } from "@/lib/bazi-data"
 import { checkShenShaByPosition } from "@/lib/bazi-shenshe"
 import { calculateWangShuai } from "@/lib/bazi-wangshuai"
-import { determineGeJu } from "@/lib/bazi-geju"
+import { determineGeJuSimple as determineGeJu } from "@/lib/bazi-geju"
 import { getGuJiContent, getDuanYu } from "@/lib/bazi-guji-data"
 
 export default function BaziCompletePage() {

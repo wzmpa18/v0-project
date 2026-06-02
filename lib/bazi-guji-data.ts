@@ -860,3 +860,103 @@ export function analyzeGanZhiRelations(bazi: {
   
   return result
 }
+
+// 获取古籍内容
+export function getGuJiContent(dayGan: string, monthZhi: string): Array<{
+  book: string
+  original: string
+  translation: string
+}> {
+  const result: Array<{
+    book: string
+    original: string
+    translation: string
+  }> = []
+
+  if (QIONG_TONG_BAO_JIAN[dayGan]?.[monthZhi]) {
+    result.push({
+      book: "穷通宝鉴",
+      original: QIONG_TONG_BAO_JIAN[dayGan][monthZhi].yuanwen,
+      translation: QIONG_TONG_BAO_JIAN[dayGan][monthZhi].yiwen
+    })
+  }
+
+  if (DI_TIAN_SUI[dayGan]) {
+    result.push({
+      book: "滴天髓",
+      original: DI_TIAN_SUI[dayGan],
+      translation: ""
+    })
+  }
+
+  return result
+}
+
+// 获取格局断语
+export function getDuanYu(dayGan: string, monthZhi: string, geJu: string): Array<{
+  title: string
+  content: string
+  source: string
+}> {
+  const result: Array<{
+    title: string
+    content: string
+    source: string
+  }> = []
+
+  const basicDuanYu: Record<string, Array<{ title: string, content: string, source: string }>> = {
+    "正官格": [
+      { title: "官星得用", content: "官星要纯，不宜混杂，官星喜透干，得财生印护。", source: "子平真诠" },
+      { title: "伤官见官", content: "官星怕见伤官，谓之伤官见官，为祸百端。", source: "渊海子平" }
+    ],
+    "偏官格": [
+      { title: "七杀制伏", content: "七杀要制，宜食神制杀，七杀得制，化为权柄。", source: "三命通会" },
+      { title: "杀印相生", content: "杀印相生，贵不可言，七杀无制，为凶神。", source: "滴天髓" }
+    ],
+    "正财格": [
+      { title: "财星得位", content: "财星要得位，不宜太旺，财星喜食神生。", source: "穷通宝鉴" },
+      { title: "财多身弱", content: "财多身弱，富屋穷人，怕比劫夺财。", source: "渊海子平" }
+    ],
+    "偏财格": [
+      { title: "偏财宜露", content: "偏财宜露不宜藏，偏财喜食伤生。", source: "三命通会" },
+      { title: "偏财得地", content: "偏财得地，富甲一方。", source: "穷通宝鉴" }
+    ],
+    "正印格": [
+      { title: "印星要清", content: "印星要清，不宜杂乱，印星喜官杀生。", source: "子平真诠" },
+      { title: "财星破印", content: "印星怕财星破，印多身强，宜财星制印。", source: "渊海子平" }
+    ],
+    "偏印格": [
+      { title: "枭神夺食", content: "枭神宜制，用财星制枭，枭神夺食，为凶。", source: "滴天髓" },
+      { title: "枭神得用", content: "枭神得用，智慧过人，枭神忌见食神。", source: "三命通会" }
+    ],
+    "食神格": [
+      { title: "食神要纯", content: "食神要纯，不宜混杂，食神喜财星泄秀。", source: "子平真诠" },
+      { title: "食神得地", content: "食神得地，福禄丰厚，怕印星夺食。", source: "渊海子平" }
+    ],
+    "伤官格": [
+      { title: "伤官宜泄", content: "伤官宜泄不宜制，伤官喜财星化。", source: "滴天髓" },
+      { title: "伤官得用", content: "伤官得用，才华横溢，怕官星见伤。", source: "三命通会" }
+    ],
+    "建禄格": [
+      { title: "建禄身强", content: "建禄身强，喜财官，建禄忌比劫太多。", source: "渊海子平" },
+      { title: "建禄得财官", content: "建禄得财官，富贵双全。", source: "子平真诠" }
+    ],
+    "月刃格": [
+      { title: "月刃喜制", content: "月刃喜官杀制，月刃忌比劫助。", source: "三命通会" },
+      { title: "月刃得制", content: "月刃得制，贵气十足。", source: "渊海子平" }
+    ]
+  }
+
+  if (basicDuanYu[geJu]) {
+    result.push(...basicDuanYu[geJu])
+  }
+
+  if (result.length === 0) {
+    result.push(
+      { title: "格局分析", content: "需结合整体八字格局进行分析，参考月令藏干透干情况。", source: "子平真诠" },
+      { title: "用神选取", content: "根据日主旺衰和格局特点，选取合适的用神。", source: "滴天髓" }
+    )
+  }
+
+  return result
+}
