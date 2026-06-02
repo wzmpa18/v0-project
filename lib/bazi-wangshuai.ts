@@ -44,8 +44,14 @@ function calculateWuxingScore(
   hourGan: string, hourZhi: string
 ): number {
   let score = 0
+  
+  // 防御性检查
+  if (!wuxing || !dayGan || !yearGan || !yearZhi || !monthGan || !monthZhi || !dayZhi || !hourGan || !hourZhi) {
+    return score
+  }
+  
   const season = getSeason(monthZhi)
-  const wangxiang = WUXING_WANGXIANG[wuxing][season]
+  const wangxiang = WUXING_WANGXIANG[wuxing]?.[season]
   
   // 月令得令加分
   if (wangxiang === "旺") score += YUE_LING_WEIGHT
@@ -136,8 +142,15 @@ function generateWangShuaiDetails(
   hourGan: string, hourZhi: string
 ): string[] {
   const details: string[] = []
+  
+  // 防御性检查
+  if (!dayGan || !dayWuxing || !yearGan || !yearZhi || !monthGan || !monthZhi || !dayZhi || !hourGan || !hourZhi) {
+    details.push("数据不完整，无法分析")
+    return details
+  }
+  
   const season = getSeason(monthZhi)
-  const wangxiang = WUXING_WANGXIANG[dayWuxing][season]
+  const wangxiang = WUXING_WANGXIANG[dayWuxing]?.[season]
   
   details.push(`${dayGan}日主，${dayWuxing}命，生于${season}季`)
   
