@@ -16,7 +16,12 @@ import {
   RotateCw,
   MousePointer,
   Move,
-  Layers
+  Layers,
+  Activity,
+  Grip,
+  Hand,
+  Minus,
+  Plus
 } from "lucide-react"
 import {
   MERIDIANS_FULL,
@@ -27,6 +32,19 @@ import {
 
 interface HumanBodyProps {
   onSelectAcupoint?: (acupoint: any) => void
+}
+
+// 关节数据接口
+interface Joint {
+  id: string
+  name: string
+  x: number
+  y: number
+  type: "shoulder" | "elbow" | "wrist" | "hip" | "knee" | "ankle" | "neck" | "spine"
+  minAngle: number
+  maxAngle: number
+  currentAngle: number
+  axis: "x" | "y" | "z"
 }
 
 export function HumanBodyModel({ onSelectAcupoint }: HumanBodyProps) {
@@ -42,6 +60,50 @@ export function HumanBodyModel({ onSelectAcupoint }: HumanBodyProps) {
   const [offset, setOffset] = useState({ x: 0, y: 0 })
   const [selectedAcupoint, setSelectedAcupoint] = useState<any>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  // 骨骼关节功能状态
+  const [skeletonMode, setSkeletonMode] = useState(false)
+  const [showJointLabels, setShowJointLabels] = useState(true)
+  const [selectedJoint, setSelectedJoint] = useState<string | null>(null)
+  const [draggingLimb, setDraggingLimb] = useState<string | null>(null)
+
+  // 关节角度状态
+  const [jointAngles, setJointAngles] = useState<Record<string, number>>({
+    leftShoulder: -20,
+    rightShoulder: 20,
+    leftElbow: 0,
+    rightElbow: 0,
+    leftWrist: 0,
+    rightWrist: 0,
+    leftHip: 10,
+    rightHip: -10,
+    leftKnee: 0,
+    rightKnee: 0,
+    leftAnkle: 0,
+    rightAnkle: 0,
+    neck: 0,
+    upperSpine: 0,
+    lowerSpine: 0,
+  })
+
+  // 关节数据
+  const joints: Joint[] = [
+    { id: "leftShoulder", name: "左肩关节", x: 220, y: 180, type: "shoulder", minAngle: -90, maxAngle: 180, currentAngle: jointAngles.leftShoulder, axis: "z" },
+    { id: "rightShoulder", name: "右肩关节", x: 380, y: 180, type: "shoulder", minAngle: -180, maxAngle: 90, currentAngle: jointAngles.rightShoulder, axis: "z" },
+    { id: "leftElbow", name: "左肘关节", x: 180, y: 320, type: "elbow", minAngle: 0, maxAngle: 150, currentAngle: jointAngles.leftElbow, axis: "z" },
+    { id: "rightElbow", name: "右肘关节", x: 420, y: 320, type: "elbow", minAngle: -150, maxAngle: 0, currentAngle: jointAngles.rightElbow, axis: "z" },
+    { id: "leftWrist", name: "左腕关节", x: 180, y: 440, type: "wrist", minAngle: -60, maxAngle: 60, currentAngle: jointAngles.leftWrist, axis: "z" },
+    { id: "rightWrist", name: "右腕关节", x: 420, y: 440, type: "wrist", minAngle: -60, maxAngle: 60, currentAngle: jointAngles.rightWrist, axis: "z" },
+    { id: "leftHip", name: "左髋关节", x: 260, y: 500, type: "hip", minAngle: -45, maxAngle: 120, currentAngle: jointAngles.leftHip, axis: "z" },
+    { id: "rightHip", name: "右髋关节", x: 340, y: 500, type: "hip", minAngle: -120, maxAngle: 45, currentAngle: jointAngles.rightHip, axis: "z" },
+    { id: "leftKnee", name: "左膝关节", x: 250, y: 620, type: "knee", minAngle: 0, maxAngle: 140, currentAngle: jointAngles.leftKnee, axis: "z" },
+    { id: "rightKnee", name: "右膝关节", x: 350, y: 620, type: "knee", minAngle: -140, maxAngle: 0, currentAngle: jointAngles.rightKnee, axis: "z" },
+    { id: "leftAnkle", name: "左踝关节", x: 250, y: 720, type: "ankle", minAngle: -30, maxAngle: 50, currentAngle: jointAngles.leftAnkle, axis: "z" },
+    { id: "rightAnkle", name: "右踝关节", x: 350, y: 720, type: "ankle", minAngle: -50, maxAngle: 30, currentAngle: jointAngles.rightAnkle, axis: "z" },
+    { id: "neck", name: "颈椎", x: 300, y: 140, type: "neck", minAngle: -45, maxAngle: 45, currentAngle: jointAngles.neck, axis: "z" },
+    { id: "upperSpine", name: "上脊椎", x: 300, y: 280, type: "spine", minAngle: -30, maxAngle: 30, currentAngle: jointAngles.upperSpine, axis: "z" },
+    { id: "lowerSpine", name: "下脊椎", x: 300, y: 400, type: "spine", minAngle: -20, maxAngle: 20, currentAngle: jointAngles.lowerSpine, axis: "z" },
+  ]
 
   // 经络颜色映射
   const meridianColors: Record<string, string> = {
@@ -59,6 +121,65 @@ export function HumanBodyModel({ onSelectAcupoint }: HumanBodyProps) {
     TE: "#8b5cf6", // 三焦经 - 紫色
     CV: "#d4af37", // 任脉 - 金色
     GV: "#dc2626", // 督脉 - 红色
+    DONG: "#f97316", // 董氏奇穴 - 橙色
+  }
+
+  // 关节类型颜色
+  const jointTypeColors: Record<string, string> = {
+    shoulder: "#3b82f6",
+    elbow: "#10b981",
+    wrist: "#8b5cf6",
+    hip: "#f59e0b",
+    knee: "#ef4444",
+    ankle: "#06b6d4",
+    neck: "#ec4899",
+    spine: "#f97316",
+  }
+
+  // 董氏奇穴位置数据
+  const dongPointsPositions = {
+    // 一一部位（手指部位）
+    dachang: { name: "大间", x: 325, y: 560, id: "d1" },
+    xiaojian: { name: "小间", x: 335, y: 560, id: "d2" },
+    zhongjian: { name: "中间", x: 345, y: 560, id: "d3" },
+    fujian: { name: "浮间", x: 325, y: 570, id: "d4" },
+    wajian: { name: "外间", x: 335, y: 570, id: "d5" },
+    huanyu: { name: "还巢", x: 415, y: 630, id: "d6" },
+    // 二二部位（手掌部位）
+    zhongzi: { name: "重子", x: 350, y: 540, id: "d7" },
+    zhongxian: { name: "重仙", x: 360, y: 550, id: "d8" },
+    linggu: { name: "灵骨", x: 340, y: 570, id: "d9" },
+    dahei: { name: "大白", x: 355, y: 580, id: "d10" },
+    shoujie: { name: "手解", x: 380, y: 620, id: "d11" },
+    // 三三部位（前臂部位）
+    renzhi: { name: "人士", x: 280, y: 360, id: "d12" },
+    dishi: { name: "地士", x: 280, y: 390, id: "d13" },
+    tianshi: { name: "天士", x: 280, y: 420, id: "d14" },
+    quling: { name: "曲陵", x: 280, y: 340, id: "d15" },
+    // 四四部位（上臂部位）
+    jianzhong: { name: "肩中", x: 320, y: 330, id: "d16" },
+    jianzhong2: { name: "建中", x: 320, y: 340, id: "d17" },
+    // 五五部位（足趾部位）
+    huoying: { name: "火硬", x: 435, y: 660, id: "d18" },
+    huozhu: { name: "火主", x: 430, y: 665, id: "d19" },
+    // 六六部位（足掌部位）
+    menjin: { name: "门金", x: 440, y: 660, id: "d20" },
+    muzhi: { name: "木枝", x: 445, y: 655, id: "d21" },
+    // 七七部位（小腿部位）
+    zhengjin: { name: "正筋", x: 320, y: 580, id: "d22" },
+    zhengshi: { name: "正士", x: 320, y: 590, id: "d23" },
+    boqiu: { name: "博球", x: 320, y: 600, id: "d24" },
+    biyi: { name: "鼻翼", x: 400, y: 560, id: "d25" },
+    // 八八部位（大腿部位）
+    tongguan: { name: "通关", x: 280, y: 460, id: "d26" },
+    tongshan: { name: "通山", x: 280, y: 470, id: "d27" },
+    tongbei: { name: "通背", x: 280, y: 480, id: "d28" },
+    // 九九部位（耳朵部位）
+    erhuang: { name: "耳环", x: 335, y: 235, id: "d29" },
+    erbei: { name: "耳背", x: 330, y: 240, id: "d30" },
+    // 十十部位（头面部位）
+    zongshu: { name: "总枢", x: 320, y: 80, id: "d31" },
+    zhenjing: { name: "镇静", x: 320, y: 150, id: "d32" },
   }
 
   // 经络路径数据（简化的SVG路径）
@@ -306,7 +427,6 @@ export function HumanBodyModel({ onSelectAcupoint }: HumanBodyProps) {
       { name: "龈交", x: 320, y: -25, id: "GV28" },
     ]
   },
-}
 
   // 获取当前显示的经络
   const getActiveMeridians = () => {
@@ -329,6 +449,7 @@ export function HumanBodyModel({ onSelectAcupoint }: HumanBodyProps) {
 
   // 处理鼠标拖拽
   const handleMouseDown = (e: React.MouseEvent) => {
+    if (skeletonMode && draggingLimb) return
     setDragging(true)
     setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y })
   }
@@ -354,7 +475,255 @@ export function HumanBodyModel({ onSelectAcupoint }: HumanBodyProps) {
     setZoom(1)
     setOffset({ x: 0, y: 0 })
     setRotation(0)
+    setJointAngles({
+      leftShoulder: -20,
+      rightShoulder: 20,
+      leftElbow: 0,
+      rightElbow: 0,
+      leftWrist: 0,
+      rightWrist: 0,
+      leftHip: 10,
+      rightHip: -10,
+      leftKnee: 0,
+      rightKnee: 0,
+      leftAnkle: 0,
+      rightAnkle: 0,
+      neck: 0,
+      upperSpine: 0,
+      lowerSpine: 0,
+    })
   }
+
+  // 调整关节角度
+  const adjustJointAngle = (jointId: string, delta: number) => {
+    const joint = joints.find(j => j.id === jointId)
+    if (!joint) return
+
+    setJointAngles(prev => {
+      const newAngle = Math.max(
+        joint.minAngle,
+        Math.min(joint.maxAngle, (prev[jointId] || 0) + delta)
+      )
+      return { ...prev, [jointId]: newAngle }
+    })
+  }
+
+  // 获取关节颜色
+  const getJointColor = (type: string) => jointTypeColors[type] || "#6b7280"
+
+  // 渲染骨骼关节
+  const renderSkeletonJoints = () => (
+    <g className="skeleton-joints">
+      {/* 左上肢骨骼 */}
+      <g className="left-arm">
+        {/* 上臂 */}
+        <line
+          x1={joints.find(j => j.id === "leftShoulder")?.x || 220}
+          y1={joints.find(j => j.id === "leftShoulder")?.y || 180}
+          x2={joints.find(j => j.id === "leftElbow")?.x || 180}
+          y2={joints.find(j => j.id === "leftElbow")?.y || 320}
+          stroke="#d1d5db"
+          strokeWidth="20"
+          strokeLinecap="round"
+        />
+        {/* 前臂 */}
+        <line
+          x1={joints.find(j => j.id === "leftElbow")?.x || 180}
+          y1={joints.find(j => j.id === "leftElbow")?.y || 320}
+          x2={joints.find(j => j.id === "leftWrist")?.x || 180}
+          y2={joints.find(j => j.id === "leftWrist")?.y || 440}
+          stroke="#d1d5db"
+          strokeWidth="16"
+          strokeLinecap="round"
+        />
+        {/* 手 */}
+        <ellipse
+          cx={joints.find(j => j.id === "leftWrist")?.x || 180}
+          cy={(joints.find(j => j.id === "leftWrist")?.y || 440) + 30}
+          rx="15"
+          ry="25"
+          fill="#f9fafb"
+          stroke="#d1d5db"
+          strokeWidth="2"
+        />
+      </g>
+
+      {/* 右上肢骨骼 */}
+      <g className="right-arm">
+        <line
+          x1={joints.find(j => j.id === "rightShoulder")?.x || 380}
+          y1={joints.find(j => j.id === "rightShoulder")?.y || 180}
+          x2={joints.find(j => j.id === "rightElbow")?.x || 420}
+          y2={joints.find(j => j.id === "rightElbow")?.y || 320}
+          stroke="#d1d5db"
+          strokeWidth="20"
+          strokeLinecap="round"
+        />
+        <line
+          x1={joints.find(j => j.id === "rightElbow")?.x || 420}
+          y1={joints.find(j => j.id === "rightElbow")?.y || 320}
+          x2={joints.find(j => j.id === "rightWrist")?.x || 420}
+          y2={joints.find(j => j.id === "rightWrist")?.y || 440}
+          stroke="#d1d5db"
+          strokeWidth="16"
+          strokeLinecap="round"
+        />
+        <ellipse
+          cx={joints.find(j => j.id === "rightWrist")?.x || 420}
+          cy={(joints.find(j => j.id === "rightWrist")?.y || 440) + 30}
+          rx="15"
+          ry="25"
+          fill="#f9fafb"
+          stroke="#d1d5db"
+          strokeWidth="2"
+        />
+      </g>
+
+      {/* 左下肢骨骼 */}
+      <g className="left-leg">
+        <line
+          x1={joints.find(j => j.id === "leftHip")?.x || 260}
+          y1={joints.find(j => j.id === "leftHip")?.y || 500}
+          x2={joints.find(j => j.id === "leftKnee")?.x || 250}
+          y2={joints.find(j => j.id === "leftKnee")?.y || 620}
+          stroke="#d1d5db"
+          strokeWidth="24"
+          strokeLinecap="round"
+        />
+        <line
+          x1={joints.find(j => j.id === "leftKnee")?.x || 250}
+          y1={joints.find(j => j.id === "leftKnee")?.y || 620}
+          x2={joints.find(j => j.id === "leftAnkle")?.x || 250}
+          y2={joints.find(j => j.id === "leftAnkle")?.y || 720}
+          stroke="#d1d5db"
+          strokeWidth="20"
+          strokeLinecap="round"
+        />
+        <ellipse
+          cx={joints.find(j => j.id === "leftAnkle")?.x || 250}
+          cy={(joints.find(j => j.id === "leftAnkle")?.y || 720) + 25}
+          rx="20"
+          ry="12"
+          fill="#f9fafb"
+          stroke="#d1d5db"
+          strokeWidth="2"
+        />
+      </g>
+
+      {/* 右下肢骨骼 */}
+      <g className="right-leg">
+        <line
+          x1={joints.find(j => j.id === "rightHip")?.x || 340}
+          y1={joints.find(j => j.id === "rightHip")?.y || 500}
+          x2={joints.find(j => j.id === "rightKnee")?.x || 350}
+          y2={joints.find(j => j.id === "rightKnee")?.y || 620}
+          stroke="#d1d5db"
+          strokeWidth="24"
+          strokeLinecap="round"
+        />
+        <line
+          x1={joints.find(j => j.id === "rightKnee")?.x || 350}
+          y1={joints.find(j => j.id === "rightKnee")?.y || 620}
+          x2={joints.find(j => j.id === "rightAnkle")?.x || 350}
+          y2={joints.find(j => j.id === "rightAnkle")?.y || 720}
+          stroke="#d1d5db"
+          strokeWidth="20"
+          strokeLinecap="round"
+        />
+        <ellipse
+          cx={joints.find(j => j.id === "rightAnkle")?.x || 350}
+          cy={(joints.find(j => j.id === "rightAnkle")?.y || 720) + 25}
+          rx="20"
+          ry="12"
+          fill="#f9fafb"
+          stroke="#d1d5db"
+          strokeWidth="2"
+        />
+      </g>
+
+      {/* 脊椎 */}
+      <path
+        d={`M 300 ${joints.find(j => j.id === "neck")?.y || 140}
+            Q ${300 + jointAngles.upperSpine * 0.5} ${280} ${300 + jointAngles.upperSpine * 0.8} 280
+            Q ${300 + jointAngles.lowerSpine * 0.5} ${400} 300 ${joints.find(j => j.id === "lowerSpine")?.y || 400}`}
+        fill="none"
+        stroke="#d1d5db"
+        strokeWidth="30"
+        strokeLinecap="round"
+      />
+
+      {/* 肋骨 */}
+      <g className="ribs" opacity="0.6">
+        {[0, 1, 2, 3, 4, 5].map(i => (
+          <g key={i}>
+            <path
+              d={`M 280 ${200 + i * 30} Q 260 ${210 + i * 30} 240 ${200 + i * 30}`}
+              fill="none"
+              stroke="#d1d5db"
+              strokeWidth="8"
+              strokeLinecap="round"
+            />
+            <path
+              d={`M 320 ${200 + i * 30} Q 340 ${210 + i * 30} 360 ${200 + i * 30}`}
+              fill="none"
+              stroke="#d1d5db"
+              strokeWidth="8"
+              strokeLinecap="round"
+            />
+          </g>
+        ))}
+      </g>
+
+      {/* 骨盆 */}
+      <path
+        d="M 240 480 Q 260 460 280 480 L 300 500 L 320 480 Q 340 460 360 480 L 340 520 L 260 520 Z"
+        fill="#e5e7eb"
+        stroke="#d1d5db"
+        strokeWidth="2"
+      />
+
+      {/* 关节球 */}
+      {joints.map(joint => (
+        <g key={joint.id}>
+          <circle
+            cx={joint.x}
+            cy={joint.y}
+            r={selectedJoint === joint.id ? 16 : 12}
+            fill={getJointColor(joint.type)}
+            stroke="#fff"
+            strokeWidth="3"
+            className="cursor-pointer hover:fill-opacity-80 transition-all"
+            onClick={() => setSelectedJoint(selectedJoint === joint.id ? null : joint.id)}
+          />
+          {showJointLabels && (
+            <text
+              x={joint.x}
+              y={joint.y - 20}
+              textAnchor="middle"
+              fill="#374151"
+              fontSize="10"
+              fontWeight="500"
+            >
+              {joint.name}
+            </text>
+          )}
+          {/* 活动范围指示器 */}
+          {selectedJoint === joint.id && (
+            <circle
+              cx={joint.x}
+              cy={joint.y}
+              r="25"
+              fill="none"
+              stroke={getJointColor(joint.type)}
+              strokeWidth="2"
+              strokeDasharray="4 2"
+              opacity="0.5"
+            />
+          )}
+        </g>
+      ))}
+    </g>
+  )
 
   return (
     <div className="h-full flex flex-col bg-gray-50">
@@ -381,6 +750,18 @@ export function HumanBodyModel({ onSelectAcupoint }: HumanBodyProps) {
               }`}
             >
               背面
+            </button>
+            <div className="h-6 w-px bg-gray-300 mx-2" />
+            <button
+              onClick={() => setSkeletonMode(!skeletonMode)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
+                skeletonMode
+                  ? "bg-orange-500 text-white"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              <Activity className="w-4 h-4" />
+              骨骼关节
             </button>
           </div>
           <div className="flex items-center gap-2">
@@ -409,34 +790,86 @@ export function HumanBodyModel({ onSelectAcupoint }: HumanBodyProps) {
           </div>
         </div>
 
+        {/* 骨骼关节控制面板 */}
+        {skeletonMode && (
+          <div className="mb-3 p-3 bg-orange-50 rounded-lg border border-orange-200">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-orange-800">关节活动控制</span>
+              <span className="text-xs text-orange-600">点击关节可查看/调整活动范围</span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {joints.slice(0, 8).map(joint => (
+                <div key={joint.id} className="flex items-center gap-1 bg-white rounded-lg p-2">
+                  <span className="text-xs text-gray-600 truncate flex-1">{joint.name}</span>
+                  <button
+                    onClick={() => adjustJointAngle(joint.id, -5)}
+                    className="w-6 h-6 flex items-center justify-center bg-gray-100 rounded hover:bg-gray-200"
+                  >
+                    <Minus className="w-3 h-3" />
+                  </button>
+                  <span className="text-xs font-medium w-8 text-center">{jointAngles[joint.id] || 0}°</span>
+                  <button
+                    onClick={() => adjustJointAngle(joint.id, 5)}
+                    className="w-6 h-6 flex items-center justify-center bg-gray-100 rounded hover:bg-gray-200"
+                  >
+                    <Plus className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* 经络选择 */}
-        <div className="flex flex-wrap gap-2">
-          {MERIDIANS_FULL.slice(0, 12).map(meridian => (
+        {!skeletonMode && (
+          <div className="flex flex-wrap gap-2">
+            {MERIDIANS_FULL.slice(0, 12).map(meridian => (
+              <button
+                key={meridian.id}
+                onClick={() => toggleMeridian(meridian.id)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1 ${
+                  activeMeridians.includes(meridian.id)
+                    ? "text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+                style={{
+                  backgroundColor: activeMeridians.includes(meridian.id)
+                    ? meridianColors[meridian.id]
+                    : undefined
+                }}
+              >
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{
+                    backgroundColor: meridianColors[meridian.id],
+                    opacity: activeMeridians.includes(meridian.id) ? 1 : 0.3
+                  }}
+                />
+                {meridian.nameAbbr}
+              </button>
+            ))}
             <button
-              key={meridian.id}
-              onClick={() => toggleMeridian(meridian.id)}
+              onClick={() => setActiveDongPoints(!activeDongPoints)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1 ${
-                activeMeridians.includes(meridian.id)
+                activeDongPoints
                   ? "text-white"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
               style={{
-                backgroundColor: activeMeridians.includes(meridian.id)
-                  ? meridianColors[meridian.id]
-                  : undefined
+                backgroundColor: activeDongPoints ? "#f97316" : undefined
               }}
             >
               <div
                 className="w-3 h-3 rounded-full"
                 style={{
-                  backgroundColor: meridianColors[meridian.id],
-                  opacity: activeMeridians.includes(meridian.id) ? 1 : 0.3
+                  backgroundColor: "#f97316",
+                  opacity: activeDongPoints ? 1 : 0.3
                 }}
               />
-              {meridian.nameAbbr}
+              董氏奇穴
             </button>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* 人体模型显示区域 */}
@@ -471,96 +904,104 @@ export function HumanBodyModel({ onSelectAcupoint }: HumanBodyProps) {
 
             {/* 人体轮廓 */}
             <g className="human-body">
-              {/* 头部 */}
-              <ellipse cx="300" cy="80" rx="50" ry="60" fill="none" stroke="#d1d5db" strokeWidth="2" />
-              <ellipse cx="300" cy="75" rx="45" ry="55" fill="#f9fafb" stroke="#9ca3af" strokeWidth="1" />
-              
-              {/* 颈部 */}
-              <rect x="285" y="130" width="30" height="30" fill="#f9fafb" stroke="#9ca3af" strokeWidth="1" />
-              
-              {/* 躯干 */}
-              <path
-                d="M 240 160 Q 220 180 220 250 L 220 450 Q 220 480 250 500 L 350 500 Q 380 480 380 450 L 380 250 Q 380 180 360 160 Z"
-                fill="#f9fafb"
-                stroke="#9ca3af"
-                strokeWidth="2"
-              />
-              
-              {/* 四肢 - 左上肢 */}
-              <path
-                d="M 240 170 Q 200 200 180 280 L 180 400 Q 180 420 200 440 L 260 540"
-                fill="none"
-                stroke="#9ca3af"
-                strokeWidth="20"
-                strokeLinecap="round"
-              />
-              <path
-                d="M 240 170 Q 200 200 180 280 L 180 400 Q 180 420 200 440 L 260 540"
-                fill="none"
-                stroke="#f9fafb"
-                strokeWidth="16"
-                strokeLinecap="round"
-              />
-              
-              {/* 四肢 - 右上肢 */}
-              <path
-                d="M 360 170 Q 400 200 420 280 L 420 400 Q 420 420 400 440 L 340 540"
-                fill="none"
-                stroke="#9ca3af"
-                strokeWidth="20"
-                strokeLinecap="round"
-              />
-              <path
-                d="M 360 170 Q 400 200 420 280 L 420 400 Q 420 420 400 440 L 340 540"
-                fill="none"
-                stroke="#f9fafb"
-                strokeWidth="16"
-                strokeLinecap="round"
-              />
-              
-              {/* 四肢 - 左下肢 */}
-              <path
-                d="M 260 500 Q 250 550 250 600 L 250 680 Q 250 720 240 750"
-                fill="none"
-                stroke="#9ca3af"
-                strokeWidth="24"
-                strokeLinecap="round"
-              />
-              <path
-                d="M 260 500 Q 250 550 250 600 L 250 680 Q 250 720 240 750"
-                fill="none"
-                stroke="#f9fafb"
-                strokeWidth="18"
-                strokeLinecap="round"
-              />
-              
-              {/* 四肢 - 右下肢 */}
-              <path
-                d="M 340 500 Q 350 550 350 600 L 350 680 Q 350 720 360 750"
-                fill="none"
-                stroke="#9ca3af"
-                strokeWidth="24"
-                strokeLinecap="round"
-              />
-              <path
-                d="M 340 500 Q 350 550 350 600 L 350 680 Q 350 720 360 750"
-                fill="none"
-                stroke="#f9fafb"
-                strokeWidth="18"
-                strokeLinecap="round"
-              />
+              {/* 骨骼关节模式 */}
+              {skeletonMode && renderSkeletonJoints()}
 
-              {/* 经络线路 */}
-              {getActiveMeridians().map(meridianId => {
+              {/* 正常模式 - 人体轮廓 */}
+              {!skeletonMode && (
+                <>
+                  {/* 头部 */}
+                  <ellipse cx="300" cy="80" rx="50" ry="60" fill="none" stroke="#d1d5db" strokeWidth="2" />
+                  <ellipse cx="300" cy="75" rx="45" ry="55" fill="#f9fafb" stroke="#9ca3af" strokeWidth="1" />
+
+                  {/* 颈部 */}
+                  <rect x="285" y="130" width="30" height="30" fill="#f9fafb" stroke="#9ca3af" strokeWidth="1" />
+
+                  {/* 躯干 */}
+                  <path
+                    d="M 240 160 Q 220 180 220 250 L 220 450 Q 220 480 250 500 L 350 500 Q 380 480 380 450 L 380 250 Q 380 180 360 160 Z"
+                    fill="#f9fafb"
+                    stroke="#9ca3af"
+                    strokeWidth="2"
+                  />
+
+                  {/* 四肢 - 左上肢 */}
+                  <path
+                    d="M 240 170 Q 200 200 180 280 L 180 400 Q 180 420 200 440 L 260 540"
+                    fill="none"
+                    stroke="#9ca3af"
+                    strokeWidth="20"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M 240 170 Q 200 200 180 280 L 180 400 Q 180 420 200 440 L 260 540"
+                    fill="none"
+                    stroke="#f9fafb"
+                    strokeWidth="16"
+                    strokeLinecap="round"
+                  />
+
+                  {/* 四肢 - 右上肢 */}
+                  <path
+                    d="M 360 170 Q 400 200 420 280 L 420 400 Q 420 420 400 440 L 340 540"
+                    fill="none"
+                    stroke="#9ca3af"
+                    strokeWidth="20"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M 360 170 Q 400 200 420 280 L 420 400 Q 420 420 400 440 L 340 540"
+                    fill="none"
+                    stroke="#f9fafb"
+                    strokeWidth="16"
+                    strokeLinecap="round"
+                  />
+
+                  {/* 四肢 - 左下肢 */}
+                  <path
+                    d="M 260 500 Q 250 550 250 600 L 250 680 Q 250 720 240 750"
+                    fill="none"
+                    stroke="#9ca3af"
+                    strokeWidth="24"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M 260 500 Q 250 550 250 600 L 250 680 Q 250 720 240 750"
+                    fill="none"
+                    stroke="#f9fafb"
+                    strokeWidth="18"
+                    strokeLinecap="round"
+                  />
+
+                  {/* 四肢 - 右下肢 */}
+                  <path
+                    d="M 340 500 Q 350 550 350 600 L 350 680 Q 350 720 360 750"
+                    fill="none"
+                    stroke="#9ca3af"
+                    strokeWidth="24"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M 340 500 Q 350 550 350 600 L 350 680 Q 350 720 360 750"
+                    fill="none"
+                    stroke="#f9fafb"
+                    strokeWidth="18"
+                    strokeLinecap="round"
+                  />
+                </>
+              )}
+
+              {/* 经络线路 - 仅在非骨骼模式显示 */}
+              {!skeletonMode && getActiveMeridians().map(meridianId => {
                 const meridian = MERIDIANS_FULL.find(m => m.id === meridianId)
                 if (!meridian) return null
-                
+
                 const pathData = meridianPaths[meridianId as keyof typeof meridianPaths]
                 if (!pathData) return null
-                
+
                 const path = viewMode === "back" && pathData.back ? pathData.back : pathData.front
                 const color = meridianColors[meridianId]
-                
+
                 return (
                   <g key={meridianId}>
                     {/* 经络线 */}
@@ -576,7 +1017,7 @@ export function HumanBodyModel({ onSelectAcupoint }: HumanBodyProps) {
                         animation: isAnimating ? "flowAnimation 2s linear infinite" : "none"
                       }}
                     />
-                    
+
                     {/* 穴位 */}
                     {showLabels && pathData.points.map((point, idx) => (
                       <g
@@ -621,6 +1062,66 @@ export function HumanBodyModel({ onSelectAcupoint }: HumanBodyProps) {
                   </g>
                 )
               })}
+
+              {/* 董氏奇穴 - 仅在非骨骼模式显示 */}
+              {!skeletonMode && activeDongPoints && (
+                <g className="dong-points">
+                  {Object.values(dongPointsPositions).map((point, idx) => (
+                    <g
+                      key={idx}
+                      onClick={() => {
+                        const dongPoint = DONG_POINTS.find(d => d.id === point.id)
+                        if (dongPoint) {
+                          setSelectedAcupoint({
+                            ...dongPoint,
+                            meridianName: "董氏奇穴",
+                            meridianId: "DONG",
+                            category: dongPoint.category
+                          })
+                          onSelectAcupoint?.({
+                            ...dongPoint,
+                            meridianName: "董氏奇穴",
+                            meridianId: "DONG",
+                            category: dongPoint.category
+                          })
+                        }
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <circle
+                        cx={point.x}
+                        cy={point.y}
+                        r="8"
+                        fill="#f97316"
+                        stroke="#fff"
+                        strokeWidth="2"
+                      />
+                      <text
+                        x={point.x}
+                        y={point.y + 3}
+                        textAnchor="middle"
+                        fill="#fff"
+                        fontSize="8"
+                        fontWeight="bold"
+                      >
+                        {point.name.substring(0, 2)}
+                      </text>
+                      {showLabels && (
+                        <text
+                          x={point.x}
+                          y={point.y - 14}
+                          textAnchor="middle"
+                          fill="#374151"
+                          fontSize="9"
+                          fontWeight="500"
+                        >
+                          {point.name}
+                        </text>
+                      )}
+                    </g>
+                  ))}
+                </g>
+              )}
             </g>
 
             {/* 动画样式 */}
@@ -659,24 +1160,53 @@ export function HumanBodyModel({ onSelectAcupoint }: HumanBodyProps) {
         </div>
 
         {/* 图例 */}
-        <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-md p-3 max-w-xs">
-          <div className="text-xs font-medium text-gray-700 mb-2">经络图例</div>
-          <div className="space-y-1">
-            {getActiveMeridians().slice(0, 6).map(meridianId => {
-              const meridian = MERIDIANS_FULL.find(m => m.id === meridianId)
-              if (!meridian) return null
-              return (
-                <div key={meridianId} className="flex items-center gap-2 text-xs">
-                  <div
-                    className="w-4 h-1 rounded"
-                    style={{ backgroundColor: meridianColors[meridianId] }}
-                  />
-                  <span className="text-gray-600">{meridian.nameAbbr}</span>
-                </div>
-              )
-            })}
+        {!skeletonMode && (
+          <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-md p-3 max-w-xs">
+            <div className="text-xs font-medium text-gray-700 mb-2">经络图例</div>
+            <div className="space-y-1">
+              {getActiveMeridians().slice(0, 6).map(meridianId => {
+                const meridian = MERIDIANS_FULL.find(m => m.id === meridianId)
+                if (!meridian) return null
+                return (
+                  <div key={meridianId} className="flex items-center gap-2 text-xs">
+                    <div
+                      className="w-4 h-1 rounded"
+                      style={{ backgroundColor: meridianColors[meridianId] }}
+                    />
+                    <span className="text-gray-600">{meridian.nameAbbr}</span>
+                  </div>
+                )
+              })}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* 骨骼关节图例 */}
+        {skeletonMode && (
+          <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-md p-3 max-w-xs">
+            <div className="text-xs font-medium text-gray-700 mb-2">关节类型</div>
+            <div className="space-y-1">
+              {Object.entries(jointTypeColors).map(([type, color]) => (
+                <div key={type} className="flex items-center gap-2 text-xs">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: color }}
+                  />
+                  <span className="text-gray-600">
+                    {type === "shoulder" && "肩关节"}
+                    {type === "elbow" && "肘关节"}
+                    {type === "wrist" && "腕关节"}
+                    {type === "hip" && "髋关节"}
+                    {type === "knee" && "膝关节"}
+                    {type === "ankle" && "踝关节"}
+                    {type === "neck" && "颈椎"}
+                    {type === "spine" && "脊椎"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 穴位详情弹窗 */}
@@ -726,6 +1256,99 @@ export function HumanBodyModel({ onSelectAcupoint }: HumanBodyProps) {
                   <div className="mt-2 text-xs text-red-600">注意：{selectedAcupoint.caution}</div>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 关节详情弹窗 */}
+      {selectedJoint && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-end" onClick={() => setSelectedJoint(null)}>
+          <div
+            className="w-full bg-white rounded-t-3xl max-h-[70vh] overflow-y-auto"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-white px-4 py-4 border-b flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-bold">{joints.find(j => j.id === selectedJoint)?.name}</h3>
+                <p className="text-sm text-orange-600">关节活动控制</p>
+              </div>
+              <button
+                onClick={() => setSelectedJoint(null)}
+                className="p-2 hover:bg-gray-100 rounded-full"
+              >
+                <ChevronDown className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="p-4 space-y-4">
+              <div className="bg-orange-50 rounded-xl p-4">
+                <div className="text-sm font-medium text-orange-900 mb-2">当前角度</div>
+                <div className="text-2xl font-bold text-orange-600">{jointAngles[selectedJoint] || 0}°</div>
+              </div>
+              <div className="bg-gray-50 rounded-xl p-4">
+                <div className="text-sm font-medium text-gray-800 mb-2">活动范围</div>
+                <div className="flex items-center gap-4">
+                  <div className="text-center">
+                    <div className="text-xs text-gray-500">最小角度</div>
+                    <div className="text-lg font-semibold text-blue-600">{joints.find(j => j.id === selectedJoint)?.minAngle}°</div>
+                  </div>
+                  <div className="flex-1 flex items-center justify-center">
+                    <div className="w-full h-2 bg-gray-200 rounded-full relative">
+                      <div
+                        className="absolute h-full bg-gradient-to-r from-blue-500 to-green-500 rounded-full"
+                        style={{
+                          left: `${((jointAngles[selectedJoint] || 0) - (joints.find(j => j.id === selectedJoint)?.minAngle || 0)) / ((joints.find(j => j.id === selectedJoint)?.maxAngle || 0) - (joints.find(j => j.id === selectedJoint)?.minAngle || 0)) * 100}%`,
+                          width: "8px",
+                          transform: "translateX(-50%)"
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-gray-500">最大角度</div>
+                    <div className="text-lg font-semibold text-green-600">{joints.find(j => j.id === selectedJoint)?.maxAngle}°</div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white rounded-xl p-4 border border-gray-200">
+                <div className="text-sm font-medium text-gray-800 mb-3">调整角度</div>
+                <div className="flex items-center justify-center gap-4">
+                  <button
+                    onClick={() => adjustJointAngle(selectedJoint, -10)}
+                    className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+                  >
+                    <RotateCw className="w-6 h-6 text-gray-600" />
+                  </button>
+                  <button
+                    onClick={() => adjustJointAngle(selectedJoint, -5)}
+                    className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+                  >
+                    <Minus className="w-5 h-5 text-gray-600" />
+                  </button>
+                  <div className="w-20 text-center">
+                    <div className="text-xl font-bold text-gray-800">{jointAngles[selectedJoint] || 0}°</div>
+                  </div>
+                  <button
+                    onClick={() => adjustJointAngle(selectedJoint, 5)}
+                    className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+                  >
+                    <Plus className="w-5 h-5 text-gray-600" />
+                  </button>
+                  <button
+                    onClick={() => adjustJointAngle(selectedJoint, 10)}
+                    className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+                    style={{ transform: "scaleX(-1)" }}
+                  >
+                    <RotateCw className="w-6 h-6 text-gray-600" />
+                  </button>
+                </div>
+              </div>
+              <button
+                onClick={() => setJointAngles(prev => ({ ...prev, [selectedJoint]: 0 }))}
+                className="w-full py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
+              >
+                重置角度
+              </button>
             </div>
           </div>
         </div>
