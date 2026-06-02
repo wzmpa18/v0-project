@@ -12,6 +12,9 @@ export const BA_GUA = {
   坤: { number: 8, wuxing: "土", xiang: "地", direction: "西南", body: "腹", family: "母" },
 }
 
+// 八卦名称数组
+const GUA_NAMES = ["乾", "兑", "离", "震", "巽", "坎", "艮", "坤"]
+
 // 六十四卦
 export const GUA_64_MEIHUA: Record<string, { name: string, guaCi: string, xiangCi: string }> = {
   "乾乾": { name: "乾为天", guaCi: "元亨利贞", xiangCi: "天行健，君子以自强不息" },
@@ -30,6 +33,54 @@ export const GUA_64_MEIHUA: Record<string, { name: string, guaCi: string, xiangC
   "离乾": { name: "火天大有", guaCi: "元亨", xiangCi: "火在天上，大有。君子以遏恶扬善" },
   "乾震": { name: "天雷无妄", guaCi: "元亨利贞", xiangCi: "天下雷行，物与无妄" },
   "震乾": { name: "雷天大壮", guaCi: "利贞", xiangCi: "雷在天上，大壮。君子以非礼弗履" },
+  "乾巽": { name: "天风姤", guaCi: "女壮，勿用取女", xiangCi: "天下有风，姤。后以施命诰四方" },
+  "巽乾": { name: "风天小畜", guaCi: "亨，密云不雨，自我西郊", xiangCi: "风行天上，小畜。君子以懿文德" },
+  "乾艮": { name: "天山遁", guaCi: "亨，小利贞", xiangCi: "天下有山，遁。君子以远小人，不恶而严" },
+  "艮乾": { name: "山天大畜", guaCi: "利贞，不家食吉，利涉大川", xiangCi: "天在山中，大畜。君子以多识前言往行，以畜其德" },
+  "乾兑": { name: "天泽履", guaCi: "履虎尾，不咥人，亨", xiangCi: "上天下泽，履。君子以辨上下，定民志" },
+  "兑乾": { name: "泽天夬", guaCi: "扬于王庭，孚号有厉", xiangCi: "泽上于天，夬。君子以施禄及下，居德则忌" },
+  "坤坎": { name: "地水师", guaCi: "贞丈人吉，无咎", xiangCi: "地中有水，师。君子以容民畜众" },
+  "坎坤": { name: "水地比", guaCi: "吉，原筮元永贞无咎", xiangCi: "地上有水，比。先王以建万国，亲诸侯" },
+  "坤离": { name: "地火明夷", guaCi: "利艰贞", xiangCi: "明入地中，明夷。君子以莅众，用晦而明" },
+  "离坤": { name: "火地晋", guaCi: "康侯用锡马蕃庶，昼日三接", xiangCi: "明出地上，晋。君子以自昭明德" },
+  "坤震": { name: "地雷复", guaCi: "亨，出入无疾，朋来无咎", xiangCi: "雷在地中，复。先王以至日闭关，商旅不行" },
+  "震坤": { name: "雷地豫", guaCi: "利建侯行师", xiangCi: "雷出地奋，豫。先王以作乐崇德" },
+  "坤巽": { name: "地风升", guaCi: "元亨，用见大人，勿恤，南征吉", xiangCi: "地中生木，升。君子以顺德，积小以高大" },
+  "巽坤": { name: "风地观", guaCi: "盥而不荐，有孚颙若", xiangCi: "风行地上，观。先王以省方观民设教" },
+  "坤艮": { name: "地山谦", guaCi: "亨，君子有终", xiangCi: "地中有山，谦。君子以裒多益寡，称物平施" },
+  "艮坤": { name: "山地剥", guaCi: "不利有攸往", xiangCi: "山附于地，剥。上以厚下安宅" },
+  "坤兑": { name: "地泽临", guaCi: "元亨利贞，至于八月有凶", xiangCi: "泽上有地，临。君子以教思无穷，容保民无疆" },
+  "兑坤": { name: "泽地萃", guaCi: "亨，王假有庙，利见大人", xiangCi: "泽上于地，萃。君子以除戎器，戒不虞" },
+  "坎离": { name: "水火既济", guaCi: "亨小利贞，初吉终乱", xiangCi: "水在火上，既济。君子以思患而豫防之" },
+  "离坎": { name: "火水未济", guaCi: "亨，小狐汔济濡其尾", xiangCi: "火在水上，未济。君子以慎辨物居方" },
+  "坎震": { name: "水雷屯", guaCi: "元亨利贞，勿用有攸往，利建侯", xiangCi: "云雷，屯。君子以经纶" },
+  "震坎": { name: "雷水解", guaCi: "利西南，无所往，其来复吉", xiangCi: "雷雨作，解。君子以赦过宥罪" },
+  "坎巽": { name: "水风井", guaCi: "改邑不改井，无丧无得", xiangCi: "木上有水，井。君子以劳民劝相" },
+  "巽坎": { name: "风水涣", guaCi: "亨，王假有庙，利涉大川", xiangCi: "风行水上，涣。先王以享于帝立庙" },
+  "坎艮": { name: "水山蹇", guaCi: "利西南不利东北，利见大人", xiangCi: "山上有水，蹇。君子以反身修德" },
+  "艮坎": { name: "山水蒙", guaCi: "亨，匪我求童蒙，童蒙求我", xiangCi: "山下出泉，蒙。君子以果行育德" },
+  "坎兑": { name: "水泽节", guaCi: "亨，苦节不可贞", xiangCi: "泽上有水，节。君子以制数度，议德行" },
+  "兑坎": { name: "泽水困", guaCi: "亨贞，大人吉无咎", xiangCi: "泽无水，困。君子以致命遂志" },
+  "离震": { name: "火雷噬嗑", guaCi: "亨，利用狱", xiangCi: "雷电，噬嗑。先王以明罚敕法" },
+  "震离": { name: "雷火丰", guaCi: "亨，王假之勿忧，宜日中", xiangCi: "雷电皆至，丰。君子以折狱致刑" },
+  "离巽": { name: "火风鼎", guaCi: "元吉亨", xiangCi: "木上有火，鼎。君子以正位凝命" },
+  "巽离": { name: "风火家人", guaCi: "利女贞", xiangCi: "风自火出，家人。君子以言有物而行有恒" },
+  "离艮": { name: "火山旅", guaCi: "小亨，旅贞吉", xiangCi: "山上有火，旅。君子以明慎用刑而不留狱" },
+  "艮离": { name: "山火贲", guaCi: "亨，小利有攸往", xiangCi: "山下有火，贲。君子以明庶政，无敢折狱" },
+  "离兑": { name: "火泽睽", guaCi: "小事吉", xiangCi: "上火下泽，睽。君子以同而异" },
+  "兑离": { name: "泽火革", guaCi: "己日乃孚，元亨利贞", xiangCi: "泽中有火，革。君子以治历明时" },
+  "震巽": { name: "雷风恒", guaCi: "亨无咎利贞，利有攸往", xiangCi: "雷风，恒。君子以立不易方" },
+  "巽震": { name: "风雷益", guaCi: "利有攸往，利涉大川", xiangCi: "风雷，益。君子以见善则迁，有过则改" },
+  "震艮": { name: "雷山小过", guaCi: "亨利贞，可小事不可大事", xiangCi: "山上有雷，小过。君子以行过乎恭，丧过乎哀" },
+  "艮震": { name: "山雷颐", guaCi: "贞吉，观颐自求口实", xiangCi: "山下有雷，颐。君子以慎言语，节饮食" },
+  "震兑": { name: "雷泽归妹", guaCi: "征凶，无攸利", xiangCi: "泽上有雷，归妹。君子以永终知敝" },
+  "兑震": { name: "泽雷随", guaCi: "元亨利贞，无咎", xiangCi: "泽中有雷，随。君子以向晦入宴息" },
+  "巽艮": { name: "风山渐", guaCi: "女归吉，利贞", xiangCi: "山上有木，渐。君子以居贤德善俗" },
+  "艮巽": { name: "山风蛊", guaCi: "元亨，利涉大川", xiangCi: "山下有风，蛊。君子以振民育德" },
+  "巽兑": { name: "风泽中孚", guaCi: "豚鱼吉，利涉大川", xiangCi: "泽上有风，中孚。君子以议狱缓死" },
+  "兑巽": { name: "泽风大过", guaCi: "栋桡，利有攸往亨", xiangCi: "泽灭木，大过。君子以独立不惧，遁世无闷" },
+  "艮兑": { name: "山泽损", guaCi: "有孚，元吉无咎，可贞，利有攸往", xiangCi: "山下有泽，损。君子以惩忿窒欲" },
+  "兑艮": { name: "泽山咸", guaCi: "亨利贞，取女吉", xiangCi: "山上有泽，咸。君子以虚受人" },
 }
 
 // 体用生克关系
@@ -141,4 +192,128 @@ export function getTiYongGuanxi(tiWuxing: string, yongWuxing: string): string {
   if (keMap[tiWuxing] === yongWuxing) return "体克用"
   if (keMap[yongWuxing] === tiWuxing) return "用克体"
   return "体用比和"
+}
+
+// 梅花易数起卦结果接口
+export interface MeihuaResult {
+  benGua: {
+    name: string
+    shangGua: string
+    xiaGua: string
+    guaCi: string
+    xiangCi: string
+  }
+  huGua?: {
+    name: string
+    shangGua: string
+    xiaGua: string
+  }
+  bianGua?: {
+    name: string
+    shangGua: string
+    xiaGua: string
+  }
+  dongYao: number
+  tiGua: string
+  yongGua: string
+  tiYongGuanxi: string
+  jixiong: string
+  guanxiDesc: string
+}
+
+// 时间起卦法（年月日时起卦）
+export function timeQiGua(
+  year: number,
+  month: number,
+  day: number,
+  hour: number
+): MeihuaResult {
+  // 计算上卦：(年+月+日) % 8
+  const shangGuaNum = (year + month + day) % 8 || 8
+  const shangGua = GUA_NAMES[shangGuaNum - 1]
+  
+  // 计算下卦：(年+月+日+时) % 8
+  const xiaGuaNum = (year + month + day + hour) % 8 || 8
+  const xiaGua = GUA_NAMES[xiaGuaNum - 1]
+  
+  // 计算动爻：(年+月+日+时) % 6
+  const dongYao = (year + month + day + hour) % 6 || 6
+  
+  // 本卦信息
+  const benGuaKey = shangGua + xiaGua
+  const benGuaInfo = getGuaInfo(shangGua, xiaGua)
+  
+  // 确定体用：动爻在下卦则下卦为用，上卦为体；反之亦然
+  let tiGua, yongGua
+  if (dongYao <= 3) {
+    tiGua = shangGua  // 动在下卦，上卦为体
+    yongGua = xiaGua  // 下卦为用
+  } else {
+    tiGua = xiaGua    // 动在上卦，下卦为体
+    yongGua = shangGua // 上卦为用
+  }
+  
+  // 体用关系
+  const tiWuxing = BA_GUA[tiGua as keyof typeof BA_GUA].wuxing
+  const yongWuxing = BA_GUA[yongGua as keyof typeof BA_GUA].wuxing
+  const tiYongGuanxi = getTiYongGuanxi(tiWuxing, yongWuxing)
+  const tiYongInfo = TI_YONG_SHENGKE[tiYongGuanxi as keyof typeof TI_YONG_SHENGKE]
+  
+  // 互卦（取二、三、四爻为下互，三、四、五爻为上互）
+  // 简化互卦计算
+  const huShangNum = (shangGuaNum + xiaGuaNum) % 8 || 8
+  const huXiaNum = (shangGuaNum - xiaGuaNum + 8) % 8 || 8
+  const huShangGua = GUA_NAMES[huShangNum - 1]
+  const huXiaGua = GUA_NAMES[huXiaNum - 1]
+  const huGuaInfo = getGuaInfo(huShangGua, huXiaGua)
+  
+  // 变卦（动爻变阴阳）
+  // 简化变卦计算
+  const bianShangNum = (shangGuaNum + dongYao) % 8 || 8
+  const bianXiaNum = (xiaGuaNum + dongYao) % 8 || 8
+  const bianShangGua = GUA_NAMES[bianShangNum - 1]
+  const bianXiaGua = GUA_NAMES[bianXiaNum - 1]
+  const bianGuaInfo = getGuaInfo(bianShangGua, bianXiaGua)
+  
+  return {
+    benGua: {
+      name: benGuaInfo.name,
+      shangGua,
+      xiaGua,
+      guaCi: benGuaInfo.guaCi,
+      xiangCi: benGuaInfo.xiangCi,
+    },
+    huGua: {
+      name: huGuaInfo.name,
+      shangGua: huShangGua,
+      xiaGua: huXiaGua,
+    },
+    bianGua: {
+      name: bianGuaInfo.name,
+      shangGua: bianShangGua,
+      xiaGua: bianXiaGua,
+    },
+    dongYao,
+    tiGua,
+    yongGua,
+    tiYongGuanxi,
+    jixiong: tiYongInfo.jixiong,
+    guanxiDesc: tiYongInfo.desc,
+  }
+}
+
+// 数字起卦法
+export function numberQiGua(num1: number, num2: number, num3: number = 0): MeihuaResult {
+  // 上卦：num1 % 8
+  const shangGuaNum = num1 % 8 || 8
+  const shangGua = GUA_NAMES[shangGuaNum - 1]
+  
+  // 下卦：num2 % 8
+  const xiaGuaNum = num2 % 8 || 8
+  const xiaGua = GUA_NAMES[xiaGuaNum - 1]
+  
+  // 动爻：num3 % 6 或 (num1 + num2) % 6
+  const dongYao = (num3 > 0 ? num3 : num1 + num2) % 6 || 6
+  
+  return timeQiGua(num1, num2, num3 || 1, dongYao)
 }
