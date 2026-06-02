@@ -122,11 +122,21 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#1a1a1a] relative overflow-hidden">
+      {/* 顶部测试按钮 */}
+      <div className="fixed top-4 left-4 right-4 z-50">
+        <a 
+          href="/demo"
+          className="block w-full py-4 bg-gradient-to-r from-[#4a9d5b] to-[#3d8a4e] text-white rounded-xl text-lg font-medium text-center shadow-lg hover:opacity-90 transition-opacity"
+        >
+          🎯 点击这里测试八字排盘功能！
+        </a>
+      </div>
+
       {/* 顶部装饰渐变 */}
       <div className="fixed top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#1a1a1a] via-[#1a1a1a]/95 to-transparent pointer-events-none z-10" />
       
       {/* 页面内容区域 */}
-      <div className="pb-20">
+      <div className="pt-20 pb-20">
         {renderPage()}
       </div>
 
