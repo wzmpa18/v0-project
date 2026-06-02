@@ -101,10 +101,47 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
   }, [])
 
   const handleToolClick = (toolId: string) => {
-    if (toolId === "bazi") {
-      router.push("/bazi")
-    } else if (onNavigateToTool) {
-      onNavigateToTool(toolId)
+    const routeMap: Record<string, string> = {
+      "bazi": "/bazi",
+      "bazijiexi": "/bazi-jiexi",
+      "qimen": "/qimen",
+      "yinpanqimen": "/yinpan-qimen",
+      "liuyao": "/liuyao",
+      "meihua": "/meihua",
+      "yangpanmingli": "/yangpan-mingli",
+      "mingliqimen": "/mingli-qimen",
+      "ziwei": "/ziwei",
+      "daliuren": "/daliuren",
+      "xiaoliuren": "/xiaoliuren",
+      "jinkoujue": "/jinkoujue",
+      "qiming": "/qiming",
+      "xingming": "/xingming",
+      "shoujihao": "/shoujihao",
+      "hepan": "/hepan",
+      "luopan": "/luopan",
+      "lijichi": "/lijichi",
+      "shanxiang": "/shanxiang",
+      "xuankong": "/xuankong",
+      "kongming": "/kongming",
+      "bazhai": "/bazhai",
+      "feigong": "/feigong",
+      "taiyi": "/taiyi",
+      "zhuge": "/zhuge",
+      "wannianli": "/wannianli",
+      "jinqian": "/jinqian",
+      "xiaocheng": "/xiaocheng",
+      "qimenchuan": "/qimenchuan",
+      "shanxiangqimen": "/shanxiangqimen",
+      "zidian": "/zidian",
+      "hanzi": "/hanzi",
+      "jieqi": "/jieqi",
+      "hehuoren": "/hehuoren",
+      "xiaochengxu": "/xiaochengxu",
+      "zaixian": "/zaixian",
+    }
+    const route = routeMap[toolId]
+    if (route) {
+      router.push(route)
     }
   }
 
@@ -159,17 +196,7 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
         </div>
       </div>
 
-      {/* 广告横幅 */}
-      <div className="px-4 mb-4">
-        <div className="bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl p-4 flex items-center justify-between">
-          <div className="text-white text-lg font-semibold">
-            热卜终身会员限时活动进行中...
-          </div>
-          <button className="bg-white text-orange-600 px-4 py-2 rounded-full font-semibold">
-            点击查看
-          </button>
-        </div>
-      </div>
+
 
       {/* 工具网格 */}
       <div className="px-4 pb-24">
