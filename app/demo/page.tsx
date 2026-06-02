@@ -10,6 +10,11 @@ import { QIONG_TONG_BAO_JIAN } from "@/lib/bazi-guji-data"
 export default function DemoPage() {
   const [result, setResult] = useState<any>(null)
 
+  useEffect(() => {
+    // 页面加载时自动运行测试
+    runTest()
+  }, [])
+
   const runTest = () => {
     const now = new Date()
     const data = {
