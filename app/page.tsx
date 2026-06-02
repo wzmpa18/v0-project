@@ -4,42 +4,10 @@ import { useState } from "react"
 import { BottomNav } from "@/components/bottom-nav"
 import { HomePage } from "@/components/pages/home-page"
 import { ProfilePage } from "@/components/pages/profile-page"
-
-// 创建课堂页面占位组件
-function ClassPage() {
-  return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <div className="text-4xl mb-4">📚</div>
-        <div className="text-gray-600 text-lg">课堂功能开发中...</div>
-      </div>
-    </div>
-  )
-}
-
-// 创建商城页面占位组件
-function ShopPage() {
-  return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <div className="text-4xl mb-4">🛒</div>
-        <div className="text-gray-600 text-lg">商城功能开发中...</div>
-      </div>
-    </div>
-  )
-}
-
-// 创建书籍页面占位组件
-function BooksPage() {
-  return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <div className="text-4xl mb-4">📖</div>
-        <div className="text-gray-600 text-lg">书籍功能开发中...</div>
-      </div>
-    </div>
-  )
-}
+import { ClassPage } from "@/components/pages/class-page"
+import { ShopPage } from "@/components/pages/shop-page"
+import { BooksPage } from "@/components/pages/books-page"
+import { FriendsPage } from "@/components/pages/friends-page"
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("home")
@@ -56,6 +24,8 @@ export default function Home() {
         return <ShopPage />
       case "profile":
         return <ProfilePage />
+      case "friends":
+        return <FriendsPage />
       default:
         return <HomePage />
     }
