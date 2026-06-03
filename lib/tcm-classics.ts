@@ -93,7 +93,7 @@ export const CLASSIC_BOOKS: ClassicBook[] = [
     author: "李时珍",
     dynasty: "明代",
     year: "1578年",
-    description: "集中国古代药学之大成，被誉为"东方药物学巨典"。",
+    description: "集中国古代药学之大成，被誉为'东方药物学巨典'。",
     chapters: ["水部", "火部", "土部", "金石部", "草部", "木部", "果部", "谷部", "菜部", "鳞部", "介部", "禽部", "兽部", "人部"],
     keyConcepts: ["药物分类", "药性理论", "临床应用", "资源保护"],
     quotes: [
