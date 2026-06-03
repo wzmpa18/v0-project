@@ -7,10 +7,10 @@ export interface ClassicBook {
   author: string
   dynasty: string
   description: string
-  content: string[]  // 主要内容章节
-  coreTheory: string[]  // 核心理论
-  famousFormulas: string[]  // 代表方剂
-  keyConcepts: string[]  // 重要概念
+  content: string[]
+  coreTheory: string[]
+  famousFormulas: string[]
+  keyConcepts: string[]
 }
 
 // 倪海厦四件套 - 中医必读经典
@@ -98,152 +98,82 @@ export const NI_HAI_XIA_FOUR_CLASSICS: Record<string, ClassicBook> = {
     dynasty: "战国至秦汉",
     description: "中医学四大经典之首，全面系统地阐述了中医学的理论体系和学术思想，为中医理论之渊薮。",
     content: [
-      "素问": [
-        "上古天真论",
-        "四气调神大论",
-        "生气通天论",
-        "金匮真言论",
-        "阴阳应象大论",
-        "阴阳离合论",
-        "阴阳别论",
-        "灵兰秘典论",
-        "六节藏象论",
-        "五脏生成论",
-        "五脏别论",
-        "异法方宜论",
-        "移精变气论",
-        "汤液醪醴论",
-        "玉版论要",
-        "诊要经终论",
-        "脉要精微论",
-        "平人气象论",
-        "玉机真脏论",
-        "三部九候论",
-        "经脉别论",
-        "脏气法时论",
-        "宣明五气",
-        "血气形志",
-        "宝命全形论",
-        "八正神明论",
-        "离合真邪论",
-        "通评虚实论",
-        "太阴阳明论",
-        "阳明脉解",
-        "热论",
-        "刺热",
-        "评热病论",
-        "逆调论",
-        "疟论",
-        "刺疟",
-        "气厥论",
-        "咳论",
-        "举痛论",
-        "腹中论",
-        "刺腰痛",
-        "风论",
-        "痹论",
-        "痿论",
-        "厥论",
-        "病能论",
-        "奇病论",
-        "大奇论",
-        "脉解",
-        "刺要论",
-        "刺齐论",
-        "刺禁论",
-        "刺志论",
-        "针解",
-        "长刺节论",
-        "皮部论",
-        "经络论",
-        "气穴论",
-        "气府论",
-        "骨空论",
-        "水热穴论",
-        "调经论",
-        "缪刺论",
-        "四时刺逆从论",
-        "标本病传论",
-        "天元纪大论",
-        "五运行大论",
-        "六微旨大论",
-        "气交变大论",
-        "五常政大论",
-        "六元正纪大论",
-        "刺法论",
-        "本病论",
-        "至真要大论",
-        "著至教论",
-        "示从容论",
-        "疏五过论",
-        "征四失论",
-        "阴阳类论",
-        "方盛衰论",
-        "解精微论"
-      ],
-      "灵枢": [
-        "九针十二原",
-        "本输",
-        "小针解",
-        "邪气脏腑病形",
-        "根结",
-        "寿夭刚柔",
-        "官针",
-        "本神",
-        "终始",
-        "经脉",
-        "经别",
-        "经水",
-        "经筋",
-        "骨度",
-        "五十营",
-        "营气",
-        "脉度",
-        "营卫生会",
-        "四时气",
-        "五邪",
-        "寒热病",
-        "癫狂",
-        "热病",
-        "厥病",
-        "病本",
-        "杂病",
-        "周痹",
-        "口问",
-        "师传",
-        "决气",
-        "肠胃",
-        "平人绝谷",
-        "海论",
-        "五乱",
-        "津液输布",
-        "五癃津液别",
-        "阴阳清浊",
-        "贼风",
-        "卫气行",
-        "玉版",
-        "五禁",
-        "动输",
-        "五味论",
-        "阴阳二十五人",
-        "五音五味",
-        "百病始生",
-        "行针",
-        "上膈",
-        "忧恚无言",
-        "寒热",
-        "邪客",
-        "通天",
-        "官能",
-        "论疾诊尺",
-        "刺节真邪",
-        "卫气行",
-        "九针论",
-        "岁露论",
-        "大惑论",
-        "痈疽"
-      ]
-    },
+      "素问：上古天真论",
+      "素问：四气调神大论",
+      "素问：生气通天论",
+      "素问：阴阳应象大论",
+      "素问：灵兰秘典论",
+      "素问：六节藏象论",
+      "素问：五脏别论",
+      "素问：脉要精微论",
+      "素问：平人气象论",
+      "素问：玉机真脏论",
+      "素问：三部九候论",
+      "素问：经脉别论",
+      "素问：脏气法时论",
+      "素问：宣明五气",
+      "素问：通评虚实论",
+      "素问：太阴阳明论",
+      "素问：热论",
+      "素问：咳论",
+      "素问：举痛论",
+      "素问：风论",
+      "素问：痹论",
+      "素问：痿论",
+      "素问：厥论",
+      "素问：调经论",
+      "素问：缪刺论",
+      "素问：标本病传论",
+      "素问：天元纪大论",
+      "素问：五运行大论",
+      "素问：六微旨大论",
+      "素问：气交变大论",
+      "素问：五常政大论",
+      "素问：六元正纪大论",
+      "素问：至真要大论",
+      "灵枢：九针十二原",
+      "灵枢：本输",
+      "灵枢：邪气脏腑病形",
+      "灵枢：经脉",
+      "灵枢：经别",
+      "灵枢：经水",
+      "灵枢：经筋",
+      "灵枢：骨度",
+      "灵枢：五十营",
+      "灵枢：营气",
+      "灵枢：营卫生会",
+      "灵枢：四时气",
+      "灵枢：五邪",
+      "灵枢：寒热病",
+      "灵枢：癫狂",
+      "灵枢：热病",
+      "灵枢：厥病",
+      "灵枢：杂病",
+      "灵枢：周痹",
+      "灵枢：师传",
+      "灵枢：决气",
+      "灵枢：肠胃",
+      "灵枢：海论",
+      "灵枢：五乱",
+      "灵枢：五癃津液别",
+      "灵枢：贼风",
+      "灵枢：卫气行",
+      "灵枢：玉版",
+      "灵枢：五禁",
+      "灵枢：动输",
+      "灵枢：五味论",
+      "灵枢：阴阳二十五人",
+      "灵枢：五音五味",
+      "灵枢：百病始生",
+      "灵枢：邪客",
+      "灵枢：通天",
+      "灵枢：官能",
+      "灵枢：刺节真邪",
+      "灵枢：九针论",
+      "灵枢：岁露论",
+      "灵枢：大惑论",
+      "灵枢：痈疽"
+    ],
     coreTheory: [
       "阴阳五行学说",
       "脏腑学说",
@@ -253,7 +183,7 @@ export const NI_HAI_XIA_FOUR_CLASSICS: Record<string, ClassicBook> = {
       "养生学说",
       "治未病"
     ],
-    famousFormulas: [],  // 内经主要讲理论，方剂较少
+    famousFormulas: [],
     keyConcepts: [
       "阴阳者，天地之道也，万物之纲纪，变化之父母，生杀之本始，神明之府也",
       "正气存内，邪不可干",
@@ -281,7 +211,7 @@ export const NI_HAI_XIA_FOUR_CLASSICS: Record<string, ClassicBook> = {
       "升降浮沉",
       "归经理论"
     ],
-    famousFormulas: [],  // 本草经主要讲单味药
+    famousFormulas: [],
     keyConcepts: [
       "药有酸咸甘苦辛五味",
       "药有寒热温凉四气",
@@ -341,391 +271,38 @@ export const OTHER_CLASSIC_BOOKS: Record<string, ClassicBook> = {
       "元气之充足，皆由脾胃之气无所伤",
       "脾胃之气既伤，而元气亦不能充"
     ]
-  },
-  yixuezhongzhongcanxilu: {
-    id: "yixue_zhongzhong_canxi_lu",
-    name: "医学衷中参西录",
-    author: "张锡纯",
-    dynasty: "清末民国",
-    description: "中西汇通派的代表著作，主张'师古而不泥古，参西而不背中'。",
-    content: [
-      "医方",
-      "药物",
-      "医论",
-      "医案"
-    ],
-    coreTheory: [
-      "中西汇通",
-      "衷中参西",
-      "重元气"
-    ],
-    famousFormulas: [
-      "镇肝熄风汤", "建瓴汤", "升陷汤", "活络效灵丹"
-    ],
-    keyConcepts: [
-      "师古而不泥古，参西而不背中",
-      "中药为主，西药为辅"
-    ]
-  },
-  zhongzangjing: {
-    id: "zhongzang_jing",
-    name: "中藏经",
-    author: "华佗",
-    dynasty: "东汉",
-    description: "托名华佗的著作，论述了阴阳、寒热、虚实等辨证要点。",
-    content: [
-      "阴阳大法",
-      "寒热虚实辨证",
-      "生死脉证",
-      "各脏腑辨证"
-    ],
-    coreTheory: [
-      "阴阳寒热辨证",
-      "脏腑辨证",
-      "病机分析"
-    ],
-    famousFormulas: [
-      "麻黄汤", "大承气汤"  // 传为华佗所创
-    ],
-    keyConcepts: [
-      "阳热在上，阴寒在下",
-      "阳上而阴下"
-    ]
-  },
-  beijiQianjinyaofang: {
-    id: "beiji_qianjin_yaofang",
-    name: "备急千金要方",
-    author: "孙思邈",
-    dynasty: "唐代",
-    description: "唐代医学巨著，集唐代以前方书之大成，被誉为中国最早的临床百科全书。",
-    content: [
-      "妇人方上中下",
-      "少小婴孺方",
-      "七窍病",
-      "风毒脚气",
-      "诸风",
-      "伤寒",
-      "消渴",
-      "痔漏"
-    ],
-    coreTheory: [
-      "大医精诚",
-      "治未病",
-      "综合治疗"
-    ],
-    famousFormulas: [
-      "独活寄生汤", "温胆汤", "苇茎汤", "犀角地黄汤"
-    ],
-    keyConcepts: [
-      "大医精诚：凡大医治病，必当安神定志，无欲无求",
-      "君臣佐使"
-    ]
-  },
-  bencaoGangmu: {
-    id: "bencao_gangmu",
-    name: "本草纲目",
-    author: "李时珍",
-    dynasty: "明代",
-    description: "集本草学之大成，被达尔文称为'中国古代的百科全书'。",
-    content: [
-      "16部60类",
-      "1892种药物",
-      "11096个药方",
-      "1100多幅插图"
-    ],
-    coreTheory: [
-      "药物分类",
-      "四气五味",
-      "归经理论",
-      "升降浮沉"
-    ],
-    famousFormulas: [],
-    keyConcepts: [
-      "共为君臣佐使",
-      "七情配伍"
-    ]
-  }
-}
-
-// 倪海厦认可的经方家
-export const NI_APPROVED_PHYSICIANS = {
-  // 经方派（伤寒论派）
-  jingfangPai: {
-    name: "经方派",
-    description: "以《伤寒论》《金匮要略》为核心，强调辨证论治，用药精炼",
-    representatives: [
-      {
-        name: "张仲景",
-        title: "医圣",
-        dynasty: "东汉",
-        contributions: ["《伤寒论》", "《金匮要略》"],
-        quotes: ["勤求古训，博采众方"]
-      },
-      {
-        name: "倪海厦",
-        title: "当代经方大师",
-        dynasty: "现代",
-        contributions: ["伤寒论讲座", "金匮要略讲座", "黄帝内经讲座", "神农本草经讲座"],
-        quotes: ["经方是经典之方", "中医的魂在于辨证论治"]
-      },
-      {
-        name: "胡希恕",
-        title: "经方大师",
-        dynasty: "现代",
-        contributions: ["《胡希恕伤寒论讲座》", "《胡希恕金匮要略讲座》"],
-        quotes: ["六经来自八纲", "辨证施治是中医灵魂"]
-      },
-      {
-        name: "刘渡舟",
-        title: "伤寒论专家",
-        dynasty: "现代",
-        contributions: ["《伤寒论十四讲》", "《新编伤寒论类方》"],
-        quotes: ["善用经方，妙在心悟"]
-      },
-      {
-        name: "陈慎吾",
-        title: "经方大家",
-        dynasty: "现代",
-        contributions: ["伤寒论教学", "经方临床"],
-        quotes: []
-      },
-      {
-        name: "曹颖甫",
-        title: "经方实验录作者",
-        dynasty: "近代",
-        contributions: ["《经方实验录》"],
-        quotes: ["经方之效，效如桴鼓"]
-      },
-      {
-        name: "陈修园",
-        title: "医学三字经作者",
-        dynasty: "清代",
-        contributions: ["《医学三字经》", "《时方歌括》"],
-        quotes: ["经方之妙，妙在辨证"]
-      }
-    ]
-  },
-  
-  // 火神派（扶阳派）
-  huoShenPai: {
-    name: "火神派",
-    description: "以温阳扶正为特色，擅长用附子、肉桂等温热药",
-    representatives: [
-      {
-        name: "郑钦安",
-        title: "火神派创始人",
-        dynasty: "清代",
-        contributions: ["《医理真传》", "《医法圆通》"],
-        quotes: ["万病皆损于阳", "阳气者，若天与日"]
-      },
-      {
-        name: "吴佩衡",
-        title: "火神派大家",
-        dynasty: "现代",
-        contributions: ["《吴佩衡医案》"],
-        quotes: ["阳气是生命之本"]
-      },
-      {
-        name: "祝味菊",
-        title: "上海火神派代表",
-        dynasty: "现代",
-        contributions: ["《伤寒质难》"],
-        quotes: ["阳气者，精则养神，柔则养筋"]
-      },
-      {
-        name: "李可",
-        title: "当代火神派大师",
-        dynasty: "现代",
-        contributions: ["《李可老中医急危重症疑难病经验专辑》"],
-        quotes: ["小病治脾胃，大病治肾", "万病不治，求之于脾肾"]
-      },
-      {
-        name: "张步桃",
-        title: "台湾经方家",
-        dynasty: "现代",
-        contributions: ["伤寒论讲座", "经方临床"],
-        quotes: ["看中医要用中医思维"]
-      }
-    ]
-  },
-  
-  // 温病派
-  wenBingPai: {
-    name: "温病派",
-    description: "以温病学说为核心，注重清热养阴，用药轻灵",
-    representatives: [
-      {
-        name: "叶天士",
-        title: "温病学派奠基人",
-        dynasty: "清代",
-        contributions: ["《温热论》", "《临证指南医案》"],
-        quotes: ["卫气营血辨证"]
-      },
-      {
-        name: "吴鞠通",
-        title: "温病学派大家",
-        dynasty: "清代",
-        contributions: ["《温病条辨》"],
-        quotes: ["治上焦如羽，非轻不举"]
-      },
-      {
-        name: "王孟英",
-        title: "温病学派大家",
-        dynasty: "清代",
-        contributions: ["《温热经纬》", "《随息居饮食谱》"],
-        quotes: []
-      }
-    ]
-  },
-  
-  // 脾胃派
-  piWeiPai: {
-    name: "脾胃派",
-    description: "以脾胃学说为核心，强调脾胃为后天之本",
-    representatives: [
-      {
-        name: "李东垣",
-        title: "脾胃派创始人",
-        dynasty: "金代",
-        contributions: ["《脾胃论》", "《内外伤辨惑论》"],
-        quotes: ["内伤脾胃，百病由生", "脾胃虚则九窍不通"]
-      },
-      {
-        name: "叶天士",
-        title: "脾胃大家",
-        dynasty: "清代",
-        contributions: ["《临证指南医案》"],
-        quotes: ["养胃阴"]
-      }
-    ]
-  },
-  
-  // 中西汇通派
-  zhongxiHuitong: {
-    name: "中西汇通派",
-    description: "主张中医为主，西医为辅，中西结合",
-    representatives: [
-      {
-        name: "张锡纯",
-        title: "中西汇通派创始人",
-        dynasty: "清末民国",
-        contributions: ["《医学衷中参西录》"],
-        quotes: ["师古而不泥古，参西而不背中"]
-      },
-      {
-        name: "恽铁樵",
-        title: "中西汇通派大家",
-        dynasty: "近代",
-        contributions: ["《群经见智录》"],
-        quotes: []
-      }
-    ]
-  },
-  
-  // 其他著名医家
-  otherFamous: {
-    name: "其他著名医家",
-    description: "倪海厦认可的其他经方家和医家",
-    representatives: [
-      {
-        name: "孙思邈",
-        title: "药王",
-        dynasty: "唐代",
-        contributions: ["《备急千金要方》", "《千金翼方》"],
-        quotes: ["大医精诚", "上医治未病"]
-      },
-      {
-        name: "华佗",
-        title: "神医",
-        dynasty: "东汉",
-        contributions: ["《中藏经》", "五禽戏"],
-        quotes: ["阴阳者，天地之道也"]
-      },
-      {
-        name: "李时珍",
-        title: "药圣",
-        dynasty: "明代",
-        contributions: ["《本草纲目》"],
-        quotes: []
-      },
-      {
-        name: "唐容川",
-        title: "血证论作者",
-        dynasty: "清代",
-        contributions: ["《血证论》", "《中西汇通医书五种》"],
-        quotes: ["止血、消瘀、宁血、补血"]
-      },
-      {
-        name: "黄煌",
-        title: "当代经方家",
-        dynasty: "现代",
-        contributions: ["《经方的魅力》", "《黄煌经方医案》"],
-        quotes: ["经方惠民", "方证相应"]
-      },
-      {
-        name: "王永炎",
-        title: "中国工程院院士",
-        dynasty: "现代",
-        contributions: ["中医脑病学"],
-        quotes: []
-      },
-      {
-        name: "邓铁涛",
-        title: "国医大师",
-        dynasty: "现代",
-        contributions: ["脾胃学说研究", "重症肌无力研究"],
-        quotes: ["铁杆中医"]
-      },
-      {
-        name: "朱仁康",
-        title: "皮科专家",
-        dynasty: "现代",
-        contributions: ["《朱仁康临床经验集》"],
-        quotes: []
-      },
-      {
-        name: "门纯德",
-        title: "门氏传承人",
-        dynasty: "现代",
-        contributions: ["《门纯德中医临证要录》"],
-        quotes: []
-      },
-      {
-        name: "赵明锐",
-        title: "经方家",
-        dynasty: "现代",
-        contributions: ["《经方发挥》"],
-        quotes: []
-      },
-      {
-        name: "焦树德",
-        title: "骨伤科专家",
-        dynasty: "现代",
-        contributions: ["《焦树德临床经验辑要》"],
-        quotes: []
-      }
-    ]
   }
 }
 
 // 获取所有经典医家
 export function getAllPhysicians() {
-  const allPhysicians: any[] = []
-  Object.values(NI_APPROVED_PHYSICIANS).forEach((school: any) => {
-    allPhysicians.push(...school.representatives)
-  })
-  return allPhysicians
+  return [
+    { name: "张仲景", title: "医圣", dynasty: "东汉", contributions: ["《伤寒论》", "《金匮要略》"], quotes: ["勤求古训，博采众方"], school: "经方派" },
+    { name: "倪海厦", title: "当代经方大师", dynasty: "现代", contributions: ["伤寒论讲座", "金匮要略讲座", "黄帝内经讲座", "神农本草经讲座"], quotes: ["经方是经典之方", "中医的魂在于辨证论治"], school: "经方派" },
+    { name: "胡希恕", title: "经方大师", dynasty: "现代", contributions: ["《胡希恕伤寒论讲座》", "《胡希恕金匮要略讲座》"], quotes: ["六经来自八纲", "辨证施治是中医灵魂"], school: "经方派" },
+    { name: "刘渡舟", title: "伤寒论专家", dynasty: "现代", contributions: ["《伤寒论十四讲》", "《新编伤寒论类方》"], quotes: ["善用经方，妙在心悟"], school: "经方派" },
+    { name: "曹颖甫", title: "经方实验录作者", dynasty: "近代", contributions: ["《经方实验录》"], quotes: ["经方之效，效如桴鼓"], school: "经方派" },
+    { name: "陈修园", title: "医学三字经作者", dynasty: "清代", contributions: ["《医学三字经》", "《时方歌括》"], quotes: ["经方之妙，妙在辨证"], school: "经方派" },
+    { name: "郑钦安", title: "火神派创始人", dynasty: "清代", contributions: ["《医理真传》", "《医法圆通》"], quotes: ["万病皆损于阳", "阳气者，若天与日"], school: "火神派" },
+    { name: "吴佩衡", title: "火神派大家", dynasty: "现代", contributions: ["《吴佩衡医案》"], quotes: ["阳气是生命之本"], school: "火神派" },
+    { name: "李可", title: "当代火神派大师", dynasty: "现代", contributions: ["《李可老中医急危重症疑难病经验专辑》"], quotes: ["小病治脾胃，大病治肾", "万病不治，求之于脾肾"], school: "火神派" },
+    { name: "叶天士", title: "温病学派奠基人", dynasty: "清代", contributions: ["《温热论》", "《临证指南医案》"], quotes: ["卫气营血辨证"], school: "温病派" },
+    { name: "吴鞠通", title: "温病学派大家", dynasty: "清代", contributions: ["《温病条辨》"], quotes: ["治上焦如羽，非轻不举"], school: "温病派" },
+    { name: "李东垣", title: "脾胃派创始人", dynasty: "金代", contributions: ["《脾胃论》", "《内外伤辨惑论》"], quotes: ["内伤脾胃，百病由生", "脾胃虚则九窍不通"], school: "脾胃派" },
+    { name: "张锡纯", title: "中西汇通派创始人", dynasty: "清末民国", contributions: ["《医学衷中参西录》"], quotes: ["师古而不泥古，参西而不背中"], school: "中西汇通派" },
+    { name: "孙思邈", title: "药王", dynasty: "唐代", contributions: ["《备急千金要方》", "《千金翼方》"], quotes: ["大医精诚", "上医治未病"], school: "其他" },
+    { name: "华佗", title: "神医", dynasty: "东汉", contributions: ["《中藏经》", "五禽戏"], quotes: ["阴阳者，天地之道也"], school: "其他" },
+    { name: "李时珍", title: "药圣", dynasty: "明代", contributions: ["《本草纲目》"], quotes: [], school: "其他" },
+    { name: "唐容川", title: "血证论作者", dynasty: "清代", contributions: ["《血证论》", "《中西汇通医书五种》"], quotes: ["止血、消瘀、宁血、补血"], school: "其他" },
+    { name: "黄煌", title: "当代经方家", dynasty: "现代", contributions: ["《经方的魅力》", "《黄煌经方医案》"], quotes: ["经方惠民", "方证相应"], school: "其他" },
+    { name: "邓铁涛", title: "国医大师", dynasty: "现代", contributions: ["脾胃学说研究", "重症肌无力研究"], quotes: ["铁杆中医"], school: "其他" }
+  ]
 }
 
 // 获取医家详情
 export function getPhysicianDetail(name: string) {
-  for (const school of Object.values(NI_APPROVED_PHYSICIANS) as any[]) {
-    const physician = school.representatives.find((p: any) => p.name === name)
-    if (physician) {
-      return { ...physician, school: school.name, description: school.description }
-    }
-  }
-  return null
+  const all = getAllPhysicians()
+  return all.find(p => p.name === name) || null
 }
 
 // 获取经典书籍
@@ -736,4 +313,20 @@ export function getClassicBooks() {
 // 获取倪海厦四件套
 export function getNiHaiXiaFourClassics() {
   return NI_HAI_XIA_FOUR_CLASSICS
+}
+
+// 搜索医家
+export function searchPhysicians(keyword: string) {
+  const all = getAllPhysicians()
+  return all.filter(p =>
+    p.name.includes(keyword) ||
+    p.title.includes(keyword) ||
+    p.school.includes(keyword)
+  )
+}
+
+// 获取所有经典
+export function getAllClassics() {
+  const books = getClassicBooks()
+  return Object.values(books)
 }

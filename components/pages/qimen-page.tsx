@@ -4,6 +4,7 @@ import { useState } from "react"
 import { ArrowLeft, BookOpen, TrendingUp } from "lucide-react"
 import {
   JIE_QI_DUN,
+  QIMEN_GEJU,
   calculateQimenPan
 } from "@/lib/qimen-data"
 

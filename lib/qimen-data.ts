@@ -93,6 +93,25 @@ export function calculateQimenPan(jieqi: string, dayGan: number, shi: string) {
   }
 }
 
+// 奇门格局
+export const QIMEN_GEJU = {
+  吉格: [
+    { name: "青龙回首", desc: "天盘甲木加地盘丙火，主百事皆吉，利于出行、求财、做事" },
+    { name: "飞鸟跌穴", desc: "天盘丙火加地盘甲木，主百事皆吉，尤其利于求官、求名" },
+    { name: "青龙返首", desc: "值符加日干，主事成迟而稳，需耐心等待" },
+    { name: "云开雾散", desc: "值符开加死，主凶中有吉，坏事变好事" },
+    { name: "三奇得使", desc: "三奇乙丙丁遇吉门，主得贵人相助，做事顺利" },
+    { name: "真诈格", desc: "真诈临身，主得意外之财或贵人相助" },
+  ],
+  凶格: [
+    { name: "白虎猖狂", desc: "天盘庚辛加地盘木，主凶灾横祸，官司缠身" },
+    { name: "螣蛇夭矫", desc: "螣蛇加地盘火，主虚惊怪异之事" },
+    { name: "朱雀投江", desc: "天盘丁加地盘坎，主文书丢失或信息不全" },
+    { name: "太白天乙伏吟", desc: "庚辛伏吟，主事物停滞不前" },
+    { name: "六仪击刑", desc: "六仪自刑或互刑，主凶灾疾病" },
+  ]
+}
+
 // 命理奇门结合排盘
 export function calculateMingLiQiMen(date: Date, gender: "male" | "female") {
   const mingLi = calculateYangPanMingLi(date, gender)

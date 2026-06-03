@@ -27,6 +27,7 @@ import {
   Headphones,
   MessageCircle,
   Heart,
+  ChevronRight,
 } from "lucide-react"
 
 interface HomePageProps {
@@ -60,12 +61,12 @@ const YI_XUE_TOOLS = [
   { id: "taiyi", name: "太乙神数", icon: Circle, color: "#ec4899" },
   { id: "zhuge", name: "诸葛神数", icon: GraduationCap, color: "#22c55e" },
   { id: "wannianli", name: "万年历", icon: Calendar, color: "#06b6d4" },
-    { id: "jinqian", name: "金钱课", icon: Coins, color: "#f59e0b" },
+  { id: "jinqian", name: "金钱课", icon: Coins, color: "#f59e0b" },
   { id: "xiaocheng", name: "小成图", icon: Hexagon, color: "#8b5cf6" },
   { id: "qimenchuan", name: "奇门穿壬", icon: Compass, color: "#0891b2" },
   { id: "shanxiangqimen", name: "山向奇门", icon: MapPin, color: "#22c55e" },
   { id: "zidian", name: "字典查询", icon: Search, color: "#3b82f6" },
-    { id: "hanzi", name: "汉字筛选", icon: Coins, color: "#ec4899" },
+  { id: "hanzi", name: "汉字筛选", icon: Coins, color: "#ec4899" },
   { id: "jieqi", name: "节气查询", icon: Calendar, color: "#ef4444" },
   { id: "hehuoren", name: "合伙人", icon: Users, color: "#06b6d4" },
   { id: "xiaochengxu", name: "小程序开发", icon: Smartphone, color: "#8b5cf6" },
@@ -80,6 +81,9 @@ const ZHONGYI_TOOLS = [
   { id: "tizhi", name: "体质辨识", icon: User, color: "#f59e0b" },
   { id: "tcm-study", name: "学习中心", icon: GraduationCap, color: "#8b5cf6", isNew: true },
 ]
+
+// 经方传承库单独入口
+const JINGFANG_LIBRARY = { id: "jflib", name: "经方传承库", icon: BookOpen, color: "#8b5cf6", isNew: true }
 
 function FlowerIcon(props: any) {
   return (
@@ -149,16 +153,15 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
       "xiaochengxu": "/xiaochengxu",
       "zaixian": "/zaixian",
       "tcm-study": "/tcm-study",
+      "jflib": "/tcm-classics",
     }
     const route = routeMap[toolId]
     if (route) {
       router.push(route)
     } else if (toolId === "zhongyi" || toolId === "jingfang" || toolId === "jingluo" || toolId === "tizhi") {
-      // 中医工具暂时导航到demo页面，后续完善
       if (onNavigateToTool) {
         onNavigateToTool(toolId)
       } else {
-        // 默认导航到经方本草页面，先检查有没有专门的中医页面
         router.push("/herbal")
       }
     }
@@ -166,16 +169,13 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-b from-gray-50 to-white overflow-y-auto">
-      {/* 标题区域 */}
-  <div className="bg-white pt-12 pb-4">
-    <h1 className="text-2xl font-bold text-center text-gray-800">易学排盘</h1>
-  </div>
+      <div className="bg-white pt-12 pb-4">
+        <h1 className="text-2xl font-bold text-center text-gray-800">易学排盘</h1>
+      </div>
 
-      {/* 日期信息卡片 */}
       <div className="px-4 mb-4">
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <div className="flex items-start gap-4">
-            {/* 左侧大日期 */}
             <div className="flex flex-col items-center">
               <div className="text-2xl font-bold text-[#0891b2]">今天</div>
               <div className="text-5xl font-bold text-gray-800 my-1">
@@ -183,7 +183,6 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
               </div>
             </div>
             
-            {/* 右侧日期详情 */}
             <div className="flex-1">
               <div className="text-lg font-semibold text-gray-800 mb-1">
                 {todayInfo?.solar}
@@ -195,7 +194,6 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
                 {todayInfo?.week}
               </div>
               
-              {/* 干支显示 */}
               <div className="flex gap-3">
                 <div className="text-center">
                   <div className="text-xl font-bold text-red-500">{todayInfo?.yearGanZhi}</div>
@@ -215,9 +213,33 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
         </div>
       </div>
 
+      <div className="px-4 mb-4">
+        <button
+          onClick={() => handleToolClick(JINGFANG_LIBRARY.id)}
+          className="w-full bg-gradient-to-r from-purple-500 to-blue-600 rounded-2xl p-4 text-white shadow-lg hover:from-purple-600 hover:to-blue-700 transition-all"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+              <JINGFANG_LIBRARY.icon className="w-7 h-7 text-white" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <h3 className="font-bold text-lg">{JINGFANG_LIBRARY.name}</h3>
+                {JINGFANG_LIBRARY.isNew && (
+                  <span className="bg-amber-500 text-white text-xs px-2 py-0.5 rounded-full">
+                    NEW
+                  </span>
+                )}
+              </div>
+              <p className="text-white/80 text-sm">
+                倪海厦经方家 · 伤寒论 · 金匮要略 · 中医经典
+              </p>
+            </div>
+            <ChevronRight className="w-6 h-6 text-white/80" />
+          </div>
+        </button>
+      </div>
 
-
-      {/* 中医板块 */}
       <div className="px-4 mb-4">
         <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-4 border border-red-100">
           <div className="flex items-center gap-2 mb-3">
@@ -255,20 +277,18 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
         </div>
       </div>
 
-      {/* 易学工具网格 */}
       <div className="px-4 pb-24">
         <div className="flex items-center gap-2 mb-3">
           <Compass className="w-5 h-5 text-blue-500" />
           <h2 className="text-gray-800 font-bold">易学工具</h2>
         </div>
         <div className="grid grid-cols-4 gap-4">
-          {YI_XUE_TOOLS.map((tool, index) => (
+          {YI_XUE_TOOLS.map((tool) => (
             <button
               key={tool.id}
               onClick={() => handleToolClick(tool.id)}
               className="flex flex-col items-center py-3 relative"
             >
-              {/* 图标背景 */}
               <div 
                 className="w-14 h-14 rounded-full flex items-center justify-center mb-1"
                 style={{ backgroundColor: `${tool.color}15` }}
@@ -280,12 +300,10 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
                 />
               </div>
               
-              {/* 工具名称 */}
               <span className="text-sm text-gray-700 text-center leading-tight">
                 {tool.name}
               </span>
               
-              {/* 角标 */}
               {tool.badge && (
                 <div className="absolute top-0 right-2 w-2 h-2 bg-red-500 rounded-full" />
               )}
@@ -293,7 +311,6 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
           ))}
         </div>
         
-        {/* 底部分享提示 */}
         <div className="mt-6 text-center pb-8">
           <div className="flex justify-center gap-2 mb-2">
             <div className="text-2xl">🤖</div>
