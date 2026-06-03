@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { useState } from "react"
 import {
   BookOpen,
   Sparkles,
@@ -37,11 +37,16 @@ import {
   Crown,
   Swords,
   Gift,
-  Sparkles as SparklesIcon,
+  ChevronLeft,
 } from "lucide-react"
 
-export default function YiXuePage() {
-  const router = useRouter()
+interface YiXuePageProps {
+  onBack?: () => void
+}
+
+export default function YiXuePage({ onBack }: YiXuePageProps = {}) {
+  const [selectedTool, setSelectedTool] = useState<string | null>(null)
+  const router = require("next/navigation").useRouter()
 
   const tools = [
     { id: "bazi", icon: BookOpen, title: "八字命理", subtitle: "排盘解析", color: "amber", description: "基于《渊海子平》《三命通会》《滴天髓》《子平真诠》" },
@@ -52,7 +57,7 @@ export default function YiXuePage() {
     { id: "wannianli", icon: Calendar, title: "万年历", subtitle: "择吉择日", color: "orange", description: "黄历查询与择日" },
     { id: "fengshui", icon: Wind, title: "风水堪舆", subtitle: "环境调理", color: "cyan", description: "风水布局与化解" },
     { id: "xingming", icon: Moon, title: "姓名学", subtitle: "起名改名", color: "indigo", description: "姓名数理分析" },
-    { id: "liuren", icon: Swords, title: "六壬神课", subtitle: "高级预测", color: "red", description: "大六壬金口诀" },
+    { id: "liuren", icon: Swords, title: "六壬神课", subtitle: "高级预测", color: "red", description: "六壬金口诀" },
     { id: "taiyi", icon: Sun, title: "太乙神数", subtitle: "帝王之学", color: "yellow", description: "太乙神数推演" },
     { id: "xiangmian", icon: Eye, title: "面相学", subtitle: "观相识人", color: "rose", description: "面部特征分析" },
     { id: "xiangshou", icon: Hand, title: "手相学", subtitle: "掌纹解读", color: "lime", description: "手掌纹路分析" },
@@ -69,17 +74,16 @@ export default function YiXuePage() {
     { id: "tieban", icon: Target, title: "铁板神数", subtitle: "宿命通", color: "rose", description: "铁板神数推算" },
     { id: "shaozi", icon: Brain, title: "邵子神数", subtitle: "邵雍真传", color: "lime", description: "邵康节神数" },
     { id: "heluo", icon: Waves, title: "河洛理数", subtitle: "天地数理", color: "teal", description: "河图洛书" },
-    { id: "huangji", icon: Mountain, title: "皇极经世", subtitle: "宇宙规律", color: "sky", description: "邵雍皇极经世" },
-    { id: "xingming", icon: Orbit, title: "星命学", subtitle: "星辰命理", color: "amber", description: "星象与命运" },
+    { id: "huangji", icon: Mountain, title: "皇极经世", subtitle: "宇宙规律", color: "sky", description: "皇极经世" },
     { id: "qizheng", icon: Atom, title: "七政四余", subtitle: "天文历法", color: "purple", description: "七政四余推命" },
     { id: "zhanxing", icon: Globe, title: "占星术", subtitle: "西方占星", color: "blue", description: "星座运势分析" },
     { id: "sanyuan", icon: TreePine, title: "三元风水", subtitle: "时空风水", color: "green", description: "三元九运" },
-    { id: "xuankong", icon: SparklesIcon, title: "玄空风水", subtitle: "理气风水", color: "orange", description: "玄空飞星" },
+    { id: "xuankong", icon: Sparkles, title: "玄空风水", subtitle: "理气风水", color: "orange", description: "玄空飞星" },
     { id: "bazhai", icon: Hexagon, title: "八宅风水", subtitle: "方位吉凶", color: "cyan", description: "八宅明镜" },
     { id: "yanggong", icon: Crown, title: "杨公风水", subtitle: "形势派", color: "indigo", description: "杨筠松风水" },
     { id: "qimenzeji", icon: Gift, title: "奇门择吉", subtitle: "最佳时机", color: "red", description: "奇门遁甲择日" },
     { id: "wuyunliuqi", icon: Flame, title: "五运六气", subtitle: "运气推算", color: "rose", description: "五运六气详解" },
-    { id: "ziwuliu", icon: Droplets, title: "子午流注", subtitle: "针灸时辰", color: "lime", description: "经络气血流注" },
+    { id: "ziwuliu", icon: Droplets, title: "子午流注", subtitle: "针灸时辰", color: "lime", description: "子午流注针法" },
   ]
 
   const colorClasses: Record<string, { bg: string; icon: string; border: string; shadow: string }> = {
@@ -100,50 +104,44 @@ export default function YiXuePage() {
   }
 
   const handleToolClick = (id: string) => {
-    const routes: Record<string, string> = {
-      bazi: "/bazi",
-      ziwei: "/ziwei",
-      qimen: "/qimen",
-      liuyao: "/liuyao",
-      meihua: "/meihua",
-      wannianli: "/wannianli",
-      fengshui: "/fengshui",
-      xingming: "/xingming",
-      liuren: "/daliuren",
-      taiyi: "/taiyi",
-      xiangmian: "/xiangmian",
-      xiangshou: "/xiangshou",
-      cezi: "/cezi",
-      jiemeng: "/jiemeng",
-      zeri: "/zeri",
-      fuzhou: "/fuzhou",
-      luopan: "/luopan",
-      yinpan: "/yinpan-qimen",
-      yangpan: "/yangpan-mingli",
-      jinkoujue: "/jinkoujue",
-      xiaoliuren: "/xiaoliuren",
-      zhuge: "/zhuge",
-      tieban: "/tieban",
-      shaozi: "/shaozi",
-      heluo: "/heluo",
-      huangji: "/huangji",
-      qizheng: "/qizheng",
-      zhanxing: "/zhanxing",
-      sanyuan: "/sanyuan",
-      xuankong: "/xuankong",
-      bazhai: "/bazhai",
-      yanggong: "/yanggong",
-      qimenzeji: "/qimenzeji",
-      wuyunliuqi: "/wuyunliuqi",
-      ziwuliu注: "/ziwuliu",
+    setSelectedTool(id)
+  }
+
+  const handleBack = () => {
+    if (selectedTool) {
+      setSelectedTool(null)
+    } else if (onBack) {
+      onBack()
     }
-    router.push(routes[id] || `/tools/${id}`)
+  }
+
+  if (selectedTool) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#1a1410] via-[#1f1814] to-[#241c16] text-white p-4">
+        <div className="flex items-center gap-3 mb-6">
+          <button onClick={handleBack} className="w-10 h-10 rounded-full bg-amber-900/40 flex items-center justify-center">
+            <ChevronLeft className="w-5 h-5 text-amber-300" />
+          </button>
+          <h1 className="text-lg font-bold text-amber-400">功能开发中</h1>
+        </div>
+        <div className="bg-gradient-to-br from-amber-900/40 to-amber-950/60 rounded-xl p-6 border border-amber-800/30">
+          <p className="text-amber-100/80 text-center">
+            {tools.find(t => t.id === selectedTool)?.title} 功能正在开发中，敬请期待！
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1a1410] via-[#1f1814] to-[#241c16] text-white">
       <header className="bg-gradient-to-b from-[#1a1410] to-transparent pt-10 pb-4 px-4">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-3 mb-4">
+          {onBack && (
+            <button onClick={onBack} className="w-10 h-10 rounded-full bg-amber-900/40 flex items-center justify-center">
+              <ChevronLeft className="w-5 h-5 text-amber-300" />
+            </button>
+          )}
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />

@@ -369,7 +369,6 @@ export function HumanBodyModel({ onSelectAcupoint }: HumanBodyProps) {
         { name: "期门", x: 280, y: 380, id: "LR14" },
       ]
     },
-  }
 
   // 任脉（前）
   CV: {
@@ -427,6 +426,7 @@ export function HumanBodyModel({ onSelectAcupoint }: HumanBodyProps) {
       { name: "龈交", x: 320, y: -25, id: "GV28" },
     ]
   },
+}
 
   // 获取当前显示的经络
   const getActiveMeridians = () => {

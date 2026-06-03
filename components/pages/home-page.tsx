@@ -18,9 +18,11 @@ import {
 
 interface HomePageProps {
   onNavigateToTool?: (toolId: string) => void
+  onNavigateToYiXue?: () => void
+  onNavigateToHerbal?: () => void
 }
 
-export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
+export function HomePage({ onNavigateToTool, onNavigateToYiXue, onNavigateToHerbal }: HomePageProps = {}) {
   const router = useRouter()
   const [todayInfo, setTodayInfo] = useState<any>(null)
 
@@ -40,7 +42,13 @@ export function HomePage({ onNavigateToTool }: HomePageProps = {}) {
   }, [])
 
   const handleNavigation = (path: string) => {
-    router.push(path)
+    if (path === "/yi-xue" && onNavigateToYiXue) {
+      onNavigateToYiXue()
+    } else if (path === "/herbal" && onNavigateToHerbal) {
+      onNavigateToHerbal()
+    } else {
+      router.push(path)
+    }
   }
 
   return (
