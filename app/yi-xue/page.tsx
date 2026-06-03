@@ -79,7 +79,7 @@ export default function YiXuePage() {
     { id: "yanggong", icon: Crown, title: "杨公风水", subtitle: "形势派", color: "indigo", description: "杨筠松风水" },
     { id: "qimenzeji", icon: Gift, title: "奇门择吉", subtitle: "最佳时机", color: "red", description: "奇门遁甲择日" },
     { id: "wuyunliuqi", icon: Flame, title: "五运六气", subtitle: "运气推算", color: "rose", description: "五运六气详解" },
-    { id: "ziwuliu注", icon: Droplets, title: "子午流注", subtitle: "针灸时辰", color: "lime", description: "经络气血流注" },
+    { id: "ziwuliu", icon: Droplets, title: "子午流注", subtitle: "针灸时辰", color: "lime", description: "经络气血流注" },
   ]
 
   const colorClasses: Record<string, { bg: string; icon: string; border: string; shadow: string }> = {
