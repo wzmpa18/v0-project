@@ -26,7 +26,7 @@ import {
   searchPhysicians
 } from "@/lib/tcm-physicians-complete";
 import {
-  NI_HAIXIA_FOUR_CLASSICS,
+  NI_HAI_XIA_FOUR_CLASSICS,
   getAllClassics
 } from "@/lib/tcm-classics-complete";
 import {
@@ -236,7 +236,7 @@ export default function TCMClassicLibrary() {
                     倪海厦先生反复强调，这四部经典是学习中医必读的：
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {Object.entries(NI_HAIXIA_FOUR_CLASSICS).map(([key, classic]: [string, any]) => (
+                    {Object.entries(NI_HAI_XIA_FOUR_CLASSICS).map(([key, classic]: [string, any]) => (
                       <button
                         key={key}
                         onClick={() => setSelectedItem({ type: "classic", data: classic })}
@@ -261,7 +261,7 @@ export default function TCMClassicLibrary() {
                 <div className="bg-white rounded-2xl border border-gray-100 p-6">
                   <h3 className="text-lg font-bold text-gray-800 mb-4">其他中医经典</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {Object.entries(classics).filter(([k]: [string, any]) => !NI_HAIXIA_FOUR_CLASSICS[k as keyof typeof NI_HAIXIA_FOUR_CLASSICS]).map(([key, classic]: [string, any]) => (
+                    {Object.entries(classics).filter(([k]: [string, any]) => !NI_HAI_XIA_FOUR_CLASSICS[k as keyof typeof NI_HAI_XIA_FOUR_CLASSICS]).map(([key, classic]: [string, any]) => (
                       <button
                         key={key}
                         onClick={() => setSelectedItem({ type: "classic", data: classic })}
