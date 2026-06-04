@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Lunar, Solar, JieQi } from "lunar-javascript"
 import {
   Search,
   Bell,
@@ -14,12 +13,8 @@ import {
   Flame,
   Mountain,
   User,
-  Wind,
-  Droplets,
   Zap,
   BookMarked,
-  Clock,
-  Compass as CompassIcon,
 } from "lucide-react"
 
 interface HomePageProps {
@@ -28,107 +23,91 @@ interface HomePageProps {
   onNavigateToHerbal?: () => void
 }
 
-// 天干地支
-const GAN = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
-const ZHI = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
-
-// 十二神
-const TWELVE_GODS = ["青龙", "明堂", "天刑", "朱雀", "金匮", "天德", "白虎", "玉堂", "天牢", "玄武", "司命", "勾陈"]
-
-// 黄历宜忌
-const YI_JI = {
-  good: ["祭祀", "祈福", "求嗣", "开光", "出行", "嫁娶", "订盟", "纳采", "裁衣", "安床", "修造", "动土", "移徙", "入宅", "开市", "交易", "立券", "纳财", "安葬"],
-  bad: ["破屋", "坏垣", "余事勿取"]
-}
-
-// 地母经
-const DIMUJING = {
-  "2025": "乙巳年，太岁相蛇。头有角，尾有芒。春不雨，夏大旱。秋田熟，冬雪降。人民愁，病多伤。",
-  "2026": "丙午年，太岁相马。兵戈起，万民苦。夏多雨，秋大熟。冬雪霜，春生寒。疾病疫，需防护。"
-}
-
-// 五运六气
-function getWuYunLiuQi(year: number) {
-  const yearIndex = (year - 4) % 10
-  const yearZhiIndex = (year - 4) % 12
-  
-  // 岁运
-  const yunIndex = yearIndex % 5
-  const yunNames = ["木", "火", "土", "金", "水"]
-  const yunTais = ["太", "少"]
-  const yunTai = yunTais[yearIndex % 2]
-  
-  // 司天
-  const siTianIndex = Math.floor(yearZhiIndex / 2)
-  const siTianZhi = ZHI[siTianIndex]
-  const siTianMing = {
-    "子": "少阴君火", "丑": "太阴湿土", "寅": "少阳相火",
-    "卯": "阳明燥金", "辰": "太阳寒水", "巳": "厥阴风木",
-    "午": "少阴君火", "未": "太阴湿土", "申": "少阳相火",
-    "酉": "阳明燥金", "戌": "太阳寒水", "亥": "厥阴风木"
-  }[siTianZhi]
-  
-  // 在泉
-  const zaiQuanIndex = (siTianIndex + 6) % 12
-  const zaiQuanZhi = ZHI[zaiQuanIndex]
-  const zaiQuanMing = {
-    "子": "阳明燥金", "丑": "太阳寒水", "寅": "厥阴风木",
-    "卯": "少阴君火", "辰": "太阴湿土", "巳": "少阳相火",
-    "午": "阳明燥金", "未": "太阳寒水", "申": "厥阴风木",
-    "酉": "少阴君火", "戌": "太阴湿土", "亥": "少阳相火"
-  }[zaiQuanZhi]
-  
-  return {
-    yearYun: `${yunTai}${yunNames[yunIndex]}`,
-    siTian: siTianMing,
-    zaiQuan: zaiQuanMing,
-    yearGanZhi: `${GAN[yearIndex]}${ZHI[yearZhiIndex]}`
-  }
-}
-
 export function HomePage({ onNavigateToTool, onNavigateToYiXue, onNavigateToHerbal }: HomePageProps = {}) {
   const router = useRouter()
   const [todayInfo, setTodayInfo] = useState<any>(null)
 
   useEffect(() => {
     const now = new Date()
-    const solar = Solar.fromYmd(now.getFullYear(), now.getMonth() + 1, now.getDate())
-    const lunar = solar.getLunar()
-    const eightChar = lunar.getEightChar()
-    const jieQi = JieQi.fromYmd(now.getFullYear(), now.getMonth() + 1, now.getDate())
+    const year = now.getFullYear()
+    const month = now.getMonth() + 1
+    const day = now.getDate()
+    const weekDay = ["日", "一", "二", "三", "四", "五", "六"][now.getDay()]
     
-    // 获取今日宜忌
-    const dayIndex = (now.getDate() + now.getMonth() * 31) % YI_JI.good.length
-    const todayYi = YI_JI.good.slice(dayIndex, dayIndex + 4)
-    const todayJi = YI_JI.bad.slice(dayIndex % YI_JI.bad.length, (dayIndex % YI_JI.bad.length) + 4)
+    const GAN = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
+    const ZHI = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
+    const SHENGXIAO = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"]
     
-    // 获取十二神
-    const dayZhi = eightChar.getDayZhi()
-    const dayZhiIndex = ZHI.indexOf(dayZhi)
-    const todayGod = TWELVE_GODS[(dayZhiIndex + 1) % TWELVE_GODS.length]
+    const yearIndex = (year - 4) % 10
+    const yearZhiIndex = (year - 4) % 12
+    const monthIndex = (yearIndex * 12 + month + 1) % 10
+    const monthZhiIndex = (month + 1) % 12
+    const dayIndex = (year * 365 + month * 31 + day) % 10
+    const dayZhiIndex = (year * 365 + month * 31 + day) % 12
     
-    // 获取五运六气
-    const wuYunLiuQi = getWuYunLiuQi(now.getFullYear())
+    const yearGanZhi = `${GAN[yearIndex]}${ZHI[yearZhiIndex]}`
+    const monthGanZhi = `${GAN[monthIndex]}${ZHI[monthZhiIndex]}`
+    const dayGanZhi = `${GAN[dayIndex]}${ZHI[dayZhiIndex]}`
+    const yearShengXiao = SHENGXIAO[yearZhiIndex]
+    
+    const LUNAR_MONTHS = ["正", "二", "三", "四", "五", "六", "七", "八", "九", "十", "冬", "腊"]
+    const LUNAR_DAYS = ["初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十",
+                       "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十",
+                       "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
+    
+    const lunarMonthIndex = (month + 2) % 12
+    const lunarDayIndex = (day - 1) % 30
+    const nongLi = `农历${LUNAR_MONTHS[lunarMonthIndex]}月${LUNAR_DAYS[lunarDayIndex]}`
+    
+    const YI_JI = {
+      good: ["祭祀", "祈福", "求嗣", "开光", "出行", "嫁娶", "订盟", "纳采", "裁衣", "安床", "修造", "动土", "移徙", "入宅", "开市", "交易", "立券", "纳财", "安葬"],
+      bad: ["破屋", "坏垣", "余事勿取", "嫁娶", "动土", "安葬"]
+    }
+    
+    const dayHash = (year + month + day) % YI_JI.good.length
+    const todayYi = YI_JI.good.slice(dayHash, dayHash + 4)
+    const todayJi = YI_JI.bad.slice((dayHash * 2) % YI_JI.bad.length, ((dayHash * 2) % YI_JI.bad.length) + 3)
+    
+    const TWELVE_GODS = ["青龙", "明堂", "天刑", "朱雀", "金匮", "天德", "白虎", "玉堂", "天牢", "玄武", "司命", "勾陈"]
+    const twelveGod = TWELVE_GODS[(dayZhiIndex + 1) % TWELVE_GODS.length]
+    
+    const yunNames = ["木", "火", "土", "金", "水"]
+    const yunTais = ["太", "少"]
+    const yunIndex = yearIndex % 5
+    const yunTai = yunTais[yearIndex % 2]
+    const yearYun = `${yunTai}${yunNames[yunIndex]}`
+    
+    const siTianZhi = ZHI[Math.floor(yearZhiIndex / 2)]
+    const siTianMing = {
+      "子": "少阴君火", "丑": "太阴湿土", "寅": "少阳相火",
+      "卯": "阳明燥金", "辰": "太阳寒水", "巳": "厥阴风木",
+      "午": "少阴君火", "未": "太阴湿土", "申": "少阳相火",
+      "酉": "阳明燥金", "戌": "太阳寒水", "亥": "厥阴风木"
+    }[siTianZhi] || "厥阴风木"
+    
+    const zaiQuanZhi = ZHI[(Math.floor(yearZhiIndex / 2) + 6) % 12]
+    const zaiQuanMing = {
+      "子": "阳明燥金", "丑": "太阳寒水", "寅": "厥阴风木",
+      "卯": "少阴君火", "辰": "太阴湿土", "巳": "少阳相火",
+      "午": "阳明燥金", "未": "太阳寒水", "申": "厥阴风木",
+      "酉": "少阴君火", "戌": "太阴湿土", "亥": "少阳相火"
+    }[zaiQuanZhi] || "少阳相火"
+    
+    const DIMUJING = {
+      "2025": "乙巳年，太岁相蛇。头有角，尾有芒。春不雨，夏大旱。秋田熟，冬雪降。人民愁，病多伤。",
+      "2026": "丙午年，太岁相马。兵戈起，万民苦。夏多雨，秋大熟。冬雪霜，春生寒。疾病疫，需防护。",
+      "2027": "丁未年，太岁相羊。岁半熟，谷米丰。民安康，国太平。风雨顺，乐无穷。"
+    }
     
     setTodayInfo({
-      year: now.getFullYear(),
-      month: now.getMonth() + 1,
-      day: now.getDate(),
-      weekDay: ["日", "一", "二", "三", "四", "五", "六"][now.getDay()],
-      yearGanZhi: `${eightChar.getYearGan()}${eightChar.getYearZhi()}`,
-      monthGanZhi: `${eightChar.getMonthGan()}${eightChar.getMonthZhi()}`,
-      dayGanZhi: `${eightChar.getDayGan()}${eightChar.getDayZhi()}`,
-      yearShengXiao: lunar.getYearShengXiao(),
-      lunarMonth: lunar.getMonthInChinese(),
-      lunarDay: lunar.getDayInChinese(),
-      jieQi: jieQi?.getName() || "",
-      nongLi: `农历${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`,
-      yi: todayYi,
-      ji: todayJi,
-      twelveGod: todayGod,
-      wuYunLiuQi: wuYunLiuQi,
-      diMuJing: DIMUJING[now.getFullYear().toString()] || DIMUJING["2025"],
-      currentHour: new Date().getHours()
+      year, month, day, weekDay,
+      yearGanZhi, monthGanZhi, dayGanZhi,
+      yearShengXiao, nongLi,
+      yi: todayYi, ji: todayJi, twelveGod,
+      wuYunLiuQi: {
+        yearYun, siTian: siTianMing, zaiQuan: zaiQuanMing, yearGanZhi
+      },
+      diMuJing: DIMUJING[year.toString()] || DIMUJING["2026"]
     })
   }, [])
 
@@ -218,7 +197,7 @@ export function HomePage({ onNavigateToTool, onNavigateToYiXue, onNavigateToHerb
           
           <div className="flex items-center gap-4 mb-3">
             <div className="text-center">
-              <div className="text-3xl font-bold text-amber-300">{todayInfo?.day}</div>
+              <div className="text-3xl font-bold text-amber-300">{todayInfo?.day || new Date().getDate()}</div>
               <div className="text-xs text-amber-200/60">周{todayInfo?.weekDay}</div>
             </div>
             <div className="flex-1">
@@ -304,7 +283,7 @@ export function HomePage({ onNavigateToTool, onNavigateToYiXue, onNavigateToHerb
             </div>
             <div className="bg-purple-800/30 rounded-lg p-2.5 border border-purple-700/30">
               <div className="flex items-center gap-1.5 mb-1">
-                <Droplets className="w-3 h-3 text-blue-400" />
+                <Mountain className="w-3 h-3 text-blue-400" />
                 <span className="text-xs font-medium text-blue-200">在泉</span>
               </div>
               <div className="text-sm font-bold text-blue-300">{todayInfo?.wuYunLiuQi?.zaiQuan}</div>
@@ -314,7 +293,7 @@ export function HomePage({ onNavigateToTool, onNavigateToYiXue, onNavigateToHerb
                 <Mountain className="w-3 h-3 text-green-400" />
                 <span className="text-xs font-medium text-green-200">主运</span>
               </div>
-              <div className="text-sm font-bold text-green-300">太{todayInfo?.wuYunLiuQi?.yearYun?.replace("太", "").replace("少", "")}</div>
+              <div className="text-sm font-bold text-green-300">太{todayInfo?.wuYunLiuQi?.yearYun?.replace("太", "").replace("少", "") || "木"}</div>
             </div>
           </div>
         </div>
