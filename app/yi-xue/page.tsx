@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import {
   BookOpen,
   Sparkles,
@@ -46,7 +47,7 @@ interface YiXuePageProps {
 
 export default function YiXuePage({ onBack }: YiXuePageProps = {}) {
   const [selectedTool, setSelectedTool] = useState<string | null>(null)
-  const router = require("next/navigation").useRouter()
+  const router = useRouter()
 
   const tools = [
     { id: "bazi", icon: BookOpen, title: "八字命理", subtitle: "排盘解析", color: "amber", description: "基于《渊海子平》《三命通会》《滴天髓》《子平真诠》" },

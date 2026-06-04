@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { BottomNav } from "@/components/bottom-nav"
 import { HomePage } from "@/components/pages/home-page"
 import { ProfilePage } from "@/components/pages/profile-page"
@@ -15,10 +15,29 @@ export default function Home() {
   const [showYiXue, setShowYiXue] = useState(false)
   const [showHerbal, setShowHerbal] = useState(false)
 
+  useEffect(() => {
+    console.log("Active tab changed:", activeTab)
+    console.log("Show YiXue:", showYiXue)
+    console.log("Show Herbal:", showHerbal)
+  }, [activeTab, showYiXue, showHerbal])
+
   const handleTabChange = (tab: string) => {
+    console.log("handleTabChange called with:", tab)
     setShowYiXue(false)
     setShowHerbal(false)
     setActiveTab(tab)
+  }
+
+  const handleNavigateToYiXue = () => {
+    console.log("handleNavigateToYiXue called")
+    setShowYiXue(true)
+    setShowHerbal(false)
+  }
+
+  const handleNavigateToHerbal = () => {
+    console.log("handleNavigateToHerbal called")
+    setShowHerbal(true)
+    setShowYiXue(false)
   }
 
   const renderPage = () => {
@@ -30,7 +49,12 @@ export default function Home() {
     }
     switch (activeTab) {
       case "home":
-        return <HomePage onNavigateToYiXue={() => setShowYiXue(true)} onNavigateToHerbal={() => setShowHerbal(true)} />
+        return (
+          <HomePage 
+            onNavigateToYiXue={handleNavigateToYiXue} 
+            onNavigateToHerbal={handleNavigateToHerbal} 
+          />
+        )
       case "study":
         return <ClassPage />
       case "ai":
@@ -40,7 +64,12 @@ export default function Home() {
       case "profile":
         return <ProfilePage />
       default:
-        return <HomePage onNavigateToYiXue={() => setShowYiXue(true)} onNavigateToHerbal={() => setShowHerbal(true)} />
+        return (
+          <HomePage 
+            onNavigateToYiXue={handleNavigateToYiXue} 
+            onNavigateToHerbal={handleNavigateToHerbal} 
+          />
+        )
     }
   }
 
@@ -52,8 +81,8 @@ export default function Home() {
       <BottomNav 
         activeTab={activeTab} 
         onTabChange={handleTabChange}
-        onNavigateToYiXue={() => setShowYiXue(true)}
-        onNavigateToHerbal={() => setShowHerbal(true)}
+        onNavigateToYiXue={handleNavigateToYiXue}
+        onNavigateToHerbal={handleNavigateToHerbal}
       />
     </main>
   )

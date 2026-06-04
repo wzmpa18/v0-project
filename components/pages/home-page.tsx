@@ -111,13 +111,21 @@ export function HomePage({ onNavigateToTool, onNavigateToYiXue, onNavigateToHerb
     })
   }, [])
 
-  const handleNavigation = (path: string) => {
-    if (path === "/yi-xue" && onNavigateToYiXue) {
+  const handleYiXueClick = () => {
+    console.log("HomePage handleYiXueClick called")
+    if (onNavigateToYiXue) {
       onNavigateToYiXue()
-    } else if (path === "/herbal" && onNavigateToHerbal) {
+    } else {
+      router.push("/yi-xue")
+    }
+  }
+
+  const handleHerbalClick = () => {
+    console.log("HomePage handleHerbalClick called")
+    if (onNavigateToHerbal) {
       onNavigateToHerbal()
     } else {
-      router.push(path)
+      router.push("/herbal")
     }
   }
 
@@ -160,8 +168,8 @@ export function HomePage({ onNavigateToTool, onNavigateToYiXue, onNavigateToHerb
       <main className="px-4 pb-16">
         <div className="grid grid-cols-2 gap-2.5 mb-3">
           <button
-            onClick={() => handleNavigation("/yi-xue")}
-            className="bg-gradient-to-br from-amber-800/80 to-amber-900/60 rounded-xl p-4 flex flex-col items-center gap-1.5 border border-amber-700/30 shadow-lg shadow-amber-900/20"
+            onClick={handleYiXueClick}
+            className="bg-gradient-to-br from-amber-800/80 to-amber-900/60 rounded-xl p-4 flex flex-col items-center gap-1.5 border border-amber-700/30 shadow-lg shadow-amber-900/20 active:scale-95 transition-transform"
           >
             <div className="w-12 h-12 rounded-full bg-amber-500/15 flex items-center justify-center border border-amber-500/30">
               <BookOpen className="w-6 h-6 text-amber-400" />
@@ -170,8 +178,8 @@ export function HomePage({ onNavigateToTool, onNavigateToYiXue, onNavigateToHerb
             <span className="text-xs text-amber-200/60">命理排盘</span>
           </button>
           <button
-            onClick={() => handleNavigation("/herbal")}
-            className="bg-gradient-to-br from-emerald-800/80 to-emerald-900/60 rounded-xl p-4 flex flex-col items-center gap-1.5 border border-emerald-700/30 shadow-lg shadow-emerald-900/20"
+            onClick={handleHerbalClick}
+            className="bg-gradient-to-br from-emerald-800/80 to-emerald-900/60 rounded-xl p-4 flex flex-col items-center gap-1.5 border border-emerald-700/30 shadow-lg shadow-emerald-900/20 active:scale-95 transition-transform"
           >
             <div className="w-12 h-12 rounded-full bg-emerald-500/15 flex items-center justify-center border border-emerald-500/30">
               <Leaf className="w-6 h-6 text-emerald-400" />
@@ -181,7 +189,6 @@ export function HomePage({ onNavigateToTool, onNavigateToYiXue, onNavigateToHerb
           </button>
         </div>
 
-        {/* 今日黄历 */}
         <div className="bg-gradient-to-br from-amber-900/40 to-amber-950/60 rounded-xl p-4 mb-3 border border-amber-800/30">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-1.5">
@@ -256,7 +263,6 @@ export function HomePage({ onNavigateToTool, onNavigateToYiXue, onNavigateToHerb
           )}
         </div>
 
-        {/* 五运六气 */}
         <div className="bg-gradient-to-br from-purple-900/40 to-purple-950/60 rounded-xl p-4 mb-3 border border-purple-800/30">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-1.5">
@@ -298,7 +304,6 @@ export function HomePage({ onNavigateToTool, onNavigateToYiXue, onNavigateToHerb
           </div>
         </div>
 
-        {/* 地母经 */}
         <div className="bg-gradient-to-br from-green-900/40 to-green-950/60 rounded-xl p-4 border border-green-800/30">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-1.5">

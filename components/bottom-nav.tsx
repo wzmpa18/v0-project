@@ -43,6 +43,7 @@ export function BottomNav({ activeTab, onTabChange, onNavigateToYiXue, onNavigat
   const [showShopDropdown, setShowShopDropdown] = useState(false)
 
   const handleTabClick = (tabId: string) => {
+    console.log("BottomNav handleTabClick:", tabId)
     if (tabId === "study") {
       setShowStudyDropdown(!showStudyDropdown)
       setShowShopDropdown(false)
@@ -56,7 +57,8 @@ export function BottomNav({ activeTab, onTabChange, onNavigateToYiXue, onNavigat
     }
   }
 
-  const handleCategoryClick = (type: "yiXue" | "herbal", parentTab: string) => {
+  const handleCategoryClick = (type: "yiXue" | "herbal") => {
+    console.log("handleCategoryClick:", type)
     if (type === "yiXue" && onNavigateToYiXue) {
       onNavigateToYiXue()
     } else if (type === "herbal" && onNavigateToHerbal) {
@@ -68,19 +70,18 @@ export function BottomNav({ activeTab, onTabChange, onNavigateToYiXue, onNavigat
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-b from-[#1a1410] to-[#241c16] border-t border-amber-800/30 pb-safe">
-      {/* 下拉菜单 */}
       {(showStudyDropdown || showShopDropdown) && (
         <div className="absolute bottom-16 left-0 right-0 bg-gradient-to-b from-[#241c16] to-[#1a1410] border-t border-amber-800/30 py-4">
           <div className="flex items-center justify-around max-w-lg mx-auto px-4">
             <button
-              onClick={() => handleCategoryClick("yiXue", showStudyDropdown ? "study" : "shop")}
+              onClick={() => handleCategoryClick("yiXue")}
               className="flex flex-col items-center gap-2 bg-amber-800/30 px-6 py-3 rounded-xl border border-amber-700/30 active:bg-amber-800/50 transition-all"
             >
               <BookOpen className="w-6 h-6 text-amber-400" />
               <span className="text-sm font-medium text-amber-200">易学</span>
             </button>
             <button
-              onClick={() => handleCategoryClick("herbal", showStudyDropdown ? "study" : "shop")}
+              onClick={() => handleCategoryClick("herbal")}
               className="flex flex-col items-center gap-2 bg-emerald-800/30 px-6 py-3 rounded-xl border border-emerald-700/30 active:bg-emerald-800/50 transition-all"
             >
               <Leaf className="w-6 h-6 text-emerald-400" />

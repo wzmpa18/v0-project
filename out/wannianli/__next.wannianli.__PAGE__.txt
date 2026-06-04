@@ -1,5 +1,5 @@
 1:"$Sreact.fragment"
 2:I[97367,["/_next/static/chunks/0v90e52bsza-c.js","/_next/static/chunks/0mh1kzivir.u6.js"],"OutletBoundary"]
 3:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"min-h-screen bg-gradient-to-b from-ink-900 to-ink-800 flex items-center justify-center","children":["$","div",null,{"className":"text-white text-center","children":[["$","h1",null,{"className":"text-2xl mb-4","children":"万年历"}],["$","p",null,{"className":"text-gray-400","children":"敬请期待..."}]]}]}],null,["$","$L2",null,{"children":["$","$3",null,{"name":"Next.MetadataOutlet","children":"$@4"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"E7J8lmvZViotB_515Aebc"}
+0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"min-h-screen bg-gradient-to-b from-ink-900 to-ink-800 flex items-center justify-center","children":["$","div",null,{"className":"text-white text-center","children":[["$","h1",null,{"className":"text-2xl mb-4","children":"万年历"}],["$","p",null,{"className":"text-gray-400","children":"敬请期待..."}]]}]}],null,["$","$L2",null,{"children":["$","$3",null,{"name":"Next.MetadataOutlet","children":"$@4"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"iq1JZYD7XmGRGCtfyNVkS"}
 4:null
