@@ -202,10 +202,48 @@ export default function YiXuePage({ onBack }: YiXuePageProps = {}) {
           {tools.map((tool) => {
             const colors = colorClasses[tool.color] || colorClasses.amber
             const Icon = tool.icon
+            const routeMap: Record<string, string> = {
+              "bazi": "/bazi",
+              "ziwei": "/ziwei",
+              "qimen": "/qimen",
+              "liuyao": "/liuyao",
+              "meihua": "/meihua",
+              "wannianli": "/wannianli",
+              "fengshui": "/fengshui",
+              "xingming": "/xingming",
+              "liuren": "/daliuren",
+              "taiyi": "/taiyi",
+              "xiangmian": "/xiangmian",
+              "xiangshou": "/xiangshou",
+              "cezi": "/cezi",
+              "jiemeng": "/jiemeng",
+              "zeri": "/zeri",
+              "fuzhou": "/fuzhou",
+              "luopan": "/luopan",
+              "yinpan": "/yinpan-qimen",
+              "yangpan": "/yangpan-mingli",
+              "jinkoujue": "/jinkoujue",
+              "xiaoliuren": "/xiaoliuren",
+              "zhuge": "/zhuge",
+              "tieban": "/tieban",
+              "shaozi": "/shaozi",
+              "heluo": "/heluo",
+              "huangji": "/huangji",
+              "qizheng": "/qizheng",
+              "zhanxing": "/zhanxing",
+              "sanyuan": "/sanyuan",
+              "xuankong": "/xuankong",
+              "bazhai": "/bazhai",
+              "yanggong": "/yanggong",
+              "qimenzeji": "/qimenzeji",
+              "wuyunliuqi": "/wuyunliuqi",
+              "ziwuliu": "/ziwuliu",
+            }
+            const href = routeMap[tool.id] || "/yi-xue"
             return (
-              <button
+              <a
                 key={tool.id}
-                onClick={() => handleToolClick(tool.id)}
+                href={href}
                 className={`${colors.bg} rounded-xl p-3 border ${colors.border} shadow-lg ${colors.shadow} transition-all duration-200 active:scale-95`}
               >
                 <div className={`w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-2 mx-auto`}>
@@ -213,7 +251,7 @@ export default function YiXuePage({ onBack }: YiXuePageProps = {}) {
                 </div>
                 <h3 className="text-sm font-bold text-white text-center">{tool.title}</h3>
                 <p className="text-xs text-white/50 text-center mt-1">{tool.subtitle}</p>
-              </button>
+              </a>
             )
           })}
         </div>

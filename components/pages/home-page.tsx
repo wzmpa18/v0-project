@@ -111,23 +111,7 @@ export function HomePage({ onNavigateToTool, onNavigateToYiXue, onNavigateToHerb
     })
   }, [])
 
-  const handleYiXueClick = () => {
-    console.log("HomePage handleYiXueClick called")
-    if (onNavigateToYiXue) {
-      onNavigateToYiXue()
-    } else {
-      router.push("/yi-xue")
-    }
-  }
-
-  const handleHerbalClick = () => {
-    console.log("HomePage handleHerbalClick called")
-    if (onNavigateToHerbal) {
-      onNavigateToHerbal()
-    } else {
-      router.push("/herbal")
-    }
-  }
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1a1410] via-[#1f1814] to-[#241c16] text-white">
@@ -167,8 +151,8 @@ export function HomePage({ onNavigateToTool, onNavigateToYiXue, onNavigateToHerb
 
       <main className="px-4 pb-16">
         <div className="grid grid-cols-2 gap-2.5 mb-3">
-          <button
-            onClick={handleYiXueClick}
+          <a
+            href="/yi-xue"
             className="bg-gradient-to-br from-amber-800/80 to-amber-900/60 rounded-xl p-4 flex flex-col items-center gap-1.5 border border-amber-700/30 shadow-lg shadow-amber-900/20 active:scale-95 transition-transform"
           >
             <div className="w-12 h-12 rounded-full bg-amber-500/15 flex items-center justify-center border border-amber-500/30">
@@ -176,9 +160,9 @@ export function HomePage({ onNavigateToTool, onNavigateToYiXue, onNavigateToHerb
             </div>
             <span className="text-base font-bold text-amber-300">易学</span>
             <span className="text-xs text-amber-200/60">命理排盘</span>
-          </button>
-          <button
-            onClick={handleHerbalClick}
+          </a>
+          <a
+            href="/herbal"
             className="bg-gradient-to-br from-emerald-800/80 to-emerald-900/60 rounded-xl p-4 flex flex-col items-center gap-1.5 border border-emerald-700/30 shadow-lg shadow-emerald-900/20 active:scale-95 transition-transform"
           >
             <div className="w-12 h-12 rounded-full bg-emerald-500/15 flex items-center justify-center border border-emerald-500/30">
@@ -186,7 +170,7 @@ export function HomePage({ onNavigateToTool, onNavigateToYiXue, onNavigateToHerb
             </div>
             <span className="text-base font-bold text-emerald-300">中医</span>
             <span className="text-xs text-emerald-200/60">经方本草</span>
-          </button>
+          </a>
         </div>
 
         <div className="bg-gradient-to-br from-amber-900/40 to-amber-950/60 rounded-xl p-4 mb-3 border border-amber-800/30">
