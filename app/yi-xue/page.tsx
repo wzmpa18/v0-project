@@ -198,7 +198,7 @@ export default function YiXuePage({ onBack }: YiXuePageProps = {}) {
       </header>
 
       <main className="px-4 pb-20">
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-4 gap-1.5">
           {tools.map((tool) => {
             const colors = colorClasses[tool.color] || colorClasses.amber
             const Icon = tool.icon
@@ -244,27 +244,48 @@ export default function YiXuePage({ onBack }: YiXuePageProps = {}) {
               <a
                 key={tool.id}
                 href={href}
-                className={`${colors.bg} rounded-xl p-3 border ${colors.border} shadow-lg ${colors.shadow} transition-all duration-200 active:scale-95`}
+                className={`${colors.bg} rounded-lg p-2 border ${colors.border} transition-all duration-200 active:scale-95`}
               >
-                <div className={`w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center mb-2 mx-auto`}>
-                  <Icon className={`w-5 h-5 ${colors.icon}`} />
+                <div className={`w-8 h-8 rounded-md bg-white/10 flex items-center justify-center mb-1.5 mx-auto`}>
+                  <Icon className={`w-4 h-4 ${colors.icon}`} />
                 </div>
-                <h3 className="text-sm font-bold text-white text-center">{tool.title}</h3>
-                <p className="text-xs text-white/50 text-center mt-1">{tool.subtitle}</p>
+                <h3 className="text-xs font-bold text-white text-center">{tool.title}</h3>
               </a>
             )
           })}
         </div>
 
-        <div className="mt-4 bg-gradient-to-br from-amber-900/30 to-amber-950/50 rounded-xl p-3 border border-amber-800/30">
+        <div className="mt-3 bg-gradient-to-br from-amber-900/30 to-amber-950/50 rounded-xl p-2.5 border border-amber-800/30">
           <div className="flex items-center gap-2 mb-2">
             <BookOpen className="w-4 h-4 text-amber-500" />
             <span className="text-sm font-bold text-amber-200">易学经典</span>
           </div>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-1.5">
             {["《渊海子平》", "《三命通会》", "《滴天髓》", "《子平真诠》", "《周易正义》", "《梅花易数》", "《奇门遁甲》", "《六壬大全》", "《太乙神数》"].map((book) => (
-              <div key={book} className="bg-amber-800/20 rounded-lg p-2 text-xs text-amber-100/80 text-center">
+              <div key={book} className="bg-amber-800/20 rounded-md p-1.5 text-xs text-amber-100/80 text-center">
                 {book}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-3 bg-gradient-to-br from-purple-900/30 to-purple-950/50 rounded-xl p-2.5 border border-purple-800/30">
+          <div className="flex items-center gap-2 mb-2">
+            <Star className="w-4 h-4 text-purple-500" />
+            <span className="text-sm font-bold text-purple-200">热门工具</span>
+          </div>
+          <div className="grid grid-cols-3 gap-1.5">
+            {[
+              { name: "八字排盘", desc: "命理解析" },
+              { name: "紫微斗数", desc: "命运推演" },
+              { name: "奇门遁甲", desc: "运筹决策" },
+              { name: "六爻占卜", desc: "问事预测" },
+              { name: "梅花易数", desc: "即时起卦" },
+              { name: "万年历", desc: "择吉择日" },
+            ].map((item) => (
+              <div key={item.name} className="bg-purple-800/20 rounded-md p-2">
+                <div className="text-xs font-medium text-purple-300">{item.name}</div>
+                <div className="text-xs text-purple-200/60">{item.desc}</div>
               </div>
             ))}
           </div>
