@@ -1,13 +1,6 @@
 import type { Metadata, Viewport } from 'next'
-import { Noto_Serif_SC } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
-
-const notoSerifSC = Noto_Serif_SC({ 
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-serif-sc',
-})
 
 export const metadata: Metadata = {
   title: '国学综合 - 传承千年智慧',
@@ -47,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN" className="bg-[#1a1a1a]">
-      <body className={`${notoSerifSC.variable} font-sans antialiased bg-[#1a1a1a] text-[#f5f5f7]`}>
+      <body className="font-sans antialiased bg-[#1a1a1a] text-[#f5f5f7]">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

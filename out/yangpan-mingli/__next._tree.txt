@@ -1,4 +1,2 @@
-:HL["/_next/static/chunks/0l5io_~fa867i.css","style"]
-:HL["/_next/static/chunks/07s8sx6pxss1..css","style"]
-:HL["/_next/static/media/f112ed7f0b91582f-s.p.0xqqmnf1a3x8p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"yangpan-mingli","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"4KIPGvfeuYiyf5-B5GA7W"}
+:HL["/_next/static/chunks/0f8o-4iv~y6wp.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"yangpan-mingli","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"02-iC0LFnnBu_17G8mzN1"}
