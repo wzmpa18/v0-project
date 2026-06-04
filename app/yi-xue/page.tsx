@@ -105,7 +105,11 @@ export default function YiXuePage({ onBack }: YiXuePageProps = {}) {
   }
 
   const handleToolClick = (id: string) => {
-    setSelectedTool(id)
+    if (id === "bazi") {
+      router.push("/bazi")
+    } else {
+      setSelectedTool(id)
+    }
   }
 
   const handleBack = () => {
