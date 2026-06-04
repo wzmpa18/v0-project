@@ -105,8 +105,46 @@ export default function YiXuePage({ onBack }: YiXuePageProps = {}) {
   }
 
   const handleToolClick = (id: string) => {
-    if (id === "bazi") {
-      router.push("/bazi")
+    const routeMap: Record<string, string> = {
+      "bazi": "/bazi",
+      "ziwei": "/ziwei",
+      "qimen": "/qimen",
+      "liuyao": "/liuyao",
+      "meihua": "/meihua",
+      "wannianli": "/wannianli",
+      "fengshui": "/fengshui",
+      "xingming": "/xingming",
+      "liuren": "/daliuren",
+      "taiyi": "/taiyi",
+      "xiangmian": "/xiangmian",
+      "xiangshou": "/xiangshou",
+      "cezi": "/cezi",
+      "jiemeng": "/jiemeng",
+      "zeri": "/zeri",
+      "fuzhou": "/fuzhou",
+      "luopan": "/luopan",
+      "yinpan": "/yinpan-qimen",
+      "yangpan": "/yangpan-mingli",
+      "jinkoujue": "/jinkoujue",
+      "xiaoliuren": "/xiaoliuren",
+      "zhuge": "/zhuge",
+      "tieban": "/tieban",
+      "shaozi": "/shaozi",
+      "heluo": "/heluo",
+      "huangji": "/huangji",
+      "qizheng": "/qizheng",
+      "zhanxing": "/zhanxing",
+      "sanyuan": "/sanyuan",
+      "xuankong": "/xuankong",
+      "bazhai": "/bazhai",
+      "yanggong": "/yanggong",
+      "qimenzeji": "/qimenzeji",
+      "wuyunliuqi": "/wuyunliuqi",
+      "ziwuliu": "/ziwuliu",
+    }
+    const route = routeMap[id]
+    if (route) {
+      router.push(route)
     } else {
       setSelectedTool(id)
     }

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { calculateBazi, TIAN_GAN, DI_ZHI, JIA_ZI, GAN_WUXING, ZHI_WUXING, GAN_YIN_YANG, ZHI_YIN_YANG, JIAZI_NAYIN, ZHI_CANG_GAN, getShiShen, getCangGanShiShen, getKongWang, getTaiYuan, getMingGong, getShenGong, calculateDaYun, calculateLiuNian, calculateLiuYue, calculateWuxingCount, calculateWuxingWithCangGan, calculateQiYun, getChangShengStatusStatus } from "@/lib/bazi-data"
+import { calculateBazi, TIAN_GAN, DI_ZHI, JIA_ZI, GAN_WUXING, ZHI_WUXING, GAN_YIN_YANG, ZHI_YIN_YANG, JIAZI_NAYIN, ZHI_CANG_GAN, getShiShen, getCangGanShiShen, getKongWang, getTaiYuan, getMingGong, getShenGong, calculateDaYun, calculateLiuNian, calculateLiuYue, calculateWuxingCount, calculateWuxingWithCangGan, calculateQiYun, getChangShengStatus } from "@/lib/bazi-data"
 import { checkShenShaByPosition } from "@/lib/bazi-shenshe"
 import { calculateWangShuai } from "@/lib/bazi-wangshuai"
 import { determineGeJuSimple as determineGeJu } from "@/lib/bazi-geju"
@@ -103,7 +103,7 @@ export default function BaziCompletePage() {
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center">
             <span className="text-xs font-bold text-white">易</span>
           </div>
-          <h1 className="text-lg font-bold text-gray-800">问真排盘</h1>
+          <h1 className="text-lg font-bold text-gray-800">八字排盘</h1>
         </div>
         <div className="w-8 h-8"></div>
       </div>
@@ -113,7 +113,7 @@ export default function BaziCompletePage() {
           <div className="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center">
             <span className="text-xs text-white">!</span>
           </div>
-          <span className="text-sm text-amber-800">吉真紫微斗数App，包含八字排盘、紫微斗数等功能</span>
+          <span className="text-sm text-amber-800">八字排盘 - 基于《渊海子平》《三命通会》《滴天髓》《子平真诠》</span>
         </div>
         <button className="w-6 h-6 rounded-full bg-white flex items-center justify-center">
           <span className="text-xs text-gray-500">×</span>

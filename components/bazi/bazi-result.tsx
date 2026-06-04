@@ -195,7 +195,7 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
         <button onClick={onBack} className="p-1">
           <ChevronLeft className="w-6 h-6 text-gray-600" />
         </button>
-        <h1 className="text-lg font-medium text-gray-800">问真八字</h1>
+        <h1 className="text-lg font-medium text-gray-800">八字排盘</h1>
         <button className="p-1">
           <MoreHorizontal className="w-6 h-6 text-gray-600" />
         </button>

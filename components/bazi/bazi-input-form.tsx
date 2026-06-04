@@ -93,7 +93,7 @@ export function BaziInputForm({ onCalculate }: BaziInputFormProps) {
       <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="px-4 py-3 flex items-center justify-between">
           <div className="w-8" />
-          <h1 className="text-lg font-medium text-gray-800">问真排盘</h1>
+          <h1 className="text-lg font-medium text-gray-800">八字排盘</h1>
           <button className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
             <Info className="w-4 h-4 text-gray-500" />
           </button>
