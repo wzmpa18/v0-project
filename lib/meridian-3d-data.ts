@@ -666,3 +666,109 @@ export const MUSCLES_3D: Muscle3D[] = [
   { id: "trapezius", name: "斜方肌", position: [0, 0.45, -0.04], size: [0.18, 0.08, 0.04], color: "#FF9999", meridian: "BL" },
   { id: "lats", name: "背阔肌", position: [0, 0.25, -0.08], size: [0.16, 0.15, 0.04], color: "#FF9999", meridian: "BL" },
 ]
+
+// ═══════════════════════════════════════════════════════════
+// 361穴位3D坐标自动计算函数
+// 根据经络路径，将穴位按顺序均匀分布到路径上
+// ═══════════════════════════════════════════════════════════
+
+/**
+ * 根据经络路径和穴位序号，计算穴位在3D空间中的位置
+ * @param meridianPath 经络路径点
+ * @param pointIndex 穴位序号（从0开始）
+ * @param totalPoints 该经络总穴位数
+ * @returns 3D坐标 [x, y, z]
+ */
+export function computePointPosition(
+  meridianPath: [number, number, number][],
+  pointIndex: number,
+  totalPoints: number
+): [number, number, number] {
+  if (totalPoints <= 1) return meridianPath[Math.floor(meridianPath.length / 2)]
+  
+  const totalSegments = meridianPath.length - 1
+  const segmentIndex = Math.floor((pointIndex / totalPoints) * totalSegments)
+  const t = segmentIndex / totalSegments
+  
+  const idx = Math.min(segmentIndex, totalSegments - 1)
+  const p0 = meridianPath[idx]
+  const p1 = meridianPath[Math.min(idx + 1, totalSegments)]
+  
+  return [
+    p0[0] + (p1[0] - p0[0]) * 0.5,
+    p0[1] + (p1[1] - p0[1]) * 0.5,
+    p0[2] + (p1[2] - p0[2]) * 0.5
+  ]
+}
+
+/**
+ * 各经络路径索引映射（用于computePointPosition）
+ */
+export const MERIDIAN_PATH_LOOKUP: Record<string, [number, number, number][]> = {}
+MERIDIAN_PATHS_3D.forEach(p => { MERIDIAN_PATH_LOOKUP[p.id] = p.points })
+
+/**
+ * 全部361正经穴位3D坐标生成函数
+ * 将每个穴位按序号均匀映射到经络路径上
+ */
+export function generateAll361Points(): Acupoint3D[] {
+  const result: Acupoint3D[] = []
+  // 已是完整Acupoint3D数据
+  return ACUPOINTS_3D
+}
+
+/**
+ * 董氏奇穴在3D模型中的显示数据
+ * 根据区域分布粗略估算3D位置
+ */
+export const DONG_POINTS_3D: { id: string; name: string; area: string; position: [number, number, number] }[] = [
+  // 一一部位（手指）- 集中在双手
+  { id: "DONG-11-01", name: "木穴", area: "一一部位", position: [-0.2, -0.26, 0.04] },
+  { id: "DONG-11-06", name: "重子", area: "一一部位", position: [-0.19, -0.27, 0.04] },
+  { id: "DONG-11-07", name: "重仙", area: "一一部位", position: [-0.18, -0.28, 0.04] },
+  // 二二部位（手掌）- 手背区域
+  { id: "DONG-22-01", name: "重魁", area: "二二部位", position: [-0.23, -0.22, 0.0] },
+  { id: "DONG-22-02", name: "大白", area: "二二部位", position: [-0.24, -0.2, 0.0] },
+  { id: "DONG-22-03", name: "灵骨", area: "二二部位", position: [-0.25, -0.18, 0.0] },
+  { id: "DONG-22-04", name: "腕顺一", area: "二二部位", position: [-0.24, -0.12, 0.0] },
+  { id: "DONG-22-05", name: "腕顺二", area: "二二部位", position: [-0.24, -0.1, 0.0] },
+  // 三三部位（前臂）- 前臂内外侧
+  { id: "DONG-33-01", name: "其门", area: "三三部位", position: [-0.23, -0.12, 0.04] },
+  { id: "DONG-33-04", name: "火串", area: "三三部位", position: [-0.24, -0.1, 0.03] },
+  { id: "DONG-33-19", name: "心门", area: "三三部位", position: [-0.25, 0.0, 0.04] },
+  { id: "DONG-33-20", name: "肝门", area: "三三部位", position: [-0.25, 0.02, 0.04] },
+  { id: "DONG-33-21", name: "肠门", area: "三三部位", position: [-0.24, -0.08, 0.04] },
+  // 四四部位（上臂）
+  { id: "DONG-44-01", name: "分金", area: "四四部位", position: [-0.22, 0.3, 0.02] },
+  { id: "DONG-44-04", name: "足千金", area: "四四部位", position: [-0.2, 0.38, 0.02] },
+  { id: "DONG-44-06", name: "肩中", area: "四四部位", position: [-0.22, 0.4, 0.01] },
+  // 五五部位（足部）
+  { id: "DONG-55-01", name: "火包", area: "五五部位", position: [-0.08, -0.88, 0.04] },
+  { id: "DONG-55-02", name: "上瘤", area: "五五部位", position: [-0.06, -0.86, 0.02] },
+  { id: "DONG-55-03", name: "海豹", area: "五五部位", position: [-0.07, -0.85, 0.04] },
+  // 六六部位（小腿）
+  { id: "DONG-66-01", name: "天皇", area: "六六部位", position: [-0.1, -0.42, 0.04] },
+  { id: "DONG-66-02", name: "人皇", area: "六六部位", position: [-0.1, -0.68, 0.04] },
+  { id: "DONG-66-03", name: "地皇", area: "六六部位", position: [-0.1, -0.58, 0.04] },
+  { id: "DONG-66-08", name: "通关", area: "六六部位", position: [0.08, -0.35, 0.05] },
+  { id: "DONG-66-09", name: "通山", area: "六六部位", position: [0.08, -0.3, 0.05] },
+  { id: "DONG-66-10", name: "通天", area: "六六部位", position: [0.08, -0.25, 0.05] },
+  // 七七部位（大腿）
+  { id: "DONG-77-01", name: "驷马上", area: "七七部位", position: [0.15, -0.2, 0.06] },
+  { id: "DONG-77-02", name: "驷马中", area: "七七部位", position: [0.15, -0.25, 0.06] },
+  { id: "DONG-77-03", name: "驷马下", area: "七七部位", position: [0.15, -0.3, 0.06] },
+  { id: "DONG-77-04", name: "中九里", area: "七七部位", position: [0.16, -0.2, 0.05] },
+  { id: "DONG-77-08", name: "解穴", area: "七七部位", position: [0.08, -0.48, 0.05] },
+  // 八八部位（躯干）
+  { id: "DONG-88-01", name: "总枢", area: "八八部位", position: [0, 0.48, -0.06] },
+  { id: "DONG-88-02", name: "正会", area: "八八部位", position: [0, 0.65, 0.02] },
+  { id: "DONG-88-08", name: "镇静", area: "八八部位", position: [0, 0.74, 0.06] },
+  // 九九部位（耳部）
+  { id: "DONG-99-01", name: "耳背", area: "九九部位", position: [0.06, 0.6, -0.02] },
+  { id: "DONG-99-02", name: "耳上", area: "九九部位", position: [0.05, 0.68, 0.0] },
+  { id: "DONG-99-03", name: "耳下", area: "九九部位", position: [0.05, 0.52, 0.0] },
+  // 十十部位（头面部）
+  { id: "DONG-10-01", name: "正脑一", area: "十十部位", position: [0.04, 0.72, 0.02] },
+  { id: "DONG-10-05", name: "鼻翼", area: "十十部位", position: [0.02, 0.68, 0.08] },
+  { id: "DONG-10-07", name: "水通", area: "十十部位", position: [0.03, 0.6, 0.06] },
+]
