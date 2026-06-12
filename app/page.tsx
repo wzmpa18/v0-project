@@ -6,7 +6,7 @@ import { HomePage } from "@/components/pages/home-page"
 import { ProfilePage } from "@/components/pages/profile-page"
 import { ClassPage } from "@/components/pages/class-page"
 import { ShopPage } from "@/components/pages/shop-page"
-import { BooksPage } from "@/components/pages/books-page"
+import { AIAnalysisSystem } from "@/components/pages/ai-analysis-system"
 import YiXuePage from "./yi-xue/page"
 import HerbalPage from "./herbal/page"
 
@@ -15,27 +15,18 @@ export default function Home() {
   const [showYiXue, setShowYiXue] = useState(false)
   const [showHerbal, setShowHerbal] = useState(false)
 
-  useEffect(() => {
-    console.log("Active tab changed:", activeTab)
-    console.log("Show YiXue:", showYiXue)
-    console.log("Show Herbal:", showHerbal)
-  }, [activeTab, showYiXue, showHerbal])
-
   const handleTabChange = (tab: string) => {
-    console.log("handleTabChange called with:", tab)
     setShowYiXue(false)
     setShowHerbal(false)
     setActiveTab(tab)
   }
 
   const handleNavigateToYiXue = () => {
-    console.log("handleNavigateToYiXue called")
     setShowYiXue(true)
     setShowHerbal(false)
   }
 
   const handleNavigateToHerbal = () => {
-    console.log("handleNavigateToHerbal called")
     setShowHerbal(true)
     setShowYiXue(false)
   }
@@ -58,7 +49,7 @@ export default function Home() {
       case "study":
         return <ClassPage />
       case "ai":
-        return <BooksPage />
+        return <AIAnalysisSystem />
       case "shop":
         return <ShopPage />
       case "profile":
