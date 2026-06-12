@@ -30,6 +30,23 @@ export function HomePage({ onNavigateToYiXue, onNavigateToHerbal }: HomePageProp
   const router = useRouter()
   const [todayInfo, setTodayInfo] = useState<any>(null)
 
+  // 确保 callbacks 有 fallback
+  const handleYiXue = () => {
+    if (onNavigateToYiXue) {
+      onNavigateToYiXue()
+    } else {
+      router.push("/yi-xue")
+    }
+  }
+
+  const handleHerbal = () => {
+    if (onNavigateToHerbal) {
+      onNavigateToHerbal()
+    } else {
+      router.push("/herbal")
+    }
+  }
+
   useEffect(() => {
     const now = new Date()
     const year = now.getFullYear()
@@ -171,7 +188,7 @@ export function HomePage({ onNavigateToYiXue, onNavigateToHerbal }: HomePageProp
       <main className="px-4 pb-20">
         <div className="grid grid-cols-2 gap-2 mb-3">
           <button
-            onClick={onNavigateToYiXue}
+            onClick={handleYiXue}
             className="bg-gradient-to-br from-amber-800/80 to-amber-900/60 rounded-xl p-3.5 flex flex-col items-center gap-1 border border-amber-700/30 shadow-lg shadow-amber-900/20 active:scale-95 transition-transform"
           >
             <div className="w-10 h-10 rounded-full bg-amber-500/15 flex items-center justify-center border border-amber-500/30">
@@ -181,7 +198,7 @@ export function HomePage({ onNavigateToYiXue, onNavigateToHerbal }: HomePageProp
             <span className="text-xs text-amber-200/60">命理排盘</span>
           </button>
           <button
-            onClick={onNavigateToHerbal}
+            onClick={handleHerbal}
             className="bg-gradient-to-br from-emerald-800/80 to-emerald-900/60 rounded-xl p-3.5 flex flex-col items-center gap-1 border border-emerald-700/30 shadow-lg shadow-emerald-900/20 active:scale-95 transition-transform"
           >
             <div className="w-10 h-10 rounded-full bg-emerald-500/15 flex items-center justify-center border border-emerald-500/30">
@@ -286,7 +303,7 @@ export function HomePage({ onNavigateToYiXue, onNavigateToHerbal }: HomePageProp
         <div className="bg-gradient-to-br from-amber-900/30 to-amber-950/50 rounded-xl p-3 border border-amber-800/30">
           <div className="flex items-center justify-between mb-2.5">
             <span className="text-sm font-bold text-amber-200">快捷工具</span>
-            <button onClick={onNavigateToYiXue} className="flex items-center gap-0.5 text-xs text-amber-400/70">
+            <button onClick={handleYiXue} className="flex items-center gap-0.5 text-xs text-amber-400/70">
               更多 <ChevronRight className="w-3 h-3" />
             </button>
           </div>
