@@ -227,7 +227,7 @@ export function AcademyPage() {
               key={course.id}
               className="flex gap-4 p-3 bg-[#2a2a2a]/50 rounded-xl border border-[#3a3a3a] transition-all hover:border-[#d4af37]/30"
             >
-              {/* 封面图占位 */}
+              {/* 资料封面图 */}
               <div className="flex-shrink-0 w-24 h-24 rounded-lg bg-gradient-to-br from-[#3a3a3a] to-[#2a2a2a] flex items-center justify-center overflow-hidden">
                 <div className="text-center">
                   <BookOpen className="w-8 h-8 text-[#d4af37]/60 mx-auto mb-1" />

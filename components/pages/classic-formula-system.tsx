@@ -418,7 +418,7 @@ function FormulaDetailModal({
                   <div className="text-center py-8 text-gray-500">
                     <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-50" />
                     <p>暂无医家论述</p>
-                    <p className="text-sm">敬请期待更多经方医家的临床经验</p>
+                    <p className="text-sm">更多经方医籍正在整理中</p>
                   </div>
                 )}
 

@@ -1,8 +1,8 @@
 // 大六壬排盘页面
 "use client"
 
-import { useState, useMemo } from "react"
-import { ChevronLeft, Copy, Check, Info } from "lucide-react"
+import { useState, useMemo, useEffect } from "react"
+import { ChevronLeft, Copy, Check, Info, Trash2, Clock } from "lucide-react"
 import { 
   calcLuRenPan, TIAN_JIANG, DI_ZHI_12, DI_ZHI_WUXING,
   SHEN_SHA_LUREN, ZHAN_YAN, JING_DIAN, KE_TI, getTianJiangDuanYu
@@ -25,6 +25,29 @@ export function LuRenPage({ onBack }: LuRenPageProps) {
   const [activeTab, setActiveTab] = useState<"panmian" | "fuzhu" | "shensha" | "pingzhu" | "dangan">("panmian")
   const [selectedGong, setSelectedGong] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [records, setRecords] = useState<Array<{ id: string; date: string; panData: ReturnType<typeof calcLuRenPan> }>>([])
+
+  // 加载历史记录
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("luren-records")
+      if (saved) setRecords(JSON.parse(saved))
+    } catch {}
+  }, [])
+
+  const saveRecord = () => {
+    const newRecords = [
+      { id: Date.now().toString(), date: new Date().toLocaleString("zh-CN"), panData },
+      ...records
+    ].slice(0, 20) // 最多保存20条
+    setRecords(newRecords)
+    try { localStorage.setItem("luren-records", JSON.stringify(newRecords)) } catch {}
+  }
+
+  const clearRecords = () => {
+    setRecords([])
+    try { localStorage.removeItem("luren-records") } catch {}
+  }
   
   // 当前时间起课
   const now = new Date()
@@ -324,11 +347,46 @@ export function LuRenPage({ onBack }: LuRenPageProps) {
         
         {activeTab === "dangan" && (
           <div className="p-4">
-            <div className="bg-[#1f1f1f] rounded-xl border border-[#333] p-4">
-              <div className="text-sm text-[#888] text-center py-8">
-                档案功能开发中...
-              </div>
+            {/* 保存当前盘面 */}
+            <div className="mb-4">
+              <button
+                onClick={saveRecord}
+                className="w-full py-2.5 rounded-xl bg-[#d4af37]/20 text-[#d4af37] text-sm font-medium border border-[#d4af37]/30 hover:bg-[#d4af37]/30 transition-colors"
+              >
+                保存当前盘面到档案
+              </button>
             </div>
+            {/* 历史记录列表 */}
+            {records.length > 0 ? (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-[#ccc]">历史记录 ({records.length})</div>
+                  <button onClick={clearRecords} className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1">
+                    <Trash2 className="w-3 h-3" /> 清空
+                  </button>
+                </div>
+                {records.map((rec) => (
+                  <div key={rec.id} className="bg-[#1f1f1f] rounded-xl border border-[#333] p-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Clock className="w-3.5 h-3.5 text-[#888]" />
+                      <span className="text-xs text-[#888]">{rec.date}</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-1.5 text-xs">
+                      <div className="text-[#666]">月将：<span className="text-[#d4af37]">{rec.panData.月将}</span></div>
+                      <div className="text-[#666]">占时：<span className="text-[#d4af37]">{rec.panData.占时}</span></div>
+                      <div className="text-[#666]">干支：<span className="text-[#d4af37]">{rec.panData.干支}</span></div>
+                      <div className="text-[#666]">课体：<span className="text-[#d4af37] truncate">{rec.panData.课体?.join("、") || "—"}</span></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-[#1f1f1f] rounded-xl border border-[#333] p-4">
+                <div className="text-sm text-[#666] text-center py-6">
+                  暂无保存的排盘记录
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

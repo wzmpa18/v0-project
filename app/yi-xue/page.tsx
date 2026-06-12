@@ -165,11 +165,11 @@ export default function YiXuePage({ onBack }: YiXuePageProps = {}) {
           <button onClick={handleBack} className="w-10 h-10 rounded-full bg-amber-900/40 flex items-center justify-center">
             <ChevronLeft className="w-5 h-5 text-amber-300" />
           </button>
-          <h1 className="text-lg font-bold text-amber-400">功能开发中</h1>
+          <h1 className="text-lg font-bold text-amber-400">页面未找到</h1>
         </div>
         <div className="bg-gradient-to-br from-amber-900/40 to-amber-950/60 rounded-xl p-6 border border-amber-800/30">
           <p className="text-amber-100/80 text-center">
-            {tools.find(t => t.id === selectedTool)?.title} 功能正在开发中，敬请期待！
+            {tools.find(t => t.id === selectedTool)?.title} 页面正在完善中，请稍后再试
           </p>
         </div>
       </div>

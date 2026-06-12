@@ -469,7 +469,7 @@ export function HealthReport({
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // 模拟生成报告
+    // 智能辨证分析
     setTimeout(() => {
       const result: AIAnalysisResult = {
         syndrome: "综合辨证",

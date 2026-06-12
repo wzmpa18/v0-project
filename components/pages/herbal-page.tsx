@@ -321,7 +321,7 @@ export function HerbalPage() {
             disabled={selectedSymptoms.length === 0}
             className="w-full py-3 rounded-xl bg-[#c8102e] text-[#f5f5f7] font-medium text-sm disabled:opacity-50"
           >
-            模拟六经辨证
+            六经辨证分析
           </button>
 
           {/* 辨证结果 */}
