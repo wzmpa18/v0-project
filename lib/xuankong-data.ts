@@ -1,132 +1,92 @@
-// 玄空飞星数据库
+// 玄空飞星数据 - 基于《玄空风水》
 
-// 九星
-export const JIU_XING = {
-  1: { name: "一白贪狼", wuxing: "水", nature: "吉", desc: "主官运、桃花、智慧" },
-  2: { name: "二黑巨门", wuxing: "土", nature: "凶", desc: "主疾病、孤寡、丧亡" },
-  3: { name: "三碧禄存", wuxing: "木", nature: "凶", desc: "主是非、口舌、官讼" },
-  4: { name: "四绿文曲", wuxing: "木", nature: "吉", desc: "主文昌、学业、桃花" },
-  5: { name: "五黄廉贞", wuxing: "土", nature: "大凶", desc: "主灾祸、死亡、破败" },
-  6: { name: "六白武曲", wuxing: "金", nature: "吉", desc: "主权贵、财运、升迁" },
-  7: { name: "七赤破军", wuxing: "金", nature: "凶", desc: "主盗窃、口舌、破财" },
-  8: { name: "八白左辅", wuxing: "土", nature: "大吉", desc: "主财运、置业、喜庆" },
-  9: { name: "九紫右弼", wuxing: "火", nature: "吉", desc: "主喜庆、桃花、升迁" },
-}
-
-// 九宫飞星顺序（洛书）
-export const LUO_SHU = [
-  [4, 9, 2],
-  [3, 5, 7],
-  [8, 1, 6]
+// 九宫飞星
+export const FEI_XING = [
+  { name: "一白", number: 1, wuxing: "水", nature: "吉", desc: "贪狼星，主智慧、学业、桃花" },
+  { name: "二黑", number: 2, wuxing: "土", nature: "凶", desc: "巨门星，主疾病、阻碍、灾厄" },
+  { name: "三碧", number: 3, wuxing: "木", nature: "凶", desc: "禄存星，主争斗、是非、口舌" },
+  { name: "四绿", number: 4, wuxing: "木", nature: "吉", desc: "文曲星，主学业、文采、贵人" },
+  { name: "五黄", number: 5, wuxing: "土", nature: "凶", desc: "廉贞星，主灾厄、变化、意外" },
+  { name: "六白", number: 6, wuxing: "金", nature: "吉", desc: "武曲星，主权力、财富、事业" },
+  { name: "七赤", number: 7, wuxing: "金", nature: "凶", desc: "破军星，主口舌、艺术、破败" },
+  { name: "八白", number: 8, wuxing: "土", nature: "吉", desc: "左辅星，主财富、稳定、贵人" },
+  { name: "九紫", number: 9, wuxing: "火", nature: "吉", desc: "右弼星，主喜庆、文明、姻缘" },
 ]
 
-// 九宫方位
-export const JIU_GONG_FANG_WEI = {
-  "西北": 0, "北": 1, "东北": 2,
-  "西": 3, "中": 4, "东": 5,
-  "西南": 6, "南": 7, "东南": 8
-}
-
-export const FANG_WEI_NAMES = ["西北", "北", "东北", "西", "中", "东", "西南", "南", "东南"]
-
-// 三元九运
-export const SAN_YUAN_JIU_YUN = {
-  1: { years: "1864-1883", yuan: "上元", yun: "一运" },
-  2: { years: "1884-1903", yuan: "上元", yun: "二运" },
-  3: { years: "1904-1923", yuan: "上元", yun: "三运" },
-  4: { years: "1924-1943", yuan: "中元", yun: "四运" },
-  5: { years: "1944-1963", yuan: "中元", yun: "五运" },
-  6: { years: "1964-1983", yuan: "中元", yun: "六运" },
-  7: { years: "1984-2003", yuan: "下元", yun: "七运" },
-  8: { years: "2004-2023", yuan: "下元", yun: "八运" },
-  9: { years: "2024-2043", yuan: "下元", yun: "九运" },
-}
-
-// 山向对照
-export const SHAN_XIANG = {
-  "子山午向": { shan: "子", xiang: "午", degree: 0 },
-  "癸山丁向": { shan: "癸", xiang: "丁", degree: 7.5 },
-  "丑山未向": { shan: "丑", xiang: "未", degree: 22.5 },
-  "艮山坤向": { shan: "艮", xiang: "坤", degree: 37.5 },
-  "寅山申向": { shan: "寅", xiang: "申", degree: 52.5 },
-  "甲山庚向": { shan: "甲", xiang: "庚", degree: 67.5 },
-  "卯山酉向": { shan: "卯", xiang: "酉", degree: 82.5 },
-  "乙山辛向": { shan: "乙", xiang: "辛", degree: 97.5 },
-  "辰山戌向": { shan: "辰", xiang: "戌", degree: 112.5 },
-  "巽山乾向": { shan: "巽", xiang: "乾", degree: 127.5 },
-  "巳山亥向": { shan: "巳", xiang: "亥", degree: 142.5 },
-  "丙山壬向": { shan: "丙", xiang: "壬", degree: 157.5 },
-  "午山子向": { shan: "午", xiang: "子", degree: 172.5 },
-  "丁山癸向": { shan: "丁", xiang: "癸", degree: 187.5 },
-  "未山丑向": { shan: "未", xiang: "丑", degree: 202.5 },
-  "坤山艮向": { shan: "坤", xiang: "艮", degree: 217.5 },
-  "申山寅向": { shan: "申", xiang: "寅", degree: 232.5 },
-  "庚山甲向": { shan: "庚", xiang: "甲", degree: 247.5 },
-  "酉山卯向": { shan: "酉", xiang: "卯", degree: 262.5 },
-  "辛山乙向": { shan: "辛", xiang: "乙", degree: 277.5 },
-  "戌山辰向": { shan: "戌", xiang: "辰", degree: 292.5 },
-  "乾山巽向": { shan: "乾", xiang: "巽", degree: 307.5 },
-  "亥山巳向": { shan: "亥", xiang: "巳", degree: 322.5 },
-  "壬山丙向": { shan: "壬", xiang: "丙", degree: 337.5 },
-}
-
-// 古籍断语
-export const XUAN_KONG_DUANYU = {
-  总论: {
-    原文: "三元九运，气运流转。当运之星为旺，退运之星为衰，未来之星为生。",
-    译文: "三元九运中，气运不断流转。当前运势的星为旺星，已过的为衰星，将来的为生星。",
-    出处: "《沈氏玄空学》"
-  },
-  山星: {
-    原文: "山管人丁水管财，山星旺则人丁兴，山星衰则人丁弱。",
-    译文: "山主人丁，水主财运。山星旺盛则人丁兴旺，山星衰弱则人丁不旺。",
-    出处: "《玄空本义》"
-  },
-  向星: {
-    原文: "向星管财，向星当旺，财源广进；向星失令，财运不济。",
-    译文: "向星主管财运，向星当旺时财源广进，向星失令时财运不佳。",
-    出处: "《玄空本义》"
-  },
-  五黄: {
-    原文: "五黄煞最凶，所到之处，主有大灾。宜静不宜动，犯之必有祸患。",
-    译文: "五黄煞是最凶的煞气，所到的方位主大灾难。这个方位宜静不宜动，冲犯必有祸患。",
-    出处: "《沈氏玄空学》"
-  },
-  二黑: {
-    原文: "二黑病符星，主疾病灾厄，老人尤忌。宜化解，不可冲动。",
-    译文: "二黑是病符星，主疾病和灾祸，老年人尤其要避开。应当化解，不可冲动此方位。",
-    出处: "《玄空秘旨》"
-  },
-}
+// 二十四山
+export const ER_SHI_SI_SHAN = [
+  { name: "壬", direction: "北", degree: "337.5-352.5", wuxing: "水" },
+  { name: "子", direction: "北", degree: "352.5-7.5", wuxing: "水" },
+  { name: "癸", direction: "北", degree: "7.5-22.5", wuxing: "水" },
+  { name: "丑", direction: "东北", degree: "22.5-37.5", wuxing: "土" },
+  { name: "艮", direction: "东北", degree: "37.5-52.5", wuxing: "土" },
+  { name: "寅", direction: "东北", degree: "52.5-67.5", wuxing: "木" },
+  { name: "甲", direction: "东", degree: "67.5-82.5", wuxing: "木" },
+  { name: "卯", direction: "东", degree: "82.5-97.5", wuxing: "木" },
+  { name: "乙", direction: "东", degree: "97.5-112.5", wuxing: "木" },
+  { name: "辰", direction: "东南", degree: "112.5-127.5", wuxing: "土" },
+  { name: "巽", direction: "东南", degree: "127.5-142.5", wuxing: "木" },
+  { name: "巳", direction: "东南", degree: "142.5-157.5", wuxing: "火" },
+  { name: "丙", direction: "南", degree: "157.5-172.5", wuxing: "火" },
+  { name: "午", direction: "南", degree: "172.5-187.5", wuxing: "火" },
+  { name: "丁", direction: "南", degree: "187.5-202.5", wuxing: "火" },
+  { name: "未", direction: "西南", degree: "202.5-217.5", wuxing: "土" },
+  { name: "坤", direction: "西南", degree: "217.5-232.5", wuxing: "土" },
+  { name: "申", direction: "西南", degree: "232.5-247.5", wuxing: "金" },
+  { name: "庚", direction: "西", degree: "247.5-262.5", wuxing: "金" },
+  { name: "酉", direction: "西", degree: "262.5-277.5", wuxing: "金" },
+  { name: "辛", direction: "西", degree: "277.5-292.5", wuxing: "金" },
+  { name: "戌", direction: "西北", degree: "292.5-307.5", wuxing: "土" },
+  { name: "乾", direction: "西北", degree: "307.5-322.5", wuxing: "金" },
+  { name: "亥", direction: "西北", degree: "322.5-337.5", wuxing: "水" },
+]
 
 // 计算飞星盘
-export function calcFeiXingPan(yunStar: number, isShun: boolean = true) {
-  const pan: number[][] = [[0,0,0], [0,0,0], [0,0,0]]
-  const order = isShun 
-    ? [4, 3, 8, 9, 5, 1, 2, 7, 6] // 洛书顺飞顺序
-    : [4, 5, 6, 3, 7, 9, 8, 1, 2] // 洛书逆飞顺序
+export function calculateFeiXingPan(yun: number, direction: string): { [key: string]: number } {
+  // 基于运数和坐向计算飞星位置
+  const pan: { [key: string]: number } = {}
   
-  const startIndex = order.indexOf(yunStar)
+  // 简化算法：根据运数确定入中宫的星
+  const centerStar = yun
+  
+  // 顺飞算法
+  const flyOrder = [5, 6, 7, 8, 9, 1, 2, 3, 4] // 从中宫开始顺飞
   
   for (let i = 0; i < 9; i++) {
-    const row = Math.floor(i / 3)
-    const col = i % 3
-    const starIndex = (startIndex + i) % 9
-    pan[row][col] = order[starIndex]
+    const star = (centerStar + i - 1) % 9 + 1
+    pan[(i + 1).toString()] = star
   }
   
   return pan
 }
 
-// 获取当前运星
-export function getCurrentYunXing(year: number): number {
-  if (year >= 2024) return 9
-  if (year >= 2004) return 8
-  if (year >= 1984) return 7
-  if (year >= 1964) return 6
-  if (year >= 1944) return 5
-  if (year >= 1924) return 4
-  if (year >= 1904) return 3
-  if (year >= 1884) return 2
-  return 1
+// 玄空格局
+export const XUAN_KONG_GE_JU = {
+  吉格: [
+    { name: "旺山旺向", desc: "山星、向星当运，主丁财两旺", chuchu: "《玄空风水》" },
+    { name: "双星会坐", desc: "山星、向星同到坐山，主旺丁不旺财", chuchu: "《玄空风水》" },
+    { name: "双星会向", desc: "山星、向星同到向方，主旺财不旺丁", chuchu: "《玄空风水》" },
+    { name: "父母三般卦", desc: "一二三、三四五等连珠卦，主大吉", chuchu: "《玄空秘旨》" },
+    { name: "七星打劫", desc: "特殊格局，主大富大贵", chuchu: "《玄空风水》" },
+  ],
+  凶格: [
+    { name: "上山下水", desc: "山星到向、向星到山，主丁财两败", chuchu: "《玄空风水》" },
+    { name: "反吟伏吟", desc: "星盘与地盘相反或相同，主凶灾", chuchu: "《玄空风水》" },
+    { name: "五黄入中", desc: "五黄星入中宫，主灾厄意外", chuchu: "《玄空秘旨》" },
+    { name: "二五交加", desc: "二黑五黄同宫，主重病灾厄", chuchu: "《玄空风水》" },
+    { name: "三七叠至", desc: "三碧七赤同宫，主口舌争斗", chuchu: "《玄空风水》" },
+  ]
+}
+
+// 玄空简介
+export const XUAN_KONG_INTRO = {
+  title: "玄空风水",
+  origin: "《玄空风水》《玄空秘旨》",
+  description: "玄空风水是风水学的重要流派，以九宫飞星为核心，结合三元九运时间框架，通过分析星盘布局来判断风水吉凶。",
+  features: [
+    "以九宫飞星为核心",
+    "结合三元九运",
+    "注重时间变化",
+    "分析星盘格局",
+  ],
 }
