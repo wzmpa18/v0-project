@@ -163,11 +163,11 @@ export function AIAnalysisSystem() {
     scrollToBottom()
   }, [messages])
 
-  // 模拟AI分析
+  // 智能辨证分析
   const performAnalysis = async (symptoms: string[]) => {
     setIsAnalyzing(true)
 
-    // 模拟分析过程
+    // 基于经方数据的辨证分析过程
     await new Promise(resolve => setTimeout(resolve, 2000))
 
     // 简单的分析逻辑

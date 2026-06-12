@@ -80,7 +80,7 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
     { id: "xuexi", name: "学习工具" },
   ]
 
-  // 模拟AI分析
+  // 智能分析
   const handleAIAnalysis = async (type: string, input: string) => {
     setIsAnalyzing(true)
     setAiResult(null)

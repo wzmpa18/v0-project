@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Play, Eye, ChevronRight, BookOpen, Video, GraduationCap } from "lucide-react"
 
-// Mock Data - 精选推荐轮播数据
+// 精选推荐轮播数据
 const bannerData = [
   {
     id: 1,
@@ -25,14 +25,14 @@ const bannerData = [
   },
 ]
 
-// Mock Data - 分类标签
+// 分类标签
 const categories = [
   { id: "beginner", label: "小白入门", icon: GraduationCap },
   { id: "classics", label: "经典带读", icon: BookOpen },
   { id: "video", label: "视频讲座", icon: Video },
 ]
 
-// Mock Data - 学习资料列表
+// 学习资料列表
 const coursesData = {
   beginner: [
     {

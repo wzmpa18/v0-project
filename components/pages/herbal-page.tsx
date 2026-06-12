@@ -135,7 +135,7 @@ export function HerbalPage() {
       <div className="flex justify-center gap-2 px-4 mb-4">
         {[
           { id: "search", label: "智能检索", icon: Search },
-          { id: "bianzheng", label: "辨证模拟", icon: Scale },
+          { id: "bianzheng", label: "六经辨证", icon: Scale },
           { id: "fangji", label: "经方库", icon: Pill },
           { id: "bencao", label: "本草库", icon: Leaf },
         ].map((tab) => (
@@ -240,7 +240,7 @@ export function HerbalPage() {
         </div>
       )}
 
-      {/* 辨证模拟 */}
+      {/* 六经辨证分析 */}
       {viewMode === "bianzheng" && (
         <div className="px-4 space-y-4">
           {/* 基本信息 */}

@@ -1,8 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Heart, Check, ChevronRight } from "lucide-react"
+import { Heart, Check, ChevronRight, RefreshCw, Apple, Dumbbell, Moon, Utensils } from "lucide-react"
 
 const CONSTITUTION_TYPES = [
   {
@@ -11,7 +10,9 @@ const CONSTITUTION_TYPES = [
     description: "身体阴阳平衡，气血调和",
     traits: ["面色红润", "精力充沛", "睡眠良好", "食欲正常"],
     color: "#22c55e",
-    icon: Heart,
+    food: ["五谷杂粮均衡搭配", "多吃新鲜蔬菜水果", "饮食有节，不偏食"],
+    exercise: ["太极拳", "八段锦", "散步", "游泳"],
+    lifestyle: ["早睡早起，规律作息", "保持乐观心态", "适当社交活动"],
   },
   {
     id: "yang-deficient",
@@ -19,7 +20,9 @@ const CONSTITUTION_TYPES = [
     description: "阳气不足，畏寒怕冷",
     traits: ["畏寒怕冷", "手脚冰凉", "精神不振", "大便稀溏"],
     color: "#3b82f6",
-    icon: Heart,
+    food: ["羊肉、牛肉等温补食物", "生姜、肉桂、韭菜", "核桃、栗子等坚果", "少吃生冷寒凉食物"],
+    exercise: ["太极拳", "日光浴", "快走", "慢跑"],
+    lifestyle: ["注意保暖，尤其腹部和足部", "多晒太阳", "避免熬夜", "艾灸关元、命门穴"],
   },
   {
     id: "yin-deficient",
@@ -27,7 +30,9 @@ const CONSTITUTION_TYPES = [
     description: "阴液不足，口干咽燥",
     traits: ["口干咽燥", "手足心热", "潮热盗汗", "大便干结"],
     color: "#ec4899",
-    icon: Heart,
+    food: ["银耳、百合、梨等滋阴食物", "鸭肉、甲鱼", "枸杞、桑葚", "少吃辛辣燥热食物"],
+    exercise: ["瑜伽", "太极拳", "八段锦", "游泳"],
+    lifestyle: ["避免熬夜伤阴", "保持充足睡眠", "避免过度劳累", "可按摩太溪、三阴交穴"],
   },
   {
     id: "phlegm-damp",
@@ -35,7 +40,9 @@ const CONSTITUTION_TYPES = [
     description: "体内痰湿积聚，身体沉重",
     traits: ["身体沉重", "腹部肥胖", "口黏痰多", "大便黏腻"],
     color: "#f59e0b",
-    icon: Heart,
+    food: ["薏苡仁、赤小豆利湿", "冬瓜、白萝卜化痰", "陈皮、茯苓健脾", "少吃甜腻肥甘食物"],
+    exercise: ["跑步", "游泳", "健身", "有氧运动"],
+    lifestyle: ["保持居住环境干燥通风", "控制体重", "避免久坐", "可按摩丰隆、中脘穴"],
   },
   {
     id: "qi-stagnant",
@@ -43,7 +50,9 @@ const CONSTITUTION_TYPES = [
     description: "气机郁滞，情绪不畅",
     traits: ["情绪抑郁", "胸闷叹气", "失眠多梦", "敏感多疑"],
     color: "#8b5cf6",
-    icon: Heart,
+    food: ["玫瑰花茶、茉莉花茶", "柑橘类水果", "小米、大麦", "少吃油腻难消化食物"],
+    exercise: ["跑步", "舞蹈", "瑜伽", "登山"],
+    lifestyle: ["多参加社交活动", "培养兴趣爱好", "学习冥想放松", "可按摩太冲、膻中穴"],
   },
   {
     id: "blood-stasis",
@@ -51,7 +60,9 @@ const CONSTITUTION_TYPES = [
     description: "血液瘀滞，脉络不畅",
     traits: ["面色暗沉", "皮肤瘀斑", "痛经血块", "肢体麻木"],
     color: "#ef4444",
-    icon: Heart,
+    food: ["山楂、黑木耳活血", "红糖、醋", "茄子、洋葱", "少吃寒凉食物"],
+    exercise: ["有氧运动", "跳舞", "太极剑", "快走"],
+    lifestyle: ["注意保暖防寒", "保持心情舒畅", "避免久坐不动", "可按摩血海、三阴交穴"],
   },
   {
     id: "special-diet",
@@ -59,13 +70,16 @@ const CONSTITUTION_TYPES = [
     description: "先天禀赋特殊，易过敏",
     traits: ["容易过敏", "皮肤瘙痒", "喷嚏频繁", "不耐寒热"],
     color: "#06b6d4",
-    icon: Heart,
+    food: ["清淡饮食，避免过敏原", "蜂蜜、红枣增强体质", "新鲜蔬菜水果", "忌食海鲜发物等"],
+    exercise: ["太极拳", "瑜伽", "慢走", "气功"],
+    lifestyle: ["保持居住环境清洁", "避免接触过敏原", "增强体质", "可按摩足三里、关元穴"],
   },
 ]
 
 export default function ConstitutionPage() {
-  const router = useRouter()
   const [selectedConstitutions, setSelectedConstitutions] = useState<string[]>([])
+  const [result, setResult] = useState<any>(null)
+  const [showResult, setShowResult] = useState(false)
 
   const toggleConstitution = (id: string) => {
     setSelectedConstitutions((prev) =>
@@ -74,7 +88,105 @@ export default function ConstitutionPage() {
   }
 
   const handleSubmit = () => {
-    alert(`您选择的体质类型：${selectedConstitutions.map(id => CONSTITUTION_TYPES.find(c => c.id === id)?.name).join('、')}`)
+    const results = CONSTITUTION_TYPES.filter(c => selectedConstitutions.includes(c.id))
+    setResult(results)
+    setShowResult(true)
+  }
+
+  const handleReset = () => {
+    setSelectedConstitutions([])
+    setResult(null)
+    setShowResult(false)
+  }
+
+  if (showResult && result && result.length > 0) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="bg-gradient-to-r from-red-500 to-pink-600 pt-12 pb-6 px-4">
+          <h1 className="text-2xl font-bold text-center text-white">体质辨识结果</h1>
+          <p className="text-white/80 text-center text-sm mt-1">您的体质分析报告</p>
+        </div>
+
+        <div className="px-4 py-4 space-y-4 pb-8">
+          {result.map((constitution: typeof CONSTITUTION_TYPES[0]) => (
+            <div key={constitution.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
+              <div className="p-5" style={{ backgroundColor: `${constitution.color}15` }}>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: `${constitution.color}30` }}>
+                    <Heart className="w-6 h-6" style={{ color: constitution.color }} />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold" style={{ color: constitution.color }}>{constitution.name}</h3>
+                    <p className="text-sm text-gray-500">{constitution.description}</p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {constitution.traits.map((trait, i) => (
+                    <span key={i} className="text-xs px-2 py-1 rounded-full bg-white text-gray-700">{trait}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-4 space-y-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Apple className="w-4 h-4" style={{ color: constitution.color }} />
+                    <span className="font-medium text-gray-700">饮食建议</span>
+                  </div>
+                  <div className="space-y-1">
+                    {constitution.food.map((item, i) => (
+                      <div key={i} className="flex items-start gap-2 text-sm text-gray-600">
+                        <span className="text-green-500 mt-1">•</span>
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Dumbbell className="w-4 h-4" style={{ color: constitution.color }} />
+                    <span className="font-medium text-gray-700">运动建议</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {constitution.exercise.map((item, i) => (
+                      <span key={i} className="text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-600">{item}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Moon className="w-4 h-4" style={{ color: constitution.color }} />
+                    <span className="font-medium text-gray-700">生活建议</span>
+                  </div>
+                  <div className="space-y-1">
+                    {constitution.lifestyle.map((item, i) => (
+                      <div key={i} className="flex items-start gap-2 text-sm text-gray-600">
+                        <span className="text-purple-500 mt-1">•</span>
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <button
+            onClick={handleReset}
+            className="w-full bg-white border-2 border-gray-200 text-gray-700 font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            重新辨识
+          </button>
+
+          <div className="text-center text-gray-400 text-xs">
+            提示：体质辨识仅供参考，不能替代专业医疗诊断
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -106,20 +218,15 @@ export default function ConstitutionPage() {
           >
             <div className="flex items-start gap-3">
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  selectedConstitutions.includes(constitution.id) ? "" : "bg-gray-100"
-                }`}
+                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{
-                  backgroundColor: selectedConstitutions.includes(constitution.id) ? `${constitution.color}15` : "bg-gray-100",
+                  backgroundColor: selectedConstitutions.includes(constitution.id) ? `${constitution.color}15` : "#f3f4f6",
                 }}
               >
                 {selectedConstitutions.includes(constitution.id) ? (
-                  <Check
-                    className="w-5 h-5"
-                    style={{ color: constitution.color }}
-                  />
+                  <Check className="w-5 h-5" style={{ color: constitution.color }} />
                 ) : (
-                  <constitution.icon className="w-5 h-5 text-gray-400" />
+                  <Heart className="w-5 h-5 text-gray-400" />
                 )}
               </div>
               <div className="flex-1">

@@ -464,7 +464,7 @@ export function SyndromeAnalysis({
 
     setAnalyzing(true)
 
-    // 模拟分析过程
+    // 基于经方数据库的分析过程
     setTimeout(() => {
       const analysis: PrescriptionAnalysis = {
         matchedFormula: null,

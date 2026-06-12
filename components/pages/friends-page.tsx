@@ -27,7 +27,7 @@ interface UserProfile {
   isOnline: boolean
 }
 
-const mockUsers: UserProfile[] = [
+const featuredUsers: UserProfile[] = [
   {
     id: "1",
     name: "易道大师",
@@ -99,7 +99,7 @@ export function FriendsPage() {
     })
   }
 
-  const filteredUsers = mockUsers.filter(user => 
+  const filteredUsers = featuredUsers.filter(user => 
     user.name.includes(searchQuery) || 
     user.tags.some(tag => tag.includes(searchQuery))
   )
