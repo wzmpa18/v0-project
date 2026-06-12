@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { TCMPage } from '@/components/pages/tcm-page'
 import { HerbalPage } from '@/components/pages/herbal-page'
 import { 
@@ -13,7 +14,16 @@ interface HerbalPageRouteProps {
 }
 
 export default function HerbalPageRoute({ onBack }: HerbalPageRouteProps = {}) {
+  const router = useRouter()
   const [activePage, setActivePage] = useState<'tcm' | 'herbal' | 'acupoint' | 'formula'>('tcm')
+  
+  const handleBack = () => {
+    if (onBack) {
+      onBack()
+    } else {
+      router.push("/")
+    }
+  }
   
   const bottomTabs = [
     { id: 'tcm', label: '中医诊疗', icon: Stethoscope },
@@ -27,11 +37,9 @@ export default function HerbalPageRoute({ onBack }: HerbalPageRouteProps = {}) {
       {/* 顶部导航 */}
       <div className="sticky top-0 z-10 bg-gradient-to-b from-[#1a1410] to-transparent pt-10 pb-3 border-b border-emerald-800/30">
         <div className="flex items-center gap-2 px-4 mb-3">
-          {onBack && (
-            <button onClick={onBack} className="w-10 h-10 rounded-full bg-emerald-900/40 flex items-center justify-center">
-              <ChevronLeft className="w-5 h-5 text-emerald-300" />
-            </button>
-          )}
+          <button onClick={handleBack} className="w-10 h-10 rounded-full bg-emerald-900/40 flex items-center justify-center hover:bg-emerald-900/60 transition-colors">
+            <ChevronLeft className="w-5 h-5 text-emerald-300" />
+          </button>
           <div>
             <h1 className="text-lg font-bold text-emerald-400">中医</h1>
             <p className="text-xs text-emerald-200/60">传承千年智慧 · 中医综合平台</p>

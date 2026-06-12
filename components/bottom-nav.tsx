@@ -43,7 +43,6 @@ export function BottomNav({ activeTab, onTabChange, onNavigateToYiXue, onNavigat
   const [showShopDropdown, setShowShopDropdown] = useState(false)
 
   const handleTabClick = (tabId: string) => {
-    console.log("BottomNav handleTabClick:", tabId)
     if (tabId === "study") {
       setShowStudyDropdown(!showStudyDropdown)
       setShowShopDropdown(false)
@@ -58,7 +57,6 @@ export function BottomNav({ activeTab, onTabChange, onNavigateToYiXue, onNavigat
   }
 
   const handleCategoryClick = (type: "yiXue" | "herbal") => {
-    console.log("handleCategoryClick:", type)
     if (type === "yiXue" && onNavigateToYiXue) {
       onNavigateToYiXue()
     } else if (type === "herbal" && onNavigateToHerbal) {

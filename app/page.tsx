@@ -1,80 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { BottomNav } from "@/components/bottom-nav"
+import { useRouter } from "next/navigation"
 import { HomePage } from "@/components/pages/home-page"
-import { ProfilePage } from "@/components/pages/profile-page"
-import { ClassPage } from "@/components/pages/class-page"
-import { ShopPage } from "@/components/pages/shop-page"
-import { AIAnalysisSystem } from "@/components/pages/ai-analysis-system"
-import YiXuePage from "./yi-xue/page"
-import HerbalPage from "./herbal/page"
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState("home")
-  const [showYiXue, setShowYiXue] = useState(false)
-  const [showHerbal, setShowHerbal] = useState(false)
-
-  const handleTabChange = (tab: string) => {
-    setShowYiXue(false)
-    setShowHerbal(false)
-    setActiveTab(tab)
-  }
-
-  const handleNavigateToYiXue = () => {
-    setShowYiXue(true)
-    setShowHerbal(false)
-  }
-
-  const handleNavigateToHerbal = () => {
-    setShowHerbal(true)
-    setShowYiXue(false)
-  }
-
-  const renderPage = () => {
-    if (showYiXue) {
-      return <YiXuePage onBack={() => setShowYiXue(false)} />
-    }
-    if (showHerbal) {
-      return <HerbalPage onBack={() => setShowHerbal(false)} />
-    }
-    switch (activeTab) {
-      case "home":
-        return (
-          <HomePage 
-            onNavigateToYiXue={handleNavigateToYiXue} 
-            onNavigateToHerbal={handleNavigateToHerbal} 
-          />
-        )
-      case "study":
-        return <ClassPage />
-      case "ai":
-        return <AIAnalysisSystem />
-      case "shop":
-        return <ShopPage />
-      case "profile":
-        return <ProfilePage />
-      default:
-        return (
-          <HomePage 
-            onNavigateToYiXue={handleNavigateToYiXue} 
-            onNavigateToHerbal={handleNavigateToHerbal} 
-          />
-        )
-    }
-  }
+  const router = useRouter()
 
   return (
-    <main className="min-h-screen bg-[#1a1410] relative overflow-hidden">
-      <div className="pb-20">
-        {renderPage()}
-      </div>
-      <BottomNav 
-        activeTab={activeTab} 
-        onTabChange={handleTabChange}
-        onNavigateToYiXue={handleNavigateToYiXue}
-        onNavigateToHerbal={handleNavigateToHerbal}
-      />
-    </main>
+    <HomePage 
+      onNavigateToYiXue={() => router.push("/yi-xue")}
+      onNavigateToHerbal={() => router.push("/herbal")}
+    />
   )
 }

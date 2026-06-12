@@ -155,6 +155,8 @@ export default function YiXuePage({ onBack }: YiXuePageProps = {}) {
       setSelectedTool(null)
     } else if (onBack) {
       onBack()
+    } else {
+      router.push("/")
     }
   }
 
@@ -180,11 +182,9 @@ export default function YiXuePage({ onBack }: YiXuePageProps = {}) {
     <div className="min-h-screen bg-gradient-to-b from-[#1a1410] via-[#1f1814] to-[#241c16] text-white">
       <header className="bg-gradient-to-b from-[#1a1410] to-transparent pt-10 pb-4 px-4">
         <div className="flex items-center gap-3 mb-4">
-          {onBack && (
-            <button onClick={onBack} className="w-10 h-10 rounded-full bg-amber-900/40 flex items-center justify-center">
-              <ChevronLeft className="w-5 h-5 text-amber-300" />
-            </button>
-          )}
+          <button onClick={handleBack} className="w-10 h-10 rounded-full bg-amber-900/40 flex items-center justify-center hover:bg-amber-900/60 transition-colors">
+            <ChevronLeft className="w-5 h-5 text-amber-300" />
+          </button>
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
