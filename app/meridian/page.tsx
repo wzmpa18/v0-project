@@ -1,11 +1,7 @@
 "use client"
 
-import { HumanBodyModel } from "@/components/pages/human-body-model"
+import { HumanBody3DModel } from "@/components/pages/human-body-3d"
 
 export default function MeridianPage() {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <HumanBodyModel />
-    </div>
-  )
+  return <HumanBody3DModel />
 }
