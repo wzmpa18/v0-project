@@ -129,7 +129,7 @@ export const DI_PAN_GAN = {
 }
 
 // 计算日干支（正确算法）
-function getDayGanZhi(date: Date): { gan: string; zhi: string } {
+export function getDayGanZhi(date: Date): { gan: string; zhi: string } {
   const baseDate = new Date(1900, 0, 31)
   const daysDiff = Math.floor((date.getTime() - baseDate.getTime()) / (1000 * 60 * 60 * 24))
   
@@ -143,7 +143,7 @@ function getDayGanZhi(date: Date): { gan: string; zhi: string } {
 }
 
 // 计算节气
-function getJieQi(date: Date): string {
+export function getJieQi(date: Date): string {
   const month = date.getMonth() + 1
   const day = date.getDate()
   
