@@ -1,15 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeft, BookOpen, TrendingUp } from "lucide-react"
+import { ArrowLeft, BookOpen, TrendingUp, Info } from "lucide-react"
 import {
-  JIE_QI_DUN,
   QIMEN_GEJU,
   JIU_GONG,
   BA_MEN,
   JIU_XING,
   BA_SHEN,
-  TIAN_GAN,
   DI_ZHI,
   calculateQimenPan,
   calculateYinPanQiMen
@@ -217,9 +215,15 @@ export function QimenPage() {
                 <span className="text-gray-600">旬首：{qimenData.xunShou}</span>
               </div>
               <div className="flex justify-center gap-4 text-sm">
-                <span className="text-gray-600">日干：{qimenData.riGan}</span>
+                <span className="text-gray-600">日干：{qimenData.riGan}{qimenData.riZhi}</span>
                 <span className="text-gray-600">时干：{qimenData.shiGan}</span>
               </div>
+              {qimenData.zhiFu && qimenData.zhiShi && (
+                <div className="flex justify-center gap-4 text-sm">
+                  <span className="text-purple-600">值符：{qimenData.zhiFu}({qimenData.zhiFuGong}宫)</span>
+                  <span className="text-blue-600">值使：{qimenData.zhiShi}({qimenData.zhiShiGong}宫)</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -390,6 +394,10 @@ function QimenPalace({ palace }: { palace: any }) {
         <span className={`text-lg font-bold ${getWuxingColor(palace.wuxing)} bg-gray-100 px-2 py-0.5 rounded`}>
           {palace.tianGan}
         </span>
+      </div>
+
+      <div className="text-center mb-1">
+        <span className="text-xs font-medium text-gray-500">地:{palace.diGan}</span>
       </div>
 
       <div className="text-center mb-1">

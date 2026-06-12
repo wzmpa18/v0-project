@@ -1,166 +1,68 @@
-// 小六壬数据库
-
-// 小六壬六神
 export const XIAO_LIU_REN = [
-  {
-    name: "大安",
-    poem: "大安事事昌，求财在坤方，失物去不远，宅舍保安康。行人身未动，病者主无妨，将军回田野，仔细好推详。",
-    yinYang: "阳",
-    wuxing: "木",
-    tianGan: "甲乙",
-    diZhi: "寅卯",
-    direction: "东方",
-    shenshen: "青龙",
-    jixiong: "吉",
-    summary: "身不动时，五行属木，颜色青色，方位东方。临青龙，谋事一五七。有静止、心安、吉祥之意。",
-    details: {
-      求财: "财运平稳，求之可得，宜东方",
-      婚姻: "婚姻吉利，可成",
-      出行: "出行平安，宜静不宜动",
-      疾病: "病情稳定，可愈",
-      失物: "失物在东方，可寻回",
-      诉讼: "有理，宜静待",
-    }
-  },
-  {
-    name: "留连",
-    poem: "留连事难成，求谋日未明，官事凡宜缓，去者未回程。失物南方见，急讨方心称，更须防口舌，人口且平平。",
-    yinYang: "阴",
-    wuxing: "水",
-    tianGan: "壬癸",
-    diZhi: "亥子",
-    direction: "北方",
-    shenshen: "玄武",
-    jixiong: "凶",
-    summary: "卒未归时，五行属水，颜色黑色，方位北方。临玄武，谋事二八十。有暗昧不明、延迟、纠缠之意。",
-    details: {
-      求财: "求财不顺，多有拖延",
-      婚姻: "婚事迟缓，恐有变故",
-      出行: "出行不利，恐有阻滞",
-      疾病: "病情反复，宜静养",
-      失物: "失物难寻，防在水边",
-      诉讼: "官事不利，宜和解",
-    }
-  },
-  {
-    name: "速喜",
-    poem: "速喜喜来临，求财向南行，失物申未午，逢人路上寻。官事有福德，病者无祸侵，田宅六畜吉，行人有信音。",
-    yinYang: "阳",
-    wuxing: "火",
-    tianGan: "丙丁",
-    diZhi: "巳午",
-    direction: "南方",
-    shenshen: "朱雀",
-    jixiong: "吉",
-    summary: "人即至时，五行属火，颜色红色，方位南方。临朱雀，谋事三六九。有快速、喜庆、顺利之意。",
-    details: {
-      求财: "财运亨通，速来速得",
-      婚姻: "婚事顺利，喜事将至",
-      出行: "出行大吉，逢喜事",
-      疾病: "病情好转，速愈",
-      失物: "失物在南方，可快速找回",
-      诉讼: "官事顺利，有贵人相助",
-    }
-  },
-  {
-    name: "赤口",
-    poem: "赤口主口舌，官非切要防，失物速速讨，行人有惊慌。六畜多作怪，病者出西方，更须防咀咒，诚恐染瘟殃。",
-    yinYang: "阴",
-    wuxing: "金",
-    tianGan: "庚辛",
-    diZhi: "申酉",
-    direction: "西方",
-    shenshen: "白虎",
-    jixiong: "凶",
-    summary: "官事即时，五行属金，颜色白色，方位西方。临白虎，谋事四七十。有口舌是非、不顺、争斗之意。",
-    details: {
-      求财: "财运不佳，恐有破财",
-      婚姻: "婚事多口舌，恐有阻碍",
-      出行: "出行不利，防口舌是非",
-      疾病: "病情严重，宜速治",
-      失物: "失物在西方，恐难寻",
-      诉讼: "官事不利，有口舌之争",
-    }
-  },
-  {
-    name: "小吉",
-    poem: "小吉最吉昌，路上好商量，阴人来报喜，失物在坤方。行人即便至，交关甚是强，凡事皆和合，病者叩穹苍。",
-    yinYang: "阳",
-    wuxing: "木",
-    tianGan: "甲乙",
-    diZhi: "辰戌丑未",
-    direction: "中央",
-    shenshen: "六合",
-    jixiong: "吉",
-    summary: "人来喜时，五行属木，颜色黄色，方位中央。临六合，谋事一五七。有和合、吉利、顺遂之意。",
-    details: {
-      求财: "财运佳，宜合作求财",
-      婚姻: "婚事大吉，成合之象",
-      出行: "出行平安，有贵人",
-      疾病: "病情好转，宜静养",
-      失物: "失物可寻，在西南方",
-      诉讼: "官事宜和，可调解",
-    }
-  },
-  {
-    name: "空亡",
-    poem: "空亡事不祥，阴人少主张，求财无利益，行人有灾殃。失物寻不见，官事有刑伤，病人逢暗鬼，解禳保安康。",
-    yinYang: "阴",
-    wuxing: "土",
-    tianGan: "戊己",
-    diZhi: "辰戌",
-    direction: "中央",
-    shenshen: "勾陈",
-    jixiong: "凶",
-    summary: "音信稀时，五行属土，颜色黄色，方位中央。临勾陈，谋事三六九。有空虚、落空、不实之意。",
-    details: {
-      求财: "财运空虚，求之不得",
-      婚姻: "婚事不成，空欢喜一场",
-      出行: "出行不利，徒劳无功",
-      疾病: "病情不明，宜慎重",
-      失物: "失物难寻，恐已无",
-      诉讼: "官事不利，宜避",
-    }
-  },
+  { name: "大安", nature: "吉", desc: "大安事事昌，求谋在东方，失物去不远，宅舍保平安" },
+  { name: "留连", nature: "平", desc: "留连事难成，求谋日未明，官事只宜缓，去者未回程" },
+  { name: "速喜", nature: "吉", desc: "速喜喜来临，求财向南行，失物申午未，逢人路上寻" },
+  { name: "赤口", nature: "凶", desc: "赤口主口舌，官非切要防，失物急寻找，行人有惊慌" },
+  { name: "小吉", nature: "吉", desc: "小吉最吉昌，路上好商量，阴人来报喜，失物在坤方" },
+  { name: "空亡", nature: "凶", desc: "空亡事不祥，阴人多乖张，求财无利益，行人有灾殃" },
 ]
 
-// 小六壬古籍断语
-export const XIAO_LIU_REN_DUAN_YU = {
-  起法: {
-    原文: "小六壬掌诀，以大安起正月，顺数至本月，又以本月所临之神起初一，顺数至本日，又以本日所临之神起子时，顺数至本时，所临之神即为本卦。",
-    译文: "小六壬的起卦方法：从大安起正月，顺时针数到当月；再从当月所在的神起初一，数到当日；最后从当日所在的神起子时，数到当前时辰，落在哪个神上就是本卦。",
-    出处: "《玉匣记》"
+export const XIAO_LIU_REN_DETAIL = {
+  "大安": {
+    meaning: "平安、顺利",
+    advice: "宜静不宜动，守旧为吉，不宜急于求成",
+    suitable: ["寻人", "问病", "家宅"],
+    unsuitable: ["出行", "求财", "嫁娶"]
   },
-  总论: {
-    原文: "大安身不动，留连卒未归，速喜人即至，赤口官事起，小吉人来喜，空亡音信稀。",
-    译文: "大安卦主静止安稳，留连卦主拖延不归，速喜卦主快速到来，赤口卦主口舌官非，小吉卦主喜事将至，空亡卦主消息渺茫。",
-    出处: "《六壬神课金口诀》"
+  "留连": {
+    meaning: "拖延、纠缠",
+    advice: "耐心等待，不宜冲动，静观其变",
+    suitable: ["等待消息", "商议事情"],
+    unsuitable: ["急办之事", "投资"]
   },
-  应用: {
-    原文: "凡占卜之法，先定月日时辰，次起六神，看落何宫，以定吉凶。大安、速喜、小吉为吉，留连、赤口、空亡为凶。",
-    译文: "占卜时先确定月日时辰，然后起六神，看落在哪一宫，据此判断吉凶。大安、速喜、小吉是吉卦，留连、赤口、空亡是凶卦。",
-    出处: "《小六壬金口诀》"
+  "速喜": {
+    meaning: "快速、喜庆",
+    advice: "速战速决，把握时机，积极行动",
+    suitable: ["求财", "出行", "嫁娶", "考试"],
+    unsuitable: ["诉讼", "动土"]
+  },
+  "赤口": {
+    meaning: "口舌、是非",
+    advice: "谨言慎行，避免争执，谨防小人",
+    suitable: ["诉讼"],
+    unsuitable: ["交友", "合作", "婚嫁"]
+  },
+  "小吉": {
+    meaning: "小吉、顺利",
+    advice: "积极进取，把握机会，可获小利",
+    suitable: ["求财", "出行", "交友", "问病"],
+    unsuitable: ["大事"]
+  },
+  "空亡": {
+    meaning: "空亡、虚耗",
+    advice: "不宜冒险，保守为上，谨防损失",
+    suitable: ["安葬"],
+    unsuitable: ["投资", "出行", "重要决策"]
+  },
+}
+
+export function calculateXiaoLiuRen(month: number, day: number, hour: number): any {
+  const startIndex = (month + day + hour) % 6
+  const result = XIAO_LIU_REN[startIndex]
+  
+  return {
+    month,
+    day,
+    hour,
+    result,
+    detail: XIAO_LIU_REN_DETAIL[result.name]
   }
 }
 
-// 小六壬起卦计算
-export function calculateXiaoLiuRen(month: number, day: number, hour: number) {
-  // 月上起大安
-  const monthIndex = (month - 1) % 6
-  // 日上起月
-  const dayIndex = (monthIndex + day - 1) % 6
-  // 时上起日
-  const hourIndex = (dayIndex + hour) % 6
+export function calculateXiaoLiuRenByTime(date: Date): any {
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+  const hour = date.getHours()
   
-  return {
-    monthGua: XIAO_LIU_REN[monthIndex],
-    dayGua: XIAO_LIU_REN[dayIndex],
-    hourGua: XIAO_LIU_REN[hourIndex],
-    finalGua: XIAO_LIU_REN[hourIndex],
-    process: {
-      monthStep: `正月起大安，${month}月落${XIAO_LIU_REN[monthIndex].name}`,
-      dayStep: `${XIAO_LIU_REN[monthIndex].name}起初一，${day}日落${XIAO_LIU_REN[dayIndex].name}`,
-      hourStep: `${XIAO_LIU_REN[dayIndex].name}起子时，当前时辰落${XIAO_LIU_REN[hourIndex].name}`,
-    }
-  }
+  return calculateXiaoLiuRen(month, day, hour)
 }

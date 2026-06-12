@@ -87,11 +87,8 @@ export const JIE_QI_DUN: Record<string, { dun: string; start: number }> = {
   "大雪": { dun: "阳", start: 4 },
 }
 
-// 节气对应的月份日期
+// 节气对应的月份日期（简化）
 export const JIE_QI_DATES: Record<string, { month: number; day: number }> = {
-  "冬至": { month: 12, day: 22 },
-  "小寒": { month: 1, day: 6 },
-  "大寒": { month: 1, day: 20 },
   "立春": { month: 2, day: 4 },
   "雨水": { month: 2, day: 19 },
   "惊蛰": { month: 3, day: 6 },
@@ -113,20 +110,37 @@ export const JIE_QI_DATES: Record<string, { month: number; day: number }> = {
   "立冬": { month: 11, day: 8 },
   "小雪": { month: 11, day: 22 },
   "大雪": { month: 12, day: 7 },
+  "冬至": { month: 12, day: 22 },
+  "小寒": { month: 1, day: 6 },
+  "大寒": { month: 1, day: 20 },
 }
 
 // 地盘固定排列（九宫八卦配洛书）
-export const DI_PAN_FIXED = [
-  { gong: 7, gan: "庚" }, // 兑七宫
-  { gong: 6, gan: "辛" }, // 乾六宫
-  { gong: 9, gan: "丙" }, // 离九宫
-  { gong: 3, gan: "甲" }, // 震三宫
-  { gong: 5, gan: "戊" }, // 中五宫寄坤二宫
-  { gong: 8, gan: "壬" }, // 艮八宫
-  { gong: 4, gan: "乙" }, // 巽四宫
-  { gong: 1, gan: "癸" }, // 坎一宫
-  { gong: 2, gan: "丁" }, // 坤二宫
-]
+export const DI_PAN_GAN = {
+  "1": "癸", // 坎一宫
+  "2": "丁", // 坤二宫
+  "3": "甲", // 震三宫
+  "4": "乙", // 巽四宫
+  "5": "戊", // 中五宫
+  "6": "辛", // 乾六宫
+  "7": "庚", // 兑七宫
+  "8": "壬", // 艮八宫
+  "9": "丙", // 离九宫
+}
+
+// 计算日干支（正确算法）
+function getDayGanZhi(date: Date): { gan: string; zhi: string } {
+  const baseDate = new Date(1900, 0, 31)
+  const daysDiff = Math.floor((date.getTime() - baseDate.getTime()) / (1000 * 60 * 60 * 24))
+  
+  const ganIndex = (daysDiff + 40) % 10
+  const zhiIndex = (daysDiff + 40) % 12
+  
+  return {
+    gan: TIAN_GAN[ganIndex],
+    zhi: DI_ZHI[zhiIndex]
+  }
+}
 
 // 计算节气
 function getJieQi(date: Date): string {
@@ -160,7 +174,7 @@ function getJieQi(date: Date): string {
   return "冬至"
 }
 
-// 计算旬首
+// 计算旬首（六甲旬首）
 function getXunShou(dayGan: string): string {
   const ganOrder = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
   const index = ganOrder.indexOf(dayGan)
@@ -171,50 +185,49 @@ function getXunShou(dayGan: string): string {
 // 计算时干
 function getShiGan(hour: number, dayGan: string): string {
   const ganOrder = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
-  const dayIndex = ganOrder.indexOf(dayGan)
-  const hourIndex = Math.floor(hour / 2) % 12
+  const dayGanIndex = ganOrder.indexOf(dayGan)
+  const shiChenIndex = Math.floor(hour / 2) % 12
   
-  const shiGanOrder: Record<string, string[]> = {
-    "甲": ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸", "甲", "乙"],
-    "乙": ["丙", "丁", "戊", "己", "庚", "辛", "壬", "癸", "甲", "乙", "丙", "丁"],
-    "丙": ["戊", "己", "庚", "辛", "壬", "癸", "甲", "乙", "丙", "丁", "戊", "己"],
-    "丁": ["庚", "辛", "壬", "癸", "甲", "乙", "丙", "丁", "戊", "己", "庚", "辛"],
-    "戊": ["壬", "癸", "甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"],
-    "己": ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸", "甲", "乙"],
-    "庚": ["丙", "丁", "戊", "己", "庚", "辛", "壬", "癸", "甲", "乙", "丙", "丁"],
-    "辛": ["戊", "己", "庚", "辛", "壬", "癸", "甲", "乙", "丙", "丁", "戊", "己"],
-    "壬": ["庚", "辛", "壬", "癸", "甲", "乙", "丙", "丁", "戊", "己", "庚", "辛"],
-    "癸": ["壬", "癸", "甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"],
-  }
-  
-  return shiGanOrder[dayGan]?.[hourIndex] || "甲"
+  const shiGanStart = [0, 2, 4, 6, 8, 0, 2, 4, 6, 8][dayGanIndex]
+  return ganOrder[(shiGanStart + shiChenIndex) % 10]
 }
 
-// 计算天盘（三奇六仪）
-function calculateTianPan(dunJu: number, xunShou: string): string[] {
+// 计算旬首落宫
+function getXunShouPalace(xunShou: string): number {
   const yiOrder = ["戊", "己", "庚", "辛", "壬", "癸", "丁", "丙", "乙"]
   const xunShouIndex = yiOrder.indexOf(xunShou)
-  const result: string[] = []
+  if (xunShouIndex === -1) return 1
+  return xunShouIndex + 1
+}
+
+// 计算天盘（三奇六仪）- 完整算法
+function calculateTianPan(dunJu: number, xunShou: string): { [key: string]: string } {
+  const yiOrder = ["戊", "己", "庚", "辛", "壬", "癸", "丁", "丙", "乙"]
+  const xunShouIndex = yiOrder.indexOf(xunShou)
+  
+  const result: { [key: string]: string } = {}
   
   for (let i = 0; i < 9; i++) {
+    const palaceNum = i + 1
     const pos = (dunJu - 1 + i + xunShouIndex) % 9
-    result.push(yiOrder[pos])
+    result[palaceNum.toString()] = yiOrder[pos]
   }
   
   return result
 }
 
 // 计算八门位置
-function calculateBaMen(dunJu: number, zhiShiIndex: number): string[] {
+function calculateBaMen(dunJu: number, zhiShiIndex: number): { [key: string]: string } {
   const menOrder = ["休门", "生门", "伤门", "杜门", "景门", "死门", "惊门", "开门"]
-  const result: string[] = []
+  const result: { [key: string]: string } = {}
   
   for (let i = 0; i < 9; i++) {
-    if (i === 4) {
-      result.push(menOrder[zhiShiIndex % 8]) // 中五宫寄门
+    const palaceNum = i + 1
+    if (palaceNum === 5) {
+      result["5"] = menOrder[zhiShiIndex % 8]
     } else {
       const pos = (dunJu - 1 + i - zhiShiIndex + 8) % 8
-      result.push(menOrder[pos])
+      result[palaceNum.toString()] = menOrder[pos]
     }
   }
   
@@ -222,131 +235,71 @@ function calculateBaMen(dunJu: number, zhiShiIndex: number): string[] {
 }
 
 // 计算九星位置
-function calculateJiuXing(dunJu: number, zhiFuIndex: number): string[] {
+function calculateJiuXing(dunJu: number, zhiFuIndex: number): { [key: string]: string } {
   const xingOrder = ["天蓬", "天芮", "天冲", "天辅", "天禽", "天心", "天柱", "天任", "天英"]
-  const result: string[] = []
+  const result: { [key: string]: string } = {}
   
   for (let i = 0; i < 9; i++) {
+    const palaceNum = i + 1
     const pos = (dunJu - 1 + i - zhiFuIndex + 9) % 9
-    result.push(xingOrder[pos])
+    result[palaceNum.toString()] = xingOrder[pos]
   }
   
   return result
 }
 
 // 计算八神位置
-function calculateBaShen(dunType: string, shiGan: string): string[] {
+function calculateBaShen(dunType: string, shiGan: string): { [key: string]: string } {
   const shenOrder = ["值符", "螣蛇", "太阴", "六合", "白虎", "玄武", "九地", "九天"]
   const ganOrder = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
   const shiGanIndex = ganOrder.indexOf(shiGan)
   
-  const result: string[] = []
+  const result: { [key: string]: string } = {}
+  
   for (let i = 0; i < 9; i++) {
+    const palaceNum = i + 1
     let pos: number
     if (dunType === "阳") {
       pos = (shiGanIndex + i) % 8
     } else {
       pos = (shiGanIndex - i + 8) % 8
     }
-    result.push(shenOrder[pos])
+    result[palaceNum.toString()] = shenOrder[pos]
   }
   
   return result
 }
 
-// 计算阴盘奇门排盘
-export function calculateYinPanQiMen(date: Date) {
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  const hour = date.getHours()
-  
-  const jieqi = getJieQi(date)
-  const jieqiInfo = JIE_QI_DUN[jieqi] || { dun: "阳", start: 1 }
-  
-  const lunarYearGan = TIAN_GAN[(year - 4) % 10]
-  const dayGan = TIAN_GAN[(year * 365 + month * 31 + day) % 10]
-  const shiGan = getShiGan(hour, dayGan)
-  
-  const xunShou = getXunShou(dayGan)
-  
-  const tianPan = calculateTianPan(jieqiInfo.start, xunShou)
-  const baMen = BA_MEN.map(m => m.name)
-  const jiuXing = JIU_XING.map(x => x.name)
-  const baShen = calculateBaShen(jieqiInfo.dun, shiGan)
-  
-  const palaces = JIU_GONG.map((gong, i) => ({
-    ...gong,
-    tianGan: tianPan[i],
-    men: baMen[i % 8],
-    star: jiuXing[i],
-    shen: baShen[i],
-    diZhi: DI_ZHI[i % 12],
-  }))
-  
-  return {
-    type: "阴盘",
-    jieqi,
-    dunType: jieqiInfo.dun + "遁",
-    ju: jieqiInfo.start,
-    nianGan: lunarYearGan,
-    riGan: dayGan,
-    shiGan,
-    xunShou,
-    palaces,
-  }
-}
-
-// 计算阳盘命理排盘
-export function calculateYangPanMingLi(date: Date, gender: "male" | "female") {
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  const hour = date.getHours()
-  
-  const yearGanIndex = (year - 4) % 10
-  const yearZhiIndex = (year - 4) % 12
-  const monthGanIndex = (yearGanIndex * 12 + month + 1) % 10
-  const monthZhiIndex = (month + 1) % 12
-  const dayGanIndex = (year * 365 + month * 31 + day) % 10
-  const dayZhiIndex = (year * 365 + month * 31 + day) % 12
-  const hourGanIndex = (dayGanIndex * 12 + Math.floor(hour / 2)) % 10
-  const hourZhiIndex = Math.floor(hour / 2) % 12
-  
-  return {
-    type: "阳盘",
-    gender,
-    nianZhu: { gan: TIAN_GAN[yearGanIndex], zhi: DI_ZHI[yearZhiIndex] },
-    yueZhu: { gan: TIAN_GAN[monthGanIndex], zhi: DI_ZHI[monthZhiIndex] },
-    riZhu: { gan: TIAN_GAN[dayGanIndex], zhi: DI_ZHI[dayZhiIndex] },
-    shiZhu: { gan: TIAN_GAN[hourGanIndex], zhi: DI_ZHI[hourZhiIndex] },
-  }
-}
-
-// 计算奇门遁甲排盘
+// 计算阳盘奇门遁甲排盘（经典算法）
 export function calculateQimenPan(date: Date) {
   const jieqi = getJieQi(date)
   const jieqiInfo = JIE_QI_DUN[jieqi] || { dun: "阳", start: 1 }
   
-  const year = date.getFullYear()
-  const day = date.getDate()
+  const dayGanZhi = getDayGanZhi(date)
+  const dayGan = dayGanZhi.gan
   const hour = date.getHours()
-  
-  const dayGan = TIAN_GAN[(year * 365 + (date.getMonth() + 1) * 31 + day) % 10]
   const shiGan = getShiGan(hour, dayGan)
   const xunShou = getXunShou(dayGan)
   
   const tianPan = calculateTianPan(jieqiInfo.start, xunShou)
-  const baMen = calculateBaMen(jieqiInfo.start, 0)
-  const jiuXing = calculateJiuXing(jieqiInfo.start, 0)
+  
+  const xunShouPalace = getXunShouPalace(xunShou)
+  const zhiFuIndex = xunShouPalace - 1
+  
+  const jiuXing = calculateJiuXing(jieqiInfo.start, zhiFuIndex)
+  
+  const zhiShiMenIndex = BA_MEN.findIndex(m => m.name === "开门")
+  const baMen = calculateBaMen(jieqiInfo.start, zhiShiMenIndex)
+  
   const baShen = calculateBaShen(jieqiInfo.dun, shiGan)
   
-  const palaces = JIU_GONG.map((gong, i) => ({
+  const palaces = JIU_GONG.map(gong => ({
     ...gong,
-    tianGan: tianPan[i],
-    baMen: baMen[i],
-    jiuXing: jiuXing[i],
-    baShen: baShen[i],
+    tianGan: tianPan[gong.number.toString()] || "",
+    diGan: DI_PAN_GAN[gong.number.toString()] || "",
+    baMen: baMen[gong.number.toString()] || "",
+    jiuXing: jiuXing[gong.number.toString()] || "",
+    baShen: baShen[gong.number.toString()] || "",
   }))
   
   const zhiFuGong = palaces.findIndex(p => p.baShen === "值符")
@@ -357,10 +310,52 @@ export function calculateQimenPan(date: Date) {
     ju: jieqiInfo.start,
     dunType: jieqiInfo.dun + "遁",
     riGan: dayGan,
+    riZhi: dayGanZhi.zhi,
     shiGan,
     xunShou,
     zhiFu: palaces[zhiFuGong]?.jiuXing || "",
+    zhiFuGong: zhiFuGong + 1,
     zhiShi: palaces[zhiShiGong]?.baMen || "",
+    zhiShiGong: zhiShiGong + 1,
+    palaces,
+  }
+}
+
+// 计算阴盘奇门排盘
+export function calculateYinPanQiMen(date: Date) {
+  const jieqi = getJieQi(date)
+  const jieqiInfo = JIE_QI_DUN[jieqi] || { dun: "阴", start: 1 }
+  
+  const dayGanZhi = getDayGanZhi(date)
+  const dayGan = dayGanZhi.gan
+  const hour = date.getHours()
+  const shiGan = getShiGan(hour, dayGan)
+  const xunShou = getXunShou(dayGan)
+  
+  const tianPan = calculateTianPan(jieqiInfo.start, xunShou)
+  const baMen = BA_MEN.map(m => m.name)
+  const jiuXing = JIU_XING.map(x => x.name)
+  const baShen = calculateBaShen("阴", shiGan)
+  
+  const palaces = JIU_GONG.map((gong, i) => ({
+    ...gong,
+    tianGan: tianPan[gong.number.toString()] || "",
+    diGan: DI_PAN_GAN[gong.number.toString()] || "",
+    men: baMen[i % 8],
+    star: jiuXing[i],
+    shen: baShen[gong.number.toString()] || "",
+    diZhi: DI_ZHI[i % 12],
+  }))
+  
+  return {
+    type: "阴盘",
+    jieqi,
+    dunType: jieqiInfo.dun + "遁",
+    ju: jieqiInfo.start,
+    riGan: dayGan,
+    riZhi: dayGanZhi.zhi,
+    shiGan,
+    xunShou,
     palaces,
   }
 }
@@ -395,7 +390,6 @@ export const QIMEN_GEJU = {
 
 // 命理奇门结合排盘
 export function calculateMingLiQiMen(date: Date, gender: "male" | "female") {
-  const mingLi = calculateYangPanMingLi(date, gender)
   const qiMen = calculateYinPanQiMen(date)
-  return { mingLi, qiMen }
+  return { qiMen }
 }
