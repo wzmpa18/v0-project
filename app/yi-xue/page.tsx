@@ -1,7 +1,5 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
 import {
   BookOpen,
   Sparkles,
@@ -46,8 +44,6 @@ interface YiXuePageProps {
 }
 
 export default function YiXuePage({ onBack }: YiXuePageProps = {}) {
-  const [selectedTool, setSelectedTool] = useState<string | null>(null)
-  const router = useRouter()
 
   const tools = [
     { id: "bazi", icon: BookOpen, title: "八字命理", subtitle: "排盘解析", color: "amber", description: "基于《渊海子平》《三命通会》《滴天髓》《子平真诠》" },
@@ -104,87 +100,13 @@ export default function YiXuePage({ onBack }: YiXuePageProps = {}) {
     sky: { bg: "bg-gradient-to-br from-sky-800/80 to-sky-900/60", icon: "text-sky-400", border: "border-sky-700/30", shadow: "shadow-sky-900/20" },
   }
 
-  const handleToolClick = (id: string) => {
-    const routeMap: Record<string, string> = {
-      "bazi": "/bazi",
-      "ziwei": "/ziwei",
-      "qimen": "/qimen",
-      "liuyao": "/liuyao",
-      "meihua": "/meihua",
-      "wannianli": "/wannianli",
-      "fengshui": "/fengshui",
-      "xingming": "/xingming",
-      "liuren": "/daliuren",
-      "taiyi": "/taiyi",
-      "xiangmian": "/xiangmian",
-      "xiangshou": "/xiangshou",
-      "cezi": "/cezi",
-      "jiemeng": "/jiemeng",
-      "zeri": "/zeri",
-      "fuzhou": "/fuzhou",
-      "luopan": "/luopan",
-      "yinpan": "/yinpan-qimen",
-      "yangpan": "/yangpan-mingli",
-      "jinkoujue": "/jinkoujue",
-      "xiaoliuren": "/xiaoliuren",
-      "zhuge": "/zhuge",
-      "tieban": "/tieban",
-      "shaozi": "/shaozi",
-      "heluo": "/heluo",
-      "huangji": "/huangji",
-      "qizheng": "/qizheng",
-      "zhanxing": "/zhanxing",
-      "sanyuan": "/sanyuan",
-      "xuankong": "/xuankong",
-      "bazhai": "/bazhai",
-      "yanggong": "/yanggong",
-      "qimenzeji": "/qimenzeji",
-      "wuyunliuqi": "/wuyunliuqi",
-      "ziwuliu": "/ziwuliu",
-    }
-    const route = routeMap[id]
-    if (route) {
-      router.push(route)
-    } else {
-      setSelectedTool(id)
-    }
-  }
-
-  const handleBack = () => {
-    if (selectedTool) {
-      setSelectedTool(null)
-    } else if (onBack) {
-      onBack()
-    } else {
-      router.push("/")
-    }
-  }
-
-  if (selectedTool) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-[#1a1410] via-[#1f1814] to-[#241c16] text-white p-4">
-        <div className="flex items-center gap-3 mb-6">
-          <button onClick={handleBack} className="w-10 h-10 rounded-full bg-amber-900/40 flex items-center justify-center">
-            <ChevronLeft className="w-5 h-5 text-amber-300" />
-          </button>
-          <h1 className="text-lg font-bold text-amber-400">页面未找到</h1>
-        </div>
-        <div className="bg-gradient-to-br from-amber-900/40 to-amber-950/60 rounded-xl p-6 border border-amber-800/30">
-          <p className="text-amber-100/80 text-center">
-            {tools.find(t => t.id === selectedTool)?.title} 页面正在完善中，请稍后再试
-          </p>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#1a1410] via-[#1f1814] to-[#241c16] text-white">
       <header className="bg-gradient-to-b from-[#1a1410] to-transparent pt-10 pb-4 px-4">
         <div className="flex items-center gap-3 mb-4">
-          <button onClick={handleBack} className="w-10 h-10 rounded-full bg-amber-900/40 flex items-center justify-center hover:bg-amber-900/60 transition-colors">
+          <a href="/" className="w-10 h-10 rounded-full bg-amber-900/40 flex items-center justify-center hover:bg-amber-900/60 transition-colors">
             <ChevronLeft className="w-5 h-5 text-amber-300" />
-          </button>
+          </a>
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
