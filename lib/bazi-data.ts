@@ -519,3 +519,27 @@ export function calculateWuxingWithCangGan(
   
   return count
 }
+
+export function calculateQiYun(lunar: any, gender: "male" | "female"): { years: number; months: number; days: number; hours: number } {
+  const jieQiDays = lunar.getJieQiDays()
+  const birthDayInYear = lunar.getDayInYear()
+  
+  let qiYunDays: number
+  if (gender === "male") {
+    qiYunDays = jieQiDays - birthDayInYear
+  } else {
+    qiYunDays = birthDayInYear - jieQiDays
+  }
+  
+  if (qiYunDays < 0) {
+    qiYunDays += 365
+  }
+  
+  const years = Math.floor(qiYunDays / 365)
+  const remainingDays = qiYunDays % 365
+  const months = Math.floor(remainingDays / 30)
+  const days = remainingDays % 30
+  const hours = 6
+  
+  return { years: years + 1, months, days, hours }
+}
