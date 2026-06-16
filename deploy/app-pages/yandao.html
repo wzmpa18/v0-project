@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>言道学外语 - 言道科技</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #0a1628; color: #e8edf5; line-height: 1.6; }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+    nav { background: rgba(10,22,40,0.95); border-bottom: 1px solid rgba(64,128,255,0.15); padding: 16px 0; }
+    nav .container { display: flex; align-items: center; gap: 16px; }
+    nav a { color: #4dabf7; text-decoration: none; font-size: 14px; }
+    nav .separator { color: #667; }
+    nav h1 { font-size: 18px; color: #fff; }
+    .hero { padding: 80px 0 60px; text-align: center; }
+    .hero .app-icon { width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, #4dabf7, #748ffc); display: inline-flex; align-items: center; justify-content: center; font-size: 40px; margin-bottom: 20px; }
+    .hero h2 { font-size: 36px; color: #fff; margin-bottom: 12px; }
+    .hero p { font-size: 18px; color: #8899b4; margin-bottom: 32px; }
+    .hero .download-btn { display: inline-block; padding: 16px 48px; background: linear-gradient(135deg, #4dabf7, #748ffc); color: #fff; border-radius: 8px; font-size: 18px; font-weight: 700; text-decoration: none; transition: all 0.3s; }
+    .hero .download-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(77,171,247,0.3); }
+    .features { padding: 60px 0; }
+    .features h3 { text-align: center; font-size: 24px; color: #fff; margin-bottom: 40px; }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .feature-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 24px; text-align: center; }
+    .feature-item .icon { font-size: 32px; margin-bottom: 12px; }
+    .feature-item h4 { font-size: 16px; color: #fff; margin-bottom: 8px; }
+    .feature-item p { font-size: 13px; color: #8899b4; }
+    .langs { padding: 60px 0; background: rgba(255,255,255,0.02); }
+    .langs h3 { text-align: center; font-size: 24px; color: #fff; margin-bottom: 40px; }
+    .lang-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+    .lang-item { background: rgba(77,171,247,0.08); border: 1px solid rgba(77,171,247,0.2); border-radius: 12px; padding: 20px; text-align: center; }
+    .lang-item .flag { font-size: 36px; margin-bottom: 8px; }
+    .lang-item .name { font-size: 14px; color: #c8d6e5; }
+    footer { border-top: 1px solid rgba(255,255,255,0.08); padding: 40px 0; text-align: center; }
+    footer .copyright { font-size: 13px; color: #667; }
+    footer .beian { font-size: 13px; color: #667; margin-top: 8px; }
+    footer .beian a { color: #667; text-decoration: none; }
+    @media (max-width: 768px) {
+      .feature-grid { grid-template-columns: 1fr; }
+      .lang-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/app.html">首页</a>
+      <span class="separator">/</span>
+      <h1>言道学外语</h1>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="app-icon">🌍</div>
+      <h2>言道学外语</h2>
+      <p>AI驱动的语言学习平台 · 支持10种语言 · 游戏化闯关</p>
+      <a href="/app-download/yandao/yandao-xuewaiyu-v1.0.apk" class="download-btn">下载 Android 版</a>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="container">
+      <h3>核心功能</h3>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <div class="icon">🤖</div>
+          <h4>AI智能对话</h4>
+          <p>模拟真实场景对话，AI陪练口语</p>
+        </div>
+        <div class="feature-item">
+          <div class="icon">🎮</div>
+          <h4>游戏化闯关</h4>
+          <p>闯关模式学习，让语言学习更有趣</p>
+        </div>
+        <div class="feature-item">
+          <div class="icon">🎤</div>
+          <h4>实时口语评测</h4>
+          <p>语音识别技术，精准评估发音</p>
+        </div>
+        <div class="feature-item">
+          <div class="icon">📝</div>
+          <h4>个性化路径</h4>
+          <p>AI根据水平定制学习计划</p>
+        </div>
+        <div class="feature-item">
+          <div class="icon">📊</div>
+          <h4>进度追踪</h4>
+          <p>可视化学习数据，清晰掌握进展</p>
+        </div>
+        <div class="feature-item">
+          <div class="icon">🏆</div>
+          <h4>成就系统</h4>
+          <p>解锁徽章，与好友比拼排行</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="langs">
+    <div class="container">
+      <h3>支持语言</h3>
+      <div class="lang-grid">
+        <div class="lang-item"><div class="flag">🇬🇧</div><div class="name">英语</div></div>
+        <div class="lang-item"><div class="flag">🇯🇵</div><div class="name">日语</div></div>
+        <div class="lang-item"><div class="flag">🇰🇷</div><div class="name">韩语</div></div>
+        <div class="lang-item"><div class="flag">🇫🇷</div><div class="name">法语</div></div>
+        <div class="lang-item"><div class="flag">🇩🇪</div><div class="name">德语</div></div>
+        <div class="lang-item"><div class="flag">🇪🇸</div><div class="name">西班牙语</div></div>
+        <div class="lang-item"><div class="flag">🇷🇺</div><div class="name">俄语</div></div>
+        <div class="lang-item"><div class="flag">🇮🇹</div><div class="name">意大利语</div></div>
+        <div class="lang-item"><div class="flag">🇵🇹</div><div class="name">葡萄牙语</div></div>
+        <div class="lang-item"><div class="flag">🇹🇭</div><div class="name">泰语</div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="copyright">© 2024-2026 东莞言道科技有限公司 版权所有</div>
+      <div class="beian">
+        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">粤ICP备2026071165号-2</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
