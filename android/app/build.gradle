@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('guoxue-release.keystore')
+            storePassword 'guoxue888'
+            keyAlias 'guoxuechuan'
+            keyPassword 'guoxue888'
+        }
+    }
     namespace = "com.guoxuechuan.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
@@ -20,6 +28,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
