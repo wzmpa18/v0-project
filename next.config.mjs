@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  basePath: '/app',
+  basePath: '',
   trailingSlash: true,
   typescript: {
     ignoreBuildErrors: true,
