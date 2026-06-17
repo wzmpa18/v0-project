@@ -6,11 +6,29 @@
  * 使用多种回退策略确保导航可靠
  */
 
+// 检测当前部署的 basePath（如 /app），确保导航路径正确
+function getBasePath(): string {
+  if (typeof window === 'undefined') return ''
+  const pathname = window.location.pathname
+  // 如果当前路径包含 /app/，则 basePath 为 /app
+  if (pathname.startsWith('/app/') || pathname === '/app') return '/app'
+  return ''
+}
+
+function resolvePath(path: string): string {
+  const basePath = getBasePath()
+  // 确保路径以 / 开头
+  const normalizedPath = path.startsWith('/') ? path : '/' + path
+  return basePath + normalizedPath
+}
+
 export function navigateTo(path: string): void {
+  const fullPath = resolvePath(path)
+
   try {
     // 策略1: 直接设置 location.href
     if (typeof window !== 'undefined' && window.location) {
-      window.location.href = path
+      window.location.href = fullPath
       return
     }
   } catch (e) {
@@ -20,7 +38,7 @@ export function navigateTo(path: string): void {
   try {
     // 策略2: document.location
     if (typeof document !== 'undefined' && document.location) {
-      document.location.href = path
+      document.location.href = fullPath
       return
     }
   } catch (e) {
@@ -30,7 +48,7 @@ export function navigateTo(path: string): void {
   try {
     // 策略3: location.assign
     if (typeof location !== 'undefined') {
-      location.assign(path)
+      location.assign(fullPath)
       return
     }
   } catch (e) {
@@ -40,7 +58,7 @@ export function navigateTo(path: string): void {
   try {
     // 策略4: window.open (self)
     if (typeof window !== 'undefined') {
-      window.open(path, '_self')
+      window.open(fullPath, '_self')
       return
     }
   } catch (e) {

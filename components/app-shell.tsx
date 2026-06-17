@@ -19,9 +19,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [])
 
   const getActiveTabFromPath = (path: string): string => {
-    if (path === "/") return "home"
-    if (path.startsWith("/ai")) return "ai"
-    if (path.startsWith("/profile")) return "profile"
+    // 移除 basePath 前缀（如 /app）以获取实际路由
+    const normalizedPath = path.replace(/^\/app/, '') || '/'
+    if (normalizedPath === "/") return "home"
+    if (normalizedPath.startsWith("/ai")) return "ai"
+    if (normalizedPath.startsWith("/profile")) return "profile"
     return "home"
   }
 

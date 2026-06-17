@@ -100,6 +100,40 @@ export function getYearGanZhi(year: number): { gan: string; zhi: string; ganZhi:
 }
 
 /**
+ * 根据日期确定节气月（0=寅月, 1=卯月, ..., 11=丑月）
+ * 节气月以"节"为分界：
+ * 立春(2/4)寅月, 惊蛰(3/6)卯月, 清明(4/5)辰月, 立夏(5/6)巳月,
+ * 芒种(6/6)午月, 小暑(7/7)未月, 立秋(8/7)申月, 白露(9/8)酉月,
+ * 寒露(10/8)戌月, 立冬(11/7)亥月, 大雪(12/7)子月, 小寒(1/6)丑月
+ */
+function getJieQiMonth(month: number, day: number): number {
+  const jieQiBoundaries: [number, number, number][] = [
+    [1, 6, 11],   // 小寒 1/6 -> 丑月(11)
+    [2, 4, 0],    // 立春 2/4 -> 寅月(0)
+    [3, 6, 1],    // 惊蛰 3/6 -> 卯月(1)
+    [4, 5, 2],    // 清明 4/5 -> 辰月(2)
+    [5, 6, 3],    // 立夏 5/6 -> 巳月(3)
+    [6, 6, 4],    // 芒种 6/6 -> 午月(4)
+    [7, 7, 5],    // 小暑 7/7 -> 未月(5)
+    [8, 7, 6],    // 立秋 8/7 -> 申月(6)
+    [9, 8, 7],    // 白露 9/8 -> 酉月(7)
+    [10, 8, 8],   // 寒露 10/8 -> 戌月(8)
+    [11, 7, 9],   // 立冬 11/7 -> 亥月(9)
+    [12, 7, 10],  // 大雪 12/7 -> 子月(10)
+  ]
+  
+  // 从最近的节气开始查找
+  for (let i = jieQiBoundaries.length - 1; i >= 0; i--) {
+    const [jieMonth, jieDay, jieQiMonth] = jieQiBoundaries[i]
+    if (month > jieMonth || (month === jieMonth && day >= jieDay)) {
+      return jieQiMonth
+    }
+  }
+  // 1月6日之前，属于上一年的丑月(11)
+  return 11
+}
+
+/**
  * 计算月干支（基于节气）
  * 年上起月法：
  * 甲己年 -> 丙寅月 (起始月干=丙=2)
@@ -111,7 +145,6 @@ export function getYearGanZhi(year: number): { gan: string; zhi: string; ganZhi:
 export function getMonthGanZhi(year: number, month: number, day: number): { gan: string; zhi: string; ganZhi: string } {
   const yearGan = TIAN_GAN[((year - 4) % 60 + 60) % 60 % 10]
   
-  // 年上起月法：确定寅月（正月）的月干
   const startMonthGanMap: Record<string, number> = {
     "甲": 2, "己": 2,
     "乙": 4, "庚": 4,
@@ -121,15 +154,9 @@ export function getMonthGanZhi(year: number, month: number, day: number): { gan:
   }
   
   const startGan = startMonthGanMap[yearGan] ?? 0
+  const jieQiMonth = getJieQiMonth(month, day)
   
-  // 根据节气确定实际的节气月
-  // 节气月从立春(2月4日)开始，寅月=正月
-  let jieQiMonth = month - 1 // 默认：1月=寅月(0), 2月=卯月(1), ...
-  if (month === 1) jieQiMonth = 11 // 1月在立春前，属于上一年的丑月
-  // 立春在2月4日左右，如果日期在立春之前，月柱用上一年的
-  if (month === 2 && day < 4) jieQiMonth = 0 // 2月4日前还是寅月
-  
-  // 月支 = 寅月从2开始
+  // 月支 = 寅月(0)对应地支寅(2)，所以月支索引 = (节气月 + 2) % 12
   const monthZhiIndex = (jieQiMonth + 2) % 12
   // 月干 = (起始月干 + 节气月编号) % 10
   const monthGanIndex = (startGan + jieQiMonth) % 10
