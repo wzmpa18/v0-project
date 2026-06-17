@@ -20,50 +20,16 @@ import {
   Moon,
 } from "lucide-react"
 import { navigateTo } from "@/lib/navigation"
+import { getTodayCalendar, getSavedBaziList, getTomorrowFortune, type CalendarInfo, type BaziRecord } from "@/lib/calendar"
 
 export function HomePage() {
-  const [todayInfo, setTodayInfo] = useState<any>(null)
+  const [todayInfo, setTodayInfo] = useState<CalendarInfo | null>(null)
+  const [savedBazi, setSavedBazi] = useState<BaziRecord[]>([])
 
   useEffect(() => {
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = now.getMonth() + 1
-    const day = now.getDate()
-    const weekDays = ["日", "一", "二", "三", "四", "五", "六"]
-    const weekDay = weekDays[now.getDay()]
-
-    const tianGan = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
-    const diZhi = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
-    const shengXiao = ["鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"]
-
-    const yearIndex = (year - 4) % 60
-    const yearGan = tianGan[yearIndex % 10]
-    const yearZhi = diZhi[yearIndex % 12]
-    const yearShengXiao = shengXiao[yearIndex % 12]
-
-    const monthIndex = (year - 4) % 60
-    const monthGan = tianGan[(monthIndex * 2 + month - 1) % 10]
-    const monthZhi = diZhi[(month + 1) % 12]
-
-    const dayIndex = Math.floor((Date.UTC(year, month - 1, day) + 10) / 86400000)
-    const dayGan = tianGan[(dayIndex + 9) % 10]
-    const dayZhi = diZhi[(dayIndex + 11) % 12]
-
-    const yiList = ["祭祀", "祈福", "出行", "纳财", "嫁娶", "开市"]
-    const jiList = ["动土", "开仓", "安葬", "伐木", "行丧", "栽种"]
-
-    setTodayInfo({
-      year,
-      month,
-      day,
-      weekDay,
-      yearGanZhi: yearGan + yearZhi,
-      yearShengXiao,
-      monthGanZhi: monthGan + monthZhi,
-      dayGanZhi: dayGan + dayZhi,
-      yi: yiList,
-      ji: jiList,
-    })
+    const calendar = getTodayCalendar()
+    setTodayInfo(calendar)
+    setSavedBazi(getSavedBaziList())
   }, [])
 
   const quickTools = [
@@ -159,11 +125,14 @@ export function HomePage() {
               <div className="text-xs text-amber-200/60">周{todayInfo?.weekDay}</div>
             </div>
             <div className="flex-1">
-              <div className="text-xs text-amber-100 mb-0.5">
+              <div className="text-xs text-amber-100 mb-1">
                 {todayInfo?.year}年{todayInfo?.month}月{todayInfo?.day}日
               </div>
               <div className="text-xs text-amber-300">
                 {todayInfo?.yearGanZhi}年 {todayInfo?.monthGanZhi}月 {todayInfo?.dayGanZhi}日
+              </div>
+              <div className="text-xs text-amber-400/60 mt-0.5">
+                时柱：{todayInfo?.hourGanZhi}时
               </div>
             </div>
           </div>
@@ -195,6 +164,9 @@ export function HomePage() {
                 ))}
               </div>
             </div>
+          </div>
+          <div className="mt-2 pt-2 border-t border-amber-800/20">
+            <p className="text-xs text-amber-300/80">{todayInfo?.dailyFortune}</p>
           </div>
         </div>
 
@@ -315,6 +287,39 @@ export function HomePage() {
             </div>
           </div>
         </div>
+
+        {savedBazi.length > 0 && (
+          <div className="bg-gradient-to-br from-amber-900/30 to-amber-950/50 rounded-xl p-3 border border-amber-800/30 mt-2.5">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5">
+                <User className="w-4 h-4 text-amber-500" />
+                <span className="text-sm font-bold text-amber-200">我的八字</span>
+              </div>
+              <button onClick={() => navigateTo("/bazi")} className="text-xs text-amber-400/70">
+                查看详情 <ChevronRight className="w-3 h-3 inline" />
+              </button>
+            </div>
+            {savedBazi.slice(0, 2).map((bazi) => {
+              const fortune = getTomorrowFortune(bazi)
+              return (
+                <div key={bazi.id} className="bg-amber-800/20 rounded-lg p-2 mb-2 last:mb-0 border border-amber-700/20">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-medium text-amber-300">{bazi.name}</span>
+                    <span className="text-xs text-amber-400/60">{bazi.yearGanZhi} {bazi.monthGanZhi} {bazi.dayGanZhi} {bazi.hourGanZhi}</span>
+                  </div>
+                  <div className="text-xs text-amber-200/70">
+                    明日{fortune.tomorrowGanZhi}日 · {fortune.fortune}
+                  </div>
+                  <div className="flex gap-1 mt-1">
+                    {fortune.yi.slice(0, 3).map((item, idx) => (
+                      <span key={idx} className="text-xs bg-emerald-900/30 text-emerald-300 px-1 rounded">{item}</span>
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
       </main>
     </div>
   )
