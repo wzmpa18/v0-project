@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   User,
   Mail,
@@ -21,16 +21,22 @@ import {
   Bell,
   Moon,
   Settings,
-  Edit3
+  Edit3,
+  QrCode,
+  Link2,
+  Copy,
+  Check
 } from "lucide-react"
 import {
   sendVerificationCode,
   register,
   login,
-  getUserInfo,
+  getInviteUrl,
+  getDownlineStats,
   saveUserToStorage,
   getUserFromStorage,
   clearUserStorage,
+  getUrlInviteCode,
   type UserInfo,
   type ApiResponse
 } from "@/lib/api"
@@ -63,7 +69,6 @@ export function ProfilePage() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [code, setCode] = useState("")
-  const [referrer, setReferrer] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [codeButtonText, setCodeButtonText] = useState("获取验证码")
@@ -71,6 +76,47 @@ export function ProfilePage() {
   const [user, setUser] = useState<UserInfo | null>(getUserFromStorage())
   const [message, setMessage] = useState("")
   const [messageType, setMessageType] = useState<"success" | "error">("success")
+  
+  // 推广相关
+  const [qrCodeUrl, setQrCodeUrl] = useState("")
+  const [inviteCode, setInviteCode] = useState("")
+  const [inviteUrl, setInviteUrl] = useState("")
+  const [downlineStats, setDownlineStats] = useState({ level1: 0, level2: 0, total: 0 })
+  const [copied, setCopied] = useState(false)
+
+  // 自动获取 URL 中的邀请码
+  useEffect(() => {
+    const urlInviteCode = getUrlInviteCode()
+    if (urlInviteCode) {
+      setIsLogin(false)
+    }
+  }, [])
+
+  // 获取推广信息
+  useEffect(() => {
+    if (user && user.id) {
+      fetchInviteInfo()
+      fetchDownlineStats()
+    }
+  }, [user])
+
+  const fetchInviteInfo = async () => {
+    if (!user?.id) return
+    const response: ApiResponse = await getInviteUrl(user.id)
+    if (response.success && response.data) {
+      setQrCodeUrl(response.data.qrCodeUrl)
+      setInviteCode(response.data.inviteCode)
+      setInviteUrl(response.data.inviteUrl)
+    }
+  }
+
+  const fetchDownlineStats = async () => {
+    if (!user?.id) return
+    const response: ApiResponse = await getDownlineStats(user.id)
+    if (response.success && response.data) {
+      setDownlineStats(response.data)
+    }
+  }
 
   const handleSendCode = async () => {
     if (!email) {
@@ -115,7 +161,8 @@ export function ProfilePage() {
         id: response.data.userId,
         email: response.data.email,
         createdAt: Date.now(),
-        referrer: null
+        inviteCode: response.data.inviteCode,
+        referrerId: null
       }
       saveUserToStorage(userData, response.data.token)
       setUser(userData)
@@ -140,17 +187,21 @@ export function ProfilePage() {
       return
     }
 
-    const response: ApiResponse = await register(email, password, code, referrer)
+    // 从 URL 获取邀请码
+    const urlInviteCode = getUrlInviteCode()
+    
+    const response: ApiResponse = await register(email, password, code, urlInviteCode)
     if (response.success) {
       const userData: UserInfo = {
         id: response.data.userId,
         email: response.data.email,
         createdAt: Date.now(),
-        referrer: referrer || null
+        inviteCode: response.data.inviteCode,
+        referrerId: null
       }
       saveUserToStorage(userData, "")
       setUser(userData)
-      setMessage("注册成功")
+      setMessage(urlInviteCode ? "注册成功！您已通过邀请链接注册" : "注册成功")
       setMessageType("success")
     } else {
       setMessage(response.message)
@@ -163,6 +214,14 @@ export function ProfilePage() {
     setUser(null)
     setMessage("已退出登录")
     setMessageType("success")
+  }
+
+  const handleCopyInviteUrl = () => {
+    if (inviteUrl) {
+      navigator.clipboard.writeText(inviteUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
   }
 
   // 已登录状态显示个人中心
@@ -194,8 +253,8 @@ export function ProfilePage() {
                   <span className="px-2 py-0.5 bg-[#d4af37]/10 text-[#d4af37] text-xs rounded-full">VIP</span>
                 </div>
                 <p className="text-gray-500 text-sm mb-2">ID: {user.id.slice(-8)}</p>
-                {user.referrer && (
-                  <p className="text-xs text-gray-500">推荐人: {user.referrer}</p>
+                {user.inviteCode && (
+                  <p className="text-xs text-gray-500">邀请码: {user.inviteCode}</p>
                 )}
               </div>
             </div>
@@ -213,6 +272,56 @@ export function ProfilePage() {
                   <div className="text-xs text-gray-500">{stat.label}</div>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+
+        {/* 推广二维码区域 */}
+        <div className="px-4 mb-4">
+          <div className="bg-gradient-to-br from-amber-500/10 to-yellow-600/10 rounded-2xl p-4 border border-amber-500/20">
+            <div className="flex items-center gap-2 mb-4">
+              <QrCode className="w-5 h-5 text-amber-600" />
+              <h3 className="font-bold text-gray-800">我的推广</h3>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="w-24 h-24 bg-white rounded-xl shadow-sm flex items-center justify-center border border-gray-200">
+                {qrCodeUrl ? (
+                  <img src={qrCodeUrl} alt="推广二维码" className="w-20 h-20 rounded-lg" />
+                ) : (
+                  <QrCode className="w-12 h-12 text-gray-300" />
+                )}
+              </div>
+              
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-sm text-gray-600">邀请码:</span>
+                  <span className="font-bold text-amber-600">{inviteCode || '加载中...'}</span>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-2 mb-3">
+                  <div className="text-center">
+                    <div className="font-bold text-gray-800">{downlineStats.level1}</div>
+                    <div className="text-xs text-gray-500">一级</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-bold text-gray-800">{downlineStats.level2}</div>
+                    <div className="text-xs text-gray-500">二级</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-bold text-amber-600">{downlineStats.total}</div>
+                    <div className="text-xs text-gray-500">总计</div>
+                  </div>
+                </div>
+                
+                <button 
+                  onClick={handleCopyInviteUrl}
+                  className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg shadow-sm text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                  <span>{copied ? '已复制' : '复制链接'}</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -364,19 +473,14 @@ export function ProfilePage() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm text-amber-200/80 mb-1.5">推荐人邮箱（选填）</label>
-                  <div className="relative">
-                    <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-500" />
-                    <input
-                      type="email"
-                      value={referrer}
-                      onChange={(e) => setReferrer(e.target.value)}
-                      placeholder="如有推荐人请填写邮箱"
-                      className="w-full bg-amber-800/30 border border-amber-700/30 rounded-lg px-10 py-3 text-white placeholder-amber-400/50 focus:outline-none focus:border-amber-500"
-                    />
+                {getUrlInviteCode() && (
+                  <div className="p-3 bg-amber-600/20 rounded-lg border border-amber-500/30">
+                    <div className="flex items-center gap-2 text-amber-400 text-sm">
+                      <Link2 className="w-4 h-4" />
+                      <span>您正在通过邀请链接注册</span>
+                    </div>
                   </div>
-                </div>
+                )}
               </>
             )}
 

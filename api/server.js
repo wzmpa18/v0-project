@@ -24,6 +24,7 @@ const SMTP_CONFIG = {
 const users = {};
 const verificationCodes = {};
 const userRelations = {};
+const inviteCodes = {}; // 邀请码 -> 用户ID映射
 
 // 中间件
 app.use(cors());
@@ -36,6 +37,16 @@ const transporter = nodemailer.createTransport(SMTP_CONFIG);
 // 生成验证码
 function generateCode() {
   return crypto.randomInt(100000, 999999).toString();
+}
+
+// 生成邀请码（6位字母数字）
+function generateInviteCode() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code = '';
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
 }
 
 // 发送验证邮件
@@ -89,9 +100,9 @@ app.post('/api/send-code', async (req, res) => {
   }
 });
 
-// 用户注册 API
+// 用户注册 API（支持邀请码）
 app.post('/api/register', (req, res) => {
-  const { email, password, code, referrer } = req.body;
+  const { email, password, code, inviteCode } = req.body;
   
   if (!email || !password || !code) {
     return res.status(400).json({ success: false, message: '请填写完整信息' });
@@ -114,20 +125,41 @@ app.post('/api/register', (req, res) => {
 
   // 创建用户
   const userId = crypto.randomUUID();
+  const inviteCodeValue = generateInviteCode();
+  
+  // 检查邀请码是否有效
+  let referrerId = null;
+  if (inviteCode) {
+    const referrerUserId = inviteCodes[inviteCode];
+    if (referrerUserId) {
+      referrerId = referrerUserId;
+    }
+  }
+
   users[email] = {
     id: userId,
     email,
     password: crypto.createHash('md5').update(password).digest('hex'),
     createdAt: Date.now(),
-    referrer: referrer || null
+    inviteCode: inviteCodeValue,
+    referrerId: referrerId
   };
 
-  // 建立上下级关系
-  if (referrer && users[referrer]) {
+  // 保存邀请码映射
+  inviteCodes[inviteCodeValue] = userId;
+
+  // 建立上下级关系（支持多级）
+  if (referrerId) {
     userRelations[userId] = {
-      parent: users[referrer].id,
+      parent: referrerId,
       level: 1
     };
+
+    // 建立二级关系
+    const parentRelation = userRelations[referrerId];
+    if (parentRelation) {
+      userRelations[userId].level = parentRelation.level + 1;
+    }
   }
 
   // 清除验证码
@@ -136,7 +168,7 @@ app.post('/api/register', (req, res) => {
   res.json({ 
     success: true, 
     message: '注册成功',
-    data: { userId, email }
+    data: { userId, email, inviteCode: inviteCodeValue }
   });
 });
 
@@ -167,6 +199,7 @@ app.post('/api/login', (req, res) => {
     data: { 
       userId: user.id, 
       email: user.email,
+      inviteCode: user.inviteCode,
       token 
     }
   });
@@ -187,21 +220,79 @@ app.post('/api/user-info', (req, res) => {
       id: user.id, 
       email: user.email,
       createdAt: user.createdAt,
-      referrer: user.referrer
+      inviteCode: user.inviteCode,
+      referrerId: user.referrerId
     }
   });
 });
 
-// 获取下级列表 API
+// 获取下级列表 API（支持多级）
 app.post('/api/get-downline', (req, res) => {
-  const { userId } = req.body;
+  const { userId, level = 2 } = req.body;
   
+  // 获取指定层级的下级
   const downline = Object.entries(userRelations)
-    .filter(([, relation]) => relation.parent === userId)
-    .map(([id]) => users[id] ? users[id].email : null)
+    .filter(([, relation]) => {
+      // 直接下级（一级）
+      if (relation.parent === userId) return true;
+      // 二级下级
+      if (level >= 2) {
+        const parentRelation = userRelations[relation.parent];
+        if (parentRelation && parentRelation.parent === userId) return true;
+      }
+      return false;
+    })
+    .map(([id]) => users[id] ? { id, email: users[id].email, level: userRelations[id].level } : null)
     .filter(Boolean);
 
   res.json({ success: true, data: downline });
+});
+
+// 获取下级统计 API
+app.post('/api/get-downline-stats', (req, res) => {
+  const { userId } = req.body;
+  
+  const stats = {
+    level1: 0,  // 直接下级
+    level2: 0,  // 二级下级
+    total: 0
+  };
+
+  Object.values(userRelations).forEach(relation => {
+    if (relation.parent === userId) {
+      stats.level1++;
+      stats.total++;
+    } else {
+      const parentRelation = userRelations[relation.parent];
+      if (parentRelation && parentRelation.parent === userId) {
+        stats.level2++;
+        stats.total++;
+      }
+    }
+  });
+
+  res.json({ success: true, data: stats });
+});
+
+// 获取邀请二维码链接
+app.post('/api/get-invite-url', (req, res) => {
+  const { userId } = req.body;
+  
+  const user = Object.values(users).find(u => u.id === userId);
+  if (!user) {
+    return res.status(400).json({ success: false, message: '用户不存在' });
+  }
+
+  const inviteUrl = `https://www.yandao.vip/app/#register?invite=${user.inviteCode}`;
+  
+  res.json({ 
+    success: true, 
+    data: { 
+      inviteCode: user.inviteCode,
+      inviteUrl,
+      qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(inviteUrl)}`
+    }
+  });
 });
 
 // 健康检查
