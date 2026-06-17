@@ -26,7 +26,18 @@ export function navigateTo(path: string): void {
   const fullPath = resolvePath(path)
 
   try {
-    // 策略1: 直接设置 location.href
+    // 策略1: history.pushState + 强制重新加载
+    if (typeof window !== 'undefined' && window.history) {
+      window.history.pushState({}, '', fullPath)
+      window.location.reload()
+      return
+    }
+  } catch (e) {
+    // 继续尝试其他方法
+  }
+
+  try {
+    // 策略2: 直接设置 location.href
     if (typeof window !== 'undefined' && window.location) {
       window.location.href = fullPath
       return
@@ -36,7 +47,7 @@ export function navigateTo(path: string): void {
   }
 
   try {
-    // 策略2: document.location
+    // 策略3: document.location
     if (typeof document !== 'undefined' && document.location) {
       document.location.href = fullPath
       return
@@ -46,7 +57,7 @@ export function navigateTo(path: string): void {
   }
 
   try {
-    // 策略3: location.assign
+    // 策略4: location.assign
     if (typeof location !== 'undefined') {
       location.assign(fullPath)
       return
@@ -56,7 +67,7 @@ export function navigateTo(path: string): void {
   }
 
   try {
-    // 策略4: window.open (self)
+    // 策略5: window.open (self)
     if (typeof window !== 'undefined') {
       window.open(fullPath, '_self')
       return
