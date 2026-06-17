@@ -1,5 +1,6 @@
 "use client"
 
+import { navigateTo } from "@/lib/navigation"
 import {
   BookOpen,
   Sparkles,
@@ -104,9 +105,9 @@ export default function YiXuePage({ onBack }: YiXuePageProps = {}) {
     <div className="min-h-screen bg-gradient-to-b from-[#1a1410] via-[#1f1814] to-[#241c16] text-white">
       <header className="bg-gradient-to-b from-[#1a1410] to-transparent pt-10 pb-4 px-4">
         <div className="flex items-center gap-3 mb-4">
-          <a href="/" className="w-10 h-10 rounded-full bg-amber-900/40 flex items-center justify-center hover:bg-amber-900/60 transition-colors">
+          <button onClick={() => navigateTo("/")} className="w-10 h-10 rounded-full bg-amber-900/40 flex items-center justify-center hover:bg-amber-900/60 transition-colors">
             <ChevronLeft className="w-5 h-5 text-amber-300" />
-          </a>
+          </button>
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
@@ -163,16 +164,16 @@ export default function YiXuePage({ onBack }: YiXuePageProps = {}) {
             }
             const href = routeMap[tool.id] || "/yi-xue"
             return (
-              <a
+              <button
                 key={tool.id}
-                href={href}
-                className={`${colors.bg} rounded-lg p-2 border ${colors.border} transition-all duration-200 active:scale-95`}
+                onClick={() => navigateTo(href)}
+                className={`${colors.bg} rounded-lg p-2 border ${colors.border} transition-all duration-200 active:scale-95 w-full`}
               >
                 <div className={`w-8 h-8 rounded-md bg-white/10 flex items-center justify-center mb-1.5 mx-auto`}>
                   <Icon className={`w-4 h-4 ${colors.icon}`} />
                 </div>
                 <h3 className="text-xs font-bold text-white text-center">{tool.title}</h3>
-              </a>
+              </button>
             )
           })}
         </div>

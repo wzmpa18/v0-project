@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { navigateTo } from '@/lib/navigation'
 import { TCMPage } from '@/components/pages/tcm-page'
 import { HerbalPage } from '@/components/pages/herbal-page'
 import { 
@@ -27,9 +28,9 @@ export default function HerbalPageRoute({ onBack }: HerbalPageRouteProps = {}) {
       {/* 顶部导航 */}
       <div className="sticky top-0 z-10 bg-gradient-to-b from-[#1a1410] to-transparent pt-10 pb-3 border-b border-emerald-800/30">
         <div className="flex items-center gap-2 px-4 mb-3">
-          <a href="/" className="w-10 h-10 rounded-full bg-emerald-900/40 flex items-center justify-center hover:bg-emerald-900/60 transition-colors">
+          <button onClick={() => navigateTo("/")} className="w-10 h-10 rounded-full bg-emerald-900/40 flex items-center justify-center hover:bg-emerald-900/60 transition-colors">
             <ChevronLeft className="w-5 h-5 text-emerald-300" />
-          </a>
+          </button>
           <div>
             <h1 className="text-lg font-bold text-emerald-400">中医</h1>
             <p className="text-xs text-emerald-200/60">传承千年智慧 · 中医综合平台</p>
@@ -48,7 +49,7 @@ export default function HerbalPageRoute({ onBack }: HerbalPageRouteProps = {}) {
                 经络穴位功能请通过首页进入人体经络模型查看
               </p>
               <button
-                onClick={() => window.location.href = '/meridian'}
+                onClick={() => navigateTo('/meridian')}
                 className="w-full mt-3 py-2.5 bg-emerald-700/50 text-emerald-200 rounded-xl text-sm font-medium hover:bg-emerald-700/70 transition-colors"
               >
                 进入经络模型

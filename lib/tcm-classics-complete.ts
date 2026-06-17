@@ -39,7 +39,7 @@ export interface ClassicBook {
 
 // ============ 伤寒论 ============
 
-const SHANGHAN_LUN_CLAUSES: Clause[] = [
+export const SHANGHAN_LUN_CLAUSES: Clause[] = [
   { id: "SH-001", chapter: "辨太阳病脉证并治上", original: "太阳之为病，脉浮，头项强痛而恶寒。", translation: "太阳病的典型表现是：脉象浮，头部和项部僵硬疼痛，并且怕冷。", annotation: "此为太阳病提纲。脉浮主表，头项强痛为太阳经脉受邪，恶寒为风寒外束卫阳被遏。凡见此脉证，即可诊断为太阳病。" },
   { id: "SH-002", chapter: "辨太阳病脉证并治上", original: "太阳病，发热，汗出，恶风，脉缓者，名为中风。", translation: "太阳病的症状中，如果有发热、出汗、怕风、脉象浮缓，就叫做中风证。", annotation: "中风为太阳表虚证。风邪疏泄，卫气不固，故汗出恶风。桂枝汤主之。与麻黄汤证的无汗恶寒相鉴别。" },
   { id: "SH-003", chapter: "辨太阳病脉证并治上", original: "太阳病，或已发热，或未发热，必恶寒，体痛，呕逆，脉阴阳俱紧者，名为伤寒。", translation: "太阳病，有的已经发热，有的还未发热，但必定怕冷，身体疼痛，呕吐气逆，寸关尺三部脉象都紧，这叫做伤寒。", annotation: "伤寒为太阳表实证。寒邪束表，卫阳被遏，营阴郁滞。无汗、恶寒、身痛、脉紧为辨证要点。麻黄汤主之。" },
@@ -313,3 +313,61 @@ const SHANGHAN_LUN_CLAUSES: Clause[] = [
   { id: "SH-271", chapter: "辨少阳病脉证并治", original: "伤寒三日，少阳脉小者，欲已也。", translation: "伤寒三天，少阳脉小的，是病将愈。", annotation: "脉小为邪衰。欲已。" },
   { id: "SH-272", chapter: "辨少阳病脉证并治", original: "少阳病欲解时，从寅至辰上。", translation: "少阳病欲解时，从寅时至辰时。", annotation: "寅卯辰为少阳经气旺盛之时。" }
 ]
+
+// ============ 倪海厦四件套经典 ============
+
+export const NI_HAI_XIA_FOUR_CLASSICS: ClassicBook[] = [
+  {
+    id: "shanghan-lun",
+    name: "伤寒论",
+    author: "张仲景",
+    dynasty: "东汉",
+    description: "《伤寒论》是中医经典著作，东汉张仲景所著，系统地阐述了外感热病的辨证论治规律，创立了六经辨证体系，是中医临床辨证论治的奠基之作。",
+    content: ["六经辨证", "398条原文", "113方"],
+    coreTheory: ["六经辨证", "八纲辨证", "气血津液辨证"],
+    famousFormulas: ["桂枝汤", "麻黄汤", "小柴胡汤", "大承气汤", "四逆汤"],
+    keyConcepts: ["太阳病", "阳明病", "少阳病", "太阴病", "少阴病", "厥阴病"],
+    hasFullText: true,
+    clauses: SHANGHAN_LUN_CLAUSES
+  },
+  {
+    id: "jingui-yaolue",
+    name: "金匮要略",
+    author: "张仲景",
+    dynasty: "东汉",
+    description: "《金匮要略》是东汉张仲景所著，是现存最早论述杂病诊治的专著，系统论述了内科、妇科、外科等四十余种杂病的辨证论治。",
+    content: ["脏腑经络先后病脉证", "痉湿暍病脉证", "百合狐惑阴阳毒病脉证", "疟病脉证并治", "中风历节病脉证", "血痹虚劳病脉证"],
+    coreTheory: ["脏腑辨证", "病因病机", "治未病"],
+    famousFormulas: ["肾气丸", "酸枣仁汤", "黄芪桂枝五物汤", "大黄䗪虫丸"],
+    keyConcepts: ["千般疢难，不越三条", "五脏元真通畅，人即安和", "见肝之病，知肝传脾，当先实脾"],
+    hasFullText: true
+  },
+  {
+    id: "wendi-lun",
+    name: "温病条辨",
+    author: "吴鞠通",
+    dynasty: "清代",
+    description: "《温病条辨》是清代吴鞠通所著，系统论述了温病的病因、病机、辨证和治疗，创立了三焦辨证体系，是温病学的经典之作。",
+    content: ["上焦篇", "中焦篇", "下焦篇"],
+    coreTheory: ["三焦辨证", "卫气营血辨证", "温病病因"],
+    famousFormulas: ["银翘散", "桑菊饮", "安宫牛黄丸", "三仁汤"],
+    keyConcepts: ["温邪上受，首先犯肺，逆传心包", "卫气营血", "三焦传变"],
+    hasFullText: false
+  },
+  {
+    id: "shennong-bencao",
+    name: "神农本草经",
+    author: "神农氏（托名）",
+    dynasty: "汉代",
+    description: "《神农本草经》是我国现存最早的中药学著作，载药365种，按照上中下三品分类，系统总结了汉代以前的药学成就。",
+    content: ["上品120种", "中品120种", "下品125种"],
+    coreTheory: ["四气五味", "君臣佐使", "七情合和"],
+    famousFormulas: [],
+    keyConcepts: ["上药养命，中药养性，下药治病", "药有阴阳配合，子母兄弟", "有毒无毒，斟酌其宜"],
+    hasFullText: false
+  }
+]
+
+export function getAllClassics(): ClassicBook[] {
+  return NI_HAI_XIA_FOUR_CLASSICS
+}

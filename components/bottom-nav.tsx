@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Home, BookOpen, User, ShoppingBag, Sparkles, Leaf } from "lucide-react"
+import { navigateTo } from "@/lib/navigation"
 
 interface BottomNavProps {
   activeTab: string
@@ -21,22 +22,20 @@ export function BottomNav({ activeTab }: BottomNavProps) {
       {showDropdown && (
         <div className="absolute bottom-16 left-0 right-0 bg-gradient-to-b from-[#241c16] to-[#1a1410] border-t border-amber-800/30 py-4">
           <div className="flex items-center justify-around max-w-lg mx-auto px-4">
-            <a
-              href="/yi-xue"
-              className="flex flex-col items-center gap-2 bg-amber-800/30 px-6 py-3 rounded-xl border border-amber-700/30 active:bg-amber-800/50 transition-all"
-              onClick={() => setShowDropdown(null)}
+            <button
+              onClick={() => { setShowDropdown(null); navigateTo("/yi-xue") }}
+              className="flex flex-col items-center gap-2 bg-amber-800/30 px-6 py-3 rounded-xl border border-amber-700/30 active:scale-95 transition-all"
             >
               <BookOpen className="w-6 h-6 text-amber-400" />
               <span className="text-sm font-medium text-amber-200">易学</span>
-            </a>
-            <a
-              href="/herbal"
-              className="flex flex-col items-center gap-2 bg-emerald-800/30 px-6 py-3 rounded-xl border border-emerald-700/30 active:bg-emerald-800/50 transition-all"
-              onClick={() => setShowDropdown(null)}
+            </button>
+            <button
+              onClick={() => { setShowDropdown(null); navigateTo("/herbal") }}
+              className="flex flex-col items-center gap-2 bg-emerald-800/30 px-6 py-3 rounded-xl border border-emerald-700/30 active:scale-95 transition-all"
             >
               <Leaf className="w-6 h-6 text-emerald-400" />
               <span className="text-sm font-medium text-emerald-200">中医</span>
-            </a>
+            </button>
           </div>
         </div>
       )}
@@ -46,14 +45,13 @@ export function BottomNav({ activeTab }: BottomNavProps) {
           const Icon = tab.icon
           const isActive = activeTab === tab.id
           return (
-            <a
+            <button
               key={tab.id}
-              href={tab.href}
+              onClick={() => navigateTo(tab.href)}
               className={`flex flex-col items-center justify-center flex-1 h-full py-1 transition-all duration-300 relative group ${
                 isActive ? "text-amber-400" : "text-gray-400"
               }`}
               aria-label={tab.label}
-              aria-current={isActive ? "page" : undefined}
             >
               <div className="relative">
                 <Icon 
@@ -68,7 +66,7 @@ export function BottomNav({ activeTab }: BottomNavProps) {
               }`}>
                 {tab.label}
               </span>
-            </a>
+            </button>
           )
         })}
 

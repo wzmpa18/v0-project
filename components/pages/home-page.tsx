@@ -19,6 +19,7 @@ import {
   Feather,
   Moon,
 } from "lucide-react"
+import { navigateTo } from "@/lib/navigation"
 
 export function HomePage() {
   const [todayInfo, setTodayInfo] = useState<any>(null)
@@ -117,26 +118,26 @@ export function HomePage() {
 
       <main className="px-4 pb-20">
         <div className="grid grid-cols-2 gap-2 mb-3">
-          <a
-            href="/yi-xue"
-            className="bg-gradient-to-br from-amber-800/80 to-amber-900/60 rounded-xl p-3.5 flex flex-col items-center gap-1 border border-amber-700/30 shadow-lg shadow-amber-900/20 active:scale-95 transition-transform"
+          <button
+            onClick={() => navigateTo("/yi-xue")}
+            className="bg-gradient-to-br from-amber-800/80 to-amber-900/60 rounded-xl p-3.5 flex flex-col items-center gap-1 border border-amber-700/30 shadow-lg shadow-amber-900/20 active:scale-95 transition-transform w-full"
           >
             <div className="w-10 h-10 rounded-full bg-amber-500/15 flex items-center justify-center border border-amber-500/30">
               <BookOpen className="w-5 h-5 text-amber-400" />
             </div>
             <span className="text-sm font-bold text-amber-300">易学</span>
             <span className="text-xs text-amber-200/60">命理排盘</span>
-          </a>
-          <a
-            href="/herbal"
-            className="bg-gradient-to-br from-emerald-800/80 to-emerald-900/60 rounded-xl p-3.5 flex flex-col items-center gap-1 border border-emerald-700/30 shadow-lg shadow-emerald-900/20 active:scale-95 transition-transform"
+          </button>
+          <button
+            onClick={() => navigateTo("/herbal")}
+            className="bg-gradient-to-br from-emerald-800/80 to-emerald-900/60 rounded-xl p-3.5 flex flex-col items-center gap-1 border border-emerald-700/30 shadow-lg shadow-emerald-900/20 active:scale-95 transition-transform w-full"
           >
             <div className="w-10 h-10 rounded-full bg-emerald-500/15 flex items-center justify-center border border-emerald-500/30">
               <Leaf className="w-5 h-5 text-emerald-400" />
             </div>
             <span className="text-sm font-bold text-emerald-300">中医</span>
             <span className="text-xs text-emerald-200/60">经方本草</span>
-          </a>
+          </button>
         </div>
 
         <div className="bg-gradient-to-br from-amber-900/40 to-amber-950/60 rounded-xl p-3 mb-2.5 border border-amber-800/30">
@@ -225,23 +226,23 @@ export function HomePage() {
         <div className="bg-gradient-to-br from-amber-900/30 to-amber-950/50 rounded-xl p-3 border border-amber-800/30 mb-2.5">
           <div className="flex items-center justify-between mb-2.5">
             <span className="text-sm font-bold text-amber-200">快捷工具</span>
-            <a href="/yi-xue" className="flex items-center gap-0.5 text-xs text-amber-400/70">
+            <button onClick={() => navigateTo("/yi-xue")} className="flex items-center gap-0.5 text-xs text-amber-400/70">
               更多 <ChevronRight className="w-3 h-3" />
-            </a>
+            </button>
           </div>
           <div className="grid grid-cols-6 gap-2">
             {quickTools.map((tool) => {
               const colors = colorClasses[tool.color] || colorClasses.amber
               const Icon = tool.icon
               return (
-                <a
+                <button
                   key={tool.id}
-                  href={`/${tool.id}`}
+                  onClick={() => navigateTo(`/${tool.id}`)}
                   className={`${colors.bg} rounded-lg p-2 flex flex-col items-center gap-1 border ${colors.border} active:scale-95 transition-transform`}
                 >
                   <Icon className={`w-5 h-5 ${colors.icon}`} />
                   <span className="text-xs text-white/80">{tool.label}</span>
-                </a>
+                </button>
               )
             })}
           </div>

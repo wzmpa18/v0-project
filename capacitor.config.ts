@@ -3,7 +3,15 @@ import type { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'com.guoxuechuan.app',
   appName: '国学传承',
-  webDir: 'out'
+  webDir: 'out',
+  server: {
+    androidScheme: 'https',
+    cleartext: true,
+    hostname: 'localhost',
+  },
+  android: {
+    allowMixedContent: true,
+  },
 };
 
 export default config;

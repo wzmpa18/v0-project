@@ -1,11 +1,22 @@
 "use client"
 
-import { useState } from "react"
-import { usePathname } from "next/navigation"
+import { useState, useEffect } from "react"
 import { BottomNav } from "@/components/bottom-nav"
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname()
+  const [pathname, setPathname] = useState("/")
+
+  useEffect(() => {
+    // 在客户端获取当前路径，避免 usePathname 在静态导出中返回 null
+    setPathname(window.location.pathname || "/")
+
+    // 监听 popstate 事件，支持浏览器前进/后退
+    const handlePopState = () => {
+      setPathname(window.location.pathname || "/")
+    }
+    window.addEventListener("popstate", handlePopState)
+    return () => window.removeEventListener("popstate", handlePopState)
+  }, [])
 
   const getActiveTabFromPath = (path: string): string => {
     if (path === "/") return "home"
@@ -14,14 +25,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return "home"
   }
 
-  const activeTab = getActiveTabFromPath(pathname)
-
   return (
     <div className="min-h-screen bg-[#1a1410] relative overflow-hidden">
       <div className="pb-20">
         {children}
       </div>
-      <BottomNav activeTab={activeTab} />
+      <BottomNav activeTab={getActiveTabFromPath(pathname)} />
     </div>
   )
 }
