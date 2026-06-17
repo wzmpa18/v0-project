@@ -41,6 +41,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN" className="bg-[#1a1a1a]">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `
+          // 全局错误捕获
+          window.onerror = function(msg, url, line, col, err) {
+            try { localStorage.setItem('_lastError', msg + ' at ' + url + ':' + line); } catch(e) {}
+          };
+          // 全局导航回退
+          document.addEventListener('DOMContentLoaded', function() {
+            document.body.addEventListener('click', function(e) {
+              var el = e.target.closest('[data-href]');
+              if (el && el.dataset.href) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.href = el.dataset.href;
+              }
+            }, true);
+          });
+          // 错误日志
+          console.log('[App] Layout loaded, ready for navigation');
+        ` }} />
+      </head>
       <body className="font-sans antialiased bg-[#1a1a1a] text-[#f5f5f7]">
         <AppShell>
           {children}
