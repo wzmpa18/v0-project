@@ -16,6 +16,8 @@
     nav .nav-links { display: flex; gap: 32px; list-style: none; }
     nav .nav-links a { color: #8899b4; text-decoration: none; font-size: 14px; transition: color 0.2s; }
     nav .nav-links a:hover { color: #4dabf7; }
+    nav .nav-links a.download-link { color: #fcc419; font-weight: 700; }
+    nav .nav-links a.download-link:hover { color: #f59f00; }
     .hero { padding: 160px 0 100px; text-align: center; }
     .hero .badge { display: inline-block; padding: 6px 16px; border: 1px solid rgba(77,171,247,0.3); border-radius: 20px; color: #4dabf7; font-size: 13px; margin-bottom: 24px; }
     .hero h1 { font-size: 48px; font-weight: 800; color: #fff; margin-bottom: 16px; letter-spacing: 2px; }
@@ -27,6 +29,8 @@
     .hero .cta .primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(77,171,247,0.3); }
     .hero .cta .secondary { border: 2px solid rgba(77,171,247,0.4); color: #4dabf7; }
     .hero .cta .secondary:hover { background: rgba(77,171,247,0.1); }
+    .hero .cta .gold { background: linear-gradient(135deg, #f59f00, #fcc419); color: #1a2233; box-shadow: 0 4px 16px rgba(245,159,0,0.3); }
+    .hero .cta .gold:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(245,159,0,0.4); }
     .section-title { text-align: center; margin-bottom: 60px; }
     .section-title h2 { font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 12px; }
     .section-title p { font-size: 16px; color: #8899b4; }
@@ -61,6 +65,11 @@
     .product-card .card-footer a { display: inline-block; padding: 10px 28px; border-radius: 6px; font-size: 14px; font-weight: 600; text-decoration: none; transition: all 0.2s; }
     .product-card .card-footer .download { background: linear-gradient(135deg, #4dabf7, #748ffc); color: #fff; }
     .product-card .card-footer .download:hover { transform: translateY(-1px); }
+    .product-card .card-footer .download-gold { background: linear-gradient(135deg, #f59f00, #fcc419); color: #1a2233; font-size: 15px; padding: 12px 32px; box-shadow: 0 4px 16px rgba(245,159,0,0.25); }
+    .product-card .card-footer .download-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,159,0,0.35); }
+    .product-card.guoxue-card { border-color: rgba(245,159,0,0.25); box-shadow: 0 4px 24px rgba(245,159,0,0.08); }
+    .product-card.guoxue-card:hover { border-color: rgba(245,159,0,0.5); box-shadow: 0 12px 36px rgba(245,159,0,0.15); }
+    .product-card .card-header .guoxue-badge { display: inline-block; margin-top: 10px; padding: 4px 12px; background: linear-gradient(135deg, #f59f00, #fcc419); color: #1a2233; font-size: 12px; font-weight: 700; border-radius: 12px; }
     .product-card .card-footer .coming { background: rgba(255,255,255,0.06); color: #8899b4; cursor: default; }
     .p-icon.lang { background: linear-gradient(135deg, #4dabf7, #748ffc); }
     .p-icon.guoxue { background: linear-gradient(135deg, #f59f00, #fcc419); }
@@ -103,6 +112,7 @@
         <li><a href="#advantages">技术优势</a></li>
         <li><a href="#about">关于我们</a></li>
         <li><a href="#contact-section">联系我们</a></li>
+        <li><a href="https://www.yandao.vip/app-download/guoxue-chuancheng-v1.0-release.apk" class="download-link" title="下载 国学传承 APP">📱 APP下载</a></li>
       </ul>
     </div>
   </nav>
@@ -113,6 +123,7 @@
       <h1>技术驱动 · 专注<span class="accent">全栈开发</span>与<span class="accent">垂直领域</span>应用</h1>
       <p class="subtitle">我们不光自己做产品，也帮你把想法变成产品。快速交付，源码在手。</p>
       <div class="cta">
+        <a href="https://www.yandao.vip/app-download/guoxue-chuancheng-v1.0-release.apk" class="gold">📱 下载 国学传承APP</a>
         <a href="#contact-section" class="primary">业务合作</a>
         <a href="#products" class="secondary">查看案例</a>
       </div>
@@ -148,7 +159,12 @@
             </div>
             <div class="product-item">
               <div class="icon guoxue">📚</div>
-              <div class="info"><h4>国学传承</h4><p>经典研读、传统文化学习、诗词欣赏</p></div>
+              <div class="info">
+                <h4>国学传承 APP <span style="color:#fcc419;font-size:12px;font-weight:700;margin-left:8px;">⭐ 热门</span></h4>
+                <p style="margin-bottom:6px;">八字排盘、紫微斗数、奇门遁甲、中医经络、3D人体模型、方剂大全、模拟考试</p>
+                <a href="https://www.yandao.vip/app-download/guoxue-chuancheng-v1.0-release.apk" style="display:inline-block;padding:4px 12px;background:linear-gradient(135deg,#f59f00,#fcc419);color:#1a2233;font-size:12px;font-weight:700;border-radius:6px;text-decoration:none;">立即下载 APK</a>
+                <span style="color:#8899b4;font-size:12px;margin-left:8px;">v1.0</span>
+              </div>
             </div>
             <div class="product-item">
               <div class="icon life">🏪</div>
@@ -186,23 +202,28 @@
             <a href="/app-download/yandao/yandao-xuewaiyu-v1.0.apk" class="download">下载APP</a>
           </div>
         </div>
-        <div class="product-card">
+        <div class="product-card guoxue-card">
           <div class="card-header">
             <div class="p-icon guoxue">📚</div>
             <h3>国学传承</h3>
             <p>传统文化与易学工具</p>
+            <span class="guoxue-badge">⭐ 热门推荐 · 立即下载</span>
           </div>
           <div class="card-body">
             <ul class="features">
               <li>八字排盘 / 紫微斗数</li>
               <li>奇门遁甲 / 六爻纳甲</li>
               <li>中医经络穴位查询</li>
+              <li>3D 人体模型可视化</li>
+              <li>方剂大全 · 中医百科</li>
               <li>经典古籍研读</li>
-              <li>AI智能分析解读</li>
+              <li>模拟考试 · 知识闯关</li>
+              <li>AI 智能分析解读</li>
             </ul>
           </div>
           <div class="card-footer">
-            <a href="/app-download/guoxue/guoxue-chuancheng-v1.0.apk" class="download">下载APP</a>
+            <a href="https://www.yandao.vip/app-download/guoxue-chuancheng-v1.0-release.apk" class="download-gold">📱 立即下载 APK</a>
+            <div style="margin-top:10px;font-size:12px;color:#8899b4;">备用下载：<a href="https://www.yandao.vip/app-download/guoxue/guoxue-chuancheng-v1.0.apk" style="color:#74c0fc;text-decoration:none;">guoxue-chuancheng-v1.0.apk</a></div>
           </div>
         </div>
         <div class="product-card">

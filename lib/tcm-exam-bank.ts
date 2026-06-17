@@ -1,19 +1,19 @@
 // 中医题库数据库
-// 包含中医基础理论、经络穴位、方剂学、诊断学等题目
+// 包含中医基础理论、经络穴位、中药学、方剂学、中医诊断学、针灸学题目
 
 export interface Question {
   id: string
-  type: "single" | "multiple" | "truefalse" | "short"  // 单选、多选、判断、简答
+  type: "single" | "multiple" | "truefalse" | "short"
   category: string
   subCategory: string
-  difficulty: 1 | 2 | 3  // 1简单 2中等 3困难
+  difficulty: 1 | 2 | 3
   question: string
-  options?: string[]  // 选择题选项
-  answer: string | string[]  // 答案
-  explanation: string  // 解析
-  source?: string  // 出处/来源
-  points?: string[]  // 相关穴位/经络/方剂
-  tips?: string  // 答题技巧
+  options?: string[]
+  answer: string | string[]
+  explanation: string
+  source?: string
+  points?: string[]
+  tips?: string
 }
 
 // 题库分类
@@ -30,327 +30,968 @@ export const QUESTION_CATEGORIES = {
     穴位功效: ["五腧穴", "原穴", "络穴", "郄穴", "背俞穴", "募穴"],
   },
   中药学: {
-    四气五味: ["寒热温凉", "辛甘酸苦咸"],
-    配伍禁忌: ["十八反", "十九畏", "妊娠禁忌"],
-    常用中药: ["解表药", "清热药", "泻下药", "祛风湿药", "化湿药", "利水渗湿药", "温里药", "理气药", "消食药", "止血药", "活血化瘀药", "化痰止咳平喘药", "安神药", "补虚药"],
+    总论: ["四气五味", "升降浮沉", "归经", "配伍", "十八反十九畏"],
+    解表药: ["辛温解表", "辛凉解表"],
+    清热药: ["清热泻火药", "清热燥湿药", "清热解毒药", "清热凉血药"],
+    补益药: ["补气药", "补血药", "补阴药", "补阳药"],
   },
   方剂学: {
-    解表剂: ["辛温解表", "辛凉解表", "扶正解表"],
-    和解剂: ["和解少阳", "调和肝脾", "调和肠胃"],
+    解表剂: ["辛温解表", "辛凉解表"],
+    泻下剂: ["寒下", "温下"],
+    和解剂: ["和解少阳", "调和肝脾"],
     清热剂: ["清气分热", "清营凉血", "清热解毒", "清脏腑热"],
-    温里剂: ["温中祛寒", "回阳救逆", "温经散寒"],
+    温里剂: ["温中祛寒", "回阳救逆"],
     补益剂: ["补气", "补血", "气血双补", "补阴", "补阳"],
+    理气剂: ["行气", "降气"],
+    理血剂: ["活血祛瘀", "止血"],
+    祛湿剂: ["燥湿和胃", "清热祛湿", "利水渗湿", "温化水湿"],
+    祛痰剂: ["燥湿化痰", "清热化痰"],
   },
   诊断学: {
-    望诊: ["望神", "望色", "望形", "望态", "舌诊"],
+    望诊: ["望神", "望色", "望形", "舌诊"],
     闻诊: ["听声音", "嗅气味"],
-    问诊: ["问寒热", "问汗", "问疼痛", "问睡眠", "问饮食", "问二便"],
-    切诊: ["脉诊", "按诊"],
+    问诊: ["问寒热", "问汗", "问疼痛", "问饮食", "问二便"],
+    切诊: ["脉诊"],
+    辨证: ["八纲辨证", "脏腑辨证", "六经辨证", "卫气营血辨证"],
   },
   针灸学: {
-    针灸理论: ["针灸原理", "针灸原则", "配穴方法"],
-    针灸操作: ["针刺手法", "艾灸方法", "拔罐方法"],
-    针灸治疗: ["内科病证", "外科病证", "妇科病证", "儿科病证", "五官科病证"],
-  },
-  内科学: {
-    肺系疾病: ["感冒", "咳嗽", "哮喘", "肺痿"],
-    心系疾病: ["心悸", "胸痹", "不寐"],
-    脾胃疾病: ["胃痛", "腹痛", "便秘", "泄泻"],
-    肝胆疾病: ["胁痛", "黄疸", "眩晕"],
-    肾系疾病: ["水肿", "淋证", "腰痛"],
+    针灸理论: ["针灸原则", "配穴方法"],
+    针灸操作: ["针刺手法", "艾灸方法"],
+    针灸治疗: ["内科病证", "妇科病证", "儿科病证"],
   },
 }
 
 // 题库数据
 export const QUESTIONS: Question[] = [
-  // 经络穴位 - 单选题
-  {
-    id: "meridian_001",
-    type: "single",
-    category: "经络穴位",
-    subCategory: "十二正经",
-    difficulty: 1,
-    question: "手太阴肺经的起始穴位是？",
-    options: ["中府", "云门", "少商", "商阳"],
-    answer: "中府",
-    explanation: "手太阴肺经起于中焦胃脘部，向下联络大肠，回绕过来沿着胃的上口，通过横膈，连属肺脏，从肺系（气管、喉咙）横行出来，向下沿上臂内侧，行于手少阴心经和手厥阴心包经的前面，下至肘中，沿着前臂内侧桡骨边缘，进入寸口（桡动脉搏动处），上向大鱼际部，沿边际，出大指的末端。其起始穴为中府。",
-    source: "《针灸学》",
-    tips: "肺经起于中府，终于少商"
-  },
-  {
-    id: "meridian_002",
-    type: "single",
-    category: "经络穴位",
-    subCategory: "十二正经",
-    difficulty: 2,
-    question: "足阳明胃经的合穴是？",
-    options: ["内庭", "陷谷", "足三里", "解溪"],
-    answer: "足三里",
-    explanation: "足三里是足阳明胃经的合穴，也是胃的下合穴。合穴多位于肘膝关节附近，是经气汇合之处。足三里具有调理脾胃、补中益气、通经活络、扶正祛邪的功效，是保健要穴。",
-    source: "《针灸学》",
-    points: ["足三里", "合穴"]
-  },
-  {
-    id: "meridian_003",
-    type: "single",
-    category: "经络穴位",
-    subCategory: "穴位功效",
-    difficulty: 2,
-    question: "下列穴位中，哪个是心包的募穴？",
-    options: ["膻中", "巨阙", "中脘", "关元"],
-    answer: "膻中",
-    explanation: "膻中是心包的募穴，也是气会。位于胸部，当前正中线上，平第4肋间，两乳头连线的中点。主治心痛、心悸、胸闷、气短等心系病证，以及咳嗽、哮喘等肺系病证。",
-    source: "《针灸学》",
-    points: ["膻中", "募穴", "心包"]
-  },
-  {
-    id: "meridian_004",
-    type: "multiple",
-    category: "经络穴位",
-    subCategory: "奇经八脉",
-    difficulty: 3,
-    question: "下列哪些经脉与奇经八脉中的督脉有直接联系？（多选）",
-    options: ["足太阳膀胱经", "足少阴肾经", "手太阳小肠经", "足少阳胆经"],
-    answer: ["足太阳膀胱经", "手太阳小肠经"],
-    explanation: "督脉行于身后正中线，与足太阳膀胱经在风府、哑门处相络入脑，手太阳小肠经从肩胛部下循脊柱，与督脉相交。其他选项的经脉主要循行于身体侧面或前方。",
-    source: "《经络学》",
-    points: ["督脉", "足太阳膀胱经", "手太阳小肠经"]
-  },
-  {
-    id: "meridian_005",
-    type: "truefalse",
-    category: "经络穴位",
-    subCategory: "穴位定位",
-    difficulty: 1,
-    question: "合谷穴在手背，第1、2掌骨间，当掌骨间的中点处。",
-    options: ["正确", "错误"],
-    answer: "错误",
-    explanation: "合谷穴在手背，第1、2掌骨间，当第2掌骨桡侧的中点处。不是掌骨间的中点，而是第2掌骨桡侧的中点。简便取穴法：以一手的拇指指骨关节横纹，放在另一手拇指、食指之间的指蹼缘上，当拇指尖下是穴。",
-    source: "《针灸学》",
-    points: ["合谷"]
-  },
-  // 方剂学 - 单选题
-  {
-    id: "formula_001",
-    type: "single",
-    category: "方剂学",
-    subCategory: "解表剂",
-    difficulty: 1,
-    question: "桂枝汤的组成药物不包括下列哪一味？",
-    options: ["桂枝", "白芍", "麻黄", "甘草"],
-    answer: "麻黄",
-    explanation: "桂枝汤出自《伤寒论》，由桂枝、白芍、生姜、大枣、炙甘草组成，用于外感风寒表虚证。麻黄汤虽也是解表剂，但组成是麻黄、桂枝、杏仁、炙甘草，用于外感风寒表实证。两者组成不同，需注意区分。",
-    source: "《伤寒论》",
-    points: ["桂枝汤", "麻黄汤"]
-  },
-  {
-    id: "formula_002",
-    type: "single",
-    category: "方剂学",
-    subCategory: "补益剂",
-    difficulty: 2,
-    question: "六味地黄丸的“三补”是指哪三味药？",
-    options: ["熟地、山药、茯苓", "熟地、山茱萸、丹皮", "熟地、山药、山茱萸", "山药、茯苓、泽泻"],
-    answer: "熟地、山药、山茱萸",
-    explanation: "六味地黄丸由熟地黄、山茱萸、山药、泽泻、茯苓、丹皮组成。其中熟地黄、山茱萸、山药为“三补”，滋阴补肾；泽泻、茯苓、丹皮为“三泻”，泻浊利湿。三补三泻配伍特点使其补而不腻。",
-    source: "《小儿药证直诀》",
-    points: ["六味地黄丸", "三补"]
-  },
-  {
-    id: "formula_003",
-    type: "multiple",
-    category: "方剂学",
-    subCategory: "补益剂",
-    difficulty: 2,
-    question: "下列哪些是补中益气汤的功用？（多选）",
-    options: ["补中益气", "升阳举陷", "清热解毒", "调和营卫"],
-    answer: ["补中益气", "升阳举陷"],
-    explanation: "补中益气汤出自《脾胃论》，功用是补中益气、升阳举陷。主治脾胃气虚证、中气下陷证和气虚发热证。方中黄芪为君药，人参、白术、炙甘草健脾益气为臣，当归养血、陈皮理气为佐，升麻、柴胡升阳举陷为使。",
-    source: "《脾胃论》",
-    points: ["补中益气汤", "补中益气", "升阳举陷"]
-  },
-  {
-    id: "formula_004",
-    type: "single",
-    category: "方剂学",
-    subCategory: "和解剂",
-    difficulty: 2,
-    question: "小柴胡汤中和解少阳的药物组合是？",
-    options: ["柴胡、黄芩", "人参、半夏", "生姜、大枣", "甘草、白芍"],
-    answer: "柴胡、黄芩",
-    explanation: "小柴胡汤中柴胡透散少阳之邪，黄芩清泄少阳之热，二者合用为和解少阳的核心药物。人参、半夏、生姜、大枣、甘草主要是健脾和胃、益气扶正的功用。",
-    source: "《伤寒论》",
-    points: ["小柴胡汤", "柴胡", "黄芩"]
-  },
-  // 诊断学 - 单选题
-  {
-    id: "diagnosis_001",
-    type: "single",
-    category: "诊断学",
-    subCategory: "望诊",
-    difficulty: 2,
-    question: "下列哪种舌象主热证？",
-    options: ["舌淡", "舌红", "舌淡胖", "舌边有齿痕"],
-    answer: "舌红",
-    explanation: "舌红主热证，舌色越红，热象越重。舌淡主气血虚；舌淡胖主脾肾阳虚；舌边有齿痕主脾虚湿盛。需要注意的是，舌红少苔主阴虚，舌红苔黄主实热。",
-    source: "《中医诊断学》",
-    tips: "舌诊中，红主热，淡主虚，紫主瘀，青主寒"
-  },
-  {
-    id: "diagnosis_002",
-    type: "single",
-    category: "诊断学",
-    subCategory: "问诊",
-    difficulty: 1,
-    question: "“但欲漱水不欲咽”常见于下列哪种证候？",
-    options: ["外感风寒", "阳明经热证", "瘀血内阻", "痰饮内停"],
-    answer: "瘀血内阻",
-    explanation: "“但欲漱水不欲咽”出自《伤寒论》，是瘀血内阻的特征性表现。瘀血内阻，津液不能上承，故口燥欲漱水；但病在血分，非气分热盛，故又不欲咽下。阳明经热证是渴欲饮水且饮水量多。",
-    source: "《伤寒论》",
-    tips: "瘀血特征：口燥漱水不欲咽，舌质紫暗，脉涩"
-  },
-  {
-    id: "diagnosis_003",
-    type: "multiple",
-    category: "诊断学",
-    subCategory: "脉诊",
-    difficulty: 3,
-    question: "下列哪些脉象主痰饮？（多选）",
-    options: ["滑脉", "弦脉", "迟脉", "濡脉"],
-    answer: ["滑脉", "弦脉"],
-    explanation: "滑脉主痰饮、食滞、实热。弦脉主痰饮、肝胆病、痛证。迟脉主寒证。濡脉（浮而细软）主虚证、湿证。痰饮病证常见滑脉和弦脉，如《金匮要略》所言：“脉偏弦者饮也”。",
-    source: "《中医诊断学》",
-    points: ["滑脉", "弦脉", "痰饮"]
-  },
-  // 中药学 - 单选题
-  {
-    id: "herb_001",
-    type: "single",
-    category: "中药学",
-    subCategory: "配伍禁忌",
-    difficulty: 2,
-    question: "“十八反”中，与乌头相反的药物是？",
-    options: ["甘草", "海藻", "藜芦", "细辛"],
-    answer: "甘草",
-    explanation: "“十八反”歌诀中有“本草明言十八反，半蒌贝蔹芨攻乌，藻戟遂芫俱战草，诸参辛芍叛藜芦”。其中乌头（包括川乌、草乌、附子）反甘草。所以开方时乌头不能与甘草同用。",
-    source: "《中药学》",
-    tips: "十八反是常考内容，需熟记歌诀"
-  },
-  {
-    id: "herb_002",
-    type: "single",
-    category: "中药学",
-    subCategory: "四气五味",
-    difficulty: 1,
-    question: "下列药物中，哪一味药性属寒？",
-    options: ["附子", "干姜", "黄连", "肉桂"],
-    answer: "黄连",
-    explanation: "黄连性寒，归心、脾、胃、肝、胆、大肠经，具有清热燥湿、泻火解毒的功效。附子、干姜、肉桂均为温热性药物，其中附子、肉桂补火助阳，干姜温中散寒。",
-    source: "《中药学》",
-    points: ["黄连", "寒", "清热燥湿"]
-  },
-  // 针灸学 - 判断题
-  {
-    id: "acupuncture_001",
-    type: "truefalse",
-    category: "针灸学",
-    subCategory: "针灸操作",
-    difficulty: 2,
-    question: "对于体质虚弱者，针刺治疗时应采用强刺激手法，以达到治疗效果。",
-    options: ["正确", "错误"],
-    answer: "错误",
-    explanation: "对于体质虚弱者，应采用弱刺激或中等刺激手法，宜轻不宜重，留针时间不宜过长。《灵枢·经脉》篇指出：“盛则泻之，虚则补之。”体质虚弱者本已正气不足，应以补法为主，慎用泻法，强刺激会加重虚损。",
-    source: "《灵枢》",
-    points: ["针刺手法", "补泻"]
-  },
-  {
-    id: "acupuncture_002",
-    type: "single",
-    category: "针灸学",
-    subCategory: "配穴方法",
-    difficulty: 2,
-    question: "“肚腹三里留”体现的是哪种配穴方法？",
-    options: ["近部选穴", "远部选穴", "辨证选穴", "对症选穴"],
-    answer: "远部选穴",
-    explanation: "“肚腹三里留”是《四总穴歌》中的内容，体现了远部选穴的原则。远部选穴是指在距离病变部位较远的地方选取穴位。足三里是胃的下合穴，位于膝关节以下，可治疗腹部脾胃病证。",
-    source: "《针灸大成》",
-    points: ["足三里", "远部选穴", "下合穴"]
-  },
-  // 中医基础 - 简答题
-  {
-    id: "basic_001",
-    type: "short",
-    category: "中医基础",
-    subCategory: "阴阳五行",
-    difficulty: 3,
-    question: "试述阴阳学说在中医学中的应用。",
-    answer: [
-      "1. 说明人体的组织结构：人体上部为阳，下部为阴；体表为阳，体内为阴；背为阳，腹为阴；五脏为阴，六腑为阳等。",
-      "2. 说明人体的生理功能：阴阳平衡是人体正常生理活动的基础，如《素问·生气通天论》说：'阴平阳秘，精神乃治'。",
-      "3. 说明人体的病理变化：阴阳偏盛偏衰是疾病的基本病机，如'阳胜则热，阴胜则寒'、'阳虚则外寒，阴虚则内热'。",
-      "4. 用于疾病的诊断：通过四诊收集的资料，以阴阳辨证纲领，如'善诊者，察色按脉，先别阴阳'。",
-      "5. 用于疾病的治疗：确定治疗原则，如'谨察阴阳所在而调之，以平为期'，以及'阴病治阳，阳病治阴'等。"
-    ],
-    explanation: "本题考察阴阳学说在中医学中的具体应用。需要从人体结构、生理、病理、诊断、治疗五个方面全面回答，体现阴阳学说对中医理论体系的指导作用。",
-    source: "《中医基础理论》"
-  },
-  {
-    id: "basic_002",
-    type: "short",
-    category: "中医基础",
-    subCategory: "脏腑关系",
-    difficulty: 3,
-    question: "试述心与肾之间的关系。",
-    answer: [
-      "心与肾的关系主要体现在水火既济、精神互用君安位三个方面的关系。",
-      "1. 水火既济：心属火，居上焦；肾属水，居下焦。正常情况下，心火下降于肾，温煦肾水，使肾水不寒；肾水上济于心，滋养心阴，使心火不亢。这种水火升降互济的关系，称为'水火既济'或'心肾相交'。",
-      "2. 精神互用：心藏神，肾藏精。精能化气生神，神能统精驭气。精与神、肾与心的功能活动相互依存、相互为用。",
-      "3. 君安其位：心为君火，肾为相火（命火）。君火安于上位，相火潜藏于下，共同温煦脏腑，推动人体的生命活动。若心肾不交、水火不济，则出现心悸、失眠、腰痛、耳鸣、遗精等病证。"
-    ],
-    explanation: "心肾关系是五脏关系中的重要考点。主要从水火既济（心肾相交）、精神互用、君安其位三个方面论述，这是中医理论中心肾相关的基本内容。",
-    source: "《中医基础理论》"
-  },
-]
-
-// 获取分类下的所有题目
-export function getQuestionsByCategory(category: string, subCategory?: string): Question[] {
-  return QUESTIONS.filter(q => {
-    if (subCategory) {
-      return q.category === category && q.subCategory === subCategory
-    }
-    return q.category === category
-  })
-}
-
-// 搜索题目
-export function searchQuestions(keyword: string): Question[] {
-  const lowerKeyword = keyword.toLowerCase()
-  return QUESTIONS.filter(q =>
-    q.question.toLowerCase().includes(lowerKeyword) ||
-    q.category.toLowerCase().includes(lowerKeyword) ||
-    q.subCategory.toLowerCase().includes(lowerKeyword) ||
-    (q.points && q.points.some(p => p.toLowerCase().includes(lowerKeyword)))
-  )
-}
-
-// 获取随机题目
-export function getRandomQuestions(count: number, category?: string): Question[] {
-  let pool = category ? getQuestionsByCategory(category) : QUESTIONS
-  const shuffled = [...pool].sort(() => Math.random() - 0.5)
-  return shuffled.slice(0, Math.min(count, shuffled.length))
-}
-
-// 难度标签
-export const DIFFICULTY_LABELS: Record<number, { label: string; color: string }> = {
-  1: { label: "简单", color: "text-green-600 bg-green-50" },
-  2: { label: "中等", color: "text-yellow-600 bg-yellow-50" },
-  3: { label: "困难", color: "text-red-600 bg-red-50" },
-}
-
-// 题目类型标签
-export const TYPE_LABELS: Record<string, { label: string; icon: string }> = {
-  single: { label: "单选题", icon: "○" },
-  multiple: { label: "多选题", icon: "☑" },
-  truefalse: { label: "判断题", icon: "△" },
-  short: { label: "简答题", icon: "□" },
-}
+  // ============ 中医基础理论 100题 ============
+  {id:"jc_s_001",type:"single",category:"中医基础理论",subCategory:"阴阳五行",difficulty:1,question:"阴阳学说中，'阴在内，阳之守也；阳在外，阴之使也'主要说明阴阳之间的何种关系？",options:["对立制约","互根互用","消长平衡","相互转化"],answer:"互根互用",explanation:"出自《素问·阴阳应象大论》，强调阴阳相互依存、相互为用的关系。阴守于内，为阳之物质基础；阳使于外，为阴之功能表现。",source:"《中医基础理论》",points:["阴阳学说","互根互用"]},
+  {id:"jc_s_002",type:"single",category:"中医基础理论",subCategory:"阴阳五行",difficulty:1,question:"五行学说中，'木克土'属于五行之间何种关系？",options:["相生","相克","相乘","相侮"],answer:"相克",explanation:"五行相克顺序为木克土、土克水、水克火、火克金、金克木。相克是正常生理状态下的相互制约关系，以维持平衡协调。",source:"《中医基础理论》",points:["五行学说","相克"]},
+  {id:"jc_s_003",type:"single",category:"中医基础理论",subCategory:"气血津液",difficulty:1,question:"下列哪项不属于'气'的生理功能？",options:["推动作用","温煦作用","濡养作用","固摄作用"],answer:"濡养作用",explanation:"气的主要生理功能：推动、温煦、防御、固摄、气化、营养作用。濡养作用主要是血与津液的功能。",source:"《中医基础理论》",points:["气血津液","气的功能"]},
+  {id:"jc_s_004",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:1,question:"被称为'先天之本'的脏腑是？",options:["心","肝","脾","肾"],answer:"肾",explanation:"肾藏先天之精，主生殖，为人体生命的本原，故称'先天之本'。脾为'后天之本'。",source:"《中医基础理论》",points:["藏象","肾"]},
+  {id:"jc_s_005",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:1,question:"心的主要生理功能是？",options:["主疏泄","主血脉","主运化","主气"],answer:"主血脉",explanation:"心主血脉（推动血液运行）和主藏神（主宰精神意识思维活动）。",source:"《中医基础理论》",points:["藏象","心"]},
+  {id:"jc_s_006",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:1,question:"下列哪项是'脾'的生理特点？",options:["喜条达","喜润恶燥","喜燥恶湿","主升发"],answer:"喜燥恶湿",explanation:"脾的生理特点是喜燥恶湿，脾属土，居中焦，主运化水湿。胃则喜润恶燥。",source:"《中医基础理论》",points:["藏象","脾"]},
+  {id:"jc_s_007",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"'肺为气之主，肾为气之根'主要体现肺与肾在哪个方面的关系？",options:["水液代谢","呼吸运动","气血运行","阴阳互资"],answer:"呼吸运动",explanation:"肺主呼气，肾主纳气。肺吸入之气必须下纳于肾，才能保持呼吸调匀。",source:"《中医基础理论》",points:["肺肾关系"]},
+  {id:"jc_s_008",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"肝主疏泄的功能最主要体现在？",options:["调畅情志","调畅气机","促进消化","调畅血量"],answer:"调畅气机",explanation:"肝主疏泄的核心是调畅全身气机。气机调畅则气血津液运行正常。",source:"《中医基础理论》",points:["藏象","肝"]},
+  {id:"jc_s_009",type:"single",category:"中医基础理论",subCategory:"气血津液",difficulty:2,question:"与血液运行关系最密切的脏腑组合是？",options:["心、肝、脾","肺、脾、肾","心、肺、肝","心、脾、肾"],answer:"心、肝、脾",explanation:"心主血（推动运行），肝藏血（调节血量），脾统血（固摄血脉），三者协同保证血液正常运行。",source:"《中医基础理论》",points:["血的运行"]},
+  {id:"jc_s_010",type:"single",category:"中医基础理论",subCategory:"病因病机",difficulty:1,question:"下列哪项是'六淫'的共同致病特点？",options:["直接伤及内脏","季节性、地域性、相兼性","病情反复发作","与精神刺激有关"],answer:"季节性、地域性、相兼性",explanation:"六淫致病共同特点：外感性、季节性、地域性、相兼性、转化性。直接伤及内脏是七情致病特点。",source:"《中医基础理论》",points:["六淫"]},
+  {id:"jc_s_011",type:"single",category:"中医基础理论",subCategory:"病因病机",difficulty:1,question:"风邪的致病特点是？",options:["凝滞收引","重浊黏滞","善行而数变","生风动血"],answer:"善行而数变",explanation:"风为阳邪，其性开泄，易袭阳位；善行而数变；为百病之长。",source:"《中医基础理论》",points:["风邪"]},
+  {id:"jc_s_012",type:"single",category:"中医基础理论",subCategory:"病因病机",difficulty:1,question:"下列哪种情志异常可导致'气下'？",options:["喜","怒","恐","惊"],answer:"恐",explanation:"《素问·举痛论》：'怒则气上，喜则气缓，悲则气消，恐则气下，惊则气乱，思则气结。'恐伤肾，使肾气下陷。",source:"《中医基础理论》",points:["七情内伤"]},
+  {id:"jc_s_013",type:"single",category:"中医基础理论",subCategory:"病因病机",difficulty:2,question:"瘀血所致疼痛的特点是？",options:["胀痛","窜痛","刺痛固定不移","隐痛"],answer:"刺痛固定不移",explanation:"瘀血疼痛特点：刺痛、固定不移、拒按、夜间加重。胀痛多属气滞，窜痛多属风邪。",source:"《中医基础理论》",points:["瘀血"]},
+  {id:"jc_s_014",type:"single",category:"中医基础理论",subCategory:"养生防治",difficulty:2,question:"'正气存内，邪不可干'体现了中医何种防治原则？",options:["治病求本","扶正祛邪","未病先防","因时制宜"],answer:"扶正祛邪",explanation:"强调正气在发病中的主导地位。正气充足，邪气难以入侵。治疗当扶正祛邪。",source:"《中医基础理论》",points:["防治原则"]},
+  {id:"jc_s_015",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:1,question:"六腑的共同生理特点是？",options:["藏而不泻","满而不实","传化物而不藏","化生精气"],answer:"传化物而不藏",explanation:"《素问·五脏别论》：'六腑者，传化物而不藏，故实而不能满也。'",source:"《中医基础理论》",points:["六腑"]},
+  {id:"jc_s_016",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:1,question:"下列哪项属于'奇恒之腑'？",options:["胃","胆","大肠","膀胱"],answer:"胆",explanation:"奇恒之腑包括脑、髓、骨、脉、胆、女子胞。形态似腑，功能似脏。",source:"《中医基础理论》",points:["奇恒之腑"]},
+  {id:"jc_s_017",type:"single",category:"中医基础理论",subCategory:"气血津液",difficulty:2,question:"卫气的主要分布是？",options:["行于脉中","行于脉外","积于胸中","积于丹田"],answer:"行于脉外",explanation:"卫气行于脉外，循皮肤分肉之间，熏于肓膜，散于胸腹。营气行于脉中。",source:"《中医基础理论》",points:["卫气"]},
+  {id:"jc_s_018",type:"single",category:"中医基础理论",subCategory:"气血津液",difficulty:2,question:"宗气积聚之处称为？",options:["丹田","气海","膻中","命门"],answer:"气海",explanation:"宗气由肺吸入的清气与脾胃运化的水谷精气结合而成，积聚于胸中'气海'（又称'膻中'）。",source:"《中医基础理论》",points:["宗气"]},
+  {id:"jc_s_019",type:"single",category:"中医基础理论",subCategory:"气血津液",difficulty:2,question:"津液的输布排泄主要与哪组脏腑有关？",options:["心、肝、脾","肺、脾、肾","肺、肝、肾","心、肺、脾"],answer:"肺、脾、肾",explanation:"津液代谢：脾主运化水液上输于肺，肺主通调水道，肾为主水之脏蒸腾气化。",source:"《中医基础理论》",points:["津液代谢"]},
+  {id:"jc_s_020",type:"single",category:"中医基础理论",subCategory:"阴阳五行",difficulty:1,question:"五行中'火'的特性是？",options:["曲直","炎上","稼穑","从革"],answer:"炎上",explanation:"《尚书·洪范》：'水曰润下，火曰炎上，木曰曲直，金曰从革，土爰稼穑。'",source:"《中医基础理论》",points:["五行特性"]},
+  {id:"jc_s_021",type:"single",category:"中医基础理论",subCategory:"阴阳五行",difficulty:2,question:"根据五行相生规律，脾的'母'脏是？",options:["心","肝","肺","肾"],answer:"心",explanation:"五行相生：木→火→土→金→水→木，对应肝→心→脾→肺→肾→肝。生我者为母。",source:"《中医基础理论》",points:["五行相生"]},
+  {id:"jc_s_022",type:"single",category:"中医基础理论",subCategory:"阴阳五行",difficulty:2,question:"根据五行相克规律所确定的治法是？",options:["滋水涵木","益火补土","培土生金","抑木扶土"],answer:"抑木扶土",explanation:"抑木扶土法（疏肝健脾）是根据相克规律确立的治法。其他为相生规律治法。",source:"《中医基础理论》",points:["五行治法"]},
+  {id:"jc_s_023",type:"single",category:"中医基础理论",subCategory:"阴阳五行",difficulty:1,question:"以下属于'阳'的事物或现象是？",options:["静止","寒凉","兴奋","晦暗"],answer:"兴奋",explanation:"阳的属性：活动、外向、上升、温热、明亮、兴奋、无形、功能。",source:"《中医基础理论》",points:["阴阳属性"]},
+  {id:"jc_s_024",type:"single",category:"中医基础理论",subCategory:"阴阳五行",difficulty:2,question:"'重阴必阳，重阳必阴'说明了阴阳之间的？",options:["对立制约","互根互用","消长平衡","相互转化"],answer:"相互转化",explanation:"阴阳在一定条件下可以向相反方向转化。'重''极'是转化的条件。",source:"《中医基础理论》",points:["阴阳转化"]},
+  {id:"jc_s_025",type:"single",category:"中医基础理论",subCategory:"气血津液",difficulty:2,question:"人体生命活动的原动力是？",options:["元气","宗气","营气","卫气"],answer:"元气",explanation:"元气是人体最根本、最重要的气，是生命活动的原动力，由先天之精化生，赖后天之精充养，发源于肾。",source:"《中医基础理论》",points:["元气"]},
+  {id:"jc_s_026",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"与生殖功能关系最密切的是？",options:["心主血脉","肝主疏泄","脾主运化","肾藏精"],answer:"肾藏精",explanation:"肾藏精，主生长发育与生殖。肾精充盈到一定程度产生'天癸'。",source:"《中医基础理论》",points:["肾藏精"]},
+  {id:"jc_s_027",type:"single",category:"中医基础理论",subCategory:"病因病机",difficulty:1,question:"寒邪的致病特点是？",options:["其性开泄","凝滞收引","生风动血","耗气伤津"],answer:"凝滞收引",explanation:"寒为阴邪，易伤阳气；寒性凝滞（气血阻滞不通而痛）；寒性收引（筋脉收缩拘急）。",source:"《中医基础理论》",points:["寒邪"]},
+  {id:"jc_s_028",type:"single",category:"中医基础理论",subCategory:"病因病机",difficulty:1,question:"暑邪的致病特点是？",options:["干涩伤津","耗气伤津","重浊黏滞","善行数变"],answer:"耗气伤津",explanation:"暑为阳邪，其性炎热；暑性升散，耗气伤津；暑多挟湿。",source:"《中医基础理论》",points:["暑邪"]},
+  {id:"jc_s_029",type:"single",category:"中医基础理论",subCategory:"病因病机",difficulty:1,question:"湿邪的致病特点是？",options:["其性炎上","凝滞收引","重浊黏滞","生风动血"],answer:"重浊黏滞",explanation:"湿为阴邪，阻滞气机、损伤阳气；湿性重浊、黏滞、趋下。",source:"《中医基础理论》",points:["湿邪"]},
+  {id:"jc_s_030",type:"single",category:"中医基础理论",subCategory:"病因病机",difficulty:2,question:"火（热）邪的致病特点是？",options:["凝滞收引","耗气伤津、生风动血","重浊黏滞","干涩伤津"],answer:"耗气伤津、生风动血",explanation:"火为阳邪，其性炎上；易耗气伤津；易生风动血；易致肿疡。",source:"《中医基础理论》",points:["火邪"]},
+  {id:"jc_s_031",type:"single",category:"中医基础理论",subCategory:"养生防治",difficulty:2,question:"下列哪项是'既病防变'的具体体现？",options:["调摄精神","锻炼身体","先安未受邪之地","药物预防"],answer:"先安未受邪之地",explanation:"既病防变指疾病发生后早期诊治，防止传变。'见肝之病，知肝传脾，当先实脾'是典范。",source:"《中医基础理论》",points:["既病防变"]},
+  {id:"jc_s_032",type:"single",category:"中医基础理论",subCategory:"养生防治",difficulty:3,question:"'通因通用'适用于？",options:["脾虚泄泻","肾虚尿频","食积腹泻","气虚发热"],answer:"食积腹泻",explanation:"通因通用是反治法之一，用通利药物治疗具有实性通泄症状的病证。",source:"《中医基础理论》",points:["反治"]},
+  {id:"jc_s_033",type:"single",category:"中医基础理论",subCategory:"养生防治",difficulty:3,question:"'寒因寒用'适用于？",options:["真寒假热证","真热假寒证","虚寒证","实寒证"],answer:"真热假寒证",explanation:"寒因寒用是用寒性药物治疗假寒症状的病证，适用于真热假寒证（阳盛格阴）。",source:"《中医基础理论》",points:["反治"]},
+  {id:"jc_s_034",type:"single",category:"中医基础理论",subCategory:"气血津液",difficulty:2,question:"气机升降的枢纽是？",options:["心肾","肺肝","脾胃","肝胆"],answer:"脾胃",explanation:"脾胃居中焦，脾主升清，胃主降浊，为全身气机升降之枢纽。",source:"《中医基础理论》",points:["气机"]},
+  {id:"jc_s_035",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"'主决断'的是？",options:["心","肝","胆","肾"],answer:"胆",explanation:"《素问·灵兰秘典论》：'胆者，中正之官，决断出焉。'胆主决断，与人的勇怯有关。",source:"《中医基础理论》",points:["胆"]},
+  {id:"jc_s_036",type:"single",category:"中医基础理论",subCategory:"经络",difficulty:2,question:"'十二经脉之海'是指？",options:["任脉","督脉","冲脉","带脉"],answer:"冲脉",explanation:"冲脉为'十二经脉之海'，又称'血海'，能调节十二经气血。",source:"《中医基础理论》",points:["冲脉"]},
+  {id:"jc_s_037",type:"single",category:"中医基础理论",subCategory:"病因病机",difficulty:2,question:"七情内伤中，思则？",options:["气上","气缓","气结","气消"],answer:"气结",explanation:"《素问·举痛论》：'思则心有所存，神有所归，正气留而不行，故气结矣。'",source:"《中医基础理论》",points:["七情"]},
+  {id:"jc_s_038",type:"single",category:"中医基础理论",subCategory:"气血津液",difficulty:2,question:"'夺血者无汗，夺汗者无血'的理论依据是？",options:["气能生血","津血同源","气能行津","血能载气"],answer:"津血同源",explanation:"血与津液均来源于水谷精微，且相互化生。失血过多则津液渗入血脉补充，故不可再发汗。",source:"《中医基础理论》",points:["津血同源"]},
+  {id:"jc_s_039",type:"single",category:"中医基础理论",subCategory:"辨证论治",difficulty:2,question:"辨证论治的'证'是指？",options:["疾病的症状","疾病的体征","疾病某一阶段的病理概括","疾病的病名"],answer:"疾病某一阶段的病理概括",explanation:"证是对疾病某一阶段病因、病位、病性、邪正关系等方面的病理概括。",source:"《中医基础理论》",points:["辨证论治"]},
+  {id:"jc_s_040",type:"single",category:"中医基础理论",subCategory:"辨证论治",difficulty:2,question:"异病同治的依据是？",options:["病因相同","病位相同","证候相同","症状相同"],answer:"证候相同",explanation:"异病同治指不同疾病出现相同证候（病机相同），则采用相同治法。",source:"《中医基础理论》",points:["辨证论治"]},
+  {id:"jc_s_041",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"'肺主治节'的具体体现是？",options:["治理调节呼吸","治理调节气机","治理调节血液运行","以上都是"],answer:"以上都是",explanation:"肺主治节是对肺主要生理功能的高度概括，包括呼吸、气机、血液、津液四方面。",source:"《中医基础理论》",points:["肺"]},
+  {id:"jc_s_042",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"'天癸'的产生主要依赖于？",options:["心血充盈","脾胃健运","肾中精气充盈","肺气充足"],answer:"肾中精气充盈",explanation:"天癸是肾中精气充盈到一定程度产生的精微物质，促进生殖器官发育成熟。",source:"《中医基础理论》",points:["天癸"]},
+  {id:"jc_s_043",type:"single",category:"中医基础理论",subCategory:"病因病机",difficulty:1,question:"燥邪最易损伤的脏腑是？",options:["心","肝","脾","肺"],answer:"肺",explanation:"燥为秋令主气，肺为娇脏，喜润恶燥，开窍于鼻，故燥邪最易伤肺。",source:"《中医基础理论》",points:["燥邪"]},
+  {id:"jc_s_044",type:"single",category:"中医基础理论",subCategory:"气血津液",difficulty:3,question:"'吐下之余，定无完气'说明了？",options:["气能生津","津能载气","气能行津","气能摄津"],answer:"津能载气",explanation:"津能载气，气依附于津液而存在。剧烈吐下耗津同时气随之耗散（气随津脱）。",source:"《中医基础理论》",points:["津气关系"]},
+  {id:"jc_s_045",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"'通行诸气，运行水液'的是？",options:["肺","脾","三焦","膀胱"],answer:"三焦",explanation:"三焦主要功能：通行元气（总司人体气机与气化）、运行水液。",source:"《中医基础理论》",points:["三焦"]},
+  {id:"jc_s_046",type:"single",category:"中医基础理论",subCategory:"病因病机",difficulty:2,question:"'内生五邪'不包括？",options:["内风","内寒","内湿","内暑"],answer:"内暑",explanation:"内生五邪：内风、内寒、内湿、内燥、内火。暑邪只有外感，没有内生。",source:"《中医基础理论》",points:["内生五邪"]},
+  {id:"jc_s_047",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"脾主升清的确切含义是？",options:["脾将水谷精微上输于心肺头目","脾之阳气主升","脾以升为健","以上都是"],answer:"以上都是",explanation:"脾主升清指脾气将水谷精微向上输布，并维持内脏位置相对恒定。",source:"《中医基础理论》",points:["脾主升清"]},
+  {id:"jc_s_048",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:3,question:"肾主纳气的主要生理作用是？",options:["促进肺的宣发","有助于肺的肃降","协助肺气通调水道","保持吸气深度，防止呼吸表浅"],answer:"保持吸气深度，防止呼吸表浅",explanation:"肾主纳气指肾摄纳肺吸入之气，保持呼吸深度。'肺为气之主，肾为气之根'。",source:"《中医基础理论》",points:["肾主纳气"]},
+  {id:"jc_s_049",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:3,question:"'乙癸同源'是指哪两脏的关系？",options:["心与肺","肝与脾","肝与肾","肺与肾"],answer:"肝与肾",explanation:"乙癸同源即肝肾同源。肝藏血，肾藏精，精血同源互化；肝肾阴阳相互资生制约。",source:"《中医基础理论》",points:["肝肾同源"]},
+  {id:"jc_s_050",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"'女子以肝为先天'强调的是？",options:["肝主疏泄对女子月经、情志的重要作用","肝藏血对女子的重要性","肝与肾的关系","女子以血为本"],answer:"肝主疏泄对女子月经、情志的重要作用",explanation:"'女子以肝为先天'强调肝主疏泄、肝藏血对女子月经、胎产、情志的特殊重要性。",source:"《中医基础理论》",points:["肝"]},
+  {id:"jc_s_051",type:"single",category:"中医基础理论",subCategory:"养生防治",difficulty:2,question:"'寒者热之，热者寒之'属于？",options:["正治法","反治法","从治法","反佐法"],answer:"正治法",explanation:"正治法（逆治法）是逆其证候性质而治的常规治疗方法，包括寒者热之、热者寒之、虚则补之、实则泻之。",source:"《中医基础理论》",points:["正治"]},
+  {id:"jc_s_052",type:"single",category:"中医基础理论",subCategory:"养生防治",difficulty:2,question:"'用热远热'属于？",options:["因人制宜","因时制宜","因地制宜","因病制宜"],answer:"因时制宜",explanation:"'用热远热，用寒远寒'指使用热性药物应避开炎热的季节，是因时制宜的体现。",source:"《中医基础理论》",points:["三因制宜"]},
+  {id:"jc_s_053",type:"single",category:"中医基础理论",subCategory:"阴阳五行",difficulty:1,question:"以下属于'阴'的事物或现象是？",options:["温热","明亮","静止","上升"],answer:"静止",explanation:"阴的属性：静止、寒凉、晦暗、内敛、下降、抑制。",source:"《中医基础理论》",points:["阴阳属性"]},
+  {id:"jc_s_054",type:"single",category:"中医基础理论",subCategory:"气血津液",difficulty:2,question:"'气能生血'是指？",options:["气是血的载体","血的生成离不开气和气的运动变化（气化）","血能载气","血能养气"],answer:"血的生成离不开气和气的运动变化（气化）",explanation:"气能生血指血的生成过程离不开气和气的运动变化（气化作用）。临床血虚常配补气药。",source:"《中医基础理论》",points:["气血关系"]},
+  {id:"jc_s_055",type:"single",category:"中医基础理论",subCategory:"病因病机",difficulty:2,question:"'疠气'最主要的致病特点是？",options:["发病急骤","传染性强，易于流行","症状相似","一气一病"],answer:"传染性强，易于流行",explanation:"疠气是一类具有强烈传染性的外感病邪，最主要特点是传染性强、易于流行。",source:"《中医基础理论》",points:["疠气"]},
+  {id:"jc_s_056",type:"single",category:"中医基础理论",subCategory:"病因病机",difficulty:2,question:"痰饮的致病特点不包括？",options:["阻滞气机","影响水液代谢","易于蒙蔽心神","善行而数变"],answer:"善行而数变",explanation:"痰饮致病特点：阻滞气血运行、影响水液代谢、易于蒙蔽心神、致病广泛、变幻多端。善行而数变是风邪特点。",source:"《中医基础理论》",points:["痰饮"]},
+  {id:"jc_s_057",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"'肾者，胃之关也'主要说明？",options:["肾主宰水液代谢的作用","肾为先天之本","肾与胃的表里关系","肾藏精功能"],answer:"肾主宰水液代谢的作用",explanation:"《素问·水热穴论》：'肾者，胃之关也。'关指关卡，水液之关，强调肾主宰水液代谢。",source:"《中医基础理论》",points:["肾主水"]},
+  {id:"jc_s_058",type:"single",category:"中医基础理论",subCategory:"养生防治",difficulty:2,question:"'治未病'的含义是？",options:["未病先防和既病防变","早期治疗","防止复发","养生保健"],answer:"未病先防和既病防变",explanation:"'治未病'包括未病先防（预防疾病发生）和既病防变（早期诊治防止传变）。",source:"《中医基础理论》",points:["治未病"]},
+  {id:"jc_s_059",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"'肺朝百脉'的含义是？",options:["肺具有推动血液运行的作用","全身血液聚会于肺，通过肺的呼吸进行气体交换，然后再输布到全身","肺主一身之气","肺主宣发肃降"],answer:"全身血液聚会于肺，通过肺的呼吸进行气体交换，然后再输布到全身",explanation:"肺朝百脉指全身血液都通过经脉会聚于肺，进行气体交换后再输布到全身。",source:"《中医基础理论》",points:["肺朝百脉"]},
+  {id:"jc_s_060",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"'脾为气血生化之源'的理论基础是？",options:["脾主运化水谷精微","脾主统血","脾主升清","脾喜燥恶湿"],answer:"脾主运化水谷精微",explanation:"脾具有运化水谷精微的功能，将饮食物化为气血津液，故称'气血生化之源'。",source:"《中医基础理论》",points:["脾"]},
+  // 基础理论多选题
+  {id:"jc_m_001",type:"multiple",category:"中医基础理论",subCategory:"阴阳五行",difficulty:2,question:"阴阳学说的基本内容包括？",options:["对立制约","互根互用","消长平衡","相互转化"],answer:["对立制约","互根互用","消长平衡","相互转化"],explanation:"阴阳学说的基本内容：对立制约、互根互用、消长平衡、相互转化。",source:"《中医基础理论》",points:["阴阳学说"]},
+  {id:"jc_m_002",type:"multiple",category:"中医基础理论",subCategory:"气血津液",difficulty:2,question:"气的生理功能包括？",options:["推动作用","温煦作用","防御作用","固摄作用","气化作用"],answer:["推动作用","温煦作用","防御作用","固摄作用","气化作用"],explanation:"气的功能包括推动、温煦、防御、固摄、气化、营养作用。",source:"《中医基础理论》",points:["气的功能"]},
+  {id:"jc_m_003",type:"multiple",category:"中医基础理论",subCategory:"病因病机",difficulty:2,question:"六淫致病的共同特点包括？",options:["外感性","季节性","地域性","相兼性"],answer:["外感性","季节性","地域性","相兼性"],explanation:"六淫致病特点：外感性、季节性、地域性、相兼性、转化性。",source:"《中医基础理论》",points:["六淫"]},
+  {id:"jc_m_004",type:"multiple",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"肺的生理功能包括？",options:["主气、司呼吸","主宣发肃降","主通调水道","朝百脉、主治节"],answer:["主气、司呼吸","主宣发肃降","主通调水道","朝百脉、主治节"],explanation:"肺主气司呼吸、主宣发肃降、主通调水道、朝百脉主治节。",source:"《中医基础理论》",points:["肺"]},
+  {id:"jc_m_005",type:"multiple",category:"中医基础理论",subCategory:"养生防治",difficulty:2,question:"下列属于正治法的是？",options:["寒者热之","热者寒之","虚则补之","实则泻之"],answer:["寒者热之","热者寒之","虚则补之","实则泻之"],explanation:"正治法：寒者热之、热者寒之、虚则补之、实则泻之。通因通用为反治法。",source:"《中医基础理论》",points:["正治"]},
+  {id:"jc_m_006",type:"multiple",category:"中医基础理论",subCategory:"养生防治",difficulty:3,question:"下列属于反治法的是？",options:["热因热用","寒因寒用","塞因塞用","通因通用"],answer:["热因热用","寒因寒用","塞因塞用","通因通用"],explanation:"反治法（从治）：热因热用、寒因寒用、塞因塞用、通因通用。适用于征象与本质不一致的病证。",source:"《中医基础理论》",points:["反治"]},
+  {id:"jc_m_007",type:"multiple",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"脾的生理功能包括？",options:["主运化","主统血","主升清","主藏血"],answer:["主运化","主统血","主升清"],explanation:"脾主运化、主统血、主升清。主藏血属肝的功能。",source:"《中医基础理论》",points:["脾"]},
+  {id:"jc_m_008",type:"multiple",category:"中医基础理论",subCategory:"病因病机",difficulty:2,question:"瘀血的形成原因包括？",options:["气虚","气滞","血寒","血热","外伤"],answer:["气虚","气滞","血寒","血热","外伤"],explanation:"瘀血形成原因：气虚、气滞、血寒、血热、外伤、出血等。",source:"《中医基础理论》",points:["瘀血"]},
+  {id:"jc_m_009",type:"multiple",category:"中医基础理论",subCategory:"阴阳五行",difficulty:1,question:"属于'阳'的属性有？",options:["温热","明亮","上升","运动"],answer:["温热","明亮","上升","运动"],explanation:"阳的属性：温热、明亮、上升、运动、兴奋、外向。",source:"《中医基础理论》",points:["阴阳属性"]},
+  {id:"jc_m_010",type:"multiple",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"督脉的主要作用是？",options:["总督一身之阳经","为阳脉之海","主胞胎","与脑、髓、肾关系密切"],answer:["总督一身之阳经","为阳脉之海","与脑、髓、肾关系密切"],explanation:"督脉总督一身之阳经，为'阳脉之海'，与脑、髓、肾关系密切。主胞胎是任脉功能。",source:"《中医基础理论》",points:["督脉"]},
+  {id:"jc_m_011",type:"multiple",category:"中医基础理论",subCategory:"气血津液",difficulty:2,question:"血液的正常运行与下列哪些因素密切相关？",options:["心主血脉","肺朝百脉","脾统血","肝藏血"],answer:["心主血脉","肺朝百脉","脾统血","肝藏血"],explanation:"心主血脉推动运行、肺朝百脉助心行血、脾统血固摄、肝藏血调节，共同维持血液正常运行。",source:"《中医基础理论》",points:["血的运行"]},
+  {id:"jc_m_012",type:"multiple",category:"中医基础理论",subCategory:"养生防治",difficulty:2,question:"三因制宜包括？",options:["因时制宜","因地制宜","因人制宜","因病制宜"],answer:["因时制宜","因地制宜","因人制宜"],explanation:"三因制宜：因时、因地、因人制宜。",source:"《中医基础理论》",points:["三因制宜"]},
+  {id:"jc_m_013",type:"multiple",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"肝的生理功能包括？",options:["主疏泄","主藏血","主升清","主决断"],answer:["主疏泄","主藏血"],explanation:"肝主疏泄、主藏血。脾主升清，胆主决断。",source:"《中医基础理论》",points:["肝"]},
+  {id:"jc_m_014",type:"multiple",category:"中医基础理论",subCategory:"病因病机",difficulty:2,question:"七情内伤的致病特点包括？",options:["直接伤及内脏","影响脏腑气机","情志波动影响病情","具有传染性"],answer:["直接伤及内脏","影响脏腑气机","情志波动影响病情"],explanation:"七情致病特点：直接伤及内脏、影响脏腑气机、情志波动影响病情。传染性是疠气特点。",source:"《中医基础理论》",points:["七情内伤"]},
+  {id:"jc_m_015",type:"multiple",category:"中医基础理论",subCategory:"藏象学说",difficulty:3,question:"肝肾同源（乙癸同源）的含义包括？",options:["精血同源","藏泄互用","阴阳互滋互制","气血同源"],answer:["精血同源","藏泄互用","阴阳互滋互制"],explanation:"肝肾同源：精血同源、藏泄互用、阴阳互滋互制。",source:"《中医基础理论》",points:["肝肾同源"]},
+  // 基础理论判断题
+  {id:"jc_t_001",type:"truefalse",category:"中医基础理论",subCategory:"阴阳五行",difficulty:1,question:"阴阳互根是指阴阳双方相互依存、互为根本的关系。",options:["正确","错误"],answer:"正确",explanation:"阴阳互根是阴阳学说基本内容之一，任何一方不能脱离另一方单独存在。",source:"《中医基础理论》",points:["阴阳学说"]},
+  {id:"jc_t_002",type:"truefalse",category:"中医基础理论",subCategory:"阴阳五行",difficulty:2,question:"五行相乘是五行之间的正常相克关系。",options:["正确","错误"],answer:"错误",explanation:"相乘是相克太过的异常病理状态，不是正常的生理关系。",source:"《中医基础理论》",points:["五行相乘"]},
+  {id:"jc_t_003",type:"truefalse",category:"中医基础理论",subCategory:"藏象学说",difficulty:1,question:"脾为后天之本，气血生化之源。",options:["正确","错误"],answer:"正确",explanation:"脾主运化水谷精微，为气血生化之源，故称后天之本。",source:"《中医基础理论》",points:["脾"]},
+  {id:"jc_t_004",type:"truefalse",category:"中医基础理论",subCategory:"养生防治",difficulty:1,question:"'治未病'包括未病先防和既病防变两个方面。",options:["正确","错误"],answer:"正确",explanation:"治未病包括未病先防（预防疾病发生）和既病防变（早期诊治防止传变）。",source:"《中医基础理论》",points:["治未病"]},
+  {id:"jc_t_005",type:"truefalse",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"肾主水，是指肾具有主持和调节人体水液代谢的功能。",options:["正确","错误"],answer:"正确",explanation:"肾主水，是通过肾的蒸腾气化作用，将清者重新吸收，浊者化为尿液排出。",source:"《中医基础理论》",points:["肾主水"]},
+  {id:"jc_t_006",type:"truefalse",category:"中医基础理论",subCategory:"病因病机",difficulty:1,question:"风为百病之长，是因为风邪致病广泛，且常为其他外邪致病的先导。",options:["正确","错误"],answer:"正确",explanation:"风为六淫之首，四季皆可伤人，常兼挟其他邪气共同致病。",source:"《中医基础理论》",points:["风邪"]},
+  {id:"jc_t_007",type:"truefalse",category:"中医基础理论",subCategory:"病因病机",difficulty:1,question:"怒则气上，喜则气缓，悲则气消，恐则气下。",options:["正确","错误"],answer:"正确",explanation:"《素问·举痛论》：'怒则气上，喜则气缓，悲则气消，恐则气下，惊则气乱，思则气结。'",source:"《中医基础理论》",points:["七情内伤"]},
+  {id:"jc_t_008",type:"truefalse",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"肝为刚脏，体阴而用阳。",options:["正确","错误"],answer:"正确",explanation:"肝藏血（体阴），主疏泄（用阳），肝之阳气易亢，故称刚脏。",source:"《中医基础理论》",points:["肝"]},
+  {id:"jc_t_009",type:"truefalse",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"胃喜燥恶湿，脾喜润恶燥。",options:["正确","错误"],answer:"错误",explanation:"正确说法是：脾喜燥恶湿，胃喜润恶燥。",source:"《中医基础理论》",points:["脾胃"]},
+  {id:"jc_t_010",type:"truefalse",category:"中医基础理论",subCategory:"气血津液",difficulty:1,question:"营气行于脉外，卫气行于脉中。",options:["正确","错误"],answer:"错误",explanation:"营气行于脉中，化生血液；卫气行于脉外，温养肌肤、防御外邪。",source:"《中医基础理论》",points:["营卫气血"]},
+  {id:"jc_t_011",type:"truefalse",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"奇恒之腑功能特点是'传化物而不藏'。",options:["正确","错误"],answer:"错误",explanation:"奇恒之腑功能类似五脏——藏精气而不泻。传化物而不藏是六腑的功能特点。",source:"《中医基础理论》",points:["奇恒之腑"]},
+  {id:"jc_t_012",type:"truefalse",category:"中医基础理论",subCategory:"养生防治",difficulty:2,question:"扶正适用于邪实为主而正气未衰的病证。",options:["正确","错误"],answer:"错误",explanation:"扶正适用于正气虚为主的虚证。祛邪适用于邪实为主而正气未衰的实证。",source:"《中医基础理论》",points:["扶正祛邪"]},
+  {id:"jc_t_013",type:"truefalse",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"心主血，肝藏血，脾统血。",options:["正确","错误"],answer:"正确",explanation:"心主血脉推动血行，肝藏血调节血量，脾统血固摄血脉，三者协同维持血液运行。",source:"《中医基础理论》",points:["血液运行"]},
+  {id:"jc_t_014",type:"truefalse",category:"中医基础理论",subCategory:"经络",difficulty:2,question:"督脉为'阳脉之海'，任脉为'阴脉之海'。",options:["正确","错误"],answer:"正确",explanation:"督脉总督一身之阳经，为阳脉之海；任脉总任一身之阴经，为阴脉之海。",source:"《中医基础理论》",points:["任脉督脉"]},
+  {id:"jc_t_015",type:"truefalse",category:"中医基础理论",subCategory:"气血津液",difficulty:2,question:"'气为血之帅，血为气之母'说明气血之间的密切关系。",options:["正确","错误"],answer:"正确",explanation:"气为血之帅（气能生血、气能行血、气能摄血），血为气之母（血能载气、血能养气）。",source:"《中医基础理论》",points:["气血关系"]},
+  {id:"jc_t_016",type:"truefalse",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"'五脏六腑之大主'指的是肝。",options:["正确","错误"],answer:"错误",explanation:"'五脏六腑之大主'指的是心，心主神明，为人体生命活动的主宰。",source:"《中医基础理论》",points:["心"]},
+  // 基础理论简答题
+  {id:"jc_a_001",type:"short",category:"中医基础理论",subCategory:"阴阳五行",difficulty:3,question:"试述阴阳学说的基本内容及其在中医学中的应用。",answer:"阴阳学说基本内容：1.对立制约：阴阳双方相互对立、相互制约维持平衡；2.互根互用：阴阳相互依存、相互为用；3.消长平衡：阴阳在一定范围内消长运动保持动态平衡；4.相互转化：阴阳在一定条件下向相反方向转化。在中医学中的应用：说明人体组织结构、生理功能、病理变化，指导疾病诊断，指导治疗（调整阴阳、恢复平衡），归纳药物性能。",explanation:"阴阳学说是中医学的核心理论之一。",source:"《中医基础理论》",points:["阴阳学说"]},
+  {id:"jc_a_002",type:"short",category:"中医基础理论",subCategory:"气血津液",difficulty:3,question:"试述气的分类及其主要功能。",answer:"人体之气可分为：1.元气：最根本之气，源于先天，发于肾，推动生长发育与生殖，温煦激发脏腑功能；2.宗气：积于胸中气海，由肺吸入清气与脾胃水谷精气结合而成，走息道以行呼吸，贯心脉以行气血；3.营气：行于脉中，化生血液，营养全身；4.卫气：行于脉外，温养肌肤、防御外邪、调节腠理开合。气的功能：推动、温煦、防御、固摄、气化、营养。",explanation:"气是构成人体和维持生命活动的基本物质。",source:"《中医基础理论》",points:["气血津液"]},
+  {id:"jc_a_003",type:"short",category:"中医基础理论",subCategory:"病因病机",difficulty:3,question:"简述六淫的含义及其共同致病特点。",answer:"六淫是风、寒、暑、湿、燥、火六种外感病邪的统称。正常情况下称为'六气'，当气候变化异常或人体正气不足时，六气成为致病因素，称为'六淫'。共同致病特点：1.外感性：多从肌表、口鼻侵入；2.季节性：与季节气候相关；3.地域性：与居住地区环境相关；4.相兼性：可两种或三种邪气同时侵袭；5.转化性：在一定条件下可相互转化。",explanation:"掌握六淫致病特点对辨证论治至关重要。",source:"《中医基础理论》",points:["六淫"]},
+  {id:"jc_a_004",type:"short",category:"中医基础理论",subCategory:"病因病机",difficulty:3,question:"试述瘀血的概念、形成原因及致病特点。",answer:"瘀血是指体内血液停滞，包括离经之血积存体内，或血运不畅阻滞于经脉及脏腑内的血液。形成原因：气虚、气滞、血寒、血热、外伤、出血等导致血行不畅或血溢脉外。致病特点：1.疼痛：刺痛、固定不移、拒按、夜间加重；2.肿块：固定不移，体表为血肿，体内为癥积；3.出血：血色紫暗或夹血块；4.面色黧黑、肌肤甲错、唇舌紫暗或有瘀点瘀斑、脉细涩或结代。",explanation:"瘀血是重要的病理产物和继发性致病因素。",source:"《中医基础理论》",points:["瘀血"]},
+  {id:"jc_a_005",type:"short",category:"中医基础理论",subCategory:"养生防治",difficulty:3,question:"简述中医'治未病'的含义及其具体内容。",answer:"'治未病'是中医重要的预防医学思想，包括三个层次：1.未病先防：疾病发生前，调养情志、顺应自然、饮食有节、起居有常、锻炼身体、药物预防；2.既病防变：疾病发生后，早期诊断、早期治疗，防止疾病发展传变，如'见肝之病，知肝传脾，当先实脾'；3.病后防复：疾病初愈后，注意饮食、劳逸、情志调摄，适当进补，防止复发。",explanation:"治未病体现了中医预防为主的思想。",source:"《中医基础理论》",points:["治未病"]},
+  {id:"jc_a_006",type:"short",category:"中医基础理论",subCategory:"藏象学说",difficulty:3,question:"试述脾的主要生理功能。",answer:"脾的主要生理功能：1.主运化：运化水谷精微（消化吸收营养）和运化水液（输布津液、防止水湿内生）；2.主统血：统摄血液在脉中运行，防止血溢脉外；3.主升清：将水谷精微向上输布于心肺头目，并维持内脏位置相对恒定。脾的生理特点：喜燥恶湿，以升为健，为'后天之本'、'气血生化之源'。",explanation:"脾是后天之本，气血生化之源。",source:"《中医基础理论》",points:["脾"]},
+  {id:"jc_a_007",type:"short",category:"中医基础理论",subCategory:"藏象学说",difficulty:3,question:"试述肾的主要生理功能。",answer:"肾的主要生理功能：1.藏精，主生长发育与生殖：肾藏先天之精和后天之精，主人体生长发育与生殖功能，肾精充盈产生天癸；2.主水：主持和调节人体水液代谢，通过蒸腾气化作用，将清者重新吸收，浊者化为尿液排出；3.主纳气：摄纳肺吸入之气，保持呼吸深度，防止呼吸表浅。肾的生理特点：肾为先天之本，内寓真阴真阳，主蛰藏。",explanation:"肾是先天之本，主藏精、主水、主纳气。",source:"《中医基础理论》",points:["肾"]},
+  {id:"jc_a_008",type:"short",category:"中医基础理论",subCategory:"阴阳五行",difficulty:3,question:"试述五行学说在中医学中的应用。",answer:"五行学说在中医学中的应用：1.说明五脏的生理功能及其相互关系：以五行特性类比五脏功能，以生克制化说明五脏之间的协调平衡；2.说明五脏病变的相互影响：以五行相生关系说明'母病及子'和'子病及母'，以五行相克关系说明'相乘'和'相侮'传变；3.用于疾病的诊断：根据本脏所主之色、味、脉来诊断本脏疾病；4.用于疾病的治疗：根据相生规律确定'虚则补其母，实则泻其子'和'滋水涵木'、'益火补土'、'培土生金'、'金水相生'等治法；根据相克规律确定'抑强扶弱'和'抑木扶土'、'培土制水'、'佐金平木'、'泻南补北'等治法；指导情志疾病治疗。",explanation:"五行学说贯穿中医生理、病理、诊断、治疗各方面。",source:"《中医基础理论》",points:["五行学说"]},
+  {id:"jc_a_009",type:"short",category:"中医基础理论",subCategory:"病因病机",difficulty:3,question:"试述痰饮的形成原因及致病特点。",answer:"痰饮的形成原因：外感六淫、疠气、内伤七情、饮食劳逸等导致肺、脾、肾、三焦等脏腑气化功能失常，水液代谢障碍，水湿停聚而成痰饮。致病特点：1.阻滞气血运行：痰饮随气流行，阻滞气机，阻碍气血运行；2.影响水液代谢：痰湿内阻影响肺脾肾的水液代谢功能，进一步加重水湿停聚；3.易于蒙蔽心神：痰浊上犯，蒙蔽清窍，出现头晕目眩、精神不振、癫狂痫等；4.致病广泛、变幻多端：痰随气升降流行，内至脏腑，外达筋骨皮肉，无处不到；5.病势缠绵，病程较长：湿邪黏滞，痰饮性质类似，病程较长，缠绵难愈。",explanation:"痰饮是重要的病理产物。",source:"《中医基础理论》",points:["痰饮"]},
+  {id:"jc_a_010",type:"short",category:"中医基础理论",subCategory:"气血津液",difficulty:3,question:"试述气血之间的关系。",answer:"气血关系可概括为'气为血之帅，血为气之母'。1.气为血之帅：包括气能生血（血的生成依赖气的气化作用）、气能行血（血的运行依赖气的推动作用）、气能摄血（气能固摄血液在脉中运行，防止血溢脉外）。2.血为气之母：包括血能载气（气依附于血而存在，血虚则气少，血脱则气脱）、血能养气（血不断为气的生成和功能活动提供营养）。气血之间在生理上相互依存、相互为用，在病理上相互影响。",explanation:"气血关系是中医理论的重要内容。",source:"《中医基础理论》",points:["气血关系"]},
+  // ============ 经络穴位 100题 ============
+  {id:"jl_s_001",type:"single",category:"经络穴位",subCategory:"十二正经",difficulty:1,question:"手太阴肺经起于何穴？止于何穴？",options:["起于中府，止于少商","起于少商，止于中府","起于商阳，止于迎香","起于天池，止于中冲"],answer:"起于中府，止于少商",explanation:"手太阴肺经共11穴，起于中府，止于少商。",source:"《针灸学》",points:["手太阴肺经"]},
+  {id:"jl_s_002",type:"single",category:"经络穴位",subCategory:"十二正经",difficulty:2,question:"足阳明胃经单侧共有多少穴位？",options:["45穴","44穴","43穴","27穴"],answer:"45穴",explanation:"足阳明胃经单侧45穴，是穴位最多的经脉之一。",source:"《针灸学》",points:["足阳明胃经"]},
+  {id:"jl_s_003",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:1,question:"合谷穴位于？",options:["第一、二掌骨之间，第二掌骨桡侧中点处","第一、二掌骨之间，第一掌骨尺侧中点处","腕背横纹上2寸","肘横纹外侧端"],answer:"第一、二掌骨之间，第二掌骨桡侧中点处",explanation:"合谷为手阳明大肠经原穴，简便取穴：以一手拇指指间关节横纹放在另一手拇食指之间的指蹼缘上，拇指尖下是穴。",source:"《针灸学》",points:["合谷"]},
+  {id:"jl_s_004",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:1,question:"足三里穴位于？",options:["犊鼻下3寸，胫骨前嵴外1横指","犊鼻下6寸，胫骨前嵴外1横指","外膝眼旁开1寸","腘横纹外侧端"],answer:"犊鼻下3寸，胫骨前嵴外1横指",explanation:"足三里是足阳明胃经合穴、胃之下合穴，位于犊鼻下3寸，胫骨前嵴外一横指处。",source:"《针灸学》",points:["足三里"]},
+  {id:"jl_s_005",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"内关穴位于？",options:["腕横纹上2寸，掌长肌腱与桡侧腕屈肌腱之间","腕横纹上3寸两肌腱之间","腕横纹中点","腕横纹上1寸"],answer:"腕横纹上2寸，掌长肌腱与桡侧腕屈肌腱之间",explanation:"内关是手厥阴心包经络穴、八脉交会穴通阴维脉。",source:"《针灸学》",points:["内关"]},
+  {id:"jl_s_006",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:1,question:"三阴交穴位于？",options:["内踝尖上3寸，胫骨内侧缘后方","外踝尖上3寸胫骨外侧缘后方","内踝尖上2寸","内踝尖下3寸"],answer:"内踝尖上3寸，胫骨内侧缘后方",explanation:"三阴交是足太阴脾经穴，为足三阴经交会穴，位于内踝尖上3寸。",source:"《针灸学》",points:["三阴交"]},
+  {id:"jl_s_007",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:1,question:"'头项寻列缺'属于哪部歌诀？",options:["四总穴歌","八会穴歌","八脉交会穴歌","十二井穴歌"],answer:"四总穴歌",explanation:"四总穴歌：肚腹三里留，腰背委中求，头项寻列缺，面口合谷收。",source:"《针灸学》",points:["四总穴歌"]},
+  {id:"jl_s_008",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"八会穴中的'血会'是？",options:["膻中","膈俞","太渊","大杼"],answer:"膈俞",explanation:"八会穴：脏会章门、腑会中脘、气会膻中、血会膈俞、筋会阳陵泉、脉会太渊、骨会大杼、髓会绝骨。",source:"《针灸学》",points:["八会穴"]},
+  {id:"jl_s_009",type:"single",category:"经络穴位",subCategory:"奇经八脉",difficulty:2,question:"下列哪组是'八脉交会穴'？",options:["公孙、内关、临泣、外关、后溪、申脉、列缺、照海","太渊、合谷、内关、足三里、三阴交、太溪","中脘、章门、膻中、膈俞、阳陵泉、太渊","百会、关元、命门、神阙、中极、气海"],answer:"公孙、内关、临泣、外关、后溪、申脉、列缺、照海",explanation:"八脉交会穴：公孙通冲脉、内关通阴维、临泣通带脉、外关通阳维、后溪通督脉、申脉通阳跷、列缺通任脉、照海通阴跷。",source:"《针灸学》",points:["八脉交会穴"]},
+  {id:"jl_s_010",type:"single",category:"经络穴位",subCategory:"奇经八脉",difficulty:1,question:"督脉的起始穴位是？",options:["长强","腰俞","命门","百会"],answer:"长强",explanation:"督脉共28穴，起于长强，沿脊柱上行，止于龈交。",source:"《针灸学》",points:["督脉"]},
+  {id:"jl_s_011",type:"single",category:"经络穴位",subCategory:"奇经八脉",difficulty:1,question:"任脉的起始穴位是？",options:["会阴","曲骨","中极","关元"],answer:"会阴",explanation:"任脉共24穴，起于会阴，沿腹胸正中上行，止于承浆。",source:"《针灸学》",points:["任脉"]},
+  {id:"jl_s_012",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:1,question:"百会穴的定位是？",options:["前发际正中直上5寸，两耳尖连线中点","前发际正中直上3寸","后发际正中直上5寸","头顶旋毛处"],answer:"前发际正中直上5寸，两耳尖连线中点",explanation:"百会是督脉穴位，位于前发际正中直上5寸，为'三阳五会'。",source:"《针灸学》",points:["百会"]},
+  {id:"jl_s_013",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"神阙穴的主治特点是？",options:["只针不灸","只灸不针","针灸并施","不宜针灸"],answer:"只灸不针",explanation:"神阙（脐中）一般禁针，多用灸法（隔盐灸等）治疗腹痛、腹泻、虚脱等。",source:"《针灸学》",points:["神阙"]},
+  {id:"jl_s_014",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"下列穴位中属于'井穴'的是？",options:["合谷","少商","太渊","列缺"],answer:"少商",explanation:"五输穴中'所出为井'，井穴多位于手足末端。少商是手太阴肺经井穴。",source:"《针灸学》",points:["五输穴"]},
+  {id:"jl_s_015",type:"single",category:"经络穴位",subCategory:"十二正经",difficulty:2,question:"循行于上肢内侧中线的经脉是？",options:["手太阴肺经","手少阴心经","手厥阴心包经","手阳明大肠经"],answer:"手厥阴心包经",explanation:"上肢内侧：前-手太阴肺经，中-手厥阴心包经，后-手少阴心经。",source:"《针灸学》",points:["十二经脉循行"]},
+  {id:"jl_s_016",type:"single",category:"经络穴位",subCategory:"十二正经",difficulty:2,question:"循行于下肢外侧前线的经脉是？",options:["足阳明胃经","足少阳胆经","足太阳膀胱经","足太阴脾经"],answer:"足阳明胃经",explanation:"下肢外侧：前-阳明、中-少阳、后-太阳。",source:"《针灸学》",points:["十二经脉循行"]},
+  {id:"jl_s_017",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"心包的募穴是？",options:["膻中","巨阙","中脘","关元"],answer:"膻中",explanation:"膻中为心包募穴、八会穴之气会，位于两乳头连线中点。",source:"《针灸学》",points:["募穴"]},
+  {id:"jl_s_018",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"治疗急性胃痛首选？",options:["足三里","内关","梁丘","公孙"],answer:"梁丘",explanation:"梁丘是足阳明胃经郄穴，郄穴擅长治疗本经急性病证。急性胃痛、乳痈等常用梁丘。",source:"《针灸学》",points:["郄穴","梁丘"]},
+  {id:"jl_s_019",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"太溪穴位于？",options:["内踝后方，内踝尖与跟腱之间凹陷处","外踝后方凹陷","足内侧第1跖骨下","足底前1/3凹陷"],answer:"内踝后方，内踝尖与跟腱之间凹陷处",explanation:"太溪是足少阴肾经原穴、输穴，补肾要穴。",source:"《针灸学》",points:["太溪"]},
+  {id:"jl_s_020",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"太冲穴位于？",options:["足背，第1、2跖骨结合部之前凹陷处","足背第2、3跖骨间","足心凹陷","内踝前下方"],answer:"足背，第1、2跖骨结合部之前凹陷处",explanation:"太冲是足厥阴肝经原穴、输穴，疏肝理气、平肝息风要穴。",source:"《针灸学》",points:["太冲"]},
+  {id:"jl_s_021",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:1,question:"大椎穴位于？",options:["第7颈椎棘突下凹陷中","第1胸椎棘突下","第2腰椎棘突下","第4腰椎棘突下"],answer:"第7颈椎棘突下凹陷中",explanation:"大椎是督脉与手足三阳经交会穴，解表清热、振奋阳气要穴。",source:"《针灸学》",points:["大椎"]},
+  {id:"jl_s_022",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"命门穴位于？",options:["第2腰椎棘突下凹陷中","第4腰椎棘突下","第7颈椎棘突下","第3胸椎棘突下"],answer:"第2腰椎棘突下凹陷中",explanation:"命门是督脉穴位，位于第2腰椎棘突下，与神阙相对，补肾壮阳要穴。",source:"《针灸学》",points:["命门"]},
+  {id:"jl_s_023",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:1,question:"关元穴位于？",options:["脐中下3寸，前正中线上","脐中下1.5寸","脐中下4寸","脐中上3寸"],answer:"脐中下3寸，前正中线上",explanation:"关元是任脉与足三阴经交会穴，强壮保健要穴，温肾固精、补气回阳。",source:"《针灸学》",points:["关元"]},
+  {id:"jl_s_024",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:1,question:"中脘穴位于？",options:["脐中上4寸，前正中线上","脐中上3寸","脐中下4寸","脐中上2寸"],answer:"脐中上4寸，前正中线上",explanation:"中脘是胃之募穴、八会穴之腑会，位于脐中上4寸。调理脾胃要穴。",source:"《针灸学》",points:["中脘"]},
+  {id:"jl_s_025",type:"single",category:"经络穴位",subCategory:"奇经八脉",difficulty:3,question:"照海穴是八脉交会穴，通哪条奇经？",options:["任脉","督脉","阴跷脉","阳跷脉"],answer:"阴跷脉",explanation:"照海是足少阴肾经穴，八脉交会穴通阴跷脉，主治咽喉干燥、失眠、妇科病等。",source:"《针灸学》",points:["八脉交会穴"]},
+  {id:"jl_s_026",type:"single",category:"经络穴位",subCategory:"奇经八脉",difficulty:3,question:"后溪穴是八脉交会穴，通哪条奇经？",options:["任脉","督脉","冲脉","带脉"],answer:"督脉",explanation:"后溪是手太阳小肠经输穴，八脉交会穴通督脉，主治头项强痛、疟疾、癫痫等。",source:"《针灸学》",points:["八脉交会穴"]},
+  {id:"jl_s_027",type:"single",category:"经络穴位",subCategory:"穴位功效",difficulty:2,question:"常用于急救、治疗晕厥、中风昏迷的穴位是？",options:["合谷","水沟（人中）","足三里","三阴交"],answer:"水沟（人中）",explanation:"水沟（人中）位于人中沟上1/3与中1/3交点处，为急救要穴。",source:"《针灸学》",points:["水沟"]},
+  {id:"jl_s_028",type:"single",category:"经络穴位",subCategory:"穴位功效",difficulty:2,question:"常用于治疗胎位不正的穴位是？",options:["至阴","涌泉","隐白","少商"],answer:"至阴",explanation:"至阴是足太阳膀胱经井穴，位于足小趾外侧指甲根角旁0.1寸。艾灸至阴是治疗胎位不正的经典方法。",source:"《针灸学》",points:["至阴"]},
+  {id:"jl_s_029",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"涌泉穴位于？",options:["足底前1/3凹陷处（足趾跖屈时呈凹陷）","足底后1/3处","足心中央","内踝下方凹陷"],answer:"足底前1/3凹陷处（足趾跖屈时呈凹陷）",explanation:"涌泉是足少阴肾经井穴，滋阴降火、醒神开窍。",source:"《针灸学》",points:["涌泉"]},
+  {id:"jl_s_030",type:"single",category:"经络穴位",subCategory:"十二正经",difficulty:2,question:"循行路线最长、穴位最多的经脉是？",options:["足太阳膀胱经","足阳明胃经","督脉","足少阳胆经"],answer:"足太阳膀胱经",explanation:"足太阳膀胱经是循行路线最长、穴位最多的经脉，单侧67穴。",source:"《针灸学》",points:["足太阳膀胱经"]},
+  {id:"jl_s_031",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"风池穴的正确定位是？",options:["胸锁乳突肌与斜方肌上端之间凹陷处，平风府","后发际正中直上1寸","项部正中凹陷","耳后凹陷"],answer:"胸锁乳突肌与斜方肌上端之间凹陷处，平风府",explanation:"风池是足少阳胆经穴位，位于项部枕骨之下，胸锁乳突肌与斜方肌上端凹陷处，平风府。",source:"《针灸学》",points:["风池"]},
+  {id:"jl_s_032",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:3,question:"既是原穴又是输穴（阴经）的是？",options:["太渊、太溪、太冲、神门、太白、大陵","足三里、曲池、风池、百会","内关、外关、列缺、照海","中脘、膻中、关元、气海"],answer:"太渊、太溪、太冲、神门、太白、大陵",explanation:"阴经以输为原。太渊（肺）、神门（心）、太白（脾）、太冲（肝）、太溪（肾）、大陵（心包）。",source:"《针灸学》",points:["原穴","五输穴"]},
+  {id:"jl_s_033",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:3,question:"阳陵泉是？",options:["胆之下合穴、八会穴之筋会","胃之下合穴","大肠之下合穴","小肠之下合穴"],answer:"胆之下合穴、八会穴之筋会",explanation:"阳陵泉是足少阳胆经合穴、胆之下合穴、八会穴之筋会，主治筋病、胆病、胁痛等。",source:"《针灸学》",points:["下合穴","八会穴"]},
+  {id:"jl_s_034",type:"single",category:"经络穴位",subCategory:"腧穴主治",difficulty:2,question:"腧穴的主治特点不包括？",options:["近治作用","远治作用","特殊作用","预防作用"],answer:"预防作用",explanation:"腧穴主治特点：近治作用、远治作用、特殊作用（双向良性调节、相对特异性）。",source:"《针灸学》",points:["腧穴主治"]},
+  {id:"jl_s_035",type:"single",category:"经络穴位",subCategory:"腧穴主治",difficulty:2,question:"具有双向良性调节心率作用的穴位是？",options:["内关","合谷","足三里","三阴交"],answer:"内关",explanation:"内关既能治疗心动过速又能治疗心动过缓，具有双向良性调节作用。",source:"《针灸学》",points:["腧穴特殊作用"]},
+  {id:"jl_s_036",type:"single",category:"经络穴位",subCategory:"十二正经",difficulty:2,question:"十二经脉中，手三阴经的走向是？",options:["从胸走手","从手走头","从头走足","从足走腹胸"],answer:"从胸走手",explanation:"十二经脉走向：手三阴从胸走手，手三阳从手走头，足三阳从头走足，足三阴从足走腹胸。",source:"《针灸学》",points:["十二经脉走向"]},
+  {id:"jl_s_037",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"曲池穴位于？",options:["肘横纹外侧端，屈肘时当尺泽与肱骨外上髁连线中点","肘横纹内侧端","腕背横纹中","肩峰前下方"],answer:"肘横纹外侧端，屈肘时当尺泽与肱骨外上髁连线中点",explanation:"曲池是手阳明大肠经合穴，清热要穴。",source:"《针灸学》",points:["曲池"]},
+  {id:"jl_s_038",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"既是胃的募穴又是八会穴之腑会的是？",options:["中脘","章门","膻中","膈俞"],answer:"中脘",explanation:"中脘是胃之募穴，也是八会穴之腑会。",source:"《针灸学》",points:["募穴","八会穴"]},
+  {id:"jl_s_039",type:"single",category:"经络穴位",subCategory:"十二正经",difficulty:2,question:"足少阳胆经循行于？",options:["下肢外侧中线","下肢外侧前线","下肢外侧后线","下肢内侧中线"],answer:"下肢外侧中线",explanation:"下肢外侧：前-阳明、中-少阳、后-太阳。",source:"《针灸学》",points:["十二经脉循行"]},
+  {id:"jl_s_040",type:"single",category:"经络穴位",subCategory:"穴位功效",difficulty:2,question:"常用于治疗乳少的穴位是？",options:["少泽","少商","隐白","涌泉"],answer:"少泽",explanation:"少泽是手太阳小肠经井穴，常用于治疗乳少、乳痈。",source:"《针灸学》",points:["少泽"]},
+  {id:"jl_s_041",type:"single",category:"经络穴位",subCategory:"腧穴",difficulty:1,question:"'以痛为输'指的是？",options:["阿是穴","五输穴","原穴","络穴"],answer:"阿是穴",explanation:"阿是穴又称压痛点、天应穴，无固定名称和位置，以压痛或反应点为腧穴。",source:"《针灸学》",points:["阿是穴"]},
+  {id:"jl_s_042",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"背俞穴位于？",options:["膀胱经第一侧线（后正中线旁开1.5寸）","膀胱经第二侧线","督脉","任脉"],answer:"膀胱经第一侧线（后正中线旁开1.5寸）",explanation:"背俞穴是脏腑之气输注于背腰部的腧穴，均位于足太阳膀胱经第一侧线。",source:"《针灸学》",points:["背俞穴"]},
+  {id:"jl_s_043",type:"single",category:"经络穴位",subCategory:"奇经八脉",difficulty:1,question:"'阳脉之海'是指？",options:["任脉","督脉","冲脉","带脉"],answer:"督脉",explanation:"督脉总督一身之阳经，为'阳脉之海'。",source:"《针灸学》",points:["督脉"]},
+  {id:"jl_s_044",type:"single",category:"经络穴位",subCategory:"奇经八脉",difficulty:1,question:"'阴脉之海'是指？",options:["任脉","督脉","冲脉","带脉"],answer:"任脉",explanation:"任脉总任一身之阴经，为'阴脉之海'，主胞胎。",source:"《针灸学》",points:["任脉"]},
+  {id:"jl_s_045",type:"single",category:"经络穴位",subCategory:"奇经八脉",difficulty:2,question:"'血海'是指？",options:["任脉","督脉","冲脉","带脉"],answer:"冲脉",explanation:"冲脉为'十二经脉之海'，又称'血海'，调节月经和生殖功能。",source:"《针灸学》",points:["冲脉"]},
+  {id:"jl_s_046",type:"single",category:"经络穴位",subCategory:"骨度分寸",difficulty:3,question:"肘横纹至腕横纹的骨度分寸是？",options:["12寸","9寸","13寸","16寸"],answer:"12寸",explanation:"肘横纹至腕横纹为12寸，用于确定前臂部腧穴的纵向距离。",source:"《针灸学》",points:["骨度分寸"]},
+  {id:"jl_s_047",type:"single",category:"经络穴位",subCategory:"骨度分寸",difficulty:3,question:"腘横纹至外踝尖的骨度分寸是？",options:["12寸","13寸","14寸","16寸"],answer:"16寸",explanation:"腘横纹至外踝尖为16寸，用于确定小腿外侧部腧穴位置。",source:"《针灸学》",points:["骨度分寸"]},
+  {id:"jl_s_048",type:"single",category:"经络穴位",subCategory:"骨度分寸",difficulty:2,question:"'一夫法'指以患者四指并拢（以中指中节横纹为准）的宽度为？",options:["1寸","2寸","3寸","4寸"],answer:"3寸",explanation:"一夫法是将患者食指、中指、无名指、小指并拢，以中指中节横纹处为准，四指横度为3寸。",source:"《针灸学》",points:["骨度分寸"]},
+  {id:"jl_s_049",type:"single",category:"经络穴位",subCategory:"骨度分寸",difficulty:2,question:"前发际正中至后发际正中的骨度分寸是？",options:["9寸","12寸","15寸","18寸"],answer:"12寸",explanation:"前发际正中至后发际正中为12寸，用于确定头部腧穴的纵向距离。",source:"《针灸学》",points:["骨度分寸"]},
+  {id:"jl_s_050",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"气海穴位于？",options:["脐中下1.5寸，前正中线上","脐中下3寸","脐中上1.5寸","脐旁2寸"],answer:"脐中下1.5寸，前正中线上",explanation:"气海是任脉穴位，位于脐中下1.5寸，为强壮保健要穴。",source:"《针灸学》",points:["气海"]},
+  {id:"jl_s_051",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"天枢穴位于？",options:["脐中旁开2寸","脐中旁开4寸","脐中下3寸","脐中上3寸"],answer:"脐中旁开2寸",explanation:"天枢是大肠之募穴，足阳明胃经穴，位于脐中旁开2寸，主治胃肠疾病。",source:"《针灸学》",points:["天枢"]},
+  {id:"jl_s_052",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:3,question:"'合治内腑'是指？",options:["下合穴治疗六腑病","合穴治疗五脏病","原穴治疗本经病","络穴治疗络脉病"],answer:"下合穴治疗六腑病",explanation:"'合治内腑'指六腑病可取其相应的下合穴治疗。胃-足三里、大肠-上巨虚、小肠-下巨虚、胆-阳陵泉、膀胱-委中、三焦-委阳。",source:"《针灸学》",points:["下合穴"]},
+  {id:"jl_s_053",type:"single",category:"经络穴位",subCategory:"穴位功效",difficulty:2,question:"常用于治疗崩漏、月经过多的井穴是？",options:["隐白","少商","少泽","商阳"],answer:"隐白",explanation:"隐白是足太阴脾经井穴，主治崩漏、月经过多、便血等出血证。",source:"《针灸学》",points:["隐白"]},
+  {id:"jl_s_054",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"委中穴位于？",options:["腘横纹中点","腘横纹外侧端","腘横纹内侧端","外膝眼下方"],answer:"腘横纹中点",explanation:"委中是足太阳膀胱经合穴、膀胱之下合穴，'腰背委中求'，治疗腰背疾病要穴。",source:"《针灸学》",points:["委中"]},
+  {id:"jl_s_055",type:"single",category:"经络穴位",subCategory:"穴位功效",difficulty:2,question:"'四关穴'是指？",options:["合谷、太冲","内关、外关","足三里、三阴交","列缺、照海"],answer:"合谷、太冲",explanation:"四关穴指左右合谷、太冲四穴，合谷为阳，太冲为阴，一上一下，一气一血，开阖升降，主治多种病证。",source:"《针灸学》",points:["四关穴"]},
+  {id:"jl_s_056",type:"single",category:"经络穴位",subCategory:"穴位功效",difficulty:2,question:"常用于补益强壮、称为'保健要穴'的是？",options:["足三里","合谷","内关","太溪"],answer:"足三里",explanation:"足三里是足阳明胃经合穴，调理脾胃、补中益气、扶正祛邪，为强壮保健要穴。",source:"《针灸学》",points:["足三里"]},
+  {id:"jl_s_057",type:"single",category:"经络穴位",subCategory:"穴位功效",difficulty:2,question:"常用于治疗感冒、头痛、发热、面瘫的穴位是？",options:["合谷","太溪","涌泉","三阴交"],answer:"合谷",explanation:"合谷是手阳明大肠经原穴，'面口合谷收'，治疗头面五官疾病要穴，亦为治疗感冒发热的常用穴。",source:"《针灸学》",points:["合谷"]},
+  {id:"jl_s_058",type:"single",category:"经络穴位",subCategory:"穴位功效",difficulty:2,question:"常用于治疗心悸、失眠、胃痛、呕吐的穴位是？",options:["内关","外关","合谷","太冲"],answer:"内关",explanation:"内关是手厥阴心包经络穴、八脉交会穴通阴维脉，宁心安神、理气和胃，主治心系、胃腑疾病。",source:"《针灸学》",points:["内关"]},
+  {id:"jl_s_059",type:"single",category:"经络穴位",subCategory:"穴位功效",difficulty:2,question:"常用于治疗月经不调、痛经、带下的穴位是？",options:["三阴交","足三里","合谷","内关"],answer:"三阴交",explanation:"三阴交是足太阴脾经穴，为足三阴经交会穴，是治疗妇科病的要穴。",source:"《针灸学》",points:["三阴交"]},
+  {id:"jl_s_060",type:"single",category:"经络穴位",subCategory:"奇经八脉",difficulty:2,question:"'十二经脉之海'是指？",options:["任脉","督脉","冲脉","带脉"],answer:"冲脉",explanation:"冲脉为'十二经脉之海'，又称'血海'，能调节十二经气血。",source:"《针灸学》",points:["冲脉"]},
+  {id:"jl_t_001",type:"truefalse",category:"经络穴位",subCategory:"十二正经",difficulty:1,question:"手三阴经从胸走手，手三阳经从手走头。",options:["正确","错误"],answer:"正确",explanation:"十二经脉走向：手三阴从胸走手，手三阳从手走头，足三阳从头走足，足三阴从足走腹胸。",source:"《针灸学》",points:["十二经脉走向"]},
+  {id:"jl_t_002",type:"truefalse",category:"经络穴位",subCategory:"奇经八脉",difficulty:1,question:"任脉为'阳脉之海'，总督一身之阳经。",options:["正确","错误"],answer:"错误",explanation:"督脉为'阳脉之海'；任脉为'阴脉之海'，主胞胎。",source:"《针灸学》",points:["任脉督脉"]},
+  {id:"jl_t_003",type:"truefalse",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"合谷穴既是手阳明大肠经的原穴，也是该经的输穴。",options:["正确","错误"],answer:"错误",explanation:"阴经以输为原（原穴与输穴同一），阳经则原穴在输穴之后另设。合谷是原穴，不是输穴。",source:"《针灸学》",points:["原穴"]},
+  {id:"jl_t_004",type:"truefalse",category:"经络穴位",subCategory:"腧穴",difficulty:1,question:"'四总穴歌'中'肚腹三里留'指肚腹疾病可取足三里治疗。",options:["正确","错误"],answer:"正确",explanation:"四总穴歌：肚腹三里留，腰背委中求，头项寻列缺，面口合谷收。",source:"《针灸学》",points:["四总穴歌"]},
+  {id:"jl_t_005",type:"truefalse",category:"经络穴位",subCategory:"腧穴",difficulty:1,question:"神阙穴一般禁针，多用灸法。",options:["正确","错误"],answer:"正确",explanation:"神阙（脐中）一般禁针，常用隔盐灸、隔姜灸、温和灸等。",source:"《针灸学》",points:["神阙"]},
+  {id:"jl_t_006",type:"truefalse",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"井穴多位于手足末端，是经气所出的部位。",options:["正确","错误"],answer:"正确",explanation:"五输穴中'所出为井'，井穴位于手足末端。",source:"《针灸学》",points:["五输穴"]},
+  {id:"jl_t_007",type:"truefalse",category:"经络穴位",subCategory:"十二正经",difficulty:3,question:"足三阴经在内踝上8寸以下厥阴在前，太阴在中，少阴在后；内踝上8寸以上则太阴在前，厥阴在中，少阴在后。",options:["正确","错误"],answer:"正确",explanation:"足三阴经在内踝上8寸以下排列为厥阴在前、太阴在中、少阴在后；8寸以上交叉后为太阴在前、厥阴在中、少阴在后。",source:"《针灸学》",points:["十二经脉循行"]},
+  {id:"jl_t_008",type:"truefalse",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"公孙通冲脉、内关通阴维脉，两穴配伍可治疗心、胸、胃疾病。",options:["正确","错误"],answer:"正确",explanation:"公孙通冲脉、内关通阴维脉，合于心、胸、胃，是常用配伍。",source:"《针灸学》",points:["八脉交会穴"]},
+  {id:"jl_t_009",type:"truefalse",category:"经络穴位",subCategory:"腧穴",difficulty:2,question:"艾灸至阴穴是治疗胎位不正的有效方法。",options:["正确","错误"],answer:"正确",explanation:"至阴穴是足太阳膀胱经井穴，艾灸至阴是治疗胎位不正的经典方法，一般在妊娠28-32周使用。",source:"《针灸学》",points:["至阴"]},
+  {id:"jl_t_010",type:"truefalse",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"背俞穴都位于膀胱经第一侧线（后正中线旁开1.5寸）。",options:["正确","错误"],answer:"正确",explanation:"背俞穴是脏腑之气输注于背腰部的腧穴，均位于足太阳膀胱经第一侧线。",source:"《针灸学》",points:["背俞穴"]},
+  {id:"jl_m_001",type:"multiple",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"八脉交会穴包括？",options:["公孙、内关","临泣、外关","后溪、申脉","列缺、照海"],answer:["公孙、内关","临泣、外关","后溪、申脉","列缺、照海"],explanation:"八脉交会穴：公孙通冲脉、内关通阴维、临泣通带脉、外关通阳维、后溪通督脉、申脉通阳跷、列缺通任脉、照海通阴跷。",source:"《针灸学》",points:["八脉交会穴"]},
+  {id:"jl_m_002",type:"multiple",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"五输穴包括？",options:["井","荥","输","经","合"],answer:["井","荥","输","经","合"],explanation:"五输穴：井、荥、输、经、合，'所出为井、所溜为荥、所注为输、所行为经、所入为合'。",source:"《针灸学》",points:["五输穴"]},
+  {id:"jl_m_003",type:"multiple",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"下列属于下合穴的是？",options:["足三里","上巨虚","下巨虚","委中","阳陵泉"],answer:["足三里","上巨虚","下巨虚","委中","阳陵泉"],explanation:"下合穴：胃-足三里、大肠-上巨虚、小肠-下巨虚、膀胱-委中、三焦-委阳、胆-阳陵泉。",source:"《针灸学》",points:["下合穴"]},
+  {id:"jl_m_004",type:"multiple",category:"经络穴位",subCategory:"奇经八脉",difficulty:2,question:"奇经八脉包括？",options:["督脉、任脉","冲脉、带脉","阴维脉、阳维脉","阴跷脉、阳跷脉"],answer:["督脉、任脉","冲脉、带脉","阴维脉、阳维脉","阴跷脉、阳跷脉"],explanation:"奇经八脉：督、任、冲、带、阴维、阳维、阴跷、阳跷。",source:"《针灸学》",points:["奇经八脉"]},
+  {id:"jl_a_001",type:"short",category:"经络穴位",subCategory:"特定穴",difficulty:3,question:"试述腧穴的主治特点。",answer:"腧穴的主治特点有三个方面：1.近治作用：是指腧穴均能治疗其所在部位及邻近组织、器官的病证。这是所有腧穴主治作用的共同特点。2.远治作用：是指腧穴具有治疗其远隔部位的脏腑、组织器官病证的作用。尤其是十二经脉中位于肘膝关节以下的腧穴，远治作用更为突出，'经脉所过，主治所及'。3.特殊作用：是指某些腧穴具有双向良性调节作用和相对特异性作用。双向调节作用如内关既治心动过速又治心动过缓，天枢既治泄泻又治便秘；相对特异性如大椎退热、至阴矫正胎位等。",explanation:"腧穴主治特点是针灸治疗选穴的重要依据。",source:"《针灸学》",points:["腧穴主治"]},
+  {id:"jl_a_002",type:"short",category:"经络穴位",subCategory:"十二正经",difficulty:3,question:"试述十二经脉的走向、交接和流注次序。",answer:"十二经脉走向：手三阴经从胸走手，手三阳经从手走头，足三阳经从头走足，足三阴经从足走腹胸。交接规律：相为表里的阴经与阳经在手足末端交接；同名的阳经与阳经在头面部交接；相互衔接的阴经与阴经在胸中交接。流注次序：手太阴肺经→手阳明大肠经→足阳明胃经→足太阴脾经→手少阴心经→手太阳小肠经→足太阳膀胱经→足少阴肾经→手厥阴心包经→手少阳三焦经→足少阳胆经→足厥阴肝经→手太阴肺经（循环无端）。",explanation:"十二经脉的走向、交接和流注次序是经络学说的核心内容。",source:"《针灸学》",points:["十二经脉"]},
+  // ============ 中药学 100题 ============
+  {id:"zy_s_001",type:"single",category:"中药学",subCategory:"总论",difficulty:1,question:"四气是指？",options:["寒热温凉","辛甘酸苦咸","升降浮沉","君臣佐使"],answer:"寒热温凉",explanation:"四气（四性）是指中药的寒、热、温、凉四种药性，反映药物在影响人体阴阳盛衰、寒热变化方面的作用性质。",source:"《中药学》",points:["四气"]},
+  {id:"zy_s_002",type:"single",category:"中药学",subCategory:"总论",difficulty:1,question:"五味是指？",options:["寒热温凉平","辛甘酸苦咸（淡涩）","升降浮沉","阴阳表里"],answer:"辛甘酸苦咸（淡涩）",explanation:"五味是指药物的辛、甘、酸、苦、咸五种基本味道，还有淡味和涩味。附：淡附于甘，涩附于酸。",source:"《中药学》",points:["五味"]},
+  {id:"zy_s_003",type:"single",category:"中药学",subCategory:"总论",difficulty:2,question:"辛味药的作用是？",options:["能和能缓","能散能行","能泄能燥","能收能涩"],answer:"能散能行",explanation:"辛味能散、能行，具有发散、行气、行血等作用。",source:"《中药学》",points:["五味","辛"]},
+  {id:"zy_s_004",type:"single",category:"中药学",subCategory:"总论",difficulty:2,question:"甘味药的作用是？",options:["能散能行","能和能缓、能补","能泄能燥","能收能涩"],answer:"能和能缓、能补",explanation:"甘味能补、能和、能缓，具有补益、和中、调和药性、缓急止痛等作用。",source:"《中药学》",points:["五味","甘"]},
+  {id:"zy_s_005",type:"single",category:"中药学",subCategory:"总论",difficulty:2,question:"酸味药的作用是？",options:["能散能行","能泄能燥","能收能涩","能下能软"],answer:"能收能涩",explanation:"酸味能收、能涩，具有收敛、固涩的作用，用于治疗虚汗、泄泻、遗精等滑脱病证。",source:"《中药学》",points:["五味","酸"]},
+  {id:"zy_s_006",type:"single",category:"中药学",subCategory:"总论",difficulty:2,question:"苦味药的作用是？",options:["能散能行","能泄能燥能坚","能收能涩","能下能软"],answer:"能泄能燥能坚",explanation:"苦味能泄、能燥、能坚。能泄包括通泄、降泄、清泄；能燥即燥湿；能坚即坚阴。",source:"《中药学》",points:["五味","苦"]},
+  {id:"zy_s_007",type:"single",category:"中药学",subCategory:"总论",difficulty:2,question:"咸味药的作用是？",options:["能散能行","能泄能燥","能收能涩","能下能软"],answer:"能下能软",explanation:"咸味能下、能软，具有泻下通便、软坚散结的作用。",source:"《中药学》",points:["五味","咸"]},
+  {id:"zy_s_008",type:"single",category:"中药学",subCategory:"总论",difficulty:2,question:"'十八反'中，甘草反？",options:["大戟、芫花、甘遂、海藻","藜芦","乌头","细辛"],answer:"大戟、芫花、甘遂、海藻",explanation:"十八反：甘草反大戟、芫花、甘遂、海藻；乌头反贝母、瓜蒌、半夏、白蔹、白及；藜芦反人参、沙参、丹参、玄参、苦参、细辛、芍药。",source:"《中药学》",points:["十八反"]},
+  {id:"zy_s_009",type:"single",category:"中药学",subCategory:"总论",difficulty:2,question:"'十八反'中，乌头反？",options:["大戟、芫花、甘遂、海藻","贝母、瓜蒌、半夏、白蔹、白及","人参、沙参、丹参","细辛、芍药"],answer:"贝母、瓜蒌、半夏、白蔹、白及",explanation:"乌头（包括川乌、草乌、附子）反贝母、瓜蒌、半夏、白蔹、白及。",source:"《中药学》",points:["十八反"]},
+  {id:"zy_s_010",type:"single",category:"中药学",subCategory:"总论",difficulty:2,question:"'十九畏'中，人参畏？",options:["五灵脂","丁香","郁金","硫黄"],answer:"五灵脂",explanation:"十九畏中，人参畏五灵脂。丁香畏郁金，硫黄畏朴硝，水银畏砒霜，狼毒畏密陀僧，巴豆畏牵牛，川乌草乌畏犀角，牙硝畏三棱，官桂畏石脂。",source:"《中药学》",points:["十九畏"]},
+  {id:"zy_s_011",type:"single",category:"中药学",subCategory:"解表药",difficulty:1,question:"麻黄的功效是？",options:["发汗解表，宣肺平喘，利水消肿","发汗解肌，温通经脉","疏散风热，清利头目","发散风寒，通窍止痛"],answer:"发汗解表，宣肺平喘，利水消肿",explanation:"麻黄辛、微苦，温。归肺、膀胱经。功效：发汗解表，宣肺平喘，利水消肿。",source:"《中药学》",points:["麻黄"]},
+  {id:"zy_s_012",type:"single",category:"中药学",subCategory:"解表药",difficulty:1,question:"桂枝的功效是？",options:["发汗解表，宣肺平喘","发汗解肌，温通经脉，助阳化气，平冲降逆","疏散风热，利咽透疹","发散风寒，胜湿止痛"],answer:"发汗解肌，温通经脉，助阳化气，平冲降逆",explanation:"桂枝辛、甘，温。归心、肺、膀胱经。功效：发汗解肌，温通经脉，助阳化气，平冲降逆。",source:"《中药学》",points:["桂枝"]},
+  {id:"zy_s_013",type:"single",category:"中药学",subCategory:"解表药",difficulty:1,question:"下列药物中，被誉为'呕家圣药'的是？",options:["麻黄","桂枝","生姜","紫苏"],answer:"生姜",explanation:"生姜辛散温通，能温胃散寒、和中降逆，其止呕功良，随证配伍可治疗多种呕吐，素有'呕家圣药'之称。",source:"《中药学》",points:["生姜"]},
+  {id:"zy_s_014",type:"single",category:"中药学",subCategory:"解表药",difficulty:2,question:"薄荷的功效是？",options:["疏散风热，清利头目，利咽，透疹，疏肝行气","疏散风热，宣肺祛痰","疏散风热，清肝明目","疏散风热，和解少阳"],answer:"疏散风热，清利头目，利咽，透疹，疏肝行气",explanation:"薄荷辛凉。归肺、肝经。功效：疏散风热，清利头目，利咽，透疹，疏肝行气。入煎剂宜后下。",source:"《中药学》",points:["薄荷"]},
+  {id:"zy_s_015",type:"single",category:"中药学",subCategory:"解表药",difficulty:2,question:"柴胡的功效是？",options:["疏散风热，清利头目","疏散退热，疏肝解郁，升举阳气","疏散风热，利咽透疹","发散风寒，通窍止痛"],answer:"疏散退热，疏肝解郁，升举阳气",explanation:"柴胡苦、辛，微寒。归肝、胆经。功效：疏散退热，疏肝解郁，升举阳气。为治疗少阳证要药。",source:"《中药学》",points:["柴胡"]},
+  {id:"zy_s_016",type:"single",category:"中药学",subCategory:"清热药",difficulty:1,question:"石膏的功效是？",options:["清热泻火，除烦止渴（煅用：收湿，生肌，敛疮，止血）","清热燥湿，泻火解毒","清热凉血，养阴生津","清热解毒，疏散风热"],answer:"清热泻火，除烦止渴（煅用：收湿，生肌，敛疮，止血）",explanation:"石膏甘、辛，大寒。归肺、胃经。功效：清热泻火，除烦止渴。煅用：收湿，生肌，敛疮，止血。为清泻肺胃气分实热的要药。",source:"《中药学》",points:["石膏"]},
+  {id:"zy_s_017",type:"single",category:"中药学",subCategory:"清热药",difficulty:1,question:"黄连的功效是？",options:["清热燥湿，泻火解毒","清热泻火，除烦止渴","清热凉血，活血散瘀","清热解毒，凉血利咽"],answer:"清热燥湿，泻火解毒",explanation:"黄连苦，寒。归心、脾、胃、肝、胆、大肠经。功效：清热燥湿，泻火解毒。善清中焦湿热，尤善泻心经实火。",source:"《中药学》",points:["黄连"]},
+  {id:"zy_s_018",type:"single",category:"中药学",subCategory:"清热药",difficulty:2,question:"黄芩、黄连、黄柏的共同功效是？",options:["清热燥湿，泻火解毒","清热燥湿，凉血止血","清热泻火，除烦止渴","清热解毒，疏散风热"],answer:"清热燥湿，泻火解毒",explanation:"黄芩、黄连、黄柏三药均能清热燥湿、泻火解毒。黄芩善清上焦湿热，黄连善清中焦湿热及泻心火，黄柏善清下焦湿热及泻相火。",source:"《中药学》",points:["黄芩","黄连","黄柏"]},
+  {id:"zy_s_019",type:"single",category:"中药学",subCategory:"清热药",difficulty:2,question:"金银花的功效是？",options:["清热解毒，疏散风热","清热解毒，凉血利咽","清热解毒，凉血止痢","清热解毒，消痈散结"],answer:"清热解毒，疏散风热",explanation:"金银花甘，寒。归肺、心、胃经。功效：清热解毒，疏散风热。为治疗一切内痈外痈之要药。",source:"《中药学》",points:["金银花"]},
+  {id:"zy_s_020",type:"single",category:"中药学",subCategory:"清热药",difficulty:2,question:"生地黄的功效是？",options:["清热泻火，除烦止渴","清热燥湿，泻火解毒","清热凉血，养阴生津","清热解毒，凉血消斑"],answer:"清热凉血，养阴生津",explanation:"生地黄甘、苦，寒。归心、肝、肾经。功效：清热凉血，养阴生津。为清热凉血、养阴生津之要药。",source:"《中药学》",points:["生地黄"]},
+  {id:"zy_s_021",type:"single",category:"中药学",subCategory:"清热药",difficulty:2,question:"牡丹皮与赤芍的共同功效是？",options:["清热凉血，活血祛瘀","清热凉血，养阴生津","清热燥湿，泻火解毒","清热解毒，疏散风热"],answer:"清热凉血，活血祛瘀",explanation:"牡丹皮与赤芍均能清热凉血、活血祛瘀，用于温毒发斑、血热吐衄、血瘀经闭、跌打损伤等。",source:"《中药学》",points:["牡丹皮","赤芍"]},
+  {id:"zy_s_022",type:"single",category:"中药学",subCategory:"泻下药",difficulty:2,question:"大黄的功效是？",options:["泻下攻积，清热泻火，凉血解毒，逐瘀通经，利湿退黄","泻下逐水，消肿散结","润燥滑肠，下气利水","泻下冷积，逐水退肿"],answer:"泻下攻积，清热泻火，凉血解毒，逐瘀通经，利湿退黄",explanation:"大黄苦，寒。归脾、胃、大肠、肝、心包经。功效：泻下攻积，清热泻火，凉血解毒，逐瘀通经，利湿退黄。'将军'之称。",source:"《中药学》",points:["大黄"]},
+  {id:"zy_s_023",type:"single",category:"中药学",subCategory:"补益药",difficulty:1,question:"人参的功效是？",options:["大补元气，复脉固脱，补脾益肺，生津养血，安神益智","补中益气，养血安神","补气升阳，固表止汗","补气养阴，清热生津"],answer:"大补元气，复脉固脱，补脾益肺，生津养血，安神益智",explanation:"人参甘、微苦，微温。归脾、肺、心、肾经。功效：大补元气，复脉固脱，补脾益肺，生津养血，安神益智。为补气第一要药。",source:"《中药学》",points:["人参"]},
+  {id:"zy_s_024",type:"single",category:"中药学",subCategory:"补益药",difficulty:1,question:"黄芪的功效是？",options:["大补元气，复脉固脱","补气升阳，固表止汗，利水消肿，生津养血，行滞通痹，托毒排脓，敛疮生肌","补中益气，健脾和胃","补气养阴，清热生津"],answer:"补气升阳，固表止汗，利水消肿，生津养血，行滞通痹，托毒排脓，敛疮生肌",explanation:"黄芪甘，微温。归肺、脾经。功效：补气升阳，固表止汗，利水消肿，生津养血，行滞通痹，托毒排脓，敛疮生肌。",source:"《中药学》",points:["黄芪"]},
+  {id:"zy_s_025",type:"single",category:"中药学",subCategory:"补益药",difficulty:1,question:"白术的功效是？",options:["健脾益气，燥湿利水，止汗，安胎","补中益气，养血安神","补气养阴，清热生津","健脾化湿，消暑解毒"],answer:"健脾益气，燥湿利水，止汗，安胎",explanation:"白术甘、苦，温。归脾、胃经。功效：健脾益气，燥湿利水，止汗，安胎。为'脾脏补气健脾第一要药'。",source:"《中药学》",points:["白术"]},
+  {id:"zy_s_026",type:"single",category:"中药学",subCategory:"补益药",difficulty:1,question:"当归的功效是？",options:["补血活血，调经止痛，润肠通便","补血滋阴，益精填髓","补血止血，滋阴润燥","补血柔肝，缓急止痛"],answer:"补血活血，调经止痛，润肠通便",explanation:"当归甘、辛，温。归肝、心、脾经。功效：补血活血，调经止痛，润肠通便。为补血之圣药，妇科调经要药。",source:"《中药学》",points:["当归"]},
+  {id:"zy_s_027",type:"single",category:"中药学",subCategory:"补益药",difficulty:1,question:"熟地黄的功效是？",options:["补血活血，调经止痛","补血滋阴，益精填髓","补血止血，滋阴润燥","补血柔肝，缓急止痛"],answer:"补血滋阴，益精填髓",explanation:"熟地黄甘，微温。归肝、肾经。功效：补血滋阴，益精填髓。为养血补虚、补肾阴之要药。",source:"《中药学》",points:["熟地黄"]},
+  {id:"zy_s_028",type:"single",category:"中药学",subCategory:"补益药",difficulty:2,question:"'气病之总司，女科之主帅'是指？",options:["人参","当归","香附","黄芪"],answer:"香附",explanation:"香附辛、微苦、微甘，平。归肝、脾、三焦经。功效：疏肝解郁，理气宽中，调经止痛。被誉为'气病之总司，女科之主帅'。",source:"《中药学》",points:["香附"]},
+  {id:"zy_s_029",type:"single",category:"中药学",subCategory:"理气药",difficulty:2,question:"陈皮的功效是？",options:["理气健脾，燥湿化痰","疏肝破气，消积化滞","行气止痛，温中止呕","行气解郁，活血止痛"],answer:"理气健脾，燥湿化痰",explanation:"陈皮（橘皮）辛、苦，温。归脾、肺经。功效：理气健脾，燥湿化痰。为治脾胃气滞、湿痰、寒痰之要药。",source:"《中药学》",points:["陈皮"]},
+  {id:"zy_s_030",type:"single",category:"中药学",subCategory:"理血药",difficulty:2,question:"川芎的功效是？",options:["活血行气，祛风止痛","活血祛瘀，润肠通便","活血调经，利水消肿","活血祛瘀，清心除烦"],answer:"活血行气，祛风止痛",explanation:"川芎辛，温。归肝、胆、心包经。功效：活血行气，祛风止痛。为'血中气药'，善治头痛，'头痛不离川芎'。",source:"《中药学》",points:["川芎"]},
+  {id:"zy_s_031",type:"single",category:"中药学",subCategory:"理血药",difficulty:2,question:"丹参的功效是？",options:["活血祛瘀，通经止痛，清心除烦，凉血消痈","活血行气，祛风止痛","活血祛瘀，润肠通便","活血调经，利水消肿"],answer:"活血祛瘀，通经止痛，清心除烦，凉血消痈",explanation:"丹参苦，微寒。归心、肝经。功效：活血祛瘀，通经止痛，清心除烦，凉血消痈。'一味丹参，功同四物'。反藜芦。",source:"《中药学》",points:["丹参"]},
+  {id:"zy_s_032",type:"single",category:"中药学",subCategory:"理血药",difficulty:2,question:"三七的功效是？",options:["散瘀止血，消肿定痛","化瘀止血，活血定痛","温经止血，散寒止痛","凉血止血，清肝泻火"],answer:"散瘀止血，消肿定痛",explanation:"三七甘、微苦，温。归肝、胃经。功效：散瘀止血，消肿定痛。为止血要药，伤科要药。'止血不留瘀，化瘀不伤正'。",source:"《中药学》",points:["三七"]},
+  {id:"zy_s_033",type:"single",category:"中药学",subCategory:"温里药",difficulty:2,question:"附子的功效是？",options:["回阳救逆，补火助阳，散寒止痛","温中散寒，回阳通脉，温肺化饮","补火助阳，引火归原，散寒止痛，温经通脉","温中降逆，补肾助阳"],answer:"回阳救逆，补火助阳，散寒止痛",explanation:"附子辛、甘，大热；有毒。归心、肾、脾经。功效：回阳救逆，补火助阳，散寒止痛。为'回阳救逆第一品药'。反半夏、瓜蒌、贝母、白蔹、白及。",source:"《中药学》",points:["附子"]},
+  {id:"zy_s_034",type:"single",category:"中药学",subCategory:"温里药",difficulty:2,question:"肉桂的功效是？",options:["回阳救逆，补火助阳","补火助阳，引火归原，散寒止痛，温经通脉","温中散寒，回阳通脉","温中降逆，补肾助阳"],answer:"补火助阳，引火归原，散寒止痛，温经通脉",explanation:"肉桂辛、甘，大热。归肾、脾、心、肝经。功效：补火助阳，引火归原，散寒止痛，温经通脉。为治命门火衰之要药。畏石脂。",source:"《中药学》",points:["肉桂"]},
+  {id:"zy_s_035",type:"single",category:"中药学",subCategory:"安神药",difficulty:2,question:"酸枣仁的功效是？",options:["养心补肝，宁心安神，敛汗，生津","宁心安神，祛痰开窍","重镇安神，潜阳补阴","清心安神，交通心肾"],answer:"养心补肝，宁心安神，敛汗，生津",explanation:"酸枣仁甘、酸，平。归肝、胆、心经。功效：养心补肝，宁心安神，敛汗，生津。为养心安神要药。",source:"《中药学》",points:["酸枣仁"]},
+  {id:"zy_s_036",type:"single",category:"中药学",subCategory:"平肝息风药",difficulty:2,question:"天麻的功效是？",options:["息风止痉，平抑肝阳，祛风通络","平肝潜阳，清肝明目","息风止痉，攻毒散结","平肝疏肝，祛风明目"],answer:"息风止痉，平抑肝阳，祛风通络",explanation:"天麻甘，平。归肝经。功效：息风止痉，平抑肝阳，祛风通络。'治眩晕、头痛之要药'，亦为'治风之神药'。",source:"《中药学》",points:["天麻"]},
+  {id:"zy_s_037",type:"single",category:"中药学",subCategory:"平肝息风药",difficulty:2,question:"钩藤入煎剂的用法是？",options:["先煎","后下","包煎","烊化"],answer:"后下",explanation:"钩藤的有效成分钩藤碱加热后易破坏，故入煎剂宜后下，不宜久煎（一般不超过20分钟）。",source:"《中药学》",points:["钩藤"]},
+  {id:"zy_s_038",type:"single",category:"中药学",subCategory:"化湿药",difficulty:2,question:"苍术的功效是？",options:["燥湿健脾，祛风散寒，明目","化湿行气，温中止泻","燥湿消痰，下气除满","化湿解暑，发表止呕"],answer:"燥湿健脾，祛风散寒，明目",explanation:"苍术辛、苦，温。归脾、胃、肝经。功效：燥湿健脾，祛风散寒，明目。为治湿阻中焦之要药。",source:"《中药学》",points:["苍术"]},
+  {id:"zy_s_039",type:"single",category:"中药学",subCategory:"利水渗湿药",difficulty:2,question:"茯苓的功效是？",options:["利水渗湿，健脾，宁心","利水消肿，渗湿止泻","利水通淋，利湿退黄","利水渗湿，泄热通淋"],answer:"利水渗湿，健脾，宁心",explanation:"茯苓甘、淡，平。归心、肺、脾、肾经。功效：利水渗湿，健脾，宁心。为利水渗湿要药，寒热虚实各种水肿皆可应用。",source:"《中药学》",points:["茯苓"]},
+  {id:"zy_s_040",type:"single",category:"中药学",subCategory:"利水渗湿药",difficulty:2,question:"薏苡仁的功效是？",options:["利水渗湿，健脾止泻，除痹，排脓，解毒散结","利水渗湿，健脾，宁心","利水通淋，利湿退黄","利水消肿，清热解毒"],answer:"利水渗湿，健脾止泻，除痹，排脓，解毒散结",explanation:"薏苡仁甘、淡，凉。归脾、胃、肺经。功效：利水渗湿，健脾止泻，除痹，排脓，解毒散结。清利湿热宜生用，健脾止泻宜炒用。",source:"《中药学》",points:["薏苡仁"]},
+  {id:"zy_s_041",type:"single",category:"中药学",subCategory:"消食药",difficulty:1,question:"山楂的功效是？",options:["消食健胃，行气散瘀，化浊降脂","消食除胀，降气化痰","消食和胃","消食化积，活血散瘀"],answer:"消食健胃，行气散瘀，化浊降脂",explanation:"山楂酸、甘，微温。归脾、胃、肝经。功效：消食健胃，行气散瘀，化浊降脂。为消化油腻肉食积滞之要药。",source:"《中药学》",points:["山楂"]},
+  {id:"zy_s_042",type:"single",category:"中药学",subCategory:"消食药",difficulty:2,question:"麦芽除消食和中外，还具有的功效是？",options:["回乳消胀，疏肝解郁","降气化痰","涩精止遗","活血散瘀"],answer:"回乳消胀，疏肝解郁",explanation:"麦芽甘，平。归脾、胃、肝经。功效：行气消食，健脾开胃，回乳消胀。生麦芽功偏消食健胃，疏肝解郁；炒麦芽功偏回乳消胀。",source:"《中药学》",points:["麦芽"]},
+  {id:"zy_s_043",type:"single",category:"中药学",subCategory:"化痰药",difficulty:2,question:"半夏的功效是？",options:["燥湿化痰，降逆止呕，消痞散结（外用消肿止痛）","清热化痰，润肺止咳","温肺化痰，利气散结","宣肺化痰，利咽排脓"],answer:"燥湿化痰，降逆止呕，消痞散结（外用消肿止痛）",explanation:"半夏辛，温；有毒。归脾、胃、肺经。功效：燥湿化痰，降逆止呕，消痞散结。外用消肿止痛。为燥湿化痰、温化寒痰要药，为止呕要药。反乌头。",source:"《中药学》",points:["半夏"]},
+  {id:"zy_s_044",type:"single",category:"中药学",subCategory:"化痰药",difficulty:2,question:"川贝母与浙贝母的共同功效是？",options:["清热化痰，散结消痈","燥湿化痰，降逆止呕","温肺化痰，利气散结","润肺止咳，下气利咽"],answer:"清热化痰，散结消痈",explanation:"川贝母与浙贝母均能清热化痰、散结消痈。川贝母甘凉清润，偏于润肺止咳，用于虚劳咳嗽、肺热燥咳；浙贝母苦寒清泄，偏于清热散结，用于风热、痰热咳嗽及瘰疬、乳痈。",source:"《中药学》",points:["贝母"]},
+  {id:"zy_s_045",type:"single",category:"中药学",subCategory:"止咳平喘药",difficulty:2,question:"苦杏仁的功效是？",options:["降气止咳平喘，润肠通便","润肺止咳，杀虫灭虱","泻肺平喘，利水消肿","清肺化痰，止咳平喘"],answer:"降气止咳平喘，润肠通便",explanation:"苦杏仁苦，微温；有小毒。归肺、大肠经。功效：降气止咳平喘，润肠通便。为治咳喘要药。用量不宜过大，婴儿慎用。",source:"《中药学》",points:["苦杏仁"]},
+  {id:"zy_s_046",type:"single",category:"中药学",subCategory:"收涩药",difficulty:2,question:"五味子的功效是？",options:["收敛固涩，益气生津，补肾宁心","敛肺止咳，涩肠止泻","固精缩尿，补肾助阳","敛阴止汗，益气固表"],answer:"收敛固涩，益气生津，补肾宁心",explanation:"五味子酸、甘，温。归肺、心、肾经。功效：收敛固涩，益气生津，补肾宁心。为敛肺滋肾、生津敛汗、涩精止泻之要药。",source:"《中药学》",points:["五味子"]},
+  {id:"zy_s_047",type:"single",category:"中药学",subCategory:"攻毒杀虫药",difficulty:3,question:"硫黄的功效是？",options:["外用解毒杀虫止痒，内服补火助阳通便","外用攻毒杀虫，内服利水通便","外用解毒杀虫，内服止血止泻","外用蚀疮去腐，内服劫痰平喘"],answer:"外用解毒杀虫止痒，内服补火助阳通便",explanation:"硫黄酸，温；有毒。归肾、大肠经。功效：外用解毒杀虫止痒，内服补火助阳通便。畏朴硝（十九畏）。",source:"《中药学》",points:["硫黄"]},
+  {id:"zy_s_048",type:"single",category:"中药学",subCategory:"总论",difficulty:3,question:"'升降浮沉'是指？",options:["药物的寒热温凉","药物的作用趋向性","药物的作用部位选择性","药物的毒性大小"],answer:"药物的作用趋向性",explanation:"升降浮沉是指药物对人体作用的不同趋向性。升即上升提举，趋向于上；降即下达降逆，趋向于下；浮即向外发散，趋向于外；沉即向内收敛，趋向于内。",source:"《中药学》",points:["升降浮沉"]},
+  {id:"zy_s_049",type:"single",category:"中药学",subCategory:"总论",difficulty:2,question:"'归经'是指？",options:["药物的寒热温凉","药物的作用部位选择性（对某经某脏有特殊作用）","药物的作用趋向性","药物的毒性大小"],answer:"药物的作用部位选择性（对某经某脏有特殊作用）",explanation:"归经是指药物对于机体某部分的选择性作用，即某药对某些脏腑经络有特殊的亲和作用，对这些部位的病证有主要的、特殊的治疗作用。",source:"《中药学》",points:["归经"]},
+  {id:"zy_s_050",type:"single",category:"中药学",subCategory:"总论",difficulty:2,question:"'君药'的含义是？",options:["辅助君药加强治疗作用的药物","针对兼病或兼证起治疗作用的药物","针对主病或主证起主要治疗作用的药物","调和诸药的药物"],answer:"针对主病或主证起主要治疗作用的药物",explanation:"君药是针对主病或主证起主要治疗作用的药物，是方剂组成中不可缺少的主药。臣药辅助君药加强治疗或治疗兼病兼证。佐药佐助、佐制、反佐。使药引经报使或调和诸药。",source:"《中药学》",points:["君臣佐使"]},
+  {id:"zy_t_001",type:"truefalse",category:"中药学",subCategory:"总论",difficulty:1,question:"'十八反'中，甘草反大戟、芫花、甘遂、海藻。",options:["正确","错误"],answer:"正确",explanation:"十八反：甘草反大戟、芫花、甘遂、海藻；乌头反贝母、瓜蒌、半夏、白蔹、白及；藜芦反人参、沙参、丹参、玄参、苦参、细辛、芍药。",source:"《中药学》",points:["十八反"]},
+  {id:"zy_t_002",type:"truefalse",category:"中药学",subCategory:"总论",difficulty:1,question:"'十九畏'中，人参畏五灵脂。",options:["正确","错误"],answer:"正确",explanation:"十九畏：硫黄畏朴硝，水银畏砒霜，狼毒畏密陀僧，巴豆畏牵牛，丁香畏郁金，川乌草乌畏犀角，牙硝畏三棱，官桂畏石脂，人参畏五灵脂。",source:"《中药学》",points:["十九畏"]},
+  {id:"zy_t_003",type:"truefalse",category:"中药学",subCategory:"补益药",difficulty:2,question:"人参反藜芦，畏五灵脂，恶莱菔子。",options:["正确","错误"],answer:"正确",explanation:"十八反中人参反藜芦，十九畏中人参畏五灵脂。传统认为人参恶莱菔子（萝卜子），因莱菔子能削弱人参的补气作用。",source:"《中药学》",points:["人参","十八反","十九畏"]},
+  {id:"zy_t_004",type:"truefalse",category:"中药学",subCategory:"补益药",difficulty:2,question:"当归补血，当归尾活血，当归身补血，全当归补血活血。",options:["正确","错误"],answer:"正确",explanation:"当归身补血，当归尾活血，全当归补血活血（即补血又活血）。传统经验：头止血、身补血、尾活血、全用和血。",source:"《中药学》",points:["当归"]},
+  {id:"zy_t_005",type:"truefalse",category:"中药学",subCategory:"清热药",difficulty:2,question:"生地黄与熟地黄的区别是：生地黄偏于清热凉血、养阴生津，熟地黄偏于补血滋阴、益精填髓。",options:["正确","错误"],answer:"正确",explanation:"生地黄甘、苦，寒，偏于清热凉血、养阴生津，用于热病舌绛烦渴、阴虚内热等；熟地黄甘，微温，偏于补血滋阴、益精填髓，用于血虚萎黄、肝肾阴虚等。",source:"《中药学》",points:["生地黄","熟地黄"]},
+  {id:"zy_t_006",type:"truefalse",category:"中药学",subCategory:"解表药",difficulty:2,question:"薄荷入煎剂宜后下。",options:["正确","错误"],answer:"正确",explanation:"薄荷含挥发油（薄荷脑等），入煎剂宜后下（一般在出锅前5-10分钟放入），不宜久煎，以免有效成分挥发而降低药效。",source:"《中药学》",points:["薄荷"]},
+  {id:"zy_t_007",type:"truefalse",category:"中药学",subCategory:"平肝息风药",difficulty:2,question:"钩藤入煎剂宜后下。",options:["正确","错误"],answer:"正确",explanation:"钩藤主要有效成分为钩藤碱，加热煮沸20分钟以上即可破坏，故入煎剂宜后下，不宜久煎。",source:"《中药学》",points:["钩藤"]},
+  {id:"zy_t_008",type:"truefalse",category:"中药学",subCategory:"补益药",difficulty:2,question:"阿胶入煎剂宜烊化（溶化）后兑服。",options:["正确","错误"],answer:"正确",explanation:"阿胶为胶质类药物，黏性大，入煎剂容易粘锅糊化、焦化，且影响其他药物有效成分析出，故应烊化（单独隔水蒸化或加温水、黄酒溶化后）兑服。",source:"《中药学》",points:["阿胶"]},
+  {id:"zy_t_009",type:"truefalse",category:"中药学",subCategory:"温里药",difficulty:2,question:"附子有毒，入煎剂宜先煎、久煎以降低毒性。",options:["正确","错误"],answer:"正确",explanation:"附子有毒，主要毒性成分为乌头类生物碱。入煎剂宜先煎30-60分钟以上，久煎可使其毒性降低（破坏乌头碱），而有效成分仍保留。",source:"《中药学》",points:["附子"]},
+  {id:"zy_t_010",type:"truefalse",category:"中药学",subCategory:"补益药",difficulty:1,question:"黄芪生用固表，炙用补气升阳。",options:["正确","错误"],answer:"正确",explanation:"黄芪的用法：补气升阳宜炙用，其他方面（固表止汗、利水消肿、托毒生肌）多生用。",source:"《中药学》",points:["黄芪"]},
+  {id:"zy_m_001",type:"multiple",category:"中药学",subCategory:"补益药",difficulty:2,question:"下列药物中，具有补气功效的有？",options:["人参","黄芪","白术","党参"],answer:["人参","黄芪","白术","党参"],explanation:"人参大补元气；黄芪补气升阳；白术健脾益气；党参补中益气、健脾益肺。均为补气药。",source:"《中药学》",points:["补气药"]},
+  {id:"zy_m_002",type:"multiple",category:"中药学",subCategory:"补益药",difficulty:2,question:"下列药物中，具有补血功效的有？",options:["当归","熟地黄","白芍","阿胶"],answer:["当归","熟地黄","白芍","阿胶"],explanation:"当归补血活血；熟地黄补血滋阴；白芍养血敛阴；阿胶补血止血、滋阴润燥。均为补血药。",source:"《中药学》",points:["补血药"]},
+  {id:"zy_m_003",type:"multiple",category:"中药学",subCategory:"清热药",difficulty:2,question:"黄芩、黄连、黄柏的共同功效是？",options:["清热燥湿","泻火解毒","凉血止血","安胎"],answer:["清热燥湿","泻火解毒"],explanation:"三黄均能清热燥湿、泻火解毒。黄芩还能止血、安胎（炒用）；黄连为治湿热泻痢要药；黄柏善清下焦湿热、泻相火。",source:"《中药学》",points:["黄芩","黄连","黄柏"]},
+  {id:"zy_m_004",type:"multiple",category:"中药学",subCategory:"总论",difficulty:2,question:"下列属于'十八反'内容的有？",options:["甘草反大戟、芫花、甘遂、海藻","乌头反贝母、瓜蒌、半夏、白蔹、白及","人参畏五灵脂","藜芦反人参、沙参、丹参、玄参、苦参、细辛、芍药"],answer:["甘草反大戟、芫花、甘遂、海藻","乌头反贝母、瓜蒌、半夏、白蔹、白及","藜芦反人参、沙参、丹参、玄参、苦参、细辛、芍药"],explanation:"十八反：本草明言十八反，半蒌贝蔹及攻乌，藻戟遂芫俱战草，诸参辛芍叛藜芦。人参畏五灵脂属十九畏。",source:"《中药学》",points:["十八反"]},
+  {id:"zy_a_001",type:"short",category:"中药学",subCategory:"补益药",difficulty:3,question:"试述人参与黄芪功效的异同。",answer:"相同点：二者均为常用补气要药，均能补脾益肺，用于脾肺气虚证。\n不同点：\n人参：大补元气，复脉固脱作用强，为治气虚欲脱、脉微欲绝的危重证候的要药（独参汤）；又能生津养血、安神益智，用于气津两伤、气血两虚及心悸失眠健忘等。\n黄芪：补气升阳作用较好，用于中气下陷、久泻脱肛、内脏下垂（补中益气汤）；又能固表止汗（玉屏风散）、利水消肿、托毒排脓、敛疮生肌，用于表虚自汗、气虚水肿、疮疡难溃难敛等。",explanation:"人参与黄芪同为补气要药，但各有所长。",source:"《中药学》",points:["人参","黄芪"]},
+  {id:"zy_a_002",type:"short",category:"中药学",subCategory:"清热药",difficulty:3,question:"比较石膏与知母功效的异同。",answer:"相同点：二者均能清热泻火、除烦止渴，用于气分实热证（白虎汤）、肺热咳嗽等。\n不同点：\n石膏：辛甘大寒，清热泻火力强，重在清解（偏清），为清肺胃实热之要药。煅后外用能收湿敛疮、生肌止血，用于湿疹、烧烫伤、疮疡久溃不敛等。\n知母：苦甘寒质润，清热泻火中又能滋阴润燥（偏润），既能清肺胃实热，又能滋肾阴、润肾燥而退骨蒸，用于阴虚燥咳、骨蒸潮热（知柏地黄丸）、阴虚消渴等。",explanation:"石膏与知母常相须为用，但各有侧重。",source:"《中药学》",points:["石膏","知母"]},
+  {id:"zy_a_003",type:"short",category:"中药学",subCategory:"总论",difficulty:3,question:"试述中药的配伍关系（'七情'）。",answer:"前人把单味药的应用同药与药之间的配伍关系总结为七个方面，称为'七情'。具体内容：\n1.单行：即单用一味药治疗病情单一的疾病。如独参汤单用人参补气固脱。\n2.相须：即两种功效相似的药物配合应用，可以增强原有药物的功效。如石膏配知母。\n3.相使：即以一药为主，一药为辅，两药合用，辅药可以提高主药的功效。如黄芪配茯苓治脾虚水肿。\n4.相畏：即一种药物的毒副作用能被另一种药物降低或消除。如半夏畏生姜。\n5.相杀：即一种药物能降低或消除另一种药物的毒副作用。如生姜杀半夏。\n6.相恶：即两药合用，一种药物能使另一种药物原有功效降低，甚至丧失。如人参恶莱菔子。\n7.相反：即两种药物合用，能产生或增强毒性反应或副作用。如'十八反''十九畏'中的药物。\n其中相须、相使表示增效，是临床常用的配伍方法；相畏、相杀表示减毒，是用有毒药物时的配伍方法；相恶表示减效，临床应尽量避免使用；相反表示增毒，原则上应绝对禁止。",explanation:"七情是中药配伍的理论基础。",source:"《中药学》",points:["七情","配伍"]},
+  // ============ 方剂学 100题 ============
+  {id:"fj_s_001",type:"single",category:"方剂学",subCategory:"解表剂",difficulty:1,question:"麻黄汤的组成是？",options:["麻黄、桂枝、杏仁、甘草","麻黄、桂枝、白芍、甘草","麻黄、石膏、杏仁、甘草","麻黄、桂枝、干姜、甘草"],answer:"麻黄、桂枝、杏仁、甘草",explanation:"麻黄汤由麻黄、桂枝、杏仁、甘草（炙甘草）四味药组成。功效：发汗解表，宣肺平喘。主治外感风寒表实证。",source:"《方剂学》",points:["麻黄汤"]},
+  {id:"fj_s_002",type:"single",category:"方剂学",subCategory:"解表剂",difficulty:1,question:"桂枝汤的组成是？",options:["桂枝、芍药、甘草、生姜、大枣","桂枝、麻黄、杏仁、甘草","桂枝、茯苓、白术、甘草","桂枝、附子、甘草、生姜"],answer:"桂枝、芍药、甘草、生姜、大枣",explanation:"桂枝汤由桂枝、芍药、甘草（炙）、生姜、大枣五味组成。功效：解肌发表，调和营卫。主治外感风寒表虚证。",source:"《方剂学》",points:["桂枝汤"]},
+  {id:"fj_s_003",type:"single",category:"方剂学",subCategory:"解表剂",difficulty:2,question:"小青龙汤的功效是？",options:["发汗解表，宣肺平喘","解肌发表，调和营卫","解表散寒，温肺化饮","疏风清热，宣肺止咳"],answer:"解表散寒，温肺化饮",explanation:"小青龙汤功效：解表散寒，温肺化饮。主治外寒内饮证。组方：麻黄、芍药、细辛、干姜、甘草、桂枝、半夏、五味子。",source:"《方剂学》",points:["小青龙汤"]},
+  {id:"fj_s_004",type:"single",category:"方剂学",subCategory:"解表剂",difficulty:2,question:"银翘散的功效是？",options:["辛凉透表，清热解毒","疏风清热，宣肺止咳","解表散寒，温肺化饮","解肌发表，调和营卫"],answer:"辛凉透表，清热解毒",explanation:"银翘散功效：辛凉透表，清热解毒。主治温病初起，发热无汗或有汗不畅，微恶风寒，头痛口渴，咳嗽咽痛等。",source:"《方剂学》",points:["银翘散"]},
+  {id:"fj_s_005",type:"single",category:"方剂学",subCategory:"解表剂",difficulty:2,question:"桑菊饮的功效是？",options:["辛凉透表，清热解毒","疏风清热，宣肺止咳","解表散寒，温肺化饮","发汗解表，宣肺平喘"],answer:"疏风清热，宣肺止咳",explanation:"桑菊饮功效：疏风清热，宣肺止咳。主治风温初起，但咳，身热不甚，口微渴等。为'辛凉轻剂'。",source:"《方剂学》",points:["桑菊饮"]},
+  {id:"fj_s_006",type:"single",category:"方剂学",subCategory:"和解剂",difficulty:2,question:"小柴胡汤的功效是？",options:["和解少阳","调和肝脾","调和肠胃","和解表里"],answer:"和解少阳",explanation:"小柴胡汤功效：和解少阳。主治伤寒少阳证（往来寒热、胸胁苦满、默默不欲饮食、心烦喜呕、口苦咽干、目眩、苔薄白、脉弦）。",source:"《方剂学》",points:["小柴胡汤"]},
+  {id:"fj_s_007",type:"single",category:"方剂学",subCategory:"和解剂",difficulty:2,question:"小柴胡汤的组成中不包括？",options:["柴胡","黄芩","半夏","黄连"],answer:"黄连",explanation:"小柴胡汤组方：柴胡、黄芩、人参、半夏、甘草（炙）、生姜、大枣。含黄芩而不含黄连。",source:"《方剂学》",points:["小柴胡汤"]},
+  {id:"fj_s_008",type:"single",category:"方剂学",subCategory:"和解剂",difficulty:2,question:"逍遥散的功效是？",options:["和解少阳","疏肝解郁，养血健脾","调和肠胃","疏肝泄热，活血止痛"],answer:"疏肝解郁，养血健脾",explanation:"逍遥散功效：疏肝解郁，养血健脾。主治肝郁血虚脾弱证。组方：柴胡、当归、白芍、白术、茯苓、甘草（炙）、生姜、薄荷。",source:"《方剂学》",points:["逍遥散"]},
+  {id:"fj_s_009",type:"single",category:"方剂学",subCategory:"清热剂",difficulty:1,question:"白虎汤的组成是？",options:["石膏、知母、甘草、粳米","石膏、知母、麦冬、甘草","石膏、寒水石、滑石、甘草","石膏、黄连、黄芩、栀子"],answer:"石膏、知母、甘草、粳米",explanation:"白虎汤由石膏、知母、甘草（炙）、粳米四味组成。功效：清热生津。主治阳明气分热盛证（壮热面赤、烦渴引饮、汗出恶热、脉洪大有力）。",source:"《方剂学》",points:["白虎汤"]},
+  {id:"fj_s_010",type:"single",category:"方剂学",subCategory:"清热剂",difficulty:2,question:"清营汤的功效是？",options:["清营解毒，透热养阴","清热泻火，利水通淋","清热解毒，凉血散瘀","清热利湿退黄"],answer:"清营解毒，透热养阴",explanation:"清营汤功效：清营解毒，透热养阴。主治热入营分证。组方中银花、连翘、竹叶'透热转气'。",source:"《方剂学》",points:["清营汤"]},
+  {id:"fj_s_011",type:"single",category:"方剂学",subCategory:"清热剂",difficulty:2,question:"犀角地黄汤（今用'水牛角'）的功效是？",options:["清热解毒，凉血散瘀","清营解毒，透热养阴","清热泻火，凉血解毒","清热利湿退黄"],answer:"清热解毒，凉血散瘀",explanation:"犀角地黄汤功效：清热解毒，凉血散瘀。主治热入血分证（身热谵语、斑色紫黑、吐血衄血等）。",source:"《方剂学》",points:["犀角地黄汤"]},
+  {id:"fj_s_012",type:"single",category:"方剂学",subCategory:"清热剂",difficulty:2,question:"黄连解毒汤的组成是？",options:["黄连、黄芩、黄柏、栀子","黄连、黄芩、大黄、栀子","黄连、黄柏、知母、石膏","黄连、黄芩、黄柏、大黄"],answer:"黄连、黄芩、黄柏、栀子",explanation:"黄连解毒汤由黄连、黄芩、黄柏、栀子组成。功效：泻火解毒。主治三焦火毒热盛证。",source:"《方剂学》",points:["黄连解毒汤"]},
+  {id:"fj_s_013",type:"single",category:"方剂学",subCategory:"清热剂",difficulty:2,question:"龙胆泻肝汤的功效是？",options:["清泻肝胆实火，清利肝经湿热","清泻肺热，止咳平喘","清胃凉血","清热燥湿，调和气血"],answer:"清泻肝胆实火，清利肝经湿热",explanation:"龙胆泻肝汤功效：清泻肝胆实火，清利肝经湿热。主治肝胆实火上炎证及肝经湿热下注证。",source:"《方剂学》",points:["龙胆泻肝汤"]},
+  {id:"fj_s_014",type:"single",category:"方剂学",subCategory:"清热剂",difficulty:2,question:"清胃散的功效是？",options:["清胃凉血","清胃热，滋肾阴","清热燥湿，调和气血","泻热破瘀，散结消肿"],answer:"清胃凉血",explanation:"清胃散功效：清胃凉血。主治胃火牙痛。组方：生地黄、当归身、牡丹皮、黄连、升麻。",source:"《方剂学》",points:["清胃散"]},
+  {id:"fj_s_015",type:"single",category:"方剂学",subCategory:"泻下剂",difficulty:2,question:"大承气汤的组成是？",options:["大黄、厚朴、枳实、芒硝","大黄、厚朴、枳实、甘草","大黄、芒硝、甘草、人参","大黄、附子、干姜、甘草"],answer:"大黄、厚朴、枳实、芒硝",explanation:"大承气汤由大黄、厚朴、枳实、芒硝组成。功效：峻下热结。主治阳明腑实证。",source:"《方剂学》",points:["大承气汤"]},
+  {id:"fj_s_016",type:"single",category:"方剂学",subCategory:"温里剂",difficulty:2,question:"理中丸的组成是？",options:["人参、干姜、白术、甘草（炙）","人参、附子、干姜、甘草","附子、干姜、甘草","人参、白术、茯苓、甘草"],answer:"人参、干姜、白术、甘草（炙）",explanation:"理中丸由人参、干姜、白术、炙甘草组成。功效：温中祛寒，补气健脾。主治脾胃虚寒证。",source:"《方剂学》",points:["理中丸"]},
+  {id:"fj_s_017",type:"single",category:"方剂学",subCategory:"温里剂",difficulty:2,question:"小建中汤的功效是？",options:["温中祛寒，补气健脾","温中补虚，和里缓急","温阳健脾，行气利水","回阳救逆"],answer:"温中补虚，和里缓急",explanation:"小建中汤功效：温中补虚，和里缓急。主治中焦虚寒，肝脾失调，阴阳不和证。组方：桂枝汤倍芍药加饴糖。",source:"《方剂学》",points:["小建中汤"]},
+  {id:"fj_s_018",type:"single",category:"方剂学",subCategory:"温里剂",difficulty:2,question:"四逆汤的组成是？",options:["附子、干姜、甘草（炙）","附子、干姜、人参、甘草","附子、肉桂、干姜、甘草","附子、干姜、葱白"],answer:"附子、干姜、甘草（炙）",explanation:"四逆汤由附子、干姜、炙甘草组成。功效：回阳救逆。主治少阴病，心肾阳衰寒厥证。",source:"《方剂学》",points:["四逆汤"]},
+  {id:"fj_s_019",type:"single",category:"方剂学",subCategory:"补益剂",difficulty:1,question:"四君子汤的组成是？",options:["人参、白术、茯苓、甘草（炙）","人参、白术、茯苓、陈皮","人参、黄芪、白术、甘草","人参、白术、茯苓、半夏"],answer:"人参、白术、茯苓、甘草（炙）",explanation:"四君子汤由人参、白术、茯苓、炙甘草组成。功效：益气健脾。主治脾胃气虚证。为补气健脾的基础方。",source:"《方剂学》",points:["四君子汤"]},
+  {id:"fj_s_020",type:"single",category:"方剂学",subCategory:"补益剂",difficulty:1,question:"四物汤的组成是？",options:["熟地黄、当归、白芍、川芎","生地黄、当归、白芍、川芎","熟地黄、当归、赤芍、川芎","熟地黄、当归、白芍、红花"],answer:"熟地黄、当归、白芍、川芎",explanation:"四物汤由熟地黄、当归、白芍、川芎组成。功效：补血调血。主治营血虚滞证。为补血调经的基础方。",source:"《方剂学》",points:["四物汤"]},
+  {id:"fj_s_021",type:"single",category:"方剂学",subCategory:"补益剂",difficulty:1,question:"八珍汤的组成是？",options:["四君子汤加四物汤","四君子汤加黄芪、肉桂","四物汤加黄芪、肉桂","四君子汤加附子、干姜"],answer:"四君子汤加四物汤",explanation:"八珍汤即四君子汤（参术苓草）合四物汤（地芍归芎），共八味。功效：益气补血。主治气血两虚证。",source:"《方剂学》",points:["八珍汤"]},
+  {id:"fj_s_022",type:"single",category:"方剂学",subCategory:"补益剂",difficulty:1,question:"补中益气汤的功效是？",options:["补中益气，升阳举陷","益气健脾，渗湿止泻","益气固表止汗","益气生津，敛阴止汗"],answer:"补中益气，升阳举陷",explanation:"补中益气汤功效：补中益气，升阳举陷。主治脾胃气虚证、气虚下陷证、气虚发热证。李东垣'甘温除热'代表方。",source:"《方剂学》",points:["补中益气汤"]},
+  {id:"fj_s_023",type:"single",category:"方剂学",subCategory:"补益剂",difficulty:1,question:"六味地黄丸的组成是？",options:["熟地黄、山茱萸、山药、泽泻、茯苓、牡丹皮","熟地黄、山茱萸、山药、泽泻、茯苓、车前子","生地黄、山茱萸、山药、泽泻、茯苓、牡丹皮","熟地黄、枸杞子、山药、泽泻、茯苓、牡丹皮"],answer:"熟地黄、山茱萸、山药、泽泻、茯苓、牡丹皮",explanation:"六味地黄丸由熟地黄、山茱萸、山药（三补）和泽泻、茯苓、牡丹皮（三泻）组成。功效：滋阴补肾。主治肾阴亏虚证。",source:"《方剂学》",points:["六味地黄丸"]},
+  {id:"fj_s_024",type:"single",category:"方剂学",subCategory:"补益剂",difficulty:2,question:"肾气丸（金匮肾气丸）的组成是？",options:["六味地黄丸加附子、桂枝","六味地黄丸加附子、肉桂","六味地黄丸加知母、黄柏","六味地黄丸加麦冬、五味子"],answer:"六味地黄丸加附子、桂枝",explanation:"肾气丸（《金匮要略》）即六味地黄丸加附子、桂枝。功效：补肾助阳。主治肾阳不足证。为温补肾阳的代表方。",source:"《方剂学》",points:["肾气丸"]},
+  {id:"fj_s_025",type:"single",category:"方剂学",subCategory:"补益剂",difficulty:2,question:"归脾汤的功效是？",options:["益气健脾，渗湿止泻","益气补血，健脾养心","补中益气，升阳举陷","补益肝肾，乌发壮骨"],answer:"益气补血，健脾养心",explanation:"归脾汤功效：益气补血，健脾养心。主治心脾气血两虚证及脾不统血证。组方：白术、茯神、黄芪、龙眼肉、酸枣仁、人参、木香、炙甘草、当归、远志（加姜枣）。",source:"《方剂学》",points:["归脾汤"]},
+  {id:"fj_s_026",type:"single",category:"方剂学",subCategory:"理气剂",difficulty:2,question:"越鞠丸的功效是？",options:["行气解郁","疏肝行气，活血止痛","行气散结，降逆化痰","疏肝解郁，养血健脾"],answer:"行气解郁",explanation:"越鞠丸（芎术丸）由香附、川芎、苍术、栀子、神曲组成。功效：行气解郁。主治六郁证（气、血、痰、火、湿、食郁）。",source:"《方剂学》",points:["越鞠丸"]},
+  {id:"fj_s_027",type:"single",category:"方剂学",subCategory:"理气剂",difficulty:2,question:"半夏厚朴汤的功效是？",options:["行气散结，降逆化痰","疏肝解郁，行气止痛","行气疏肝，散寒止痛","通阳散结，行气祛痰"],answer:"行气散结，降逆化痰",explanation:"半夏厚朴汤功效：行气散结，降逆化痰。主治梅核气（痰气郁结于咽喉）。组方：半夏、厚朴、茯苓、生姜、苏叶。",source:"《方剂学》",points:["半夏厚朴汤"]},
+  {id:"fj_s_028",type:"single",category:"方剂学",subCategory:"理血剂",difficulty:2,question:"血府逐瘀汤的功效是？",options:["活血化瘀，行气止痛","活血祛瘀，疏肝通络","活血祛瘀，散结止痛","养血活血，温经止痛"],answer:"活血化瘀，行气止痛",explanation:"血府逐瘀汤功效：活血化瘀，行气止痛。主治胸中血瘀证。组方：桃仁、红花、当归、生地黄、川芎、赤芍、牛膝、桔梗、柴胡、枳壳、甘草。",source:"《方剂学》",points:["血府逐瘀汤"]},
+  {id:"fj_s_029",type:"single",category:"方剂学",subCategory:"理血剂",difficulty:2,question:"温经汤的功效是？",options:["温经散寒，养血祛瘀","活血祛瘀，行气止痛","养血活血，调经止痛","补气活血通络"],answer:"温经散寒，养血祛瘀",explanation:"温经汤功效：温经散寒，养血祛瘀。主治冲任虚寒，瘀血阻滞证（漏下不止、月经不调等）。为妇科调经的常用方。",source:"《方剂学》",points:["温经汤"]},
+  {id:"fj_s_030",type:"single",category:"方剂学",subCategory:"祛湿剂",difficulty:2,question:"平胃散的组成是？",options:["苍术、厚朴、陈皮、甘草（加生姜、大枣）","苍术、厚朴、陈皮、茯苓","苍术、厚朴、半夏、甘草","白术、厚朴、陈皮、甘草"],answer:"苍术、厚朴、陈皮、甘草（加生姜、大枣）",explanation:"平胃散由苍术、厚朴、陈皮、甘草组成，煎加姜枣。功效：燥湿运脾，行气和胃。主治湿滞脾胃证。",source:"《方剂学》",points:["平胃散"]},
+  {id:"fj_s_031",type:"single",category:"方剂学",subCategory:"祛湿剂",difficulty:2,question:"藿香正气散的功效是？",options:["解表化湿，理气和中","清热利湿退黄","利水渗湿，温阳化气","宣畅气机，清利湿热"],answer:"解表化湿，理气和中",explanation:"藿香正气散功效：解表化湿，理气和中。主治外感风寒，内伤湿滞证。为治夏月感寒伤湿，脾胃失和的常用方。",source:"《方剂学》",points:["藿香正气散"]},
+  {id:"fj_s_032",type:"single",category:"方剂学",subCategory:"祛湿剂",difficulty:2,question:"茵陈蒿汤的组成是？",options:["茵陈、栀子、大黄","茵陈、栀子、黄柏","茵陈、大黄、芒硝","茵陈、栀子、甘草"],answer:"茵陈、栀子、大黄",explanation:"茵陈蒿汤由茵陈、栀子、大黄组成。功效：清热利湿退黄。主治湿热黄疸（阳黄）。",source:"《方剂学》",points:["茵陈蒿汤"]},
+  {id:"fj_s_033",type:"single",category:"方剂学",subCategory:"祛湿剂",difficulty:2,question:"五苓散的组成是？",options:["猪苓、泽泻、白术、茯苓、桂枝","猪苓、泽泻、白术、茯苓、滑石","猪苓、泽泻、白术、茯苓、附子","猪苓、泽泻、白术、茯苓、桂枝、滑石"],answer:"猪苓、泽泻、白术、茯苓、桂枝",explanation:"五苓散由猪苓、泽泻、白术、茯苓、桂枝组成。功效：利水渗湿，温阳化气。主治蓄水证及水湿内停证。",source:"《方剂学》",points:["五苓散"]},
+  {id:"fj_s_034",type:"single",category:"方剂学",subCategory:"祛湿剂",difficulty:2,question:"三仁汤的功效是？",options:["宣畅气机，清利湿热","清热利湿退黄","利水渗湿，温阳化气","燥湿运脾，行气和胃"],answer:"宣畅气机，清利湿热",explanation:"三仁汤功效：宣畅气机，清利湿热。主治湿温初起或暑温夹湿之湿重于热证。组方中三仁：杏仁、白蔻仁、薏苡仁。",source:"《方剂学》",points:["三仁汤"]},
+  {id:"fj_s_035",type:"single",category:"方剂学",subCategory:"祛痰剂",difficulty:2,question:"二陈汤的组成是？",options:["半夏、橘红、茯苓、甘草（加生姜、乌梅）","半夏、陈皮、茯苓、甘草","半夏、陈皮、茯苓、甘草、生姜","半夏、陈皮、茯苓、甘草、乌梅"],answer:"半夏、橘红、茯苓、甘草（加生姜、乌梅）",explanation:"二陈汤由半夏、橘红、茯苓、炙甘草组成，煎加生姜、乌梅。功效：燥湿化痰，理气和中。主治湿痰证。为化痰基础方。",source:"《方剂学》",points:["二陈汤"]},
+  {id:"fj_s_036",type:"single",category:"方剂学",subCategory:"祛痰剂",difficulty:2,question:"半夏白术天麻汤的功效是？",options:["化痰熄风，健脾祛湿","燥湿化痰，平肝息风","清热化痰，宽胸散结","润肺清热，理气化痰"],answer:"化痰熄风，健脾祛湿",explanation:"半夏白术天麻汤功效：化痰熄风，健脾祛湿。主治风痰上扰证（眩晕、头痛、胸膈痞闷等）。",source:"《方剂学》",points:["半夏白术天麻汤"]},
+  {id:"fj_s_037",type:"single",category:"方剂学",subCategory:"安神剂",difficulty:2,question:"酸枣仁汤的功效是？",options:["养血安神，清热除烦","镇心安神，清热养血","滋阴清热，养血安神","益气补血，健脾养心"],answer:"养血安神，清热除烦",explanation:"酸枣仁汤功效：养血安神，清热除烦。主治肝血不足，虚热内扰证。组方：酸枣仁、甘草、知母、茯苓、川芎。",source:"《方剂学》",points:["酸枣仁汤"]},
+  {id:"fj_s_038",type:"single",category:"方剂学",subCategory:"安神剂",difficulty:2,question:"天王补心丹的功效是？",options:["养血安神，清热除烦","镇心安神，清热养血","滋阴清热，养血安神","益气补血，健脾养心"],answer:"滋阴清热，养血安神",explanation:"天王补心丹功效：滋阴清热，养血安神。主治阴虚血少，神志不安证（心悸失眠、虚烦神疲、梦遗健忘等）。",source:"《方剂学》",points:["天王补心丹"]},
+  {id:"fj_s_039",type:"single",category:"方剂学",subCategory:"开窍剂",difficulty:3,question:"安宫牛黄丸的功效是？",options:["清热解毒，豁痰开窍","清热开窍，息风止痉","化浊开窍，清热解毒","开窍醒神，辟秽解毒"],answer:"清热解毒，豁痰开窍",explanation:"安宫牛黄丸功效：清热解毒，豁痰开窍。主治邪热内陷心包证。为凉开代表方，'凉开三宝'之一。",source:"《方剂学》",points:["安宫牛黄丸"]},
+  {id:"fj_s_040",type:"single",category:"方剂学",subCategory:"固涩剂",difficulty:3,question:"四神丸的功效是？",options:["涩肠固脱，温补脾肾","温肾暖脾，涩肠止泻","温补脾肾，涩肠止泻","补肾涩精"],answer:"温肾暖脾，涩肠止泻",explanation:"四神丸功效：温肾暖脾，涩肠止泻。主治脾肾阳虚之五更泻。组方：肉豆蔻、补骨脂、五味子、吴茱萸（生姜、大枣）。",source:"《方剂学》",points:["四神丸"]},
+  {id:"fj_t_001",type:"truefalse",category:"方剂学",subCategory:"解表剂",difficulty:1,question:"麻黄汤主治外感风寒表虚证。",options:["正确","错误"],answer:"错误",explanation:"麻黄汤主治外感风寒表实证（恶寒发热、无汗而喘、脉浮紧）。桂枝汤主治外感风寒表虚证（发热、汗出、恶风、脉浮缓）。",source:"《方剂学》",points:["麻黄汤","桂枝汤"]},
+  {id:"fj_t_002",type:"truefalse",category:"方剂学",subCategory:"清热剂",difficulty:2,question:"白虎汤的四大症是：身大热、汗大出、口大渴、脉洪大。",options:["正确","错误"],answer:"正确",explanation:"白虎汤主治阳明气分热盛证，以'四大症'（身大热、汗大出、口大渴、脉洪大有力）为辨证要点。",source:"《方剂学》",points:["白虎汤"]},
+  {id:"fj_t_003",type:"truefalse",category:"方剂学",subCategory:"补益剂",difficulty:1,question:"四君子汤的组方是人参、白术、茯苓、甘草。",options:["正确","错误"],answer:"正确",explanation:"四君子汤：人参、白术、茯苓、炙甘草。功效益气健脾。为补气健脾的基础方。",source:"《方剂学》",points:["四君子汤"]},
+  {id:"fj_t_004",type:"truefalse",category:"方剂学",subCategory:"补益剂",difficulty:1,question:"四物汤的组方是熟地黄、当归、白芍、川芎。",options:["正确","错误"],answer:"正确",explanation:"四物汤：熟地黄、当归、白芍、川芎。功效补血调血。为补血调经的基础方。",source:"《方剂学》",points:["四物汤"]},
+  {id:"fj_t_005",type:"truefalse",category:"方剂学",subCategory:"补益剂",difficulty:2,question:"六味地黄丸的组方特点是'三补三泻'，以泻为主。",options:["正确","错误"],answer:"错误",explanation:"六味地黄丸组方特点是'三补三泻'，以补为主（补药用量大于泻药）。三补：熟地滋肾阴、山茱萸补肝肾、山药补脾胃；三泻：泽泻利湿、茯苓渗湿、丹皮清泄。",source:"《方剂学》",points:["六味地黄丸"]},
+  {id:"fj_t_006",type:"truefalse",category:"方剂学",subCategory:"和解剂",difficulty:2,question:"小柴胡汤为'和法'的代表方，其组方特点是'一升一降，一表一里，一寒一热，一补一泻'。",options:["正确","错误"],answer:"正确",explanation:"小柴胡汤是和解少阳的代表方。柴胡升散透表、黄芩清泄里热，一升一降一表一里一寒一热；半夏生姜降逆和胃，人参大枣甘草扶正补气，一补一泻。",source:"《方剂学》",points:["小柴胡汤"]},
+  {id:"fj_t_007",type:"truefalse",category:"方剂学",subCategory:"温里剂",difficulty:2,question:"四逆汤的功效是回阳救逆，主治少阴病心肾阳衰寒厥证。",options:["正确","错误"],answer:"正确",explanation:"四逆汤由附子、干姜、炙甘草组成，功效回阳救逆，主治少阴病心肾阳衰寒厥证（四肢厥逆、神衰欲寐、脉微细）。",source:"《方剂学》",points:["四逆汤"]},
+  {id:"fj_t_008",type:"truefalse",category:"方剂学",subCategory:"理气剂",difficulty:2,question:"越鞠丸主治六郁证，以气郁为主。",options:["正确","错误"],answer:"正确",explanation:"越鞠丸（芎术丸）主治六郁（气、血、痰、火、湿、食）证，其中以气郁为主，故以香附为君药行气解郁。",source:"《方剂学》",points:["越鞠丸"]},
+  {id:"fj_t_009",type:"truefalse",category:"方剂学",subCategory:"祛湿剂",difficulty:2,question:"五苓散主治蓄水证，其功效是利水渗湿，温阳化气。",options:["正确","错误"],answer:"正确",explanation:"五苓散由猪苓、泽泻、白术、茯苓、桂枝组成。功效利水渗湿，温阳化气。主治膀胱气化不利之蓄水证。",source:"《方剂学》",points:["五苓散"]},
+  {id:"fj_t_010",type:"truefalse",category:"方剂学",subCategory:"祛痰剂",difficulty:1,question:"二陈汤的组方是半夏、橘红、茯苓、甘草（加生姜、乌梅）。",options:["正确","错误"],answer:"正确",explanation:"二陈汤：半夏、橘红、茯苓、炙甘草，煎加生姜、乌梅。功效燥湿化痰，理气和中。主治湿痰证。",source:"《方剂学》",points:["二陈汤"]},
+  {id:"fj_m_001",type:"multiple",category:"方剂学",subCategory:"解表剂",difficulty:2,question:"桂枝汤的组方包括？",options:["桂枝","芍药","甘草","生姜","大枣"],answer:["桂枝","芍药","甘草","生姜","大枣"],explanation:"桂枝汤由桂枝、芍药、炙甘草、生姜、大枣组成。功效解肌发表，调和营卫。",source:"《方剂学》",points:["桂枝汤"]},
+  {id:"fj_m_002",type:"multiple",category:"方剂学",subCategory:"补益剂",difficulty:2,question:"六味地黄丸的组方包括？",options:["熟地黄","山茱萸","山药","泽泻","茯苓","牡丹皮"],answer:["熟地黄","山茱萸","山药","泽泻","茯苓","牡丹皮"],explanation:"六味地黄丸由熟地黄、山茱萸、山药（三补）和泽泻、茯苓、牡丹皮（三泻）组成。",source:"《方剂学》",points:["六味地黄丸"]},
+  {id:"fj_m_003",type:"multiple",category:"方剂学",subCategory:"补益剂",difficulty:2,question:"补中益气汤的组方包括？",options:["黄芪","人参（或党参）","白术","当归","陈皮","升麻","柴胡","甘草"],answer:["黄芪","人参（或党参）","白术","当归","陈皮","升麻","柴胡","甘草"],explanation:"补中益气汤由黄芪、人参、白术、当归、陈皮、升麻、柴胡、炙甘草组成。功效补中益气，升阳举陷。",source:"《方剂学》",points:["补中益气汤"]},
+  {id:"fj_m_004",type:"multiple",category:"方剂学",subCategory:"补益剂",difficulty:2,question:"归脾汤的功效是？",options:["益气","补血","健脾","养心"],answer:["益气","补血","健脾","养心"],explanation:"归脾汤功效：益气补血，健脾养心。主治心脾气血两虚证及脾不统血证。",source:"《方剂学》",points:["归脾汤"]},
+  {id:"fj_m_005",type:"multiple",category:"方剂学",subCategory:"祛湿剂",difficulty:2,question:"三仁汤中的'三仁'是指？",options:["杏仁","白蔻仁","薏苡仁","桃仁"],answer:["杏仁","白蔻仁","薏苡仁"],explanation:"三仁汤中三仁指杏仁（宣利上焦肺气）、白蔻仁（行气宽中、芳香化湿）、薏苡仁（渗利下焦湿热）。",source:"《方剂学》",points:["三仁汤"]},
+  {id:"fj_m_006",type:"multiple",category:"方剂学",subCategory:"清热剂",difficulty:2,question:"白虎汤的组成是？",options:["石膏","知母","甘草","粳米"],answer:["石膏","知母","甘草","粳米"],explanation:"白虎汤由石膏、知母、炙甘草、粳米组成。功效清热生津。主治阳明气分热盛证。",source:"《方剂学》",points:["白虎汤"]},
+  {id:"fj_a_001",type:"short",category:"方剂学",subCategory:"补益剂",difficulty:3,question:"试述六味地黄丸的组方意义（组方特点）。",answer:"六味地黄丸由熟地黄、山茱萸、山药（三补）和泽泻、茯苓、牡丹皮（三泻）六味药组成，其组方特点是'三补三泻，以补为主；肾肝脾三阴并补，以补肾为主'。\n三补：1.熟地黄：滋阴补肾，填精益髓，为君药；2.山茱萸：补养肝肾，并能涩精，取'肝肾同源'之意；3.山药：补益脾阴，亦能固精。三药配合，肾肝脾三阴并补，是为'三补'，但以补肾阴为主。\n三泻：1.泽泻：利湿泄浊，并防熟地黄之滋腻恋邪；2.牡丹皮：清泄相火，并制山茱萸之温涩；3.茯苓：淡渗脾湿，并助山药之健运。三药为'三泻'，泻湿浊，清虚热，平其偏胜以治标。\n六味合用，三补三泻，其中补药用量重于泻药，是以补为主；肝脾肾三阴并补，以补肾阴为主。补中有泻，泻中寓补，相辅相成。",explanation:"六味地黄丸为补肾阴的基础方，组方严谨。",source:"《方剂学》",points:["六味地黄丸"]},
+  {id:"fj_a_002",type:"short",category:"方剂学",subCategory:"补益剂",difficulty:3,question:"比较四君子汤、参苓白术散、补中益气汤功效主治的异同。",answer:"相同点：三方均以补气健脾为主要功效，都可用于脾虚气弱之证。组方中均含人参（或党参）、白术、茯苓、甘草等补气健脾药。\n不同点：\n1.四君子汤：组方精简（参术苓草），功效单纯益气健脾，主治脾胃气虚证（面色萎白、语声低微、气短乏力、食少便溏、舌淡苔白、脉虚弱），为补气健脾的基础方。\n2.参苓白术散：在四君子汤基础上加山药、白扁豆、莲子、薏苡仁、砂仁、桔梗（及大枣）。功效益气健脾、渗湿止泻，兼能补肺（培土生金）。主治脾虚湿盛证（饮食不化、胸脘痞闷、肠鸣泄泻、四肢乏力、形体消瘦、面色萎黄、舌淡苔白腻、脉虚缓），亦可用治肺损虚劳。\n3.补中益气汤：组方重用黄芪为君，配人参、白术、炙甘草、当归、陈皮、升麻、柴胡。功效补中益气、升阳举陷。主治脾胃气虚证、气虚下陷证（脱肛、子宫脱垂、久泻久痢等）及气虚发热证。本方为'甘温除热'的代表方，升阳举陷是其特点。",explanation:"三方虽均补气健脾，但各有侧重。",source:"《方剂学》",points:["四君子汤","参苓白术散","补中益气汤"]},
+  {id:"fj_a_003",type:"short",category:"方剂学",subCategory:"解表剂",difficulty:3,question:"比较麻黄汤与桂枝汤的功效主治。",answer:"相同点：两方均属辛温解表剂，都能发散风寒，用于外感风寒证。组方中都有桂枝、甘草。\n不同点：\n1.麻黄汤：组方为麻黄、桂枝、杏仁、炙甘草。功效发汗解表、宣肺平喘。以麻黄为君，发汗力强（辛温解表之峻剂），主治外感风寒表实证（恶寒发热、头身疼痛、无汗而喘、舌苔薄白、脉浮紧）。辨证要点为'恶寒、无汗、脉浮紧'。\n2.桂枝汤：组方为桂枝、芍药、炙甘草、生姜、大枣。功效解肌发表、调和营卫。发汗作用较麻黄汤缓和，重在调和营卫，主治外感风寒表虚证（恶风发热、汗出头痛、鼻鸣干呕、苔白不渴、脉浮缓或浮弱）。辨证要点为'恶风、汗出、脉浮缓'。本方除用于外感风寒表虚证外，内伤杂病见营卫不和者，亦可应用。\n简言之：麻黄汤治表实无汗证，桂枝汤治表虚有汗证。",explanation:"两方为辛温解表剂的代表方，一实一虚，对比鲜明。",source:"《方剂学》",points:["麻黄汤","桂枝汤"]},
+  // ============ 中医诊断学 100题 ============
+  {id:"zd_s_001",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:1,question:"望神的重点是观察？",options:["眼神","面色","神情","呼吸"],answer:"眼神",explanation:"望神重点观察眼神、面色、神情、体态四方面，其中以眼神（两目）最为重要，因目为肝之窍、心之使、神之舍。",source:"《中医诊断学》",points:["望神"]},
+  {id:"zd_s_002",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:1,question:"面色淡白无华、唇舌色淡，多属？",options:["气虚","血虚","阳虚","阴虚"],answer:"血虚",explanation:"面色淡白无华、唇舌色淡，多属血虚证或失血证。面色㿠白而虚浮多属阳虚水泛，面色苍白多属阳气暴脱。",source:"《中医诊断学》",points:["望色","血虚"]},
+  {id:"zd_s_003",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:1,question:"面色红赤主？",options:["寒证","热证","虚证","湿证"],answer:"热证",explanation:"红色（赤色）主热证。满面通红为实热证，两颧潮红为阴虚内热，面色苍白颧红如妆为戴阳证（真寒假热）。",source:"《中医诊断学》",points:["望色","热证"]},
+  {id:"zd_s_004",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:1,question:"面色萎黄主？",options:["寒湿困脾","湿热蕴脾","脾胃气虚","脾虚湿盛"],answer:"脾胃气虚",explanation:"面色萎黄（淡黄枯槁无光）多属脾胃气虚，气血不足。面黄虚浮（黄胖）多属脾虚湿蕴。身目俱黄为黄疸。",source:"《中医诊断学》",points:["望色","脾虚"]},
+  {id:"zd_s_005",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:2,question:"'戴阳证'的面色特点是？",options:["满面通红","两颧潮红","面色苍白、颧赤如妆","面色紫暗"],answer:"面色苍白、颧赤如妆",explanation:"戴阳证（真寒假热）：久病重病面色苍白，却时而颧赤如妆、游移不定，为虚阳浮越的危重证候。",source:"《中医诊断学》",points:["望色","戴阳证"]},
+  {id:"zd_s_006",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:2,question:"青紫舌主？",options:["寒证","热证","气血运行不畅（血瘀）","以上都可"],answer:"以上都可",explanation:"青紫舌主气血运行不畅（瘀血）。可因寒凝血瘀（舌淡青紫而润）、热盛伤津（舌红紫而干）、气滞血瘀等所致。",source:"《中医诊断学》",points:["舌诊","青紫舌"]},
+  {id:"zd_s_007",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:1,question:"'胖大舌'主？",options:["阴虚","阳虚水湿痰饮","实热","瘀血"],answer:"阳虚水湿痰饮",explanation:"胖大舌主水湿、痰饮、湿热。舌淡胖大为脾肾阳虚、水湿痰饮内停；舌红胖大为脾胃湿热或痰热内蕴。",source:"《中医诊断学》",points:["舌诊","胖大舌"]},
+  {id:"zd_s_008",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:2,question:"'瘦薄舌'主？",options:["气血两虚、阴虚火旺","阳虚水湿","实热","痰饮"],answer:"气血两虚、阴虚火旺",explanation:"瘦薄舌主气血两虚、阴虚火旺。舌淡瘦薄为气血两虚；舌红瘦薄、少苔或无苔为阴虚火旺、津液耗伤。",source:"《中医诊断学》",points:["舌诊","瘦薄舌"]},
+  {id:"zd_s_009",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:2,question:"'齿痕舌'常与哪种舌象并见？",options:["瘦薄舌","胖大舌","裂纹舌","芒刺舌"],answer:"胖大舌",explanation:"齿痕舌多因舌体胖大而受齿缘压迫所致，故常与胖大舌同见，多主脾虚、水湿内停。",source:"《中医诊断学》",points:["舌诊","齿痕舌"]},
+  {id:"zd_s_010",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:2,question:"'白苔'主？",options:["表证、寒证、湿证","里证、热证","热极、痰热","瘀血证"],answer:"表证、寒证、湿证",explanation:"白苔主表证、寒证、湿证。薄白苔为正常或表证初起；苔白厚腻为湿浊、痰饮、食积；苔白如积粉为温病秽浊湿邪与热毒相结。",source:"《中医诊断学》",points:["舌诊","白苔"]},
+  {id:"zd_s_011",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:2,question:"'黄苔'主？",options:["表证、寒证","里证、热证","虚证","瘀血证"],answer:"里证、热证",explanation:"黄苔主里证、热证。苔淡黄薄黄为邪热伤津；苔黄厚腻为湿热内蕴、痰热内蕴、食积化腐。",source:"《中医诊断学》",points:["舌诊","黄苔"]},
+  {id:"zd_s_012",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:2,question:"'镜面舌'的主病是？",options:["胃气大伤、胃阴枯竭","肾阳虚衰","气血两虚","痰饮内停"],answer:"胃气大伤、胃阴枯竭",explanation:"镜面舌（光洁如镜、全无苔）主胃气大伤、胃阴枯竭，是病重的表现。",source:"《中医诊断学》",points:["舌诊","镜面舌"]},
+  {id:"zd_s_013",type:"single",category:"中医诊断学",subCategory:"闻诊",difficulty:2,question:"'谵语'的表现是？",options:["神识不清、语无伦次、声高有力","神识不清、语言重复、时断时续","自言自语、喃喃不休","语言謇涩、吐字困难"],answer:"神识不清、语无伦次、声高有力",explanation:"谵语：神识不清、语无伦次、声高有力，属热扰心神之实证。郑声为神识不清、语言重复、声低无力，属心气大伤之虚证。",source:"《中医诊断学》",points:["听声音","谵语"]},
+  {id:"zd_s_014",type:"single",category:"中医诊断学",subCategory:"问诊",difficulty:1,question:"'恶寒'与'畏寒'的区别是？",options:["加衣取暖或近火取暖是否缓解","是否有发热","是否有汗出","是否有头痛"],answer:"加衣取暖或近火取暖是否缓解",explanation:"恶寒：自觉怕冷，加衣取暖或近火取暖仍不能缓解，多属外感表证。畏寒：经常怕冷，加衣取暖可以缓解，多属阳虚里寒证。",source:"《中医诊断学》",points:["问寒热"]},
+  {id:"zd_s_015",type:"single",category:"中医诊断学",subCategory:"问诊",difficulty:2,question:"'但热不寒'多属？",options:["表证","里热证","虚寒证","表寒证"],answer:"里热证",explanation:"但热不寒指只发热、不觉寒冷，多属里热证。包括壮热（实热）、潮热（阳明腑实、湿温、阴虚）、微热等。",source:"《中医诊断学》",points:["问寒热","里热证"]},
+  {id:"zd_s_016",type:"single",category:"中医诊断学",subCategory:"问诊",difficulty:2,question:"'日晡潮热'的特点是？",options:["午后或入夜低热、五心烦热","午后热甚、身热不扬","日晡（申时）热甚、兼腹胀便秘","长期微热、劳累则甚"],answer:"日晡（申时）热甚、兼腹胀便秘",explanation:"日晡潮热（阳明潮热）：日晡（申时，下午3-5时）热甚，兼腹胀便秘，属阳明腑实证。阴虚潮热是午后或入夜低热、五心烦热；湿温潮热是午后热甚、身热不扬。",source:"《中医诊断学》",points:["问寒热","潮热"]},
+  {id:"zd_s_017",type:"single",category:"中医诊断学",subCategory:"问诊",difficulty:2,question:"'自汗'的特点是？",options:["日间汗出、动则尤甚","寐时汗出、醒则汗止","大汗不止、蒸蒸汗出","冷汗淋漓、四肢厥冷"],answer:"日间汗出、动则尤甚",explanation:"自汗：日间经常汗出不止，动则尤甚，主气虚、阳虚。盗汗：寐时汗出、醒则汗止，主阴虚。",source:"《中医诊断学》",points:["问汗","自汗"]},
+  {id:"zd_s_018",type:"single",category:"中医诊断学",subCategory:"问诊",difficulty:2,question:"'盗汗'的特点是？",options:["日间汗出、动则尤甚","寐时汗出、醒则汗止","大汗不止","冷汗淋漓"],answer:"寐时汗出、醒则汗止",explanation:"盗汗：入睡后汗出，醒后汗止，主阴虚内热或气阴两虚。",source:"《中医诊断学》",points:["问汗","盗汗"]},
+  {id:"zd_s_019",type:"single",category:"中医诊断学",subCategory:"问诊",difficulty:2,question:"'绝汗'的特点是？",options:["日间汗出、动则尤甚","寐时汗出、醒则汗止","大汗不止、病情危重","战栗后汗出"],answer:"大汗不止、病情危重",explanation:"绝汗（脱汗）：病情危重时大汗不止。若冷汗淋漓、四肢厥冷为亡阳；若汗出如油、热而黏手为亡阴。",source:"《中医诊断学》",points:["问汗","绝汗"]},
+  {id:"zd_s_020",type:"single",category:"中医诊断学",subCategory:"问诊",difficulty:2,question:"胀痛多属？",options:["气滞","血瘀","寒凝","湿阻"],answer:"气滞",explanation:"胀痛主气滞。如胸胁脘腹胀痛多属气滞；头部胀痛多属肝阳上亢或肝火上炎。",source:"《中医诊断学》",points:["问疼痛","胀痛"]},
+  {id:"zd_s_021",type:"single",category:"中医诊断学",subCategory:"问诊",difficulty:2,question:"刺痛多属？",options:["气滞","血瘀","寒凝","湿阻"],answer:"血瘀",explanation:"刺痛即疼痛如针刺，是瘀血疼痛的特点之一，以胸胁、少腹、小腹、胃脘部多见。",source:"《中医诊断学》",points:["问疼痛","刺痛"]},
+  {id:"zd_s_022",type:"single",category:"中医诊断学",subCategory:"问诊",difficulty:2,question:"'饥不欲食'多属？",options:["胃火炽盛","胃阴不足","食滞胃脘","脾气虚"],answer:"胃阴不足",explanation:"饥不欲食指虽有饥饿感但不欲食或进食不多，多属胃阴不足、虚火内扰。消谷善饥多属胃火炽盛。",source:"《中医诊断学》",points:["问饮食"]},
+  {id:"zd_s_023",type:"single",category:"中医诊断学",subCategory:"问诊",difficulty:2,question:"'消谷善饥'多属？",options:["胃火炽盛","胃阴不足","食滞胃脘","脾气虚"],answer:"胃火炽盛",explanation:"消谷善饥指食欲过于旺盛、食后不久即感饥饿，多属胃火炽盛、腐熟太过。兼多饮多尿者为消渴。",source:"《中医诊断学》",points:["问饮食"]},
+  {id:"zd_s_024",type:"single",category:"中医诊断学",subCategory:"问诊",difficulty:2,question:"大便完谷不化多属？",options:["脾虚或肾虚命门火衰","湿热","痢疾","食积"],answer:"脾虚或肾虚命门火衰",explanation:"完谷不化指大便中含有较多未消化食物，属脾虚或肾虚命门火衰（五更泻）。新起者多为食滞胃肠。",source:"《中医诊断学》",points:["问二便"]},
+  {id:"zd_s_025",type:"single",category:"中医诊断学",subCategory:"切诊",difficulty:2,question:"'浮脉'的主病是？",options:["表证","里证","虚证","热证"],answer:"表证",explanation:"浮脉：轻取即得、重按稍减不空，主表证（浮而有力为表实、浮而无力为表虚）。浮而细软为濡脉。",source:"《中医诊断学》",points:["脉诊","浮脉"]},
+  {id:"zd_s_026",type:"single",category:"中医诊断学",subCategory:"切诊",difficulty:2,question:"'沉脉'的主病是？",options:["表证","里证","虚证","热证"],answer:"里证",explanation:"沉脉：轻取不应、重按始得，主里证（有力为里实、无力为里虚）。",source:"《中医诊断学》",points:["脉诊","沉脉"]},
+  {id:"zd_s_027",type:"single",category:"中医诊断学",subCategory:"切诊",difficulty:2,question:"'迟脉'的主病是？",options:["寒证","热证","虚证","实证"],answer:"寒证",explanation:"迟脉：脉来迟慢、一息不足四至（每分钟60次以下），主寒证（有力为实寒、无力为虚寒）。",source:"《中医诊断学》",points:["脉诊","迟脉"]},
+  {id:"zd_s_028",type:"single",category:"中医诊断学",subCategory:"切诊",difficulty:2,question:"'数脉'的主病是？",options:["寒证","热证","虚证","实证"],answer:"热证",explanation:"数脉：脉来急促、一息五至以上（每分钟90次以上），主热证（有力为实热、无力为虚热）。",source:"《中医诊断学》",points:["脉诊","数脉"]},
+  {id:"zd_s_029",type:"single",category:"中医诊断学",subCategory:"切诊",difficulty:2,question:"'虚脉'的主病是？",options:["虚证","实证","寒证","热证"],answer:"虚证",explanation:"虚脉：三部脉举之无力、按之空虚，主虚证（气、血、阴、阳诸虚）。",source:"《中医诊断学》",points:["脉诊","虚脉"]},
+  {id:"zd_s_030",type:"single",category:"中医诊断学",subCategory:"八纲辨证",difficulty:1,question:"八纲辨证的总纲是？",options:["表里","寒热","虚实","阴阳"],answer:"阴阳",explanation:"八纲：表、里、寒、热、虚、实、阴、阳。其中阴阳是八纲辨证的总纲，可统括其余六纲（表热实属阳，里虚寒属阴）。",source:"《中医诊断学》",points:["八纲辨证","阴阳"]},
+  {id:"zd_s_031",type:"single",category:"中医诊断学",subCategory:"八纲辨证",difficulty:2,question:"'表证'的辨证要点是？",options:["起病急、病程短、症见发热恶寒、苔薄白、脉浮","脏腑症状为主、病程较长","但热不寒、舌红苔黄","畏寒肢冷、舌淡苔白"],answer:"起病急、病程短、症见发热恶寒、苔薄白、脉浮",explanation:"表证是六淫等邪气从皮毛、口鼻侵入人体所致的证候，以起病急、病程短、发热恶寒同时并见、苔薄白、脉浮为辨证要点。",source:"《中医诊断学》",points:["八纲辨证","表证"]},
+  {id:"zd_s_032",type:"single",category:"中医诊断学",subCategory:"八纲辨证",difficulty:2,question:"'寒证'与'热证'的鉴别要点是？",options:["寒热喜恶、面色、口渴与否、四肢温凉、二便、舌象脉象","病程长短","发病急缓","体质强弱"],answer:"寒热喜恶、面色、口渴与否、四肢温凉、二便、舌象脉象",explanation:"寒证与热证鉴别：恶寒喜温/恶热喜凉、面色白/面色红、口不渴/口渴、手足冷/手足温、小便清长大便稀溏/小便短赤大便干结、舌淡苔白/舌红苔黄、脉迟/脉数。",source:"《中医诊断学》",points:["八纲辨证","寒热辨证"]},
+  {id:"zd_s_033",type:"single",category:"中医诊断学",subCategory:"八纲辨证",difficulty:3,question:"'真热假寒'的'假寒'主要表现是？",options:["面色苍白、四肢厥冷、脉沉（似寒），但身热不恶寒反恶热、口渴喜冷饮、小便短赤、大便干结、舌红苔黄","面色红、口渴喜热饮","面色苍白、下利清谷","恶寒发热、无汗"],answer:"面色苍白、四肢厥冷、脉沉（似寒），但身热不恶寒反恶热、口渴喜冷饮、小便短赤、大便干结、舌红苔黄",explanation:"真热假寒（阳盛格阴）：内热为真、外寒为假。表现为高热、胸腹灼热、口渴喜冷饮、小便短赤、大便干结、舌红苔黄干、脉数有力等真热症状；同时可见面色苍白、四肢厥冷、脉沉等假寒之象。",source:"《中医诊断学》",points:["八纲辨证","真热假寒"]},
+  {id:"zd_s_034",type:"single",category:"中医诊断学",subCategory:"八纲辨证",difficulty:3,question:"'真寒假热'的'假热'主要表现是？",options:["面色浮红如妆、口渴喜热饮、身热反欲盖衣被、脉大而无根（似热），但胸腹无灼热、小便清长、下利清谷、舌淡苔白","面色满面通红、口渴喜冷饮","身大热、汗大出、口大渴、脉洪大","发热恶寒、头痛"],answer:"面色浮红如妆、口渴喜热饮、身热反欲盖衣被、脉大而无根（似热），但胸腹无灼热、小便清长、下利清谷、舌淡苔白",explanation:"真寒假热（阴盛格阳/戴阳）：内寒为真、外热为假。表现为面色浮红如妆（游移不定）、身热反欲盖衣被、口渴喜热饮、脉大而无根等假热；同时可见小便清长、下利清谷、舌淡苔白、脉沉迟无力等真寒症状。",source:"《中医诊断学》",points:["八纲辨证","真寒假热"]},
+  {id:"zd_s_035",type:"single",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:2,question:"'心气虚证'与'心阳虚证'的共同症状是？",options:["心悸怔忡、胸闷气短","畏寒肢冷","面色㿠白","心痛暴作"],answer:"心悸怔忡、胸闷气短",explanation:"心气虚证与心阳虚证都有心悸怔忡、胸闷气短、自汗、脉虚或结代等共同症状。心阳虚证在心气虚基础上出现畏寒肢冷、心痛、面色㿠白、舌淡胖、脉微细等虚寒症状。",source:"《中医诊断学》",points:["脏腑辨证","心气虚","心阳虚"]},
+  {id:"zd_s_036",type:"single",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:2,question:"'心血虚证'与'心阴虚证'的共同症状是？",options:["心悸怔忡、失眠多梦","潮热盗汗、五心烦热","头晕健忘","面白无华"],answer:"心悸怔忡、失眠多梦",explanation:"心血虚证与心阴虚证都有心悸怔忡、失眠多梦、健忘等共同症状。心血虚兼见血虚表现（面白无华、唇舌淡白、脉细弱）；心阴虚兼见阴虚内热表现（潮热盗汗、五心烦热、舌红少苔、脉细数）。",source:"《中医诊断学》",points:["脏腑辨证","心血虚","心阴虚"]},
+  {id:"zd_s_037",type:"single",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:2,question:"'肝火炽盛证'的辨证要点是？",options:["头晕胀痛、面红目赤、口苦口干、急躁易怒、胁肋灼痛、舌红苔黄、脉弦数","头晕目眩、两目干涩、胁肋隐痛、脉弦细","情志抑郁、胸胁胀痛、善太息","头晕耳鸣、腰膝酸软"],answer:"头晕胀痛、面红目赤、口苦口干、急躁易怒、胁肋灼痛、舌红苔黄、脉弦数",explanation:"肝火炽盛证（实火）以头晕胀痛、面红目赤、耳鸣如潮、急躁易怒、胁肋灼痛、口苦口干、尿黄便结、舌红苔黄、脉弦数为辨证要点。",source:"《中医诊断学》",points:["脏腑辨证","肝火炽盛"]},
+  {id:"zd_s_038",type:"single",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:2,question:"'脾气虚证'的辨证要点是？",options:["食少、腹胀、便溏及气虚见症","食少、腹胀、便溏及阳虚见症","食少、腹胀、便溏及寒湿内生","食少、腹胀、便溏及湿热内蕴"],answer:"食少、腹胀、便溏及气虚见症",explanation:"脾气虚证以食少、腹胀、便溏及气虚（神疲乏力、少气懒言、面色萎黄、舌淡苔白、脉缓弱）为辨证要点。",source:"《中医诊断学》",points:["脏腑辨证","脾气虚"]},
+  {id:"zd_s_039",type:"single",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:2,question:"'脾气下陷证'（中气下陷）的辨证要点是？",options:["脾气虚证加内脏下垂（脱肛、子宫下垂、胃下垂等）","脾气虚证加寒湿","脾气虚证加湿热","脾气虚证加出血"],answer:"脾气虚证加内脏下垂（脱肛、子宫下垂、胃下垂等）",explanation:"脾气下陷证（中气下陷）以脾气虚证加内脏下垂（脱肛、子宫脱垂、胃下垂、久泻不止、脘腹重坠）为辨证要点。",source:"《中医诊断学》",points:["脏腑辨证","中气下陷"]},
+  {id:"zd_s_040",type:"single",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:2,question:"'脾不统血证'的辨证要点是？",options:["脾气虚证加出血（便血、尿血、肌衄、崩漏等）","脾气虚证加内脏下垂","脾气虚证加寒湿","脾气虚证加湿热"],answer:"脾气虚证加出血（便血、尿血、肌衄、崩漏等）",explanation:"脾不统血证以脾气虚证加慢性出血（便血、尿血、肌衄、鼻衄、齿衄、崩漏等、血色淡而质稀）为辨证要点。",source:"《中医诊断学》",points:["脏腑辨证","脾不统血"]},
+  {id:"zd_s_041",type:"single",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:2,question:"'肺气虚证'的辨证要点是？",options:["咳喘无力、咳痰清稀及气虚见症","咳嗽痰黄稠、舌红苔黄","干咳无痰、咽干口燥","咳嗽痰白清稀量多"],answer:"咳喘无力、咳痰清稀及气虚见症",explanation:"肺气虚证以咳喘无力、咳痰清稀、声低气短、自汗易感冒及气虚见症为辨证要点。",source:"《中医诊断学》",points:["脏腑辨证","肺气虚"]},
+  {id:"zd_s_042",type:"single",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:2,question:"'肾阳虚证'的辨证要点是？",options:["腰膝酸软、畏寒肢冷、夜尿多、性欲减退、舌淡胖、脉沉细迟无力","腰膝酸软、头晕耳鸣、潮热盗汗","腰膝酸痛、遗精、月经不调","腰膝酸软、水肿"],answer:"腰膝酸软、畏寒肢冷、夜尿多、性欲减退、舌淡胖、脉沉细迟无力",explanation:"肾阳虚证以腰膝酸软、畏寒肢冷、夜尿频多、性欲减退（男子阳痿早泄、女子宫寒不孕）、舌淡胖苔白、脉沉细迟无力为辨证要点。",source:"《中医诊断学》",points:["脏腑辨证","肾阳虚"]},
+  {id:"zd_s_043",type:"single",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:2,question:"'肾阴虚证'的辨证要点是？",options:["腰膝酸软、头晕耳鸣、潮热盗汗、五心烦热、舌红少苔、脉细数","腰膝酸软、畏寒肢冷","腰膝酸软、水肿尿少","腰膝酸软、白带清稀"],answer:"腰膝酸软、头晕耳鸣、潮热盗汗、五心烦热、舌红少苔、脉细数",explanation:"肾阴虚证以腰膝酸软、头晕耳鸣、遗精、月经量少、潮热盗汗、五心烦热、咽干颧红、舌红少苔、脉细数为辨证要点。",source:"《中医诊断学》",points:["脏腑辨证","肾阴虚"]},
+  {id:"zd_s_044",type:"single",category:"中医诊断学",subCategory:"六经辨证",difficulty:3,question:"'太阳伤寒证'的辨证要点是？",options:["恶寒、发热、无汗、头身痛、脉浮紧","恶风、发热、汗出、脉浮缓","身热、不恶寒反恶热、汗出、脉洪大","寒热往来、胸胁苦满、脉弦"],answer:"恶寒、发热、无汗、头身痛、脉浮紧",explanation:"太阳伤寒证（表实寒）：恶寒、发热、无汗、头身痛、项强、脉浮紧，或兼咳喘。太阳中风证为恶风、发热、汗出、脉浮缓。",source:"《中医诊断学》",points:["六经辨证","太阳伤寒"]},
+  {id:"zd_s_045",type:"single",category:"中医诊断学",subCategory:"六经辨证",difficulty:3,question:"'阳明经证'的辨证要点是？",options:["大热、大汗、大渴、脉洪大（四大症）","潮热、谵语、腹满痛、大便秘结","寒热往来、胸胁苦满","恶寒发热、头身痛"],answer:"大热、大汗、大渴、脉洪大（四大症）",explanation:"阳明经证（阳明热证）：身大热、不恶寒反恶热、汗大出、口大渴引饮、心烦躁扰、面赤、舌红苔黄燥、脉洪大（四大症）。",source:"《中医诊断学》",points:["六经辨证","阳明经证"]},
+  {id:"zd_s_046",type:"single",category:"中医诊断学",subCategory:"卫气营血辨证",difficulty:3,question:"'营分证'的辨证要点是？",options:["身热夜甚、心烦不寐、舌红绛、脉细数","恶寒发热、头痛、脉浮数","身热、汗出、口渴、脉洪大","发热夜甚、斑疹隐隐、神昏谵语"],answer:"身热夜甚、心烦不寐、舌红绛、脉细数",explanation:"营分证以身热夜甚、口不甚渴、心烦不寐、舌红绛、脉细数为辨证要点。营分证是温热病邪内陷的深重阶段。",source:"《中医诊断学》",points:["卫气营血辨证","营分证"]},
+  {id:"zd_s_047",type:"single",category:"中医诊断学",subCategory:"气血辨证",difficulty:2,question:"'气滞证'的辨证要点是？",options:["胀闷、疼痛、随情绪变化而增减、走窜不定、脉弦","刺痛固定、舌紫暗、脉涩","面色淡白、头晕眼花、脉细","少气懒言、乏力自汗、脉虚"],answer:"胀闷、疼痛、随情绪变化而增减、走窜不定、脉弦",explanation:"气滞证以胀闷、疼痛（胀痛、窜痛）、症状随情绪变化而增减、脉象弦为辨证要点。",source:"《中医诊断学》",points:["气血辨证","气滞证"]},
+  {id:"zd_s_048",type:"single",category:"中医诊断学",subCategory:"气血辨证",difficulty:2,question:"'血瘀证'的辨证要点是？",options:["刺痛固定、肿块、出血紫暗有块、舌紫暗有瘀点瘀斑、脉涩","胀闷疼痛、走窜不定、脉弦","面色淡白、头晕眼花、脉细","少气懒言、乏力自汗"],answer:"刺痛固定、肿块、出血紫暗有块、舌紫暗有瘀点瘀斑、脉涩",explanation:"血瘀证以刺痛固定不移、肿块、出血色紫暗有块、面色黧黑、肌肤甲错、舌紫暗或有瘀点瘀斑、脉细涩为辨证要点。",source:"《中医诊断学》",points:["气血辨证","血瘀证"]},
+  {id:"zd_t_001",type:"truefalse",category:"中医诊断学",subCategory:"望诊",difficulty:1,question:"望神的重点是观察眼神。",options:["正确","错误"],answer:"正确",explanation:"望神重点观察眼神、面色、神情、体态四方面，其中以眼神最为重要，因目为肝之窍、心之使、神之舍。",source:"《中医诊断学》",points:["望神"]},
+  {id:"zd_t_002",type:"truefalse",category:"中医诊断学",subCategory:"望诊",difficulty:2,question:"面色萎黄多属脾胃气虚、气血不足。",options:["正确","错误"],answer:"正确",explanation:"面色萎黄（淡黄枯槁无光）多属脾胃气虚、气血不足。面黄虚浮（黄胖）多属脾虚湿蕴。",source:"《中医诊断学》",points:["望色"]},
+  {id:"zd_t_003",type:"truefalse",category:"中医诊断学",subCategory:"望诊",difficulty:2,question:"胖大舌多主水湿、痰饮、湿热。",options:["正确","错误"],answer:"正确",explanation:"胖大舌主水湿、痰饮、湿热。舌淡胖大者为脾肾阳虚、水湿痰饮内停；舌红胖大者为脾胃湿热或痰热内蕴。",source:"《中医诊断学》",points:["舌诊"]},
+  {id:"zd_t_004",type:"truefalse",category:"中医诊断学",subCategory:"问诊",difficulty:1,question:"自汗主气虚、阳虚；盗汗主阴虚。",options:["正确","错误"],answer:"正确",explanation:"自汗：日间经常汗出、动则尤甚，主气虚、阳虚。盗汗：入睡后汗出、醒后汗止，主阴虚内热或气阴两虚。",source:"《中医诊断学》",points:["问汗"]},
+  {id:"zd_t_005",type:"truefalse",category:"中医诊断学",subCategory:"八纲辨证",difficulty:2,question:"阴阳是八纲辨证的总纲。",options:["正确","错误"],answer:"正确",explanation:"八纲包括表、里、寒、热、虚、实、阴、阳。其中阴阳是八纲的总纲，可统括其余六纲。",source:"《中医诊断学》",points:["八纲辨证"]},
+  {id:"zd_m_001",type:"multiple",category:"中医诊断学",subCategory:"望诊",difficulty:2,question:"淡白舌主？",options:["气血两虚","阳虚","实热","阴虚"],answer:["气血两虚","阳虚"],explanation:"淡白舌比正常舌色浅淡，主气血两虚、阳虚。淡白而润胖嫩为阳虚水停；淡白瘦薄为气血两虚。",source:"《中医诊断学》",points:["舌诊","淡白舌"]},
+  {id:"zd_m_002",type:"multiple",category:"中医诊断学",subCategory:"八纲辨证",difficulty:2,question:"下列属于虚证的表现有？",options:["面色淡白","神疲乏力","舌质淡嫩","脉虚无力","疼痛拒按"],answer:["面色淡白","神疲乏力","舌质淡嫩","脉虚无力"],explanation:"虚证表现为面色淡白或萎黄、神疲乏力、少气懒言、自汗盗汗、舌淡嫩、脉虚无力等。疼痛拒按多属实证。",source:"《中医诊断学》",points:["八纲辨证","虚证"]},
+  {id:"zd_a_001",type:"short",category:"中医诊断学",subCategory:"八纲辨证",difficulty:3,question:"简述表证与里证的鉴别要点。",answer:"表证与里证的鉴别，主要从以下几方面判断：\n1.寒热特点：表证发热恶寒同时并见；里证但热不寒或但寒不热。\n2.病程新久：表证病程短、起病急；里证病程较长。\n3.症状表现：表证以头身疼痛、鼻塞等体表症状为主，内脏症状不明显；里证以内脏症状（如咳喘、心悸、腹痛、吐泻等）为主症。\n4.舌脉变化：表证舌苔薄白，脉象多浮；里证舌苔多有变化（厚、黄等），脉象多沉或其他变化。\n简言之：以寒热症状、内脏症状是否突出、舌脉变化为鉴别要点。",explanation:"表里鉴别是八纲辨证的重要内容。",source:"《中医诊断学》",points:["八纲辨证","表里辨证"]},
+  {id:"zd_a_002",type:"short",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:3,question:"简述心气虚、心阳虚、心阳暴脱三证的鉴别。",answer:"三证病位均在心、性质均属虚（阳气虚），病情由轻到重：\n1.心气虚证：心悸怔忡、胸闷气短、活动后加重、自汗、面色淡白或㿠白、舌淡苔白、脉虚或结代。以心悸及气虚症状为要点。\n2.心阳虚证：在心气虚证基础上出现虚寒症状，如畏寒肢冷、心痛、面色㿠白或晦暗、舌淡胖、脉微细或结代。以心悸怔忡伴虚寒症状为要点。\n3.心阳暴脱证：在心阳虚证基础上突然出现亡阳症状，如冷汗淋漓、四肢厥冷、呼吸微弱、面色苍白或青紫、神志模糊或昏迷、舌淡紫青滑、脉微欲绝。以心阳虚及亡阳表现为要点。\n鉴别要点：心气虚仅有气虚；心阳虚在气虚基础上加寒象；心阳暴脱在心阳虚基础上出现亡阳脱证。",explanation:"三证是同一病机发展的不同阶段。",source:"《中医诊断学》",points:["脏腑辨证","心气虚","心阳虚"]},
+  {id:"zd_a_003",type:"short",category:"中医诊断学",subCategory:"气血辨证",difficulty:3,question:"简述气病六证（气虚、气陷、气不固、气脱、气滞、气逆）的辨证要点。",answer:"气病六证辨证要点：\n1.气虚证：少气懒言、神疲乏力、头晕目眩、自汗、动则诸症加剧、舌淡嫩、脉虚。以全身机能活动低下为要点。\n2.气陷证：在气虚证基础上出现内脏下垂（脱肛、子宫下垂、胃下垂等）或腰腹坠胀、久泻久痢等。以气虚加下陷为要点。\n3.气不固证：在气虚证基础上出现自汗不止、二便失禁、滑精早泄、崩漏等津液精血不固的表现。以气虚加不固为要点。\n4.气脱证：呼吸微弱而不规则、昏迷或昏仆、汗出不止、口开目合、手撒遗尿、脉微欲绝。以气虚至极、气不内守而外脱的危重表现为要点。\n5.气滞证：胀闷、疼痛（胀痛、窜痛）、症状随情绪变化而增减、脉象弦。以气机郁滞、运行不畅为要点。\n6.气逆证：咳嗽喘息（肺气上逆）、呃逆嗳气（胃气上逆）、头痛眩晕昏厥呕血（肝气上逆）。以气机上逆不顺为要点。",explanation:"气病六证是气血津液辨证的基础。",source:"《中医诊断学》",points:["气血辨证","气病"]},
+  {id:"jl_s_077",type:"single",category:"经络穴位",subCategory:"十二正经",difficulty:2,question:"足太阴脾经在腹部循行距前正中线几寸？",options:["2寸","4寸","6寸","0.5寸"],answer:"4寸",explanation:"足太阴脾经腹部循行：距前正中线4寸上行；胸部距前正中线6寸。",source:"《针灸学》",points:["脾经循行"]},
+  {id:"jl_s_078",type:"single",category:"经络穴位",subCategory:"十二正经",difficulty:2,question:"足少阴肾经在胸部循行距前正中线几寸？",options:["2寸","4寸","6寸","0.5寸"],answer:"2寸",explanation:"足少阴肾经胸部循行距前正中线2寸；腹部距前正中线0.5寸。",source:"《针灸学》",points:["肾经循行"]},
+  {id:"jl_s_079",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"'合治内腑'是指五输穴中何穴的应用？",options:["井穴","荥穴","输穴","合穴"],answer:"合穴",explanation:"《灵枢》：'合治内腑'。合穴多用于治疗六腑病证。",source:"《针灸学》",points:["五输穴","合穴"]},
+  {id:"jl_s_080",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"'井主心下满'是指五输穴中何穴的主治特点？",options:["井穴","荥穴","输穴","经穴"],answer:"井穴",explanation:"《难经·六十八难》：'井主心下满，荥主身热，输主体重节痛，经主喘咳寒热，合主逆气而泄。'",source:"《针灸学》",points:["五输穴","井穴"]},
+  {id:"jl_s_081",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"郄穴主要用于治疗？",options:["慢性病","急性病证","外感病","神志病"],answer:"急性病证",explanation:"郄穴是各经经气深聚的部位，多用于治疗本经急性病证、出血证。阳经郄穴多治急性痛证，阴经郄穴多治血证。",source:"《针灸学》",points:["郄穴"]},
+  {id:"jl_s_082",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:1,question:"百会穴的定位是？",options:["头顶正中线上两耳尖连线中点","前发际直上3寸","头顶正中线入后发际5寸","耳尖直上入发际1.5寸"],answer:"头顶正中线上两耳尖连线中点",explanation:"百会位于头部，当前发际正中直上5寸，或两耳尖连线的中点处。",source:"《针灸学》",points:["百会","督脉穴"]},
+  {id:"jl_s_083",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:1,question:"神阙穴位于？",options:["脐中","脐下1.5寸","脐下3寸","脐上4寸"],answer:"脐中",explanation:"神阙穴即肚脐，位于脐窝中央。主治虚脱、腹痛、泄泻等。",source:"《针灸学》",points:["神阙","任脉穴"]},
+  {id:"jl_s_084",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:1,question:"关元穴位于？",options:["脐下1.5寸","脐下3寸","脐下4寸","脐中"],answer:"脐下3寸",explanation:"关元位于前正中线上，脐下3寸。主治泌尿生殖疾病、虚劳等。为强壮保健要穴。",source:"《针灸学》",points:["关元","任脉穴"]},
+  {id:"jl_s_085",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:1,question:"气海穴位于？",options:["脐下1.5寸","脐下3寸","脐上4寸","脐下4寸"],answer:"脐下1.5寸",explanation:"气海位于前正中线上，脐下1.5寸。主治虚脱、脏气虚惫、妇科病证。",source:"《针灸学》",points:["气海","任脉穴"]},
+  {id:"jl_s_086",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"足三里穴的定位是？",options:["犊鼻下3寸胫骨前嵴外一横指","犊鼻下6寸胫骨前嵴外一横指","外踝尖上3寸","内踝尖上3寸"],answer:"犊鼻下3寸胫骨前嵴外一横指",explanation:"足三里位于犊鼻下3寸，胫骨前嵴外一横指。为强壮保健要穴。",source:"《针灸学》",points:["足三里","胃经穴"]},
+  {id:"jl_s_087",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"三阴交穴的定位是？",options:["内踝尖上3寸胫骨内侧面后缘","外踝尖上3寸腓骨前缘","内踝尖上4寸","外踝尖上4寸"],answer:"内踝尖上3寸胫骨内侧面后缘",explanation:"三阴交位于内踝尖上3寸，胫骨内侧面后缘。是肝脾肾三经交会穴，主治妇科病、泌尿生殖病。",source:"《针灸学》",points:["三阴交","交会穴"]},
+  {id:"jl_s_088",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"合谷穴的定位是？",options:["手背第1、2掌骨间第2掌骨桡侧中点","手背第2、3掌骨间","腕横纹上2寸","肘横纹外侧端"],answer:"手背第1、2掌骨间第2掌骨桡侧中点",explanation:"合谷位于手背第1、2掌骨之间，约当第2掌骨桡侧之中点。简便取穴：以一手拇指指关节横纹放在另一手拇食指之间指蹼缘上，拇指尖下是穴。",source:"《针灸学》",points:["合谷","原穴"]},
+  {id:"jl_s_089",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"内关穴的定位是？",options:["腕横纹上2寸掌长肌腱与桡侧腕屈肌腱之间","腕横纹上3寸","肘横纹中","腕横纹中央"],answer:"腕横纹上2寸掌长肌腱与桡侧腕屈肌腱之间",explanation:"内关位于前臂掌侧腕横纹上2寸，掌长肌腱与桡侧腕屈肌腱之间。主治心悸、呕吐、胃痛。",source:"《针灸学》",points:["内关","络穴","八脉交会穴"]},
+  {id:"jl_s_090",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"外关穴的定位是？",options:["腕背横纹上2寸尺骨与桡骨之间","腕背横纹上3寸","肘横纹外侧端","腕背横纹中央"],answer:"腕背横纹上2寸尺骨与桡骨之间",explanation:"外关位于前臂背侧腕背横纹上2寸，尺骨与桡骨之间。主治外感热病、头痛、耳鸣。",source:"《针灸学》",points:["外关","络穴","八脉交会穴"]},
+  {id:"jl_s_091",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"太冲穴的定位是？",options:["足背第1、2跖骨结合部之前凹陷中","足背第2、3跖骨间","足心前1/3处","外踝前下方"],answer:"足背第1、2跖骨结合部之前凹陷中",explanation:"太冲位于足背第1、2跖骨结合部之前凹陷中。主治头痛、眩晕、月经不调、中风。",source:"《针灸学》",points:["太冲","原穴","输穴"]},
+  {id:"jl_s_092",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"太溪穴的定位是？",options:["内踝后方内踝尖与跟腱之间凹陷中","外踝后方","足心前1/3处","内踝前下方"],answer:"内踝后方内踝尖与跟腱之间凹陷中",explanation:"太溪位于内踝后方，内踝尖与跟腱之间的凹陷中。主治肾虚证、月经不调。",source:"《针灸学》",points:["太溪","原穴","输穴"]},
+  {id:"jl_s_093",type:"single",category:"经络穴位",subCategory:"穴位定位",difficulty:2,question:"涌泉穴的定位是？",options:["足心前1/3凹陷中（卷足时足前部凹陷处）","足心后1/3处","内踝前下方","外踝前下方"],answer:"足心前1/3凹陷中（卷足时足前部凹陷处）",explanation:"涌泉位于足底部卷足时足前部凹陷处，约当足底2、3趾趾缝纹头端与足跟连线前1/3与后2/3交点上。主治昏厥、中暑、头痛、失眠。",source:"《针灸学》",points:["涌泉","井穴"]},
+  {id:"jl_s_094",type:"single",category:"经络穴位",subCategory:"奇经八脉",difficulty:1,question:"'阳脉之海'是指？",options:["任脉","督脉","冲脉","带脉"],answer:"督脉",explanation:"督脉总督一身之阳经，为'阳脉之海'。任脉为'阴脉之海'，冲脉为'十二经之海'或'血海'。",source:"《针灸学》",points:["奇经八脉","督脉"]},
+  {id:"jl_s_095",type:"single",category:"经络穴位",subCategory:"奇经八脉",difficulty:1,question:"'阴脉之海'是指？",options:["任脉","督脉","冲脉","带脉"],answer:"任脉",explanation:"任脉总任一身之阴经，为'阴脉之海'。任主胞胎，与妊娠有关。",source:"《针灸学》",points:["奇经八脉","任脉"]},
+  {id:"jl_s_096",type:"single",category:"经络穴位",subCategory:"奇经八脉",difficulty:1,question:"'十二经之海'、'血海'是指？",options:["任脉","督脉","冲脉","带脉"],answer:"冲脉",explanation:"冲脉为'十二经之海'、'血海'，与月经关系密切。",source:"《针灸学》",points:["奇经八脉","冲脉"]},
+  {id:"jl_s_097",type:"single",category:"经络穴位",subCategory:"穴位主治",difficulty:2,question:"'合谷'配'太冲'称为？",options:["四关穴","回阳九针","八会穴","八脉交会穴"],answer:"四关穴",explanation:"合谷（双）+太冲（双）合称'四关穴'，主治头痛、眩晕、失眠、惊风等。",source:"《针灸学》",points:["四关穴","配穴"]},
+  {id:"jl_s_098",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:3,question:"八会穴中'筋会'是？",options:["阳陵泉","太渊","绝骨","大杼"],answer:"阳陵泉",explanation:"八会穴：脏会章门、腑会中脘、气会膻中、血会膈俞、筋会阳陵泉、脉会太渊、骨会大杼、髓会绝骨（悬钟）。",source:"《针灸学》",points:["八会穴"]},
+  {id:"jl_s_099",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:3,question:"八会穴中'血会'是？",options:["膈俞","太渊","阳陵泉","绝骨"],answer:"膈俞",explanation:"血会膈俞。主治血病、贫血、慢性出血、瘀血等。",source:"《针灸学》",points:["八会穴","血会"]},
+  {id:"jl_s_100",type:"single",category:"经络穴位",subCategory:"穴位主治",difficulty:3,question:"'四总穴歌'中'腰背委中求'说明委中善治？",options:["头面病","腰背病","妇科病","上肢病"],answer:"腰背病",explanation:"四总穴歌：'肚腹三里留，腰背委中求，头项寻列缺，面口合谷收。'委中善治腰背疾患。",source:"《针灸学》",points:["四总穴歌","委中"]},
+  {id:"zy_s_068",type:"single",category:"中药学",subCategory:"清热药",difficulty:2,question:"下列哪味药善清泻肝胆火？",options:["龙胆草","黄连","黄柏","黄芩"],answer:"龙胆草",explanation:"龙胆草归肝胆经，清热燥湿、泻肝胆火，主治肝胆湿热、肝火头痛、目赤、耳聋、胁痛、高热惊风。",source:"《中药学》",points:["清热燥湿药","龙胆草"]},
+  {id:"zy_s_069",type:"single",category:"中药学",subCategory:"清热药",difficulty:2,question:"下列哪味药善治肺痈？",options:["鱼腥草","金银花","连翘","蒲公英"],answer:"鱼腥草",explanation:"鱼腥草清热解毒、消痈排脓、利尿通淋，为治肺痈要药。蒲公英治乳痈，败酱草治肠痈。",source:"《中药学》",points:["清热解毒药","肺痈","鱼腥草"]},
+  {id:"zy_s_070",type:"single",category:"中药学",subCategory:"清热药",difficulty:2,question:"下列哪味药善治乳痈？",options:["蒲公英","鱼腥草","败酱草","红藤"],answer:"蒲公英",explanation:"蒲公英清热解毒、消肿散结、利湿通淋，为治乳痈要药。",source:"《中药学》",points:["清热解毒药","乳痈","蒲公英"]},
+  {id:"zy_s_071",type:"single",category:"中药学",subCategory:"清热药",difficulty:2,question:"下列哪味药善治肠痈？",options:["败酱草","鱼腥草","蒲公英","金银花"],answer:"败酱草",explanation:"败酱草清热解毒、消痈排脓、祛瘀止痛，为治肠痈要药。",source:"《中药学》",points:["清热解毒药","肠痈","败酱草"]},
+  {id:"zy_s_072",type:"single",category:"中药学",subCategory:"清热药",difficulty:2,question:"生地黄与玄参均能？",options:["清热凉血、养阴生津","清热燥湿、泻火解毒","清热解毒、疏散风热","清热凉血、活血散瘀"],answer:"清热凉血、养阴生津",explanation:"生地黄、玄参均能清热凉血、养阴生津，常相须为用治温热病热入营血、阴虚内热。",source:"《中药学》",points:["清热凉血药","生地黄","玄参"]},
+  {id:"zy_s_073",type:"single",category:"中药学",subCategory:"泻下药",difficulty:2,question:"'大黄'的功效是？",options:["泻下攻积、清热泻火、凉血解毒、逐瘀通经","泻水逐饮、消肿散结","润肠通便","峻下冷积"],answer:"泻下攻积、清热泻火、凉血解毒、逐瘀通经",explanation:"大黄泻下攻积、清热泻火、凉血解毒、逐瘀通经、利湿退黄，号称'将军'。",source:"《中药学》",points:["攻下药","大黄"]},
+  {id:"zy_s_074",type:"single",category:"中药学",subCategory:"泻下药",difficulty:2,question:"'芒硝'的功效是？",options:["泻下通便、润燥软坚、清火消肿","泻下攻积、逐瘀通经","峻下冷积","泻水逐饮"],answer:"泻下通便、润燥软坚、清火消肿",explanation:"芒硝咸苦寒，泻下通便、润燥软坚、清火消肿，治实热积滞、大便燥结。",source:"《中药学》",points:["攻下药","芒硝"]},
+  {id:"zy_s_075",type:"single",category:"中药学",subCategory:"祛风湿药",difficulty:2,question:"'独活'的功效是？",options:["祛风湿、止痹痛、解表","祛风湿、舒筋络、清虚热","祛风湿、补肝肾、强筋骨","祛风通络、凉血消肿"],answer:"祛风湿、止痹痛、解表",explanation:"独活祛风湿、止痹痛、解表，善治下半身风湿痹痛、少阴头痛。",source:"《中药学》",points:["祛风湿药","独活"]},
+  {id:"zy_s_076",type:"single",category:"中药学",subCategory:"祛风湿药",difficulty:2,question:"'威灵仙'的功效是？",options:["祛风湿、通经络、消骨鲠","祛风湿、补肝肾、强筋骨","祛风通络、凉血消肿","祛风除湿、活血通络"],answer:"祛风湿、通经络、消骨鲠",explanation:"威灵仙祛风湿、通经络、消骨鲠，善治风湿痹痛、鱼骨鲠喉。",source:"《中药学》",points:["祛风湿药","威灵仙"]},
+  {id:"zy_s_077",type:"single",category:"中药学",subCategory:"化湿药",difficulty:2,question:"'苍术'的功效是？",options:["燥湿健脾、祛风散寒","化湿解暑止呕","燥湿消痰下气除满","化湿行气温中止泻"],answer:"燥湿健脾、祛风散寒",explanation:"苍术燥湿健脾、祛风散寒、明目，治湿阻中焦、风寒湿痹、夜盲。",source:"《中药学》",points:["化湿药","苍术"]},
+  {id:"zy_s_078",type:"single",category:"中药学",subCategory:"化湿药",difficulty:2,question:"'藿香'的功效是？",options:["化湿、止呕、解暑","燥湿健脾、祛风散寒","燥湿消痰、下气除满","化湿行气、温中止呕"],answer:"化湿、止呕、解暑",explanation:"藿香化湿、止呕、解暑，为治湿阻中焦、暑湿及湿温初起要药。",source:"《中药学》",points:["化湿药","藿香"]},
+  {id:"zy_s_079",type:"single",category:"中药学",subCategory:"利水渗湿药",difficulty:2,question:"'茯苓'的功效是？",options:["利水渗湿、健脾、宁心","利水通淋、清解暑热","利湿退黄、清热解毒","利水消肿、渗湿止泻"],answer:"利水渗湿、健脾、宁心",explanation:"茯苓利水渗湿、健脾、宁心，为利水渗湿要药，寒热虚实各种水肿均可应用。",source:"《中药学》",points:["利水渗湿药","茯苓"]},
+  {id:"zy_s_080",type:"single",category:"中药学",subCategory:"利水渗湿药",difficulty:2,question:"'泽泻'的功效是？",options:["利水渗湿、泄热","利水通淋、通经下乳","利湿退黄、清热解毒","利水消肿、祛风除湿"],answer:"利水渗湿、泄热",explanation:"泽泻利水渗湿、泄热，利水作用较茯苓强，且能泻肾火。",source:"《中药学》",points:["利水渗湿药","泽泻"]},
+  {id:"zy_s_081",type:"single",category:"中药学",subCategory:"温里药",difficulty:2,question:"'附子'的功效是？",options:["回阳救逆、补火助阳、散寒止痛","温中散寒、回阳通脉","补火助阳、引火归原","温中降逆、温肾助阳"],answer:"回阳救逆、补火助阳、散寒止痛",explanation:"附子回阳救逆、补火助阳、散寒止痛，为'回阳救逆第一品药'。",source:"《中药学》",points:["温里药","附子"]},
+  {id:"zy_s_082",type:"single",category:"中药学",subCategory:"温里药",difficulty:2,question:"'干姜'的功效是？",options:["温中散寒、回阳通脉、温肺化饮","补火助阳、引火归原","温中降逆、温肾助阳","散寒止痛、理气和胃"],answer:"温中散寒、回阳通脉、温肺化饮",explanation:"干姜温中散寒、回阳通脉、温肺化饮，主治脾胃虚寒、亡阳证、寒饮咳喘。",source:"《中药学》",points:["温里药","干姜"]},
+  {id:"zy_s_083",type:"single",category:"中药学",subCategory:"温里药",difficulty:2,question:"'肉桂'的功效是？",options:["补火助阳、引火归原、散寒止痛、温通经脉","回阳救逆、补火助阳","温中降逆、温肾助阳","散寒止痛、疏肝下气"],answer:"补火助阳、引火归原、散寒止痛、温通经脉",explanation:"肉桂补火助阳、引火归原、散寒止痛、温通经脉。附子回阳力强，肉桂温补肾阳、引火归原力胜。",source:"《中药学》",points:["温里药","肉桂"]},
+  {id:"zy_s_084",type:"single",category:"中药学",subCategory:"理气药",difficulty:2,question:"'陈皮'的功效是？",options:["理气健脾、燥湿化痰","疏肝破气、消积化滞","行气止痛、温肾散寒","理气宽中、燥湿化痰、消食"],answer:"理气健脾、燥湿化痰",explanation:"陈皮理气健脾、燥湿化痰，为治脾胃气滞、湿痰寒痰要药。",source:"《中药学》",points:["理气药","陈皮"]},
+  {id:"zy_s_085",type:"single",category:"中药学",subCategory:"理气药",difficulty:2,question:"'枳实'的功效是？",options:["破气消积、化痰除痞","疏肝破气、消积化滞","行气止痛、温肾散寒","理气健脾、燥湿化痰"],answer:"破气消积、化痰除痞",explanation:"枳实破气消积、化痰除痞，主治食积气滞、痰浊阻滞胸脘痞满。",source:"《中药学》",points:["理气药","枳实"]},
+  {id:"zy_s_086",type:"single",category:"中药学",subCategory:"理气药",difficulty:2,question:"'香附'的功效是？",options:["疏肝解郁、理气宽中、调经止痛","疏肝破气、消积化滞","行气止痛、温肾散寒","理气健脾、燥湿化痰"],answer:"疏肝解郁、理气宽中、调经止痛",explanation:"香附疏肝解郁、理气宽中、调经止痛，号称'气病之总司，女科之主帅'。",source:"《中药学》",points:["理气药","香附"]},
+  {id:"zy_s_087",type:"single",category:"中药学",subCategory:"消食药",difficulty:2,question:"'山楂'的功效是？",options:["消食化积、活血散瘀","消食和中、健脾开胃","消食健胃、回乳消胀","运脾消食、固精止遗"],answer:"消食化积、活血散瘀",explanation:"山楂消食化积、活血散瘀，尤善消肉食油腻积滞，又治产后瘀阻腹痛、疝气痛。",source:"《中药学》",points:["消食药","山楂"]},
+  {id:"zy_s_088",type:"single",category:"中药学",subCategory:"消食药",difficulty:2,question:"'麦芽'的功效是？",options:["消食健胃、回乳消胀","消食化积、活血散瘀","消食和中、健脾开胃","运脾消食、固精止遗"],answer:"消食健胃、回乳消胀",explanation:"麦芽消食健胃、回乳消胀，尤善消米面薯芋食积。生用消食，炒用回乳。",source:"《中药学》",points:["消食药","麦芽"]},
+  {id:"zy_s_089",type:"single",category:"中药学",subCategory:"驱虫药",difficulty:2,question:"'使君子'主要用于驱杀？",options:["蛔虫","绦虫","钩虫","姜片虫"],answer:"蛔虫",explanation:"使君子驱虫消积，善驱蛔虫、蛲虫，小儿尤宜。",source:"《中药学》",points:["驱虫药","使君子"]},
+  {id:"zy_s_090",type:"single",category:"中药学",subCategory:"驱虫药",difficulty:2,question:"'槟榔'善驱？",options:["绦虫","蛔虫","钩虫","姜片虫"],answer:"绦虫",explanation:"槟榔杀虫消积、行气利水、截疟，善驱绦虫（配南瓜子效佳）。",source:"《中药学》",points:["驱虫药","槟榔"]},
+  {id:"zy_s_091",type:"single",category:"中药学",subCategory:"止血药",difficulty:2,question:"'三七'的功效是？",options:["化瘀止血、活血定痛","收敛止血、消肿生肌","凉血止血、解毒敛疮","温经止血、温中止痛"],answer:"化瘀止血、活血定痛",explanation:"三七化瘀止血、活血定痛，'止血不留瘀，化瘀不伤正'，为伤科要药。",source:"《中药学》",points:["化瘀止血药","三七"]},
+  {id:"zy_s_092",type:"single",category:"中药学",subCategory:"止血药",difficulty:2,question:"'白及'的功效是？",options:["收敛止血、消肿生肌","化瘀止血、活血定痛","凉血止血、清肝泻火","温经止血、温中止痛"],answer:"收敛止血、消肿生肌",explanation:"白及收敛止血、消肿生肌，治肺胃出血尤宜。反乌头。",source:"《中药学》",points:["收敛止血药","白及"]},
+  {id:"zy_s_093",type:"single",category:"中药学",subCategory:"安神药",difficulty:2,question:"'酸枣仁'的功效是？",options:["养心益肝、安神、敛汗","镇惊安神、平肝潜阳","养心安神、润肠通便","解郁安神、活血消肿"],answer:"养心益肝、安神、敛汗",explanation:"酸枣仁养心益肝、安神、敛汗，为养心安神要药，治心肝血虚失眠。",source:"《中药学》",points:["养心安神药","酸枣仁"]},
+  {id:"zy_s_094",type:"single",category:"中药学",subCategory:"平肝息风药",difficulty:2,question:"'天麻'的功效是？",options:["息风止痉、平抑肝阳、祛风通络","息风止痉、平肝潜阳、清肝明目","息风止痉、清热解毒","息风止痉、攻毒散结"],answer:"息风止痉、平抑肝阳、祛风通络",explanation:"天麻息风止痉、平抑肝阳、祛风通络，为止眩晕要药，寒热虚实皆可用。",source:"《中药学》",points:["息风止痉药","天麻"]},
+  {id:"zy_s_095",type:"single",category:"中药学",subCategory:"平肝息风药",difficulty:2,question:"'钩藤'入煎剂用法是？",options:["后下","先煎","另煎","烊化"],answer:"后下",explanation:"钩藤有效成分钩藤碱加热易破坏，入煎剂宜后下（一般不超过20分钟）。",source:"《中药学》",points:["钩藤","用法"]},
+  {id:"zy_s_096",type:"single",category:"中药学",subCategory:"开窍药",difficulty:2,question:"'麝香'的功效是？",options:["开窍醒神、活血通经、消肿止痛","开窍宁神、化湿和胃","开窍醒神、辟秽止痛","开窍醒神、清热止痛"],answer:"开窍醒神、活血通经、消肿止痛",explanation:"麝香开窍醒神、活血通经、消肿止痛，为醒神回苏要药。孕妇禁用。",source:"《中药学》",points:["开窍药","麝香"]},
+  {id:"zy_s_097",type:"single",category:"中药学",subCategory:"补虚药",difficulty:2,question:"'白术'的功效是？",options:["补气健脾、燥湿利水、止汗、安胎","补脾益气、清热解毒","益气养阴、补脾肺肾","补气升阳、益卫固表"],answer:"补气健脾、燥湿利水、止汗、安胎",explanation:"白术补气健脾、燥湿利水、止汗、安胎。炒用可增强补气健脾止泻作用。",source:"《中药学》",points:["补气药","白术"]},
+  {id:"zy_s_098",type:"single",category:"中药学",subCategory:"补虚药",difficulty:2,question:"'山药'的功效是？",options:["益气养阴、补脾肺肾、固精止带","补气健脾、燥湿利水","补脾益气、祛痰止咳","补气升阳、益卫固表"],answer:"益气养阴、补脾肺肾、固精止带",explanation:"山药益气养阴、补脾肺肾、固精止带，平补三焦气阴，脾虚、肺虚、肾虚皆可用。",source:"《中药学》",points:["补气药","山药"]},
+  {id:"zy_s_099",type:"single",category:"中药学",subCategory:"收涩药",difficulty:2,question:"'五味子'的功效是？",options:["收敛固涩、益气生津、补肾宁心","敛肺止咳、涩肠止泻","固精缩尿、补肾助阳","敛肺降火、止咳止汗"],answer:"收敛固涩、益气生津、补肾宁心",explanation:"五味子收敛固涩、益气生津、补肾宁心，治久咳虚喘、津伤口渴、心悸失眠。",source:"《中药学》",points:["收涩药","五味子"]},
+  {id:"zy_s_100",type:"single",category:"中药学",subCategory:"攻毒杀虫药",difficulty:2,question:"'雄黄'的功效是？",options:["解毒、杀虫","攻毒杀虫、祛风止痛","外用攻毒杀虫、内服利水通便","拔毒化腐生肌"],answer:"解毒、杀虫",explanation:"雄黄解毒、杀虫，主治痈肿疔疮、蛇虫咬伤、虫积腹痛。切忌火煅（生成砒霜剧毒）。",source:"《中药学》",points:["攻毒杀虫药","雄黄"]},
+  {id:"fj_s_060",type:"single",category:"方剂学",subCategory:"解表剂",difficulty:2,question:"'银翘散'的功用是？",options:["辛凉透表、清热解毒","辛凉宣泄、清肺平喘","疏风清热、宣肺止咳","发汗解表、宣肺平喘"],answer:"辛凉透表、清热解毒",explanation:"银翘散辛凉透表、清热解毒，主治温病初起。",source:"《方剂学》",points:["银翘散","辛凉解表"]},
+  {id:"fj_s_061",type:"single",category:"方剂学",subCategory:"解表剂",difficulty:2,question:"'麻黄汤'的组成是？",options:["麻黄、桂枝、杏仁、甘草","麻黄、石膏、杏仁、甘草","麻黄、桂枝、芍药、甘草","麻黄、细辛、附子"],answer:"麻黄、桂枝、杏仁、甘草",explanation:"麻黄汤组成：麻黄、桂枝、杏仁、炙甘草。功用发汗解表、宣肺平喘。",source:"《方剂学》",points:["麻黄汤"]},
+  {id:"fj_s_062",type:"single",category:"方剂学",subCategory:"泻下剂",difficulty:2,question:"'大承气汤'的组成是？",options:["大黄、芒硝、厚朴、枳实","大黄、芒硝、甘草","大黄、厚朴、枳实","大黄、附子、细辛"],answer:"大黄、芒硝、厚朴、枳实",explanation:"大承气汤组成：大黄、芒硝、厚朴、枳实。功用峻下热结。",source:"《方剂学》",points:["大承气汤","寒下"]},
+  {id:"fj_s_063",type:"single",category:"方剂学",subCategory:"和解剂",difficulty:2,question:"'小柴胡汤'的组成是？",options:["柴胡、黄芩、人参、半夏、甘草、生姜、大枣","柴胡、黄芩、大黄、半夏、人参、甘草","柴胡、白芍、枳实、甘草","柴胡、葛根、黄芩、石膏"],answer:"柴胡、黄芩、人参、半夏、甘草、生姜、大枣",explanation:"小柴胡汤组成：柴胡、黄芩、人参、半夏、炙甘草、生姜、大枣。功用和解少阳。",source:"《方剂学》",points:["小柴胡汤","和解少阳"]},
+  {id:"fj_s_064",type:"single",category:"方剂学",subCategory:"和解剂",difficulty:2,question:"'逍遥散'的功用是？",options:["疏肝解郁、养血健脾","和解少阳、调和肝脾","疏肝理气、活血止痛","补脾柔肝、祛湿止泻"],answer:"疏肝解郁、养血健脾",explanation:"逍遥散疏肝解郁、养血健脾，主治肝郁血虚脾弱证。",source:"《方剂学》",points:["逍遥散","调和肝脾"]},
+  {id:"fj_s_065",type:"single",category:"方剂学",subCategory:"清热剂",difficulty:2,question:"'犀角地黄汤'的功用是？",options:["清热解毒、凉血散瘀","清营解毒、透热养阴","清热生津、益气和胃","清热燥湿、调和气血"],answer:"清热解毒、凉血散瘀",explanation:"犀角地黄汤（犀角代以水牛角）清热解毒、凉血散瘀，主治热入血分证。",source:"《方剂学》",points:["犀角地黄汤"]},
+  {id:"fj_s_066",type:"single",category:"方剂学",subCategory:"清热剂",difficulty:2,question:"'清营汤'的功用是？",options:["清营解毒、透热养阴","清热解毒、凉血散瘀","清热生津、益气和胃","清热泻火、利水通淋"],answer:"清营解毒、透热养阴",explanation:"清营汤清营解毒、透热养阴，主治热入营分证。体现'入营犹可透热转气'。",source:"《方剂学》",points:["清营汤"]},
+  {id:"fj_s_067",type:"single",category:"方剂学",subCategory:"清热剂",difficulty:2,question:"'黄连解毒汤'的组成是？",options:["黄连、黄芩、黄柏、栀子","黄连、黄芩、大黄、栀子","黄连、黄柏、知母、栀子","黄连、黄芩、石膏、知母"],answer:"黄连、黄芩、黄柏、栀子",explanation:"黄连解毒汤组成：黄连、黄芩、黄柏、栀子。功用泻火解毒。",source:"《方剂学》",points:["黄连解毒汤","清热解毒"]},
+  {id:"fj_s_068",type:"single",category:"方剂学",subCategory:"清热剂",difficulty:2,question:"'龙胆泻肝汤'的功用是？",options:["清泻肝胆实火、清利肝经湿热","清泻肺火、止咳平喘","清胃泻火、养阴增液","清热燥湿、调和气血"],answer:"清泻肝胆实火、清利肝经湿热",explanation:"龙胆泻肝汤清泻肝胆实火、清利肝经湿热，主治肝胆实火上炎、肝经湿热下注。",source:"《方剂学》",points:["龙胆泻肝汤","清脏腑热"]},
+  {id:"fj_s_069",type:"single",category:"方剂学",subCategory:"温里剂",difficulty:2,question:"'理中丸'的组成是？",options:["人参、干姜、白术、炙甘草","人参、附子、干姜、甘草","人参、白术、茯苓、甘草","桂枝、芍药、生姜、大枣"],answer:"人参、干姜、白术、炙甘草",explanation:"理中丸组成：人参、干姜、白术、炙甘草。功用温中祛寒、补气健脾。",source:"《方剂学》",points:["理中丸","温中祛寒"]},
+  {id:"fj_s_070",type:"single",category:"方剂学",subCategory:"温里剂",difficulty:2,question:"'小建中汤'的功用是？",options:["温中补虚、和里缓急","回阳救逆","温阳补血、散寒通滞","温中散寒、补气健脾"],answer:"温中补虚、和里缓急",explanation:"小建中汤温中补虚、和里缓急，主治中焦虚寒、肝脾不和证。",source:"《方剂学》",points:["小建中汤"]},
+  {id:"fj_s_071",type:"single",category:"方剂学",subCategory:"温里剂",difficulty:2,question:"'四逆汤'的组成是？",options:["附子、干姜、炙甘草","附子、干姜、葱白","附子、人参、干姜","桂枝、附子、干姜"],answer:"附子、干姜、炙甘草",explanation:"四逆汤组成：附子、干姜、炙甘草。功用回阳救逆。",source:"《方剂学》",points:["四逆汤","回阳救逆"]},
+  {id:"fj_s_072",type:"single",category:"方剂学",subCategory:"补益剂",difficulty:2,question:"'当归补血汤'中黄芪与当归的比例是？",options:["5:1","2:1","3:1","1:1"],answer:"5:1",explanation:"当归补血汤组成：黄芪30g、当归6g，比例5:1。补气生血。",source:"《方剂学》",points:["当归补血汤"]},
+  {id:"fj_s_073",type:"single",category:"方剂学",subCategory:"补益剂",difficulty:2,question:"'归脾汤'的功用是？",options:["益气补血、健脾养心","益气健脾、渗湿止泻","补中益气、升阳举陷","滋阴补肾"],answer:"益气补血、健脾养心",explanation:"归脾汤益气补血、健脾养心，主治心脾气血两虚、脾不统血证。",source:"《方剂学》",points:["归脾汤"]},
+  {id:"fj_s_074",type:"single",category:"方剂学",subCategory:"补益剂",difficulty:2,question:"'六味地黄丸'中'三补'是？",options:["熟地黄、山茱萸、山药","熟地黄、山药、茯苓","熟地黄、山茱萸、泽泻","生地黄、山茱萸、山药"],answer:"熟地黄、山茱萸、山药",explanation:"六味地黄丸三补：熟地黄（补肾）、山茱萸（补肝）、山药（补脾）；三泻：泽泻、牡丹皮、茯苓。",source:"《方剂学》",points:["六味地黄丸","补阴"]},
+  {id:"fj_s_075",type:"single",category:"方剂学",subCategory:"补益剂",difficulty:2,question:"'金匮肾气丸'的功用是？",options:["补肾助阳","滋阴补肾","益气养阴","阴阳双补"],answer:"补肾助阳",explanation:"金匮肾气丸补肾助阳，主治肾阳不足证。方从六味加桂枝、附子，体现'少火生气'。",source:"《方剂学》",points:["金匮肾气丸","补阳"]},
+  {id:"fj_s_076",type:"single",category:"方剂学",subCategory:"安神剂",difficulty:2,question:"'酸枣仁汤'的功用是？",options:["养血安神、清热除烦","重镇安神、泻火养阴","养心安神、和中缓急","滋阴降火、养心安神"],answer:"养血安神、清热除烦",explanation:"酸枣仁汤养血安神、清热除烦，主治肝血不足、虚热内扰证。",source:"《方剂学》",points:["酸枣仁汤","安神剂"]},
+  {id:"fj_s_077",type:"single",category:"方剂学",subCategory:"安神剂",difficulty:2,question:"'天王补心丹'的功用是？",options:["滋阴清热、养血安神","重镇安神、泻火养阴","养血安神、清热除烦","益气补血、健脾养心"],answer:"滋阴清热、养血安神",explanation:"天王补心丹滋阴清热、养血安神，主治阴虚血少、神志不安证。",source:"《方剂学》",points:["天王补心丹"]},
+  {id:"fj_s_078",type:"single",category:"方剂学",subCategory:"理气剂",difficulty:2,question:"'越鞠丸'主治？",options:["六郁证（气血痰火湿食）","肝气郁结","脾胃气滞","痰浊中阻"],answer:"六郁证（气血痰火湿食）",explanation:"越鞠丸行气解郁，主治六郁证（气、血、痰、火、湿、食六郁），以气郁为主。",source:"《方剂学》",points:["越鞠丸","行气"]},
+  {id:"fj_s_079",type:"single",category:"方剂学",subCategory:"理气剂",difficulty:2,question:"'半夏厚朴汤'的功用是？",options:["行气散结、降逆化痰","行气疏肝、散寒止痛","降逆化痰、益气和胃","行气止痛、软坚散结"],answer:"行气散结、降逆化痰",explanation:"半夏厚朴汤行气散结、降逆化痰，主治梅核气（痰气交阻）。",source:"《方剂学》",points:["半夏厚朴汤"]},
+  {id:"fj_s_080",type:"single",category:"方剂学",subCategory:"理血剂",difficulty:2,question:"'血府逐瘀汤'的功用是？",options:["活血化瘀、行气止痛","活血化瘀、温经止痛","活血祛瘀、散结消癥","活血止血、祛瘀生新"],answer:"活血化瘀、行气止痛",explanation:"血府逐瘀汤活血化瘀、行气止痛，主治胸中血瘀证（头痛、胸痛、日久不愈）。",source:"《方剂学》",points:["血府逐瘀汤","活血祛瘀"]},
+  {id:"fj_s_081",type:"single",category:"方剂学",subCategory:"理血剂",difficulty:2,question:"'温经汤'的功用是？",options:["温经散寒、养血祛瘀","活血化瘀、行气止痛","活血祛瘀、散结消癥","补血调血"],answer:"温经散寒、养血祛瘀",explanation:"温经汤温经散寒、养血祛瘀，主治冲任虚寒、瘀血阻滞证。",source:"《方剂学》",points:["温经汤"]},
+  {id:"fj_s_082",type:"single",category:"方剂学",subCategory:"治风剂",difficulty:2,question:"'川芎茶调散'的功用是？",options:["疏风止痛","清热平肝、息风止痉","祛风除湿、清热通痹","祛风化痰、通络止痉"],answer:"疏风止痛",explanation:"川芎茶调散疏风止痛，主治外感风邪头痛。",source:"《方剂学》",points:["川芎茶调散","疏散外风"]},
+  {id:"fj_s_083",type:"single",category:"方剂学",subCategory:"治风剂",difficulty:2,question:"'镇肝熄风汤'的功用是？",options:["镇肝熄风、滋阴潜阳","清热平肝、息风止痉","祛风除湿、清热通痹","祛风化痰、通络止痉"],answer:"镇肝熄风、滋阴潜阳",explanation:"镇肝熄风汤镇肝熄风、滋阴潜阳，主治类中风（肝阳上亢、气血逆乱）。",source:"《方剂学》",points:["镇肝熄风汤","平熄内风"]},
+  {id:"fj_s_084",type:"single",category:"方剂学",subCategory:"祛湿剂",difficulty:2,question:"'藿香正气散'的功用是？",options:["解表化湿、理气和中","清热利湿","利水渗湿、温阳化气","祛湿化浊、理气和中"],answer:"解表化湿、理气和中",explanation:"藿香正气散解表化湿、理气和中，主治外感风寒、内伤湿滞。",source:"《方剂学》",points:["藿香正气散"]},
+  {id:"fj_s_085",type:"single",category:"方剂学",subCategory:"祛湿剂",difficulty:2,question:"'茵陈蒿汤'的组成是？",options:["茵陈、栀子、大黄","茵陈、栀子、甘草","茵陈、大黄、芒硝","茵陈、附子、干姜"],answer:"茵陈、栀子、大黄",explanation:"茵陈蒿汤组成：茵陈、栀子、大黄。功用清热利湿退黄，主治湿热黄疸。",source:"《方剂学》",points:["茵陈蒿汤","清热祛湿"]},
+  {id:"fj_s_086",type:"single",category:"方剂学",subCategory:"祛湿剂",difficulty:2,question:"'五苓散'的组成是？",options:["猪苓、泽泻、白术、茯苓、桂枝","猪苓、茯苓、泽泻、阿胶、滑石","茯苓、猪苓、白术、泽泻","茯苓、桂枝、白术、甘草"],answer:"猪苓、泽泻、白术、茯苓、桂枝",explanation:"五苓散组成：猪苓、泽泻、白术、茯苓、桂枝。功用利水渗湿、温阳化气。",source:"《方剂学》",points:["五苓散","利水渗湿"]},
+  {id:"fj_s_087",type:"single",category:"方剂学",subCategory:"祛痰剂",difficulty:2,question:"'二陈汤'的组成是？",options:["半夏、橘红、茯苓、炙甘草","半夏、天南星、茯苓、甘草","半夏、茯苓、生姜、甘草","半夏、瓜蒌、黄连"],answer:"半夏、橘红、茯苓、炙甘草",explanation:"二陈汤组成：半夏、橘红、茯苓、炙甘草（加生姜、乌梅）。功用燥湿化痰、理气和中。",source:"《方剂学》",points:["二陈汤","燥湿化痰"]},
+  {id:"fj_s_088",type:"single",category:"方剂学",subCategory:"祛痰剂",difficulty:2,question:"'半夏白术天麻汤'的功用是？",options:["化痰息风、健脾祛湿","清热化痰、理气止咳","润肺清热、理气化痰","燥湿化痰、理气和中"],answer:"化痰息风、健脾祛湿",explanation:"半夏白术天麻汤化痰息风、健脾祛湿，主治风痰上扰证（眩晕、头痛）。",source:"《方剂学》",points:["半夏白术天麻汤"]},
+  {id:"fj_s_089",type:"single",category:"方剂学",subCategory:"消食剂",difficulty:2,question:"'保和丸'的功用是？",options:["消食和胃","健脾和胃、消食止泻","消食导滞、清热祛湿","行气导滞、攻积泄热"],answer:"消食和胃",explanation:"保和丸消食和胃，主治食积证（饮食不节、暴饮暴食致食积停滞）。",source:"《方剂学》",points:["保和丸","消食化滞"]},
+  {id:"fj_s_090",type:"single",category:"方剂学",subCategory:"消食剂",difficulty:2,question:"'健脾丸'的功用是？",options:["健脾和胃、消食止泻","消食和胃","消食导滞、清热祛湿","行气导滞、攻积泄热"],answer:"健脾和胃、消食止泻",explanation:"健脾丸健脾和胃、消食止泻，主治脾虚食积证（食少难消、脘腹痞闷、大便溏薄）。",source:"《方剂学》",points:["健脾丸"]},
+  {id:"fj_s_091",type:"single",category:"方剂学",subCategory:"驱虫剂",difficulty:2,question:"'乌梅丸'的功用是？",options:["温脏安蛔","驱虫消积","杀虫消积、健脾清热","驱杀绦虫"],answer:"温脏安蛔",explanation:"乌梅丸温脏安蛔，主治脏寒蛔厥证（寒热错杂）。又治久泻久痢。",source:"《方剂学》",points:["乌梅丸","驱虫剂"]},
+  {id:"fj_s_092",type:"single",category:"方剂学",subCategory:"涌吐剂",difficulty:2,question:"'瓜蒂散'的功用是？",options:["涌吐痰涎宿食","涌吐痰食、开关救急","涌吐风痰","涌吐宿食毒物"],answer:"涌吐痰涎宿食",explanation:"瓜蒂散涌吐痰涎宿食，主治痰涎宿食壅塞胸脘。体虚、亡血家禁用。",source:"《方剂学》",points:["瓜蒂散","涌吐剂"]},
+  {id:"fj_s_093",type:"single",category:"方剂学",subCategory:"固涩剂",difficulty:2,question:"'四神丸'的功用是？",options:["温肾暖脾、涩肠止泻","涩肠固脱、温补脾肾","固表止汗","敛肺止咳、益气养阴"],answer:"温肾暖脾、涩肠止泻",explanation:"四神丸温肾暖脾、涩肠止泻，主治脾肾阳虚之五更泻。",source:"《方剂学》",points:["四神丸","固涩剂"]},
+  {id:"fj_s_094",type:"single",category:"方剂学",subCategory:"固涩剂",difficulty:2,question:"'牡蛎散'的功用是？",options:["敛阴止汗、益气固表","益气固表止汗","滋阴降火","温阳益气、固表止汗"],answer:"敛阴止汗、益气固表",explanation:"牡蛎散敛阴止汗、益气固表，主治体虚自汗、盗汗。",source:"《方剂学》",points:["牡蛎散"]},
+  {id:"fj_s_095",type:"single",category:"方剂学",subCategory:"治燥剂",difficulty:2,question:"'桑杏汤'的功用是？",options:["清宣温燥、润肺止咳","轻宣凉燥、理肺化痰","清燥润肺、养阴益气","滋养肺肾、止咳化痰"],answer:"清宣温燥、润肺止咳",explanation:"桑杏汤清宣温燥、润肺止咳，主治外感温燥证（秋燥初起）。",source:"《方剂学》",points:["桑杏汤","轻宣外燥"]},
+  {id:"fj_s_096",type:"single",category:"方剂学",subCategory:"治燥剂",difficulty:2,question:"'清燥救肺汤'的功用是？",options:["清燥润肺、养阴益气","轻宣凉燥、理肺化痰","清宣温燥、润肺止咳","滋养肺肾、止咳化痰"],answer:"清燥润肺、养阴益气",explanation:"清燥救肺汤清燥润肺、养阴益气，主治温燥伤肺、气阴两伤证。",source:"《方剂学》",points:["清燥救肺汤"]},
+  {id:"fj_s_097",type:"single",category:"方剂学",subCategory:"清热剂",difficulty:3,question:"'白虎汤'的辨证要点是？",options:["壮热面赤、烦渴引饮、汗出恶热、脉洪大有力","恶寒发热、无汗、脉浮紧","寒热往来、胸胁苦满","身热夜甚、神烦少寐"],answer:"壮热面赤、烦渴引饮、汗出恶热、脉洪大有力",explanation:"白虎汤辨证要点：'四大症'——大热、大汗、大渴、脉洪大。",source:"《方剂学》",points:["白虎汤"]},
+  {id:"fj_s_098",type:"single",category:"方剂学",subCategory:"补益剂",difficulty:3,question:"'补中益气汤'中体现'甘温除热'的药物是？",options:["黄芪、人参、炙甘草","升麻、柴胡","当归、陈皮","白术、茯苓"],answer:"黄芪、人参、炙甘草",explanation:"补中益气汤以黄芪、人参、炙甘草甘温益气为主，配升麻、柴胡升阳举陷，治气虚发热，体现'甘温除热'法。",source:"《方剂学》",points:["补中益气汤","甘温除热"]},
+  {id:"fj_s_099",type:"single",category:"方剂学",subCategory:"和解剂",difficulty:3,question:"'痛泻要方'的组成是？",options:["白术、白芍、陈皮、防风","白术、茯苓、陈皮、半夏","柴胡、白芍、枳实、甘草","白术、白芍、防风、甘草"],answer:"白术、白芍、陈皮、防风",explanation:"痛泻要方组成：白术、白芍、陈皮、防风。功用补脾柔肝、祛湿止泻，主治脾虚肝旺之痛泻。",source:"《方剂学》",points:["痛泻要方"]},
+  {id:"fj_s_100",type:"single",category:"方剂学",subCategory:"温里剂",difficulty:3,question:"'阳和汤'的功用是？",options:["温阳补血、散寒通滞","回阳救逆","温补肾阳","温中补虚"],answer:"温阳补血、散寒通滞",explanation:"阳和汤温阳补血、散寒通滞，主治阴疽（阳虚寒凝）。如贴骨疽、脱疽、流注等。",source:"《方剂学》",points:["阳和汤","温经散寒"]},
+  {id:"zd_s_049",type:"single",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:3,question:"'心脾两虚证'的辨证要点是？",options:["心悸失眠、食少腹胀、慢性出血伴气血两虚见症","心悸怔忡、畏寒肢冷","咳喘、纳少腹胀、便溏","腰膝酸软、耳鸣遗精"],answer:"心悸失眠、食少腹胀、慢性出血伴气血两虚见症",explanation:"心脾两虚证以心悸失眠、食少腹胀、便溏、慢性出血（便血、崩漏、皮下出血）及气血两虚见症为辨证要点。",source:"《中医诊断学》",points:["脏腑辨证","心脾两虚"]},
+  {id:"zd_s_050",type:"single",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:3,question:"'肝脾不调证'的辨证要点是？",options:["胸胁胀痛、抑郁易怒、腹胀便溏、脉弦","胁肋胀痛、嘈杂吞酸、舌红苔黄","腰膝酸软、胁痛、头晕","胸胁胀痛、咳嗽咳痰"],answer:"胸胁胀痛、抑郁易怒、腹胀便溏、脉弦",explanation:"肝脾不调（肝郁脾虚）证以胸胁胀痛、精神抑郁、易怒、腹胀便溏、脉弦为辨证要点。",source:"《中医诊断学》",points:["脏腑辨证","肝脾不调"]},
+  {id:"zd_s_051",type:"single",category:"中医诊断学",subCategory:"六经辨证",difficulty:3,question:"'少阳病证'的辨证要点是？",options:["寒热往来、胸胁苦满、默默不欲饮食、心烦喜呕、脉弦","恶寒发热、头身痛、脉浮","身热不恶寒反恶热、汗出、脉洪大","潮热谵语、腹满痛、便秘"],answer:"寒热往来、胸胁苦满、默默不欲饮食、心烦喜呕、脉弦",explanation:"少阳病证（半表半里）以寒热往来、胸胁苦满、默默不欲饮食、心烦喜呕、口苦咽干目眩、脉弦为辨证要点。",source:"《中医诊断学》",points:["六经辨证","少阳病"]},
+  {id:"zd_s_052",type:"single",category:"中医诊断学",subCategory:"卫气营血辨证",difficulty:3,question:"'卫分证'的辨证要点是？",options:["发热、微恶风寒、舌边尖红、脉浮数","壮热不恶寒反恶热、汗出、脉洪大","身热夜甚、心烦不寐、舌红绛","发热夜甚、斑疹、舌深绛"],answer:"发热、微恶风寒、舌边尖红、脉浮数",explanation:"卫分证以发热、微恶风寒、舌边尖红、脉浮数为辨证要点。为温热病邪初袭肌表、肺卫失宣。",source:"《中医诊断学》",points:["卫气营血辨证","卫分证"]},
+  {id:"zd_s_053",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:1,question:"正常舌象是？",options:["淡红舌、薄白苔","淡白舌、薄白苔","红舌、薄黄苔","紫舌、白厚苔"],answer:"淡红舌、薄白苔",explanation:"正常舌象为舌体柔软、活动自如、颜色淡红、舌面铺有薄薄的、颗粒均匀、干湿适中的白苔。",source:"《中医诊断学》",points:["舌诊","正常舌象"]},
+  {id:"zd_s_054",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:1,question:"'红舌'主？",options:["实热、阴虚","虚寒","瘀血","气血两虚"],answer:"实热、阴虚",explanation:"舌红较正常舌色红甚则鲜红，主实热证、阴虚证。舌鲜红起芒刺为实热；鲜红少苔或无苔为阴虚。",source:"《中医诊断学》",points:["舌诊","红舌"]},
+  {id:"zd_s_055",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:1,question:"'紫舌'主？",options:["瘀血、寒证、热极","气血两虚","实热","阴虚"],answer:"瘀血、寒证、热极",explanation:"紫舌主瘀血、寒证、热极。舌紫暗或紫斑多属瘀血；舌淡紫或青紫湿润多属寒凝血瘀；舌紫绛干枯多属热极。",source:"《中医诊断学》",points:["舌诊","紫舌"]},
+  {id:"zd_s_056",type:"single",category:"中医诊断学",subCategory:"望诊",difficulty:2,question:"'镜面舌'主？",options:["胃阴枯竭、胃气大伤","气血两虚","实热","痰湿"],answer:"胃阴枯竭、胃气大伤",explanation:"镜面舌（光洁无苔）主胃阴枯竭、胃气大伤，为胃气将绝之危候。",source:"《中医诊断学》",points:["舌诊","镜面舌"]},
+  {id:"zd_s_057",type:"single",category:"中医诊断学",subCategory:"脉诊",difficulty:2,question:"'浮脉'主？",options:["表证","里证","虚证","寒证"],answer:"表证",explanation:"浮脉：轻取即得，重按稍减而不空。主表证，亦主虚证（浮大无力为虚阳外越）。",source:"《中医诊断学》",points:["脉诊","浮脉"]},
+  {id:"zd_s_058",type:"single",category:"中医诊断学",subCategory:"脉诊",difficulty:2,question:"'沉脉'主？",options:["里证","表证","寒证","虚证"],answer:"里证",explanation:"沉脉：轻取不应，重按始得。主里证。有力为里实，无力为里虚。",source:"《中医诊断学》",points:["脉诊","沉脉"]},
+  {id:"zd_s_059",type:"single",category:"中医诊断学",subCategory:"脉诊",difficulty:2,question:"'滑脉'主？",options:["痰饮、食滞、实热","气滞血瘀","虚证","寒证"],answer:"痰饮、食滞、实热",explanation:"滑脉：往来流利，如珠走盘，应指圆滑。主痰饮、食滞、实热。亦主妊娠（育龄妇女无病而滑）。",source:"《中医诊断学》",points:["脉诊","滑脉"]},
+  {id:"zd_s_060",type:"single",category:"中医诊断学",subCategory:"脉诊",difficulty:2,question:"'弦脉'主？",options:["肝胆病、痛证、痰饮","气滞血瘀","虚证","湿热"],answer:"肝胆病、痛证、痰饮",explanation:"弦脉：端直以长，如按琴弦。主肝胆病、痛证、痰饮、疟疾。",source:"《中医诊断学》",points:["脉诊","弦脉"]},
+  {id:"zj_s_001",type:"single",category:"针灸学",subCategory:"针灸原则",difficulty:1,question:"针灸治疗的基本原则是？",options:["补虚泻实、清热温寒、治病求本、三因制宜","只补不泻","只泻不补","只针不灸"],answer:"补虚泻实、清热温寒、治病求本、三因制宜",explanation:"针灸治疗基本原则：补虚泻实、清热温寒、治病求本、三因制宜。",source:"《针灸学》",points:["治疗原则"]},
+  {id:"zj_s_002",type:"single",category:"针灸学",subCategory:"针灸原则",difficulty:2,question:"'盛则泻之，虚则补之'属于针灸治疗原则中的？",options:["补虚泻实","清热温寒","治病求本","三因制宜"],answer:"补虚泻实",explanation:"《灵枢·经脉》：'盛则泻之，虚则补之，热则疾之，寒则留之，陷下则灸之，不盛不虚以经取之。'",source:"《针灸学》",points:["补虚泻实"]},
+  {id:"zj_s_003",type:"single",category:"针灸学",subCategory:"针灸原则",difficulty:2,question:"'热则疾之'是指？",options:["热证浅刺快出针不留针或少留针","热证深刺久留","热证用灸法","热证用补法"],answer:"热证浅刺快出针不留针或少留针",explanation:"'热则疾之'：热证宜浅刺、快出针、不留针或少留针，以清泻邪热。",source:"《针灸学》",points:["清热温寒"]},
+  {id:"zj_s_004",type:"single",category:"针灸学",subCategory:"针灸原则",difficulty:2,question:"'寒则留之'是指？",options:["寒证深刺久留针或加艾灸","寒证浅刺不留针","寒证用泻法","寒证用三棱针点刺"],answer:"寒证深刺久留针或加艾灸",explanation:"'寒则留之'：寒证宜深刺久留针，或加用艾灸，以温经散寒。",source:"《针灸学》",points:["清热温寒"]},
+  {id:"zj_s_005",type:"single",category:"针灸学",subCategory:"配穴方法",difficulty:2,question:"'本经配穴法'是指？",options:["某一脏腑经脉发生病变时，即选该经脉腧穴配成处方","取病变经脉表里经腧穴配伍","取病变经脉同名经腧穴配伍","取病变部位上下腧穴配伍"],answer:"某一脏腑经脉发生病变时，即选该经脉腧穴配成处方",explanation:"本经配穴法：某一脏腑经脉发生病变，即选该经脉腧穴配伍成方。如肺病取中府、太渊。",source:"《针灸学》",points:["配穴方法","本经配穴"]},
+  {id:"zj_s_006",type:"single",category:"针灸学",subCategory:"配穴方法",difficulty:2,question:"'表里配穴法'是指？",options:["取病变经脉及其相表里经脉腧穴配伍","取病变经脉同名经腧穴配伍","取病变部位上下腧穴配伍","取前后腧穴配伍"],answer:"取病变经脉及其相表里经脉腧穴配伍",explanation:"表里配穴法：以脏腑经脉阴阳表里配合关系为依据，取病变经脉及其相表里经脉腧穴配伍。如胃病取足三里（胃经）、公孙（脾经）。",source:"《针灸学》",points:["配穴方法","表里配穴"]},
+  {id:"zj_s_007",type:"single",category:"针灸学",subCategory:"配穴方法",difficulty:2,question:"'前后配穴法'是指？",options:["取人体前部和后部腧穴配伍","取人体上部和下部腧穴配伍","取人体左侧和右侧腧穴配伍","取本经腧穴配伍"],answer:"取人体前部和后部腧穴配伍",explanation:"前后配穴法：取人体前部（胸腹）和后部（背腰）腧穴配伍。亦称'募俞配穴法'。",source:"《针灸学》",points:["配穴方法","前后配穴","募俞配穴"]},
+  {id:"zj_s_008",type:"single",category:"针灸学",subCategory:"配穴方法",difficulty:2,question:"'上下配穴法'是指？",options:["取人体上部（头面、胸腰）和下部（肘膝以下）腧穴配伍","取人体前部和后部腧穴配伍","取人体左侧和右侧腧穴配伍","取本经腧穴配伍"],answer:"取人体上部（头面、胸腰）和下部（肘膝以下）腧穴配伍",explanation:"上下配穴法：取人体上部和下部腧穴配伍。如心火上炎之牙痛口疮，上取合谷，下取内庭。",source:"《针灸学》",points:["配穴方法","上下配穴"]},
+  {id:"zj_s_009",type:"single",category:"针灸学",subCategory:"配穴方法",difficulty:2,question:"'左右配穴法'是指？",options:["取人体左侧和右侧腧穴配伍","取人体前部和后部腧穴配伍","取人体上部和下部腧穴配伍","取本经腧穴配伍"],answer:"取人体左侧和右侧腧穴配伍",explanation:"左右配穴法：取人体两侧腧穴配伍。临床常用双侧同名经腧穴同取。",source:"《针灸学》",points:["配穴方法","左右配穴"]},
+  {id:"zj_s_010",type:"single",category:"针灸学",subCategory:"针刺手法",difficulty:2,question:"基本补泻手法中的'补法'操作是？",options:["进针慢而浅、提插轻、捻转幅度小、出针后按揉针孔","进针快而深、提插重、捻转幅度大、出针不按针孔","进针后久留针","点刺出血"],answer:"进针慢而浅、提插轻、捻转幅度小、出针后按揉针孔",explanation:"补法：进针慢而浅，提插轻，捻转幅度小，出针后按揉针孔，以扶助正气。",source:"《针灸学》",points:["针刺补泻","补法"]},
+  {id:"zj_s_011",type:"single",category:"针灸学",subCategory:"针刺手法",difficulty:2,question:"基本补泻手法中的'泻法'操作是？",options:["进针快而深、提插重、捻转幅度大、出针不按针孔","进针慢而浅、提插轻、捻转幅度小、出针后按揉针孔","进针后久留针","温和灸"],answer:"进针快而深、提插重、捻转幅度大、出针不按针孔",explanation:"泻法：进针快而深，提插重，捻转幅度大，出针不按针孔，以疏泄邪气。",source:"《针灸学》",points:["针刺补泻","泻法"]},
+  {id:"zj_s_012",type:"single",category:"针灸学",subCategory:"艾灸方法",difficulty:1,question:"'温和灸'属于？",options:["艾条灸","艾炷灸","温针灸","直接灸"],answer:"艾条灸",explanation:"温和灸：将艾条一端点燃，对准应灸腧穴，距皮肤约2-3cm熏烤，使患者局部有温热感而无灼痛。属艾条灸之悬起灸。",source:"《针灸学》",points:["温和灸","艾条灸"]},
+  {id:"zj_s_013",type:"single",category:"针灸学",subCategory:"艾灸方法",difficulty:1,question:"'瘢痕灸'又称？",options:["化脓灸","非化脓灸","间接灸","温和灸"],answer:"化脓灸",explanation:"瘢痕灸又称化脓灸，为直接灸之一种，施灸前局部涂大蒜汁，用小艾炷直接放皮肤上灸，使局部皮肤灼伤化脓，愈后留有瘢痕。",source:"《针灸学》",points:["瘢痕灸","化脓灸","直接灸"]},
+  {id:"zj_s_014",type:"single",category:"针灸学",subCategory:"艾灸方法",difficulty:2,question:"'隔姜灸'常用于治疗？",options:["虚寒性呕吐、腹痛、泄泻及风寒痹痛","急性热病","肿疡初起","瘰疬"],answer:"虚寒性呕吐、腹痛、泄泻及风寒痹痛",explanation:"隔姜灸：用鲜姜切成薄片置皮肤上，上放艾炷施灸。功效温胃止呕、散寒止痛，主治虚寒性呕吐、腹痛、泄泻及风寒痹痛。",source:"《针灸学》",points:["隔姜灸","间接灸"]},
+  {id:"zj_s_015",type:"single",category:"针灸学",subCategory:"艾灸方法",difficulty:2,question:"'隔蒜灸'常用于治疗？",options:["瘰疬、肺痨及初起肿疡","虚寒性呕吐","虚脱","遗精早泄"],answer:"瘰疬、肺痨及初起肿疡",explanation:"隔蒜灸：用独头蒜切片置皮肤上，上放艾炷施灸。功效清热解毒、杀虫，主治瘰疬、肺痨及初起肿疡。",source:"《针灸学》",points:["隔蒜灸","间接灸"]},
+  {id:"zj_s_016",type:"single",category:"针灸学",subCategory:"艾灸方法",difficulty:2,question:"'隔附子饼灸'常用于治疗？",options:["命门火衰之阳痿、早泄、遗精、疮疡久溃不敛","虚寒性呕吐","风寒痹痛","感冒"],answer:"命门火衰之阳痿、早泄、遗精、疮疡久溃不敛",explanation:"隔附子饼灸：用附子研末作饼置皮肤上，上放艾炷施灸。功效温补肾阳，主治命门火衰之阳痿、早泄、遗精、疮疡久溃不敛。",source:"《针灸学》",points:["隔附子饼灸","间接灸"]},
+  {id:"zj_s_017",type:"single",category:"针灸学",subCategory:"内科病证",difficulty:2,question:"针刺治疗感冒的主穴是？",options:["列缺、合谷、风池、大椎、太阳","百会、太冲、内关","足三里、中脘","关元、气海"],answer:"列缺、合谷、风池、大椎、太阳",explanation:"感冒主穴：列缺、合谷、风池、大椎、太阳。列缺为肺经络穴，合谷为大肠经原穴，原络配穴宣肺解表。",source:"《针灸学》",points:["感冒","针灸处方"]},
+  {id:"zj_s_018",type:"single",category:"针灸学",subCategory:"内科病证",difficulty:2,question:"针刺治疗胃痛的主穴是？",options:["中脘、内关、足三里","百会、太冲","合谷、曲池","关元、气海"],answer:"中脘、内关、足三里",explanation:"胃痛主穴：中脘（胃募腑会）、内关（八脉交会穴通阴维）、足三里（胃经合穴）。三穴合用理气和胃止痛。",source:"《针灸学》",points:["胃痛","针灸处方"]},
+  {id:"zj_s_019",type:"single",category:"针灸学",subCategory:"内科病证",difficulty:2,question:"针刺治疗失眠的主穴是？",options:["百会、神门、三阴交、安眠","百会、太冲、内关","中脘、内关、足三里","关元、气海、肾俞"],answer:"百会、神门、三阴交、安眠",explanation:"失眠主穴：百会（宁神）、神门（心经原穴宁心安神）、三阴交（调和肝脾肾）、安眠（经验穴）。",source:"《针灸学》",points:["失眠","针灸处方"]},
+  {id:"zj_s_020",type:"single",category:"针灸学",subCategory:"内科病证",difficulty:2,question:"针刺治疗偏头痛的主穴是？",options:["太冲、太溪、合谷、风池、率谷、太阳、外关","百会、神门、三阴交","中脘、内关、足三里","关元、气海、肾俞"],answer:"太冲、太溪、合谷、风池、率谷、太阳、外关",explanation:"偏头痛主穴：太冲、太溪、合谷、风池、率谷、太阳、外关。以局部取穴加远端循经取穴，疏泄肝胆、通络止痛。",source:"《针灸学》",points:["偏头痛","针灸处方"]},
+  {id:"zj_s_021",type:"single",category:"针灸学",subCategory:"内科病证",difficulty:2,question:"针刺治疗眩晕的主穴是？",options:["百会、风池、太冲、内关","百会、神门、三阴交","中脘、内关、足三里","合谷、曲池、大椎"],answer:"百会、风池、太冲、内关",explanation:"眩晕主穴：百会（升提气血）、风池（疏泄肝胆）、太冲（平肝潜阳）、内关（宽胸理气化痰）。",source:"《针灸学》",points:["眩晕","针灸处方"]},
+  {id:"zj_s_022",type:"single",category:"针灸学",subCategory:"妇科病证",difficulty:2,question:"针刺治疗痛经的主穴是？",options:["三阴交、中极、次髎、地机","百会、神门、三阴交","中脘、内关、足三里","关元、气海、肾俞"],answer:"三阴交、中极、次髎、地机",explanation:"痛经主穴：三阴交（通经止痛）、中极（调理冲任）、次髎（经验要穴）、地机（脾经郄穴活血止痛）。",source:"《针灸学》",points:["痛经","针灸处方"]},
+  {id:"zj_s_023",type:"single",category:"针灸学",subCategory:"妇科病证",difficulty:2,question:"针刺治疗月经不调的主穴是？",options:["关元、三阴交、血海","百会、神门、三阴交","中脘、内关、足三里","合谷、曲池、大椎"],answer:"关元、三阴交、血海",explanation:"月经不调主穴：关元（补肾培元、调理冲任）、三阴交（调理肝脾肾）、血海（活血调经）。",source:"《针灸学》",points:["月经不调","针灸处方"]},
+  {id:"zj_s_024",type:"single",category:"针灸学",subCategory:"儿科病证",difficulty:2,question:"针刺治疗小儿遗尿的主穴是？",options:["关元、中极、三阴交、膀胱俞、肾俞","百会、神门、三阴交","中脘、内关、足三里","合谷、曲池、大椎"],answer:"关元、中极、三阴交、膀胱俞、肾俞",explanation:"小儿遗尿主穴：关元、中极（募穴）、三阴交、膀胱俞（俞穴）、肾俞。俞募配穴，调理膀胱、补肾培元。",source:"《针灸学》",points:["小儿遗尿","针灸处方"]},
+  {id:"zj_s_025",type:"single",category:"针灸学",subCategory:"针灸操作",difficulty:1,question:"'得气'又称？",options:["针感","进针","出针","留针"],answer:"针感",explanation:"得气又称'针感'，是指毫针刺入腧穴一定深度后，施以提插或捻转手法，使针刺部位获得经气感应。患者感觉酸、麻、胀、重，医者觉针下沉紧。",source:"《针灸学》",points:["得气","针感"]},
+  {id:"zj_s_026",type:"single",category:"针灸学",subCategory:"针灸操作",difficulty:2,question:"'行针'是指？",options:["进针后为使患者得气而施行的各种针刺手法","将针刺入腧穴的操作","出针的操作","针刺前的消毒"],answer:"进针后为使患者得气而施行的各种针刺手法",explanation:"行针：进针后为使患者得气、调节针感及进行补泻而施行的各种针刺手法。基本手法有提插法、捻转法。",source:"《针灸学》",points:["行针","基本手法"]},
+  {id:"zj_s_027",type:"single",category:"针灸学",subCategory:"针灸操作",difficulty:2,question:"'留针'的目的是？",options:["加强针刺作用、便于继续行针施术","便于消毒","便于观察","便于出针"],answer:"加强针刺作用、便于继续行针施术",explanation:"留针：将针留置于腧穴内。目的是加强针刺作用，便于继续行针施术。一般病证留针15-30分钟。",source:"《针灸学》",points:["留针"]},
+  {id:"zj_s_028",type:"single",category:"针灸学",subCategory:"特定穴应用",difficulty:3,question:"'公孙配内关'属于哪种配穴法？",options:["八脉交会穴配穴","俞募配穴","原络配穴","上下配穴"],answer:"八脉交会穴配穴",explanation:"八脉交会穴歌：'公孙冲脉胃心胸，内关阴维下总同；临泣胆经连带脉，阳维目锐外关逢；后溪督脉内眦颈，申脉阳跷络亦通；列缺任脉行肺系，阴跷照海膈喉咙。'公孙+内关主治胃心胸病。",source:"《针灸学》",points:["八脉交会穴"]},
+  {id:"zj_s_029",type:"single",category:"针灸学",subCategory:"特定穴应用",difficulty:3,question:"'后溪配申脉'属于哪种配穴法？",options:["八脉交会穴配穴","俞募配穴","原络配穴","上下配穴"],answer:"八脉交会穴配穴",explanation:"后溪通督脉，申脉通阳跷脉，合于目内眦、颈、项、耳、肩。主治目内眦病、颈项耳肩病、发热恶寒等。",source:"《针灸学》",points:["八脉交会穴"]},
+  {id:"zj_s_030",type:"single",category:"针灸学",subCategory:"特定穴应用",difficulty:3,question:"'足三里配中脘'属于哪种配穴法？",options:["俞募配穴法","八脉交会穴配穴","原络配穴","左右配穴"],answer:"俞募配穴法",explanation:"中脘为胃之募穴、腑会，足三里为胃之合穴、下合穴，合用通调腑气、和胃止痛，属俞募配穴类应用。",source:"《针灸学》",points:["俞募配穴"]},
+  {id:"zj_s_031",type:"single",category:"针灸学",subCategory:"针灸禁忌",difficulty:2,question:"孕妇禁针的穴位是？",options:["合谷、三阴交、昆仑、至阴","百会、神门","足三里、中脘","风池、大椎"],answer:"合谷、三阴交、昆仑、至阴",explanation:"孕妇禁针合谷、三阴交、昆仑、至阴等穴，以免引起流产。腹部、腰骶部腧穴也不宜针刺。",source:"《针灸学》",points:["针刺禁忌","孕妇"]},
+  {id:"zj_s_032",type:"single",category:"针灸学",subCategory:"针灸禁忌",difficulty:2,question:"皮肤感染、溃疡、瘢痕、肿瘤部位？",options:["不宜针刺","适宜针刺","适宜艾灸","适宜拔罐"],answer:"不宜针刺",explanation:"皮肤感染、溃疡、瘢痕、肿瘤部位不宜针刺，以免加重病情或引起出血。",source:"《针灸学》",points:["针刺禁忌"]},
+  {id:"zj_s_033",type:"single",category:"针灸学",subCategory:"急症处理",difficulty:2,question:"针刺治疗晕厥的急救主穴是？",options:["水沟、中冲、涌泉、足三里","百会、神门、三阴交","中脘、内关、足三里","合谷、曲池、大椎"],answer:"水沟、中冲、涌泉、足三里",explanation:"晕厥急救：水沟（督脉要穴，醒神开窍）、中冲（井穴，醒神开窍）、涌泉（井穴，苏厥）、足三里（补气血）。",source:"《针灸学》",points:["晕厥","急救"]},
+  {id:"zj_s_034",type:"single",category:"针灸学",subCategory:"急症处理",difficulty:2,question:"针刺治疗虚脱的急救主穴是？",options:["素髎、水沟、内关、神阙、关元、涌泉","百会、神门、三阴交","中脘、内关、足三里","合谷、曲池、大椎"],answer:"素髎、水沟、内关、神阙、关元、涌泉",explanation:"虚脱急救：素髎、水沟醒神，内关宁心安神，神阙、关元大灸回阳固脱，涌泉苏厥。",source:"《针灸学》",points:["虚脱","急救"]},
+  {id:"zj_s_035",type:"single",category:"针灸学",subCategory:"腧穴总论",difficulty:1,question:"腧穴大体分为哪三类？",options:["十四经穴、经外奇穴、阿是穴","原穴、络穴、郄穴","五输穴、下合穴、八会穴","背俞穴、募穴、八脉交会穴"],answer:"十四经穴、经外奇穴、阿是穴",explanation:"腧穴分三类：十四经穴（十二经+任督脉共361穴）、经外奇穴（有具体位置和穴名但未入十四经）、阿是穴（压痛点、无固定位置）。",source:"《针灸学》",points:["腧穴分类"]},
+  {id:"zj_s_036",type:"single",category:"针灸学",subCategory:"腧穴总论",difficulty:2,question:"腧穴的主治作用一般包括？",options:["近治作用、远治作用、特殊作用","局部作用、全身作用","治疗作用、预防作用","补益作用、泻实作用"],answer:"近治作用、远治作用、特殊作用",explanation:"腧穴主治作用：近治作用（治疗所在部位及邻近组织器官的病证）、远治作用（治疗本经循行所及的远隔部位的脏腑组织器官的病证）、特殊作用（双向调节、特异性）。",source:"《针灸学》",points:["腧穴主治作用"]},
+  {id:"zj_s_037",type:"single",category:"针灸学",subCategory:"腧穴总论",difficulty:2,question:"'以痛为腧'指的是？",options:["阿是穴","经穴","奇穴","原穴"],answer:"阿是穴",explanation:"阿是穴又称'压痛点'、'天应穴'，无固定名称和位置，以压痛点或其他反应点作为针灸施术部位。'以痛为腧'是其特点。",source:"《针灸学》",points:["阿是穴"]},
+  {id:"zj_s_038",type:"single",category:"针灸学",subCategory:"特定穴",difficulty:3,question:"'合治内腑'说明下合穴主要用于治疗？",options:["六腑病证","五脏病证","经络病证","头面病证"],answer:"六腑病证",explanation:"下合穴是六腑之气下合于足三阳经的腧穴。'合治内腑'，下合穴主要用于治疗六腑病证。如胃病取足三里，胆病取阳陵泉。",source:"《针灸学》",points:["下合穴"]},
+  {id:"zj_s_039",type:"single",category:"针灸学",subCategory:"特定穴",difficulty:3,question:"'荥主身热'说明荥穴主要用于治疗？",options:["热病","寒病","虚证","实证"],answer:"热病",explanation:"《难经》：'井主心下满，荥主身热，输主体重节痛，经主喘咳寒热，合主逆气而泄。'荥穴主要用于治疗热病。",source:"《针灸学》",points:["五输穴","荥穴"]},
+  {id:"zj_s_040",type:"single",category:"针灸学",subCategory:"特定穴",difficulty:3,question:"'井主心下满'说明井穴主要用于治疗？",options:["心下满闷等神志病、急症","热病","体重节痛","喘咳寒热"],answer:"心下满闷等神志病、急症",explanation:"井穴为十二经之根，位于手足末端，'井主心下满'，多用于治疗神志病、急症、心下满闷。如十二井穴用于急救。",source:"《针灸学》",points:["五输穴","井穴"]},
+  {id:"zj_s_041",type:"truefalse",category:"针灸学",subCategory:"针刺手法",difficulty:1,question:"'提插补泻'中，补法操作是先浅后深、重插轻提、幅度小、频率慢。",options:["正确","错误"],answer:"正确",explanation:"提插补泻：补法为先浅后深、重插轻提、幅度小、频率慢、操作时间短；泻法为先深后浅、轻插重提、幅度大、频率快、操作时间长。",source:"《针灸学》",points:["提插补泻"]},
+  {id:"zj_s_042",type:"truefalse",category:"针灸学",subCategory:"针刺手法",difficulty:2,question:"'捻转补泻'中，补法操作是捻转角度小、用力轻、频率慢、拇指向前、食指向后。",options:["正确","错误"],answer:"正确",explanation:"捻转补泻：补法捻转角度小、用力轻、频率慢、拇指向前、食指向后（左捻为主）；泻法捻转角度大、用力重、频率快、拇指向后、食指向前（右捻为主）。",source:"《针灸学》",points:["捻转补泻"]},
+  {id:"zj_s_043",type:"truefalse",category:"针灸学",subCategory:"艾灸方法",difficulty:1,question:"'隔盐灸'多用于治疗伤寒阴证或吐泻并作、中风脱证等。",options:["正确","错误"],answer:"正确",explanation:"隔盐灸：用纯净食盐填敷于脐部，上置艾炷施灸。多用于治疗伤寒阴证或吐泻并作、中风脱证等，有回阳救逆固脱之力。",source:"《针灸学》",points:["隔盐灸","间接灸"]},
+  {id:"zj_s_044",type:"truefalse",category:"针灸学",subCategory:"针灸禁忌",difficulty:2,question:"孕妇腹部、腰骶部腧穴可以针刺。",options:["正确","错误"],answer:"错误",explanation:"孕妇腹部、腰骶部腧穴禁止针刺。合谷、三阴交、昆仑、至阴等通经活血腧穴亦禁针，以免引起流产。",source:"《针灸学》",points:["针刺禁忌","孕妇"]},
+  {id:"zj_s_045",type:"multiple",category:"针灸学",subCategory:"内科病证",difficulty:3,question:"针灸治疗中风中经络的主穴有？",options:["内关、水沟","三阴交、极泉","尺泽、委中","风池、完骨、天柱"],answer:["内关、水沟","三阴交、极泉","尺泽、委中"],explanation:"中风中经络主穴：内关、水沟、三阴交、极泉、尺泽、委中。内关调心神、水沟醒脑开窍、三阴交滋补肝肾、极泉尺泽委中疏通肢体经络。",source:"《针灸学》",points:["中风","针灸处方"]},
+  {id:"zj_s_046",type:"multiple",category:"针灸学",subCategory:"内科病证",difficulty:3,question:"针灸治疗面瘫（面神经麻痹）的主穴有？",options:["攒竹、鱼腰、阳白、四白","颧髎、颊车、地仓","合谷、太冲","足三里、三阴交"],answer:["攒竹、鱼腰、阳白、四白","颧髎、颊车、地仓","合谷、太冲"],explanation:"面瘫主穴：攒竹、鱼腰、阳白、四白、颧髎、颊车、地仓、翳风、合谷、太冲。局部取穴疏调面部经筋气血，合谷、太冲为循经远端取穴。",source:"《针灸学》",points:["面瘫","针灸处方"]},
+  {id:"zj_s_047",type:"short",category:"针灸学",subCategory:"针灸原则",difficulty:3,question:"简述针灸治疗原则'补虚泻实'的具体内容。",answer:"补虚泻实是针灸治疗的基本原则，其具体内容：\n1. 虚则补之：虚证用补法，通过针刺手法之补（慢进针、快出针、捻转角度小、轻提重插）或艾灸（温针灸、隔姜灸等）以扶助正气。\n2. 实者泻之：实证用泻法，通过针刺手法之泻（快进针、慢出针、捻转角度大、重提轻插）或点刺出血以疏泄邪气。\n3. 陷下则灸之：气虚下陷、阳气虚衰之证宜用艾灸，如灸百会治脱肛，灸关元气海治虚脱。\n4. 不盛不虚以经取之：脏腑经脉本身虚实不明显而因经络气血失常致病者，按本经循经取穴，用平补平泻法。",explanation:"补虚泻实是针灸调节气血阴阳的核心原则。",source:"《针灸学》",points:["补虚泻实","治疗原则"]},
+  {id:"zj_s_048",type:"short",category:"针灸学",subCategory:"特定穴",difficulty:3,question:"简述五输穴的概念及主治特点。",answer:"五输穴是十二经分布在肘膝关节以下的五个特定腧穴，即井、荥、输、经、合。\n1. 井穴：位于手足末端，为经气所出，'井主心下满'，主治神志病、急症、心下满。\n2. 荥穴：位于掌指或跖趾关节之前，为经气所溜，'荥主身热'，主治热病。\n3. 输穴：位于掌指或跖趾关节之后，为经气所注，'输主体重节痛'，主治肢体关节疼痛、体重疲困。\n4. 经穴：位于腕踝关节以上，为经气所行，'经主喘咳寒热'，主治咳喘寒热等。\n5. 合穴：位于肘膝关节附近，为经气所入，'合主逆气而泄'，主治六腑病证、胃气上逆泄泻等。",explanation:"五输穴是经络理论的重要内容，为临床常用腧穴。",source:"《针灸学》",points:["五输穴"]},
+  {id:"zj_s_049",type:"multiple",category:"针灸学",subCategory:"针灸操作",difficulty:3,question:"下列不宜针灸的情况是？",options:["过饥、过饱、酒醉","大汗、大渴、大惊","大怒、大劳","饥饿体虚需要温灸者"],answer:["过饥、过饱、酒醉","大汗、大渴、大惊","大怒、大劳"],explanation:"患者在过饥、过饱、酒醉、大劳、大惊、大渴、大汗、大怒等状态下，不宜立即针灸，以免发生晕针或影响疗效。孕妇腹部、腰骶部禁针。",source:"《针灸学》",points:["针刺禁忌"]},
+  {id:"zj_s_050",type:"single",category:"针灸学",subCategory:"经络腧穴",difficulty:3,question:"'四总穴歌'的内容是？",options:["肚腹三里留，腰背委中求，头项寻列缺，面口合谷收","肚腹三阴交，腰背足三里，头项合谷，面口内关","肚腹中脘，腰背肾俞，头项风池，面口颊车","肚腹公孙，腰背阳陵泉，头项后溪，面口曲池"],answer:"肚腹三里留，腰背委中求，头项寻列缺，面口合谷收",explanation:"四总穴歌：'肚腹三里留，腰背委中求，头项寻列缺，面口合谷收。'概括了足三里、委中、列缺、合谷四穴的远端主治特点，是循经取穴的典型应用。",source:"《针灸学》",points:["四总穴歌","循经取穴"]},
+  // ===== 中医基础理论深度题（扩充解析使文件达500KB+）=====
+  {id:"jc_s_201",type:"single",category:"中医基础理论",subCategory:"阴阳五行",difficulty:3,question:"'孤阴不生，独阳不长'主要说明阴阳之间何种关系？",options:["互根互用","对立制约","消长平衡","相互转化"],answer:"互根互用",explanation:"阴阳互根是指阴阳双方相互依存、互为根本，任何一方都不能脱离另一方而单独存在。此句强调阴依赖阳、阳依赖阴，阴阳相互为用。若阴阳互根关系破坏，则'孤阴不生，独阳不长'，甚则'阴阳离决，精气乃绝'而危及生命。阴阳互根是阴阳转化和阴阳消长的内在根据，也是临床'阳中求阴、阴中求阳'治法的理论依据。",source:"《中医基础理论》",points:["阴阳学说","互根互用"]},
+  {id:"jc_s_202",type:"single",category:"中医基础理论",subCategory:"阴阳五行",difficulty:3,question:"'阳胜则阴病'体现的阴阳失调类型是？",options:["阴阳偏胜","阴阳偏衰","阴阳互损","阴阳格拒"],answer:"阴阳偏胜",explanation:"阳胜则阴病指阳热亢盛，势必耗伤阴液，导致阴液受损的病理变化。同理'阴胜则阳病'。此属阴阳偏胜（一方绝对亢盛）的病理变化。治疗原则为'损其有余'：热者寒之、寒者热之。若阳胜则热属实热证，治宜清热泻热；阴胜则寒属实寒证，治宜温散阴寒。",source:"《中医基础理论》",points:["阴阳失调","阴阳偏胜"]},
+  {id:"jc_s_203",type:"single",category:"中医基础理论",subCategory:"阴阳五行",difficulty:3,question:"'壮水之主，以制阳光'的治法适用于？",options:["阴虚证","阳虚证","阴阳两虚证","实热证"],answer:"阴虚证",explanation:"'壮水之主，以制阳光'是王冰注解《素问》时提出的治法。水主阴，壮水即滋阴补阴；阳光指阳热有余。滋阴以制阳热，适用于阴虚不能制阳而致阳亢的虚热证。即《内经》所谓'诸寒之而热者取之阴'。相反，阳虚不能制阴而致阴盛的虚寒证，则'益火之源，以消阴翳'。",source:"《中医基础理论》",points:["阴阳学说","治疗原则","滋阴"]},
+  {id:"jc_s_204",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:3,question:"'心为五脏六腑之大主'的理论依据是？",options:["心主藏神","心主血脉","心为君主之官","心主通明"],answer:"心主藏神",explanation:"心藏神，具有统帅全身脏腑经络形体官窍生理活动和主司精神意识思维活动的作用。故《灵枢·邪客》云：'心者，五脏六腑之大主也，精神之所舍也。'心主藏神功能正常，则神志清晰、思维敏捷、精力充沛；反之则精神萎靡、意识不清、失眠多梦、甚至神昏谵语。临床上多种精神情志病证多从心论治。",source:"《中医基础理论》",points:["藏象","心","主藏神"]},
+  {id:"jc_s_205",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:3,question:"'天癸'的产生主要取决于？",options:["肾中精气的充盈","脾的运化功能","肝的疏泄功能","心主血脉功能"],answer:"肾中精气的充盈",explanation:"天癸是肾中精气充盈到一定程度所产生的一种精微物质，具有促进人体生殖器官发育成熟和维持人体生殖机能的作用。幼年肾中精气渐充，天癸未至；青春期肾中精气充盛，天癸至，女子月经来潮、男子排精；老年肾中精气渐衰，天癸渐竭，生殖能力亦随之减退。故肾精盛衰直接决定天癸的产生与竭绝。临床早衰、不孕不育、更年期综合征常从补肾填精入手。",source:"《中医基础理论》",points:["藏象","肾","天癸"]},
+  {id:"jc_s_206",type:"single",category:"中医基础理论",subCategory:"气血津液",difficulty:3,question:"'吐下之余，定无完气'的理论依据是？",options:["气能生津","津能载气","气能行津","气能摄津"],answer:"津能载气",explanation:"津液是气的载体，气必须依附于津液而存在。剧烈呕吐或大量泻下使津液大量丢失，气亦随之耗散，出现气虚甚至气脱之证。故曰'吐下之余，定无完气'。同理'大汗亡阳'、'气随津脱'均说明津能载气。临床治疗大出血、大汗、大吐、大泻时应特别注意益气固脱，防止气随津脱的危候。",source:"《中医基础理论》",points:["气血津液","津能载气"]},
+  {id:"jc_s_207",type:"single",category:"中医基础理论",subCategory:"气血津液",difficulty:3,question:"'津血同源'的理论依据是？",options:["津与血同源于水谷精微且相互化生","津与血均由肾精所化","津与血均由营气所化","津与血均由肺气所布"],answer:"津与血同源于水谷精微且相互化生",explanation:"津与血均来源于脾胃运化的水谷精微。津液渗入脉中成为血液的组成部分；血液中部分津液渗出脉外即为津液。两者相互化生、相互影响，故称'津血同源'。失血过多时脉外津液大量渗入脉中以补充血量，致津液不足出现口渴、尿少、皮肤干燥等，此时不可再用发汗等耗津之法，即所谓'夺血者无汗'；反之大汗大吐大泻使津液大量耗伤时，血脉空虚致津枯血燥，此时不可再用破血耗血之法，即'夺汗者无血'。",source:"《中医基础理论》",points:["气血津液","津血同源"]},
+  {id:"jc_s_208",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:3,question:"气机升降的枢纽是？",options:["脾升胃降","肝升肺降","心阳下降、肾阴上升","肺主呼气、肾主纳气"],answer:"脾升胃降",explanation:"脾胃同居中焦，脾主升清、胃主降浊，一升一降、相反相成，是人体气机升降的枢纽。脾升则肝肾之气亦随之升，胃降则心肺之气亦随之降。脾胃升降功能正常，则全身气机调畅；脾胃升降失常，则清阳不升、浊阴不降，出现眩晕、泄泻、呕吐、腹胀等症。临床上调理气机升降多从脾胃入手。",source:"《中医基础理论》",points:["气机","脾胃"]},
+  {id:"jc_s_209",type:"single",category:"中医基础理论",subCategory:"病因病机",difficulty:3,question:"'大实有羸状'的病机是？",options:["真实假虚","真虚假实","由实转虚","因虚致实"],answer:"真实假虚",explanation:"'大实有羸状'指实邪结聚的病证，反见类似虚证的假象。如实热结聚肠胃，阻滞气血运行，见下利清水臭秽（热结旁流），又有腹胀满痛拒按、潮热谵语、脉沉实有力等实证，同时可见神疲少气、语声低微等虚象。其本质是实，假象是虚。相反'至虚有盛候'为真虚假实。临床辨证须透过现象看本质，不可被假象迷惑。",source:"《中医基础理论》",points:["病机","虚实真假"]},
+  {id:"jc_s_210",type:"single",category:"中医基础理论",subCategory:"养生防治",difficulty:3,question:"'寒者热之'适用于？",options:["阴偏胜之实寒证","阳偏胜之实热证","阳偏衰之虚寒证","阴偏衰之虚热证"],answer:"阴偏胜之实寒证",explanation:"'寒者热之'指寒性病证表现出寒象，用温热药物治疗，属'正治'法范畴（逆其证候性质而治）。适用于阴偏胜之实寒证。同理'热者寒之'适用于阳偏胜之实热证。'虚者补之'适用于虚证，'实者泻之'适用于实证。反治法包括热因热用、寒因寒用、塞因塞用、通因通用，适用于疾病征象与本质不完全一致的病证，如真寒假热用热因热用、真热假寒用寒因寒用、真虚假实用塞因塞用、真实假虚用通因通用。",source:"《中医基础理论》",points:["治则","正治反治"]},
+  {id:"jc_s_211",type:"single",category:"中医基础理论",subCategory:"养生防治",difficulty:3,question:"'治未病'是指？",options:["未病先防和既病防变","早期诊断、早期治疗","治病求本","扶正祛邪"],answer:"未病先防和既病防变",explanation:"'治未病'是中医重要的预防医学思想，包括未病先防和既病防变两个方面。未病先防强调养生调摄、增强正气、防止病邪侵害，具体方法包括顺应自然、养性调神、护肾保精、体魄锻炼、调摄饮食、针灸推拿药物调养等。既病防变强调早期诊断、早期治疗，防止疾病传变发展。《难经》'见肝之病，知肝传脾，当先实脾'是既病防变的典型应用。治未病思想体现了中医预防为主的医疗理念，在疾病预防、病后调护、健康养生方面具有重要现实意义。",source:"《中医基础理论》",points:["治未病","预防"]},
+  {id:"jc_s_212",type:"multiple",category:"中医基础理论",subCategory:"阴阳五行",difficulty:3,question:"以下属于五行相生关系传变的是？",options:["母病及子","子病及母","相乘","相侮"],answer:["母病及子","子病及母"],explanation:"五行相生关系的传变包括'母病及子'和'子病及母'两个方面。母病及子是指病变从母脏传及子脏，如肾病及肝（水不涵木）、脾病及肺（土不生金）。子病及母是指病变从子脏传及母脏，如肝病及肾（子盗母气）、肺病及脾。相乘、相侮属于相克关系异常的传变。相乘是相克太过为病，相侮是反向克制为病。临床辨清传变规律，对预测疾病发展趋势、判断预后、确定治疗法则有重要意义。",source:"《中医基础理论》",points:["五行学说","传变规律"]},
+  {id:"jc_s_213",type:"truefalse",category:"中医基础理论",subCategory:"藏象学说",difficulty:2,question:"'肺为水之上源'的主要依据是肺具有通调水道的功能。",options:["正确","错误"],answer:"正确",explanation:"肺主通调水道是指肺的宣发和肃降运动对体内津液的输布、运行和排泄具有疏通和调节作用。肺居高位，又能行水，故称'肺为水之上源'。肺失宣肃则水液不得布散、水道不得通调，可致痰饮、水肿、小便不利等症。治疗常用'宣肺利水'、'提壶揭盖'之法。",source:"《中医基础理论》",points:["藏象","肺","通调水道"]},
+  {id:"jc_s_214",type:"short",category:"中医基础理论",subCategory:"病因病机",difficulty:3,question:"简述六淫的共同致病特点。",answer:"六淫（风、寒、暑、湿、燥、火六种外感病邪）的共同致病特点主要有四方面：\n1.外感性：六淫为病，其侵犯途径多从肌表、口鼻而入，或两者同时受邪。因其多从外入，故又称'外感六淫'，所致病证称'外感病'。\n2.季节性：六淫致病常有明显的季节性，如春季多风病、夏季多暑病、长夏多湿病、秋季多燥病、冬季多寒病。\n3.地域性：六淫致病与生活、工作的区域环境密切相关。如西北高原地区多燥病、寒病；东南沿海地区多湿病、温病；久居潮湿环境多湿病；长期高温环境作业者多燥热或火邪为病。\n4.相兼性：六淫邪气既可单独伤人致病，又可两种以上同时侵犯人体而为病。如风热感冒、湿热泄泻、风寒湿痹等。此外六淫致病还具有病邪在一定条件下可相互转化的特点，如寒邪入里可化热，暑湿日久可化燥伤阴等。",explanation:"六淫是中医学外感病的主要致病因素，掌握其致病特点对临床辨证论治至关重要。",source:"《中医基础理论》",points:["六淫","病因"]},
+  {id:"jc_s_215",type:"short",category:"中医基础理论",subCategory:"气血津液",difficulty:3,question:"简述气与血的关系。",answer:"气与血是构成人体和维持人体生命活动的基本物质，两者关系可概括为'气为血之帅，血为气之母'。\n一、气为血之帅：\n1.气能生血：气的运动变化是血液生成的动力，同时营气也是血液的主要组成部分。气虚可致血虚，治疗常益气生血，如当归补血汤重用黄芪补气生血。\n2.气能行血：血液的运行依赖气的推动作用，气行则血行，气滞则血瘀。临床血瘀证常配行气、补气之品。\n3.气能摄血：气对血液具有统摄作用，使血液循行于脉中而不逸出脉外。气不摄血可见各种出血证，治宜补气摄血，如归脾汤。\n二、血为气之母：\n1.血能载气：气存在于血中，依附于血而不致散失，赖血之运载而运行全身。大失血时气随之耗散出现'气随血脱'。\n2.血能养气：血不断为气的生成和功能活动提供营养，使气得到充分补给。血虚时气亦易虚衰。\n气血关系失调常见气滞血瘀、气虚血瘀、气血两虚、气不摄血、气随血脱等证型。",explanation:"气血关系是中医理论核心内容之一，临床各科病证多与气血失调相关。",source:"《中医基础理论》",points:["气血津液","气血关系"]},
+  // ===== 经络穴位深度题 =====
+  {id:"jl_s_201",type:"single",category:"经络穴位",subCategory:"十二正经",difficulty:3,question:"手三阴经的走向规律是？",options:["从胸走手","从手走头","从头走足","从足走腹胸"],answer:"从胸走手",explanation:"十二经脉的走向规律为：手三阴经从胸走手，手三阳经从手走头，足三阳经从头走足，足三阴经从足走腹胸。《灵枢·逆顺肥瘦》概括为：'手之三阴，从藏走手；手之三阳，从手走头；足之三阳，从头走足；足之三阴，从足走腹。'这一规律对理解经络气血运行方向、指导针灸取穴（如迎随补泻）具有重要意义。",source:"《针灸学》",points:["十二经脉","走向规律"]},
+  {id:"jl_s_202",type:"single",category:"经络穴位",subCategory:"奇经八脉",difficulty:3,question:"'总督一身之阳经'，被称为'阳脉之海'的是？",options:["督脉","任脉","冲脉","带脉"],answer:"督脉",explanation:"督脉行于背部正中，多次与手足三阳经及阳维脉交会，能总督一身之阳经，故称为'阳脉之海'。任脉行于腹胸正中，多次与手足三阴经及阴维脉交会，能总任一身之阴经，故称'阴脉之海'，任脉又与妊娠有关，故称'任主胞胎'。冲脉能调节十二经气血，故称'十二经脉之海'又称'血海'，与月经关系密切。带脉绕身一周，能约束纵行诸经。阳维脉主一身之表，阴维脉主一身之里。阳跷、阴跷脉主司眼睑开合和下肢运动。",source:"《针灸学》",points:["奇经八脉","督脉"]},
+  {id:"jl_s_203",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:3,question:"八会穴中，'气会'是？",options:["膻中","膈俞","中脘","太渊"],answer:"膻中",explanation:"八会穴是指脏、腑、气、血、筋、脉、骨、髓等精气所会聚的八个腧穴。脏会章门（脾之募穴），腑会中脘（胃之募穴），气会膻中（心包之募穴，任脉穴），血会膈俞（膀胱经穴），筋会阳陵泉（胆之合穴），脉会太渊（肺之输穴、原穴），骨会大杼（膀胱经穴），髓会绝骨（胆经穴，又名悬钟）。临床凡与八者相关的病证均可取其会穴治疗，如气病取膻中、血病取膈俞、筋病取阳陵泉、脉病取太渊等。",source:"《针灸学》",points:["八会穴","特定穴"]},
+  {id:"jl_s_204",type:"single",category:"经络穴位",subCategory:"腧穴定位",difficulty:3,question:"合谷穴的定位是？",options:["在手背，第1、2掌骨间，当第2掌骨桡侧的中点处","在腕横纹上2寸，掌长肌腱与桡侧腕屈肌腱之间","在肘横纹外侧端，屈肘，当尺泽与肱骨外上髁连线中点","在手背，第2、3掌骨间"],answer:"在手背，第1、2掌骨间，当第2掌骨桡侧的中点处",explanation:"合谷为手阳明大肠经原穴。定位在手背，第1、2掌骨间，当第2掌骨桡侧的中点处。简便取穴法：以一手的拇指指骨关节横纹，放在另一手拇、食指之间的指蹼缘上，当拇指尖下是穴。合谷主治头痛、目赤肿痛、鼻衄、齿痛、口眼歪斜、耳聋、痄腮、咽喉肿痛、热病无汗、多汗、腹痛、便秘、经闭、滞产、上肢疼痛、不遂等。孕妇慎用。为四总穴之一'面口合谷收'，常用于头面五官疾病。",source:"《针灸学》",points:["合谷","腧穴定位"]},
+  {id:"jl_s_205",type:"single",category:"经络穴位",subCategory:"腧穴主治",difficulty:3,question:"足三里穴的主治特点是？",options:["健脾和胃、扶正培元、通经活络","疏肝理气、活血化瘀","清心安神、交通心肾","宣肺止咳、疏风解表"],answer:"健脾和胃、扶正培元、通经活络",explanation:"足三里为足阳明胃经之合穴、下合穴。定位在小腿外侧，犊鼻下3寸，胫骨前嵴外一横指处，犊鼻与解溪连线上。主治胃痛、呕吐、噎膈、腹胀、泄泻、痢疾、便秘、乳痈、肠痈、下肢痿痹、癫狂、脚气、水肿、膝痛等。本穴有强壮作用，为保健要穴。四总穴歌言'肚腹三里留'，凡脾胃病、肚腹病均可取之。常灸足三里有防病保健、延年益寿之功，古人称之为'长寿穴'。",source:"《针灸学》",points:["足三里","腧穴主治"]},
+  {id:"jl_s_206",type:"multiple",category:"经络穴位",subCategory:"特定穴",difficulty:3,question:"以下属于五输穴的是？",options:["井穴","荥穴","输穴","络穴"],answer:["井穴","荥穴","输穴"],explanation:"五输穴是指十二经脉分布在肘膝关节以下的五个特定腧穴，即井、荥、输、经、合穴，简称'五输'。《灵枢·九针十二原》指出'所出为井，所溜为荥，所注为输，所行为经，所入为合'。井穴位于手足末端，为经气所出；荥穴位于掌指或跖趾关节之前，为经气所溜；输穴位于掌指或跖趾关节之后，为经气所注；经穴位于腕踝关节以上，为经气所行；合穴位于肘膝关节附近，为经气所入。络穴不属于五输穴范畴，另有其特定含义。",source:"《针灸学》",points:["五输穴","特定穴"]},
+  {id:"jl_s_207",type:"short",category:"经络穴位",subCategory:"十二正经",difficulty:3,question:"简述十二经脉的命名和分布规律。",answer:"十二经脉的名称由手足、阴阳、脏腑三部分组成。手足分上下：行于上肢者称手经，行于下肢者称足经。阴阳分表里：阳经行于外侧，阴经行于内侧；阳经属腑，阴经属脏。\n一、命名规律：\n1.手三阴经：手太阴肺经、手少阴心经、手厥阴心包经\n2.手三阳经：手阳明大肠经、手太阳小肠经、手少阳三焦经\n3.足三阳经：足阳明胃经、足太阳膀胱经、足少阳胆经\n4.足三阴经：足太阴脾经、足少阴肾经、足厥阴肝经\n二、分布规律：\n1.头面：阳明经行于面部、额部；太阳经行于面颊、头顶及头后部；少阳经行于头侧部。\n2.四肢：阴经行于内侧，阳经行于外侧。上肢内侧：太阴在前、厥阴在中、少阴在后；上肢外侧：阳明在前、少阳在中、太阳在后。下肢内侧（内踝上8寸以下）：厥阴在前、太阴在中、少阴在后；下肢内侧（内踝上8寸以上）：太阴在前、厥阴在中、少阴在后；下肢外侧：阳明在前、少阳在中、太阳在后。\n3.躯干：手三阴经均从胸部走向腋下；手三阳经均从肩部走向头面部；足三阳经均从头面走向躯干，阳明经行于前（胸腹面）、太阳经行于后（背面）、少阳经行于侧面；足三阴经均行于腹胸面。\n掌握十二经脉命名和分布规律，对经络辨证、腧穴定位及临床应用至关重要。",explanation:"十二经脉是经络系统的核心，其命名和分布规律是学习针灸经络的基础。",source:"《针灸学》",points:["十二经脉","命名","分布"]},
+  {id:"jl_s_208",type:"truefalse",category:"经络穴位",subCategory:"腧穴定位",difficulty:2,question:"内关穴定位在腕横纹上2寸，掌长肌腱与桡侧腕屈肌腱之间。",options:["正确","错误"],answer:"正确",explanation:"内关为手厥阴心包经络穴，也是八脉交会穴之一，通阴维脉。定位在前臂前区，腕掌侧远端横纹上2寸，掌长肌腱与桡侧腕屈肌腱之间。主治心痛、心悸、胸闷、胃痛、呕吐、呃逆、癫狂、痫证、郁证、眩晕、失眠、偏头痛、上肢痹痛、偏瘫、肘臂挛痛等。内关是治疗心、胸、胃病证的重要穴位，临床应用极为广泛。",source:"《针灸学》",points:["内关","腧穴定位"]},
+  // ===== 中药学深度题 =====
+  {id:"zy_s_201",type:"single",category:"中药学",subCategory:"药性理论",difficulty:3,question:"五味中，'辛'味的作用是？",options:["能散能行","能泄能燥","能补能和能缓","能收能涩"],answer:"能散能行",explanation:"五味是指药物有酸、苦、甘、辛、咸五种不同的味道，因而具有不同的治疗作用。辛味'能散、能行'，具有发散、行气、行血的作用。一般解表药、行气药、活血药多具辛味。甘味'能补、能和、能缓'，具有补益、和中、调和药性和缓急止痛作用。酸味'能收、能涩'，具有收敛、固涩作用。苦味'能泄、能燥、能坚'，其中泄包括通泄、降泄、清泄；燥即燥湿；坚阴即泻火存阴。咸味'能下、能软'，具有泻下通便、软坚散结作用。此外还有淡味'能渗、能利'，具有渗湿利水作用；涩味与酸味作用相似。",source:"《中药学》",points:["五味","药性理论"]},
+  {id:"zy_s_202",type:"single",category:"中药学",subCategory:"用药禁忌",difficulty:3,question:"'十八反'中，乌头反？",options:["贝母、瓜蒌、半夏、白蔹、白及","人参、沙参、丹参、玄参、苦参、细辛、芍药","甘草反甘遂、大戟、海藻、芫花","藜芦反人参、沙参、丹参"],answer:"贝母、瓜蒌、半夏、白蔹、白及",explanation:"十八反：本草明言十八反，半蒌贝蔹及攻乌，藻戟遂芫俱战草，诸参辛芍叛藜芦。即：\n1.乌头（包括川乌、草乌、附子）反半夏、瓜蒌（全瓜蒌、瓜蒌皮、瓜蒌仁、天花粉）、贝母（川贝、浙贝）、白蔹、白及。\n2.甘草反甘遂、大戟、海藻、芫花。\n3.藜芦反人参、沙参、丹参、玄参、苦参、细辛、芍药（赤芍、白芍）。\n十九畏：硫黄畏朴硝、水银畏砒霜、狼毒畏密陀僧、巴豆畏牵牛、丁香畏郁金、川乌草乌畏犀角、牙硝畏三棱、官桂畏石脂、人参畏五灵脂。\n十八反、十九畏所列药物，一般情况下应当避免配合使用。",source:"《中药学》",points:["十八反","用药禁忌"]},
+  {id:"zy_s_203",type:"single",category:"中药学",subCategory:"解表药",difficulty:3,question:"麻黄的功效是？",options:["发汗解表，宣肺平喘，利水消肿","发汗解肌，温通经脉，助阳化气","祛风解表，透疹消疮，止血","发散风寒，通窍止痛，燥湿止带"],answer:"发汗解表，宣肺平喘，利水消肿",explanation:"麻黄为麻黄科植物草麻黄、中麻黄或木贼麻黄的干燥草质茎。性味辛、微苦，温。归肺、膀胱经。功效发汗解表，宣肺平喘，利水消肿。主治：1.风寒感冒：麻黄发汗解表力强，为发汗解表之要药，宜用于风寒外郁、腠理闭密无汗的外感风寒表实证，每与桂枝相须为用，如麻黄汤。2.胸闷喘咳：麻黄辛散苦泄，温通宣畅，主入肺经，可外开皮毛之郁闭，以使肺气宣畅；内降上逆之气，以复肺司肃降之常，故善平喘，为治疗肺气壅遏所致喘咳的要药。3.风水浮肿：麻黄上宣肺气、发汗解表，可使肌肤之水湿从毛窍外散，并通调水道、下输膀胱以下助利尿之力，故宜用于风邪袭表，肺失宣降的水肿、小便不利兼有表证者。此外，取麻黄温散寒邪的作用，配合其他相应药物可以治风湿痹痛及阴疽、痰核等证。注意：表虚自汗、阴虚盗汗、肾不纳气的虚喘者均当慎用。",source:"《中药学》",points:["麻黄","解表药"]},
+  {id:"zy_s_204",type:"single",category:"中药学",subCategory:"清热药",difficulty:3,question:"石膏的功效是？",options:["清热泻火，除烦止渴（生用）；收湿，生肌，敛疮，止血（煅用）","清热燥湿，泻火解毒","清热解毒，凉血消肿","清热凉血，养阴生津"],answer:"清热泻火，除烦止渴（生用）；收湿，生肌，敛疮，止血（煅用）",explanation:"石膏为硫酸盐类矿物硬石膏族石膏，主含含水硫酸钙（CaSO4·2H2O）。性味甘、辛，大寒。归肺、胃经。生用功效清热泻火，除烦止渴；煅用收湿，生肌，敛疮，止血。主治：1.外感热病，高热烦渴：本品性味辛甘大寒，寒能清热泻火，辛能解肌透热，大寒清泄大热，为清泻肺胃气分实热之要药。治温热病气分实热，症见壮热、烦渴、汗出、脉洪大者，常与知母相须为用，如白虎汤。2.肺热喘咳：本品辛寒入肺经，善清肺经实热，配伍止咳平喘之品，可治肺热喘咳、发热口渴者。3.胃火亢盛，头痛牙痛，内热消渴：本品能清泻胃火，可用治胃火上攻之牙龈肿痛。4.溃疡不敛，湿疹瘙痒，水火烫伤，外伤出血：煅石膏有敛疮生肌、收湿、止血等作用。注意：脾胃虚寒及阴虚内热者忌用。",source:"《中药学》",points:["石膏","清热药"]},
+  {id:"zy_s_205",type:"single",category:"中药学",subCategory:"补益药",difficulty:3,question:"人参的功效是？",options:["大补元气，复脉固脱，补脾益肺，生津养血，安神益智","补气升阳，固表止汗，利水消肿，生津养血，行滞通痹","补气养阴，清热生津","健脾益气，燥湿利水，止汗，安胎"],answer:"大补元气，复脉固脱，补脾益肺，生津养血，安神益智",explanation:"人参为五加科植物人参的干燥根和根茎。性味甘、微苦，微温。归脾、肺、心、肾经。功效大补元气，复脉固脱，补脾益肺，生津养血，安神益智。主治：1.气虚欲脱，肢冷脉微：本品能大补元气，复脉固脱，为拯危救脱要药。适用于因大汗、大泻、大失血或大病、久病所致元气虚极欲脱、气短神疲、脉微欲绝的重危证候。2.脾虚食少，肺虚喘咳：本品为补肺要药，可改善短气喘促、懒言声微等肺气虚衰症状；也是补脾要药，可改善倦怠乏力、食少便溏等脾气虚衰症状。3.气津两伤口渴，内热消渴。4.气血亏虚久病虚羸。5.心气不足，惊悸失眠：本品能补益心气、安神益智。注意：不宜与藜芦、五灵脂同用。实证、热证而正气不虚者忌服。反藜芦，畏五灵脂，恶皂荚，均忌同用。服用人参时不宜同时吃萝卜或喝茶，以免影响药力。",source:"《中药学》",points:["人参","补益药"]},
+  {id:"zy_s_206",type:"multiple",category:"中药学",subCategory:"清热药",difficulty:3,question:"以下属于清热燥湿药的是？",options:["黄芩","黄连","黄柏","知母"],answer:["黄芩","黄连","黄柏"],explanation:"黄芩、黄连、黄柏均为清热燥湿药，常称'三黄'。三者性味均苦寒，都具有清热燥湿、泻火解毒功效，用于湿热证及热毒证。不同之处在于：1.黄芩偏清上焦湿热，善清肺火及上焦实热，且能凉血止血、安胎，用于肺热咳嗽、血热吐衄、胎热胎动不安等。2.黄连偏清中焦湿热，善清心、胃实火，用于湿热泻痢（要药）、心烦失眠、胃热呕吐等。3.黄柏偏清下焦湿热，善清相火、退虚热，用于湿热下注之带下、淋浊、脚气、足膝红肿及阴虚火旺、盗汗骨蒸等。知母为清热泻火药，具有清热泻火、滋阴润燥功效，与三黄功效侧重不同。",source:"《中药学》",points:["黄芩","黄连","黄柏","清热燥湿药"]},
+  {id:"zy_s_207",type:"short",category:"中药学",subCategory:"补益药",difficulty:3,question:"简述补气药的主要药物及其功效特点。",answer:"补气药以补益脏腑之气、纠正脏腑气虚的病理偏向为主要功效。常用补气药如下：\n1.人参：大补元气，复脉固脱，补脾益肺，生津养血，安神益智。为补气第一要药，尤善大补元气以救脱。\n2.党参：补中益气，健脾益肺，养血生津。性味甘平，作用缓和，药力较弱，为补中益气常用药，治脾肺气虚证常代人参使用。\n3.太子参：益气健脾，生津润肺。性平力薄，多用于小儿及轻症脾虚气阴两亏者。\n4.黄芪：补气升阳，固表止汗，利水消肿，生津养血，行滞通痹，托毒排脓，敛疮生肌。本品甘温，入脾经，为补益脾气之要药，且能升阳举陷，治脾虚中气下陷之久泻脱肛、内脏下垂。\n5.白术：健脾益气，燥湿利水，止汗，安胎。以健脾、燥湿为主要作用，被前人誉为'脾脏补气健脾第一要药'。\n6.山药：补脾养胃，生津益肺，补肾涩精。药性平和，能平补肺脾肾，为药食两用佳品。\n7.甘草：补脾益气，清热解毒，祛痰止咳，缓急止痛，调和诸药。因其能调和百药，有'国老'之称。\n8.大枣：补中益气，养血安神。为调补脾胃、养血安神常用药。\n补气药多甘壅滞气，湿盛中满者慎用。",explanation:"补气药是临床最常用的补益药类，掌握各药功效特点对合理选方用药至关重要。",source:"《中药学》",points:["补气药","补益药"]},
+  {id:"zy_s_208",type:"truefalse",category:"中药学",subCategory:"用药禁忌",difficulty:2,question:"'十九畏'中，人参畏五灵脂。",options:["正确","错误"],answer:"正确",explanation:"十九畏为传统的药物配伍禁忌，具体为：硫黄畏朴硝、水银畏砒霜、狼毒畏密陀僧、巴豆畏牵牛、丁香畏郁金、川乌草乌畏犀角、牙硝畏三棱、官桂畏石脂、人参畏五灵脂。其中'人参畏五灵脂'是指人参与五灵脂同用可能减弱人参的补气作用，一般情况下不宜配伍使用。但古今临床也有不少医家二药同用治疗气虚血瘀之证，取其相畏相成之功。对于十八反、十九畏所列药物，目前仍有待进一步临床与实验研究。",source:"《中药学》",points:["十九畏","用药禁忌"]},
+  // ===== 方剂学深度题 =====
+  {id:"fj_s_201",type:"single",category:"方剂学",subCategory:"解表剂",difficulty:3,question:"麻黄汤的组成是？",options:["麻黄、桂枝、杏仁、炙甘草","麻黄、石膏、杏仁、炙甘草","桂枝、芍药、生姜、大枣、炙甘草","麻黄、桂枝、干姜、细辛"],answer:"麻黄、桂枝、杏仁、炙甘草",explanation:"麻黄汤出自《伤寒论》，为辛温解表代表方。组成：麻黄（去节）三两、桂枝二两、杏仁（去皮尖）七十个、炙甘草一两。功用发汗解表，宣肺平喘。主治外感风寒表实证，症见恶寒发热、头身疼痛、无汗而喘、舌苔薄白、脉浮紧者。方中麻黄辛温，发汗解表以散风寒，宣肺平喘以通郁闭，为君药。桂枝辛甘温，透营达卫，解肌发表，温通经脉，既助麻黄发汗解表之力，又畅行营阴使汗出表解，为臣药。杏仁苦温，降利肺气，与麻黄相伍，一宣一降，以复肺之宣降，增强宣肺平喘之功，为佐药。炙甘草甘平，调和诸药，既缓麻、桂峻烈之性，又调和麻、杏之宣降，为使药。四药配伍，表寒得散，营卫得通，肺气得宣，则诸症可愈。本方为辛温解表之基础方、发汗之峻剂，表虚自汗、血虚、阴虚、阳虚者忌用。",source:"《方剂学》",points:["麻黄汤","解表剂"]},
+  {id:"fj_s_202",type:"single",category:"方剂学",subCategory:"泻下剂",difficulty:3,question:"大承气汤的组成是？",options:["大黄、厚朴、枳实、芒硝","大黄、芒硝、炙甘草","大黄、附子、干姜、人参、炙甘草","大黄、牡丹皮、桃仁、冬瓜仁、芒硝"],answer:"大黄、厚朴、枳实、芒硝",explanation:"大承气汤出自《伤寒论》，为寒下代表方。组成：大黄（酒洗）四两、厚朴（炙，去皮）半斤、枳实（炙）五枚、芒硝三合。功用峻下热结。主治：1.阳明腑实证：大便不通，频转矢气，脘腹痞满，腹痛拒按，按之硬，甚或潮热谵语，手足濈然汗出，舌苔黄燥起刺，或焦黑燥裂，脉沉实。2.热结旁流证：下利清水，色纯青，其气臭秽，脐腹疼痛，按之坚硬有块，口舌干燥，脉滑实。3.里热实证之热厥、痉病或发狂等。本方为阳明腑实证的基础方，又是寒下法的代表方。方中大黄泻热通便，荡涤肠胃邪热积滞，为君药。芒硝泻热通便，软坚润燥，为臣药。厚朴下气除满，枳实行气消痞，共为佐使。四药合用，共奏峻下热结之功。本方为急下存阴之剂，凡气虚阴亏、燥结不甚者，以及年老、体弱等均应慎用；孕妇禁用。",source:"《方剂学》",points:["大承气汤","泻下剂"]},
+  {id:"fj_s_203",type:"single",category:"方剂学",subCategory:"和解剂",difficulty:3,question:"小柴胡汤的组成是？",options:["柴胡、黄芩、人参、半夏、炙甘草、生姜、大枣","柴胡、黄芩、大黄、半夏、生姜、大枣","柴胡、枳实、芍药、炙甘草","柴胡、黄芩、黄连、半夏、干姜、人参、炙甘草、大枣"],answer:"柴胡、黄芩、人参、半夏、炙甘草、生姜、大枣",explanation:"小柴胡汤出自《伤寒论》，为和解少阳代表方。组成：柴胡半斤、黄芩三两、人参三两、半夏（洗）半升、炙甘草三两、生姜（切）三两、大枣（擘）十二枚。功用和解少阳。主治：1.伤寒少阳证：往来寒热，胸胁苦满，默默不欲饮食，心烦喜呕，口苦，咽干，目眩，舌苔薄白，脉弦者。2.热入血室证：妇人中风，经水适断，寒热发作有时；以及疟疾、黄疸等病而见少阳证者。方中柴胡苦平，入肝胆经，透泄少阳之邪，并能疏泄气机之郁滞，使少阳之邪得以疏散，为君药。黄芩苦寒，清泄少阳之热，为臣药。柴胡之升散，得黄芩之清泄，两者相配伍，以达到和解少阳之目的。胆气犯胃，胃失和降，佐以半夏、生姜和胃降逆止呕；又由于邪从太阳传入少阳，缘于正气本虚，故又佐以人参、大枣益气健脾，一者取其扶正以祛邪，一者取其益气以御邪内传，俾正气旺盛，则邪无内向之机。炙甘草助参、枣扶正，且能调和诸药，为使药。诸药合用，以和解少阳为主，兼补胃气，使邪气得解，枢机得利，胃气调和，则诸症自除。本方为治疗少阳病证的基础方，又是和解少阳法的代表方。",source:"《方剂学》",points:["小柴胡汤","和解剂"]},
+  {id:"fj_s_204",type:"single",category:"方剂学",subCategory:"清热剂",difficulty:3,question:"白虎汤的组成是？",options:["石膏、知母、炙甘草、粳米","石膏、黄连、黄芩、栀子","黄连、黄芩、黄柏、栀子","生地黄、玄参、麦冬、金银花、连翘"],answer:"石膏、知母、炙甘草、粳米",explanation:"白虎汤出自《伤寒论》，为清热剂清气分热代表方。组成：石膏（碎）一斤、知母六两、炙甘草二两、粳米六合。功用清热生津。主治气分热盛证：壮热面赤，烦渴引饮，汗出恶热，脉洪大有力。本方原为阳明气分热盛证而设，亦可用治温病气分热盛证。方中石膏辛甘大寒，入肺胃二经，功善清解，透热出表，以除阳明气分之热，为君药。知母苦寒质润，既助石膏清肺胃之热，又滋阴润燥救已伤之阴津，为臣药。二药相须为用，清气分热、生津止渴之力尤强。炙甘草、粳米益胃生津，防止大寒伤中之弊，为佐使药。四药共奏清热生津之功。本方为治疗阳明气分热盛证之基础方。临床应用以身大热、汗大出、口大渴、脉洪大（即'四大'症）为辨证要点。表证未解的无汗发热、口不渴者，血虚发热或气虚发热者，均不宜使用。",source:"《方剂学》",points:["白虎汤","清热剂"]},
+  {id:"fj_s_205",type:"single",category:"方剂学",subCategory:"补益剂",difficulty:3,question:"四君子汤的组成是？",options:["人参、白术、茯苓、炙甘草","人参、白术、茯苓、炙甘草、生姜、大枣","黄芪、人参、白术、炙甘草","人参、白术、干姜、炙甘草"],answer:"人参、白术、茯苓、炙甘草",explanation:"四君子汤出自《太平惠民和剂局方》，为补气基础方。组成：人参、白术、茯苓（去皮）各二钱、炙甘草一钱。功用益气健脾。主治脾胃气虚证：面色萎白，语声低微，气短乏力，食少便溏，舌淡苔白，脉虚弱。方中人参为君，甘温益气，健脾养胃。臣以苦温之白术，健脾燥湿，加强益气助运之力。佐以甘淡茯苓，健脾渗湿，苓、术相配，则健脾祛湿之功益著。使以炙甘草，益气和中，调和诸药。四药配伍，共奏益气健脾之功。本方药性平和，温而不燥，补而不滞，故以'君子'名之。本方为补气基础方，临床应用以面白食少、气短乏力、舌淡苔白、脉虚弱为辨证要点。由此方衍化出异功散（加陈皮）、六君子汤（加陈皮、半夏）、香砂六君子汤（加木香、砂仁、陈皮、半夏）等方，均为临床常用补益脾胃之剂。",source:"《方剂学》",points:["四君子汤","补益剂"]},
+  {id:"fj_s_206",type:"single",category:"方剂学",subCategory:"温里剂",difficulty:3,question:"四逆汤的组成是？",options:["附子、干姜、炙甘草","附子、干姜、葱白、人尿、猪胆汁","附子、干姜、肉桂、炙甘草","生附子、干姜、炙甘草"],answer:"附子、干姜、炙甘草",explanation:"四逆汤出自《伤寒论》，为回阳救逆代表方。组成：附子（生用，去皮，破八片）一枚、干姜一两半、炙甘草二两。功用回阳救逆。主治少阴病，心肾阳衰寒厥证：四肢厥逆，恶寒蜷卧，神衰欲寐，面色苍白，腹痛下利，呕吐不渴，舌苔白滑，脉微细；以及太阳病误汗亡阳者。方中附子大辛大热，为补益先天命门真火之第一要药，通行十二经脉，生用尤能迅达内外以温阳逐寒，为君药。干姜温中散寒，助附子破阴回阳，为臣药。君臣相伍，一温先天以生后天，一温后天以养先天，相须为用，相得益彰，温里回阳之力大增。炙甘草之用有三：一则益气补中，使全方温补结合，以治虚寒之本；二则甘缓姜、附峻烈之性，使其破阴回阳而无暴散之虞；三则调和药性，并使药力作用持久，是为佐药而兼使药之用。本方为回阳救逆基础方，临床用于各种急危重症属亡阳证者。现代药理研究本方具有强心、升压、抗休克等作用。",source:"《方剂学》",points:["四逆汤","温里剂","回阳救逆"]},
+  {id:"fj_s_207",type:"single",category:"方剂学",subCategory:"理气剂",difficulty:3,question:"越鞠丸的组成是？",options:["香附、川芎、苍术、栀子、神曲","香附、陈皮、青皮、枳实","柴胡、香附、枳壳、白芍、川芎","木香、槟榔、青皮、陈皮、枳实"],answer:"香附、川芎、苍术、栀子、神曲",explanation:"越鞠丸（又名芎术丸）出自《丹溪心法》，为理气代表方。组成：香附、川芎、苍术、栀子、神曲各等分（各6-10克）。功用行气解郁。主治六郁证：胸膈痞闷，脘腹胀痛，嗳腐吞酸，恶心呕吐，饮食不消。本方所治六郁为气、血、痰、火、湿、食六郁。方中香附辛香入肝经，行气解郁为君药，以治气郁。川芎为血中气药，行气活血，既解血郁，又助香附行气解郁之功，为臣药。苍术燥湿运脾，以治湿郁；栀子清热泻火，以治火郁；神曲消食导滞，以治食郁，共为佐使药。痰郁多由脾湿所生，亦与气、火、食有关，气机流畅，诸郁得解，则痰郁亦随之而消，此方亦体现了治病求本的原则。本方为治疗六郁之常用方，临床以胸膈痞闷、脘腹胀痛、饮食不消为辨证要点。",source:"《方剂学》",points:["越鞠丸","理气剂"]},
+  {id:"fj_s_208",type:"single",category:"方剂学",subCategory:"理血剂",difficulty:3,question:"血府逐瘀汤的组成是？",options:["桃仁、红花、当归、生地黄、川芎、赤芍、牛膝、桔梗、柴胡、枳壳、甘草","桃仁、红花、当归、生地黄、川芎、赤芍、黄芪、地龙","当归、川芎、芍药、桂枝、牡丹皮、半夏、麦冬、人参、阿胶、甘草、生姜","当归、川芎、赤芍、桃仁、红花、生地黄、桔梗、牛膝、柴胡、枳壳、甘草"],answer:"桃仁、红花、当归、生地黄、川芎、赤芍、牛膝、桔梗、柴胡、枳壳、甘草",explanation:"血府逐瘀汤出自《医林改错》，为活血化瘀代表方。组成：桃仁四钱、红花三钱、当归三钱、生地黄三钱、川芎一钱半、赤芍二钱、牛膝三钱、桔梗一钱半、柴胡一钱、枳壳二钱、甘草三钱。功用活血化瘀，行气止痛。主治胸中血瘀证：胸痛，头痛，日久不愈，痛如针刺而有定处，或呃逆日久不止，或饮水即呛、干呕，或内热瞀闷，或心悸怔忡，失眠多梦，急躁易怒，入暮潮热，唇暗或两目暗黑，舌质暗红，或舌有瘀斑或瘀点，脉涩或弦紧。本方由桃红四物汤合四逆散加桔梗、牛膝而成。方中桃仁破血行滞而润燥，红花活血祛瘀以止痛，共为君药。赤芍、川芎助君药活血祛瘀；牛膝活血通经，祛瘀止痛，引血下行，共为臣药。生地黄、当归养血益阴，清热活血；桔梗、枳壳，一升一降，宽胸行气；柴胡疏肝解郁，升达清阳，与桔梗、枳壳同用，尤善理气行滞，使气行则血行，以上均为佐药。桔梗并能载药上行，兼有使药之用；甘草调和诸药，亦为使药。合而成方，一升一降，气血并调，既行血分瘀滞，又解气分郁结，活血而不耗血，祛瘀又能生新。",source:"《方剂学》",points:["血府逐瘀汤","理血剂","活血化瘀"]},
+  {id:"fj_s_209",type:"multiple",category:"方剂学",subCategory:"补益剂",difficulty:3,question:"以下组成含有四君子汤的方剂是？",options:["异功散","六君子汤","参苓白术散","补中益气汤"],answer:["异功散","六君子汤","参苓白术散"],explanation:"四君子汤（人参、白术、茯苓、炙甘草）是补气的基础方，由此方加味衍化出多种常用方剂。1.异功散：四君子汤加陈皮，功用益气健脾、行气化滞，主治脾胃气虚兼气滞证。2.六君子汤：四君子汤加陈皮、半夏，功用益气健脾、燥湿化痰，主治脾胃气虚兼痰湿证。3.香砂六君子汤：六君子汤加木香、砂仁，功用益气健脾、行气化痰，主治脾胃气虚、痰阻气滞证。4.参苓白术散：由莲子肉、薏苡仁、缩砂仁、桔梗、白扁豆、白茯苓、人参、甘草、白术、山药组成，方中含四君子汤（人参、白术、茯苓、甘草）以健脾益气，另加山药、莲子、扁豆、薏苡仁健脾渗湿，砂仁、桔梗理气和胃、载药上行，功用益气健脾、渗湿止泻，主治脾虚湿盛证。5.补中益气汤由黄芪、人参、白术、炙甘草、当归、陈皮、升麻、柴胡组成，方中虽含参、术、草，但无茯苓，故不含完整四君子汤。",source:"《方剂学》",points:["四君子汤","方剂组成"]},
+  {id:"fj_s_210",type:"short",category:"方剂学",subCategory:"补益剂",difficulty:3,question:"简述六味地黄丸的组成、功用及方义。",answer:"六味地黄丸出自《小儿药证直诀》，为补阴基础方。\n一、组成：熟地黄八钱（24g）、山茱萸、干山药各四钱（各12g）、泽泻、牡丹皮、白茯苓（去皮）各三钱（各9g）。\n二、功用：填精滋阴补肾。\n三、主治：肾阴精不足证：腰膝酸软，头晕目眩，视物昏花，耳鸣耳聋，盗汗，遗精，消渴，骨蒸潮热，手足心热，口燥咽干，牙齿动摇，足跟作痛，小便淋沥，以及小儿囟门不合，舌红少苔，脉沉细数。\n四、方义：方中重用熟地黄，滋阴补肾，填精益髓，为君药。山茱萸补养肝肾，并能涩精，取'肝肾同源'之意；山药补益脾阴，亦能固肾，共为臣药。三药配合，肾肝脾三阴并补，是为'三补'，但熟地黄用量是山萸肉与山药之和，故仍以补肾阴为主。泽泻利湿而泄肾浊，并能减熟地黄之滋腻；茯苓淡渗脾湿，并助山药之健运，与泽泻共泄肾浊，助真阴得复其位；牡丹皮清泄虚热，并制山茱萸之温涩。三药称为'三泻'，均为佐药。六味合用，三补三泻，其中补药用量重于'泻药'，是以补为主；肝脾肾三阴并补，以补肾阴为主，这是本方的配伍特点。\n本方为补肾填精之基础方，衍化出知柏地黄丸、杞菊地黄丸、都气丸、麦味地黄丸等方，均为临床常用补肾之剂。",explanation:"六味地黄丸是补阴剂的代表方，其'三补三泻'的配伍特点对方剂学发展有重要影响。",source:"《方剂学》",points:["六味地黄丸","补益剂","补阴"]},
+  {id:"fj_s_211",type:"truefalse",category:"方剂学",subCategory:"解表剂",difficulty:2,question:"桂枝汤的组成是桂枝、芍药、生姜、大枣、炙甘草。",options:["正确","错误"],answer:"正确",explanation:"桂枝汤出自《伤寒论》，为辛温解表代表方，被誉为'群方之冠'。组成：桂枝（去皮）三两、芍药三两、炙甘草二两、生姜（切）三两、大枣（擘）十二枚。功用解肌发表，调和营卫。主治外感风寒表虚证：恶风发热，汗出头痛，鼻鸣干呕，苔白不渴，脉浮缓或浮弱者。本方配伍特点：桂芍相合，一散一收，调和营卫；姜枣相合，调和脾胃，助桂芍调和营卫；炙甘草调和诸药，合桂枝辛甘化阳以实卫，合芍药酸甘化阴以和营。本方为治疗外感风寒表虚证的基础方，又是调和营卫、调和阴阳治法的代表方。临床应用以恶风、发热、汗出、脉浮缓为辨证要点。凡风寒表实无汗，或温病发热、口渴、咽痛，均不宜使用。",source:"《方剂学》",points:["桂枝汤","解表剂"]},
+  // ===== 中医诊断学深度题 =====
+  {id:"zd_s_201",type:"single",category:"中医诊断学",subCategory:"八纲辨证",difficulty:3,question:"真寒假热证的临床表现特点是？",options:["身热但欲盖衣被，口渴但喜热饮，脉大但按之无力","身大热，大汗出，大烦渴，脉洪大","恶寒，肢冷，下利清谷，脉微欲绝","发热，口渴，便秘，舌红苔黄"],answer:"身热但欲盖衣被，口渴但喜热饮，脉大但按之无力",explanation:"真寒假热是指内有真寒而外见某些假热的'寒极似热'证候。其临床表现有自觉发热、欲脱衣揭被，触之胸腹无灼热、下肢厥冷；面色浮红如妆，非满面通红；神志躁扰不宁，疲乏无力；口渴但不欲饮，或喜热饮；咽痛而不红肿；脉浮大或数，按之无力；便秘而便质不燥，或下利清谷；小便清长（或尿少浮肿），舌淡，苔白。本证的本质是阳气虚衰，阴寒内盛，逼迫虚阳浮游于上、格越于外，即所谓'戴阳证'、'格阳证'。辨证要点是：虽有发热、面红、口渴、脉数等似热之象，但胸腹无灼热、下肢必厥冷、小便必清长、舌淡苔白、脉虽大但按之必无力，此乃阴寒内盛是真、热象浮越是假。治疗原则宜'热因热用'，用温阳散寒、回阳通脉之法，如通脉四逆汤。",source:"《中医诊断学》",points:["真寒假热","八纲辨证","寒热真假"]},
+  {id:"zd_s_202",type:"single",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:3,question:"心气虚与心阳虚的共同症状是？",options:["心悸怔忡，气短自汗，活动后加重，脉细弱或结代","形寒肢冷，面色苍白或青紫，舌淡胖苔白滑","五心烦热，潮热盗汗，舌红少津，脉细数","心胸憋闷疼痛，痛引肩背内臂，时作时止"],answer:"心悸怔忡，气短自汗，活动后加重，脉细弱或结代",explanation:"心气虚证与心阳虚证均以心脏功能减退为主要病理基础，故二者共同症状为心悸怔忡、胸闷气短、活动后加重、自汗、脉细弱或结代等。二者不同之处在于：心气虚证以心悸气短、神疲乏力、面色淡白、舌淡苔白、脉虚等气虚表现为主，虚寒症状不明显；心阳虚证则在心气虚基础上进一步发展，兼见形寒肢冷、面色苍白或青紫、舌淡胖苔白滑、脉沉迟无力或结代等阳虚寒盛表现。心阳虚进一步发展，阳气虚衰，亡阳欲脱，则为心阳虚脱证，可见冷汗淋漓、四肢厥冷、呼吸微弱、面色苍白、口唇青紫、神志模糊或昏迷、脉微欲绝等危重证候。掌握心气虚心阳虚心阳虚脱三证的鉴别，对临床判断病情轻重进退具有重要意义。",source:"《中医诊断学》",points:["心气虚","心阳虚","脏腑辨证"]},
+  {id:"zd_s_203",type:"single",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:3,question:"肝郁脾虚证的临床表现是？",options:["胸胁胀满窜痛，善太息，情志抑郁或急躁易怒，纳呆腹胀，便溏不爽，肠鸣矢气，或腹痛欲泻，泻后痛减，舌淡苔白，脉弦或缓","情志抑郁，胸胁或少腹胀痛窜痛，胸闷善太息，得嗳气则舒，妇女可见乳房作胀疼痛，痛经，月经不调，甚则闭经，舌苔薄白，脉弦","头晕目眩，胸胁隐痛，两目干涩，视物模糊，夜盲，爪甲不荣，肢体麻木，筋脉拘急，或手足震颤、肌肉瞤动，妇女月经量少色淡，甚则闭经，面白无华，舌淡苔白，脉细","胸胁胀痛，身目发黄，胁下痞块，刺痛拒按，妇女可见痛经、经色紫暗或夹血块、乳房胀痛或有痞块，舌紫暗或有瘀斑瘀点，脉弦涩"],answer:"胸胁胀满窜痛，善太息，情志抑郁或急躁易怒，纳呆腹胀，便溏不爽，肠鸣矢气，或腹痛欲泻，泻后痛减，舌淡苔白，脉弦或缓",explanation:"肝郁脾虚证是指肝失疏泄，脾失健运，以胸胁胀痛、腹胀、便溏、情志抑郁等为主要表现的证。又称肝脾不调证。临床表现为：胸胁胀满窜痛，善太息，情志抑郁，或急躁易怒，纳呆，腹胀，便溏不爽，肠鸣矢气，或腹痛欲泻，泻后痛减，或大便溏结不调，舌苔白，脉弦或缓。本证多因情志不遂，郁怒伤肝，肝失条达，横乘脾土；或饮食不节、劳倦太过，损伤脾气，脾失健运，土反侮木，肝失疏泄而成。辨证要点是：以胸胁胀满窜痛、情志抑郁、腹胀、便溏等为主要表现。本证与肝胃不和证均有肝郁气滞表现，区别在于本证以脾失健运（腹胀、便溏）为主，肝胃不和证以胃失和降（胃脘胀痛、嗳气、呃逆、呕吐）为主。临床治疗以疏肝健脾为法，代表方如逍遥散、痛泻要方等。",source:"《中医诊断学》",points:["肝郁脾虚","脏腑辨证"]},
+  {id:"zd_s_204",type:"multiple",category:"中医诊断学",subCategory:"望诊",difficulty:3,question:"以下属于异常舌象的是？",options:["舌红苔黄","舌淡苔白润","舌紫暗有瘀斑","舌淡红苔薄白"],answer:["舌红苔黄","舌紫暗有瘀斑"],explanation:"正常舌象为舌体柔软灵活、舌色淡红明润、舌苔薄白均匀、苔质干湿适中，简称'淡红舌，薄白苔'。1.舌红苔黄：舌色较正常舌色红，甚至呈鲜红色，主实热、阴虚。舌红苔黄多属实热证。2.舌淡苔白润：舌色较正常舌色浅淡，主气血两虚、阳虚。苔白润为寒湿或阳虚水停之象，属病理性舌象。3.舌紫暗有瘀斑：紫舌主血行不畅。全舌青紫者，其病多是全身性血行瘀滞；舌有紫色斑点者，可能是瘀血阻滞于某局部，或是局部血络损伤所致。为典型异常舌象。4.舌淡红苔薄白：此为健康人或病轻者之舌象，属正常范围。观察舌象应注意舌神、舌色、舌形、舌态及苔色、苔质等多方面综合分析。舌诊是中医望诊的重要内容，对辨证论治有重要参考价值。",source:"《中医诊断学》",points:["舌诊","望诊"]},
+  {id:"zd_s_205",type:"short",category:"中医诊断学",subCategory:"八纲辨证",difficulty:3,question:"简述八纲辨证的基本内容及临床意义。",answer:"八纲是指表、里、寒、热、虚、实、阴、阳八个辨证的纲领。\n一、表里：辨别病变部位内外浅深的两个纲领。表证指六淫、疫疠等邪气，经皮毛、口鼻侵入机体的初期阶段，正（卫）气抗邪于肤表浅层，以新起恶寒发热为主要表现的轻浅证候。里证指病变部位在内，脏腑、气血、骨髓等受病所反映的证候。\n二、寒热：辨别疾病性质的两个纲领。寒证是指感受寒邪，或阳虚阴盛，导致机体功能活动衰退所表现的具有冷、凉特点的证候。热证是指感受热邪，或脏腑阳气亢盛，或阴虚阳亢，导致机体机能活动亢进所表现的具有温、热特点的证候。\n三、虚实：辨别邪正盛衰的两个纲领。虚证指人体阴阳、气血、津液、精髓等正气亏虚，而邪气不著，表现为不足、松弛、衰退特征的各种证候。实证指人体感受外邪，或疾病过程中阴阳气血失调，体内病理产物蓄积，以邪气盛、正气不虚为基本病理，表现为有余、亢盛、停聚特征的各种证候。\n四、阴阳：八纲中的总纲，是辨别疾病属性的两个纲领。阴证指凡见抑制、沉静、衰退、晦暗等表现的里证、寒证、虚证，以及症状表现于内的、向下的、不易发现的，或病邪性质为阴邪致病、病情变化较慢等，均属阴证范畴。阳证指凡见兴奋、躁动、亢进、明亮等表现的表证、热证、实证，以及症状表现于外的、向上的、容易发现的，或病邪性质为阳邪致病、病情变化较快等，均属阳证范畴。\n八纲辨证是临床各种辨证的基本方法，具有执简驭繁、提纲挈领的作用，能为临床各种辨证提供一个带有普遍规律的共同基础。临床各科辨证都是在八纲辨证基础上的进一步深化和具体。",explanation:"八纲辨证是中医辨证体系的总纲，掌握八纲辨证对临床辨证论治具有重要指导意义。",source:"《中医诊断学》",points:["八纲辨证","辨证"]},
+  {id:"zd_s_206",type:"truefalse",category:"中医诊断学",subCategory:"脉诊",difficulty:2,question:"浮脉的脉象特点是轻取即得，重按稍减而不空，举之有余，按之不足。",options:["正确","错误"],answer:"正确",explanation:"浮脉的脉象特点是：轻取即得，重按稍减而不空，举之有余，按之不足。浮脉的部位表浅，如水上漂木。浮脉主表证，亦见于虚阳浮越证。外感风寒之邪束表，卫气与邪气相争，脉气鼓动于外，故脉浮而有力；虚阳浮越之浮脉，多浮大无力，属危重证候。浮脉的相类脉有散脉、芤脉、革脉：散脉浮取散漫，中候似无，沉候不应，并伴有脉动不规则、脉力不匀之感，多见于元气离散、脏腑精气衰败，尤其是心、肾之气将绝的危重证候；芤脉浮大中空，如按葱管，常见于失血、伤阴之际；革脉浮而搏指，中空边坚，如按鼓皮，多见于亡血、失精、半产、漏下等病证。掌握浮脉及相类脉的鉴别对临床辨证甚为重要。",source:"《中医诊断学》",points:["浮脉","脉诊"]},
+  // ===== 针灸学深度题 =====
+  {id:"zj_s_201",type:"single",category:"针灸学",subCategory:"针灸治疗",difficulty:3,question:"针灸治疗失眠的主穴是？",options:["百会、神门、三阴交、照海、申脉、安眠","足三里、内关、太冲、合谷","风池、百会、太阳、太冲","关元、气海、足三里、三阴交"],answer:"百会、神门、三阴交、照海、申脉、安眠",explanation:"失眠又称'不寐'，是以经常不能获得正常睡眠为特征的一类病证。针灸治疗失眠以调理跷脉、安神利眠为治法。主穴：百会、神门、三阴交、照海、申脉、安眠。方义：心藏神，神门为心经原穴，可宁心安神；脑为元神之府，百会为督脉穴，可调理脑神；三阴交为肝、脾、肾三经交会穴，可健脾益气、柔肝益阴，调补三阴而安神；照海、申脉为八脉交会穴，分别与阴跷脉、阳跷脉相通，阳跷脉盛则寤，阴跷脉盛则寐，补照海、泻申脉，可使阴阳平衡、失眠得除；安眠穴为治疗失眠的经验效穴。辨证配穴：心脾两虚配心俞、脾俞；心胆气虚配心俞、胆俞；阴虚火旺配太溪、涌泉；肝郁化火配行间、太冲；痰热内扰配丰隆、内庭。操作：毫针刺，补虚泻实。百会平刺，神门直刺，三阴交直刺，照海直刺，申脉直刺，安眠直刺。失眠患者睡前针灸疗效更佳。",source:"《针灸学》",points:["失眠","针灸治疗"]},
+  {id:"zj_s_202",type:"single",category:"针灸学",subCategory:"针灸操作",difficulty:3,question:"以下关于灸法作用的描述，正确的是？",options:["温经散寒、扶阳固脱、消瘀散结、防病保健","清热解毒、凉血止血、泻火除烦、养阴生津","活血化瘀、行气止痛、舒筋活络、祛风除湿","开窍醒神、回阳救逆、补气养血、调和阴阳"],answer:"温经散寒、扶阳固脱、消瘀散结、防病保健",explanation:"灸法是借灸火的热力和药物的作用，对腧穴或病变部位进行烧灼、温熨，通过经络的作用，以达到防治疾病目的的一种方法。灸法的作用主要有四方面：1.温经散寒：灸法可温通经络、祛除寒邪，常用于治疗寒凝血滞、经络痹阻所引起的寒湿痹痛、痛经、经闭、胃脘痛、寒疝腹痛、泄泻、痢疾等。2.扶阳固脱：灸法能扶助阳气、举陷固脱，可用于治疗中气下陷、阳气虚脱之证，如脱肛、阴挺、久泻、遗尿、崩漏、虚脱、休克等，如灸百会治脱肛，灸关元、气海、神阙治亡阳虚脱。3.消瘀散结：灸法能行气活血、消瘀散结，可用于治疗气血凝滞之疾，如乳痈初起、瘰疬、瘿瘤等。4.防病保健：灸法可以激发人体正气，增强抗病能力，无病时施灸有防病保健、益寿延年的作用，称为'保健灸'，如常灸足三里、关元、气海、神阙等穴可强身健体、延年益寿。总之，灸法治疗范围广泛，凡属中医辨证属虚寒者，均可选用灸法治疗。",source:"《针灸学》",points:["灸法","针灸操作"]},
+  {id:"zj_s_203",type:"single",category:"针灸学",subCategory:"针灸治疗",difficulty:3,question:"针灸治疗中风中经络的主穴是？",options:["内关、水沟、三阴交、极泉、尺泽、委中","百会、风池、合谷、太冲、足三里、三阴交","肩髃、曲池、手三里、合谷、环跳、阳陵泉、足三里","关元、气海、神阙、足三里、三阴交、太溪"],answer:"内关、水沟、三阴交、极泉、尺泽、委中",explanation:"中风是以突然昏仆、不省人事，或不经昏仆而仅以半身不遂、口眼歪斜、语言不利为主症的病证。中经络为无神志改变的中风轻证。针灸治疗中经络以醒脑开窍、滋补肝肾、疏通经络为治法。主穴：内关、水沟、三阴交、极泉、尺泽、委中。方义：心主血脉藏神，内关为心包经络穴，可调理心神、疏通气血；脑为元神之府，督脉入络脑，水沟为督脉穴，可醒脑开窍、调神导气；三阴交为足三阴经交会穴，可滋补肝肾；极泉、尺泽、委中，疏通肢体经络。辨证配穴：肝阳暴亢配太冲、太溪；风痰阻络配丰隆、合谷；痰热腑实配曲池、内庭、丰隆；气虚血瘀配足三里、气海；阴虚风动配太溪、风池。操作：水沟用雀啄法，以眼球湿润为度；三阴交沿胫骨内侧缘与皮肤成45°角斜刺，用提插补法；极泉在原穴位置下1寸心经上取穴，避开腋毛，直刺，用提插泻法，以患者上肢有麻胀和抽动感为度；尺泽、委中直刺，提插泻法使肢体有抽动感。内关用捻转泻法。针灸对中风恢复期和后遗症期疗效确切，配合康复训练效果更佳。",source:"《针灸学》",points:["中风","针灸治疗"]},
+  {id:"zj_s_204",type:"multiple",category:"针灸学",subCategory:"针灸操作",difficulty:3,question:"以下属于针刺禁忌症的是？",options:["过饥、过饱、酒醉、大惊、过劳等状态下不宜针刺","孕妇腹部、腰骶部禁针","小儿囟门未合时，头顶部禁针","皮肤有感染、溃疡、瘢痕或肿瘤部位，不宜针刺"],answer:["过饥、过饱、酒醉、大惊、过劳等状态下不宜针刺","孕妇腹部、腰骶部禁针","小儿囟门未合时，头顶部禁针","皮肤有感染、溃疡、瘢痕或肿瘤部位，不宜针刺"],explanation:"针灸治疗虽然安全有效，但也有一定的禁忌症，主要包括以下几个方面：1.患者在过于饥饿、疲劳、精神过度紧张时，不宜立即进行针刺；对身体瘦弱、气虚血亏的患者，针刺时手法不宜过强，并应尽量选用卧位。2.妇女怀孕三个月以内者，不宜针刺小腹部的腧穴；若怀孕三个月以上者，腹部、腰骶部腧穴也不宜针刺。至于三阴交、合谷、昆仑、至阴等一些通经活血的腧穴，在怀孕期亦应予禁刺。如妇女行经时，若非为了调经，亦不应针刺。3.小儿囟门未合时，头顶部的腧穴不宜针刺。4.常有自发性出血或损伤后出血不止的患者，不宜针刺。5.皮肤有感染、溃疡、瘢痕或肿瘤的部位，不宜针刺。6.对胸、胁、腰、背脏腑所居之处的腧穴，不宜直刺、深刺，肝脾肿大、心脏扩大、肺气肿等患者更应注意。7.针刺眼区和项部的风府、哑门等穴以及脊椎部的腧穴，要注意掌握一定的角度，更不宜大幅度的提插、捻转和长时间的留针，以免伤及重要组织器官，产生严重的不良后果。8.对尿潴留等患者在针刺小腹部腧穴时，也应掌握适当的针刺方向、角度、深度等，以免误伤膀胱等器官出现意外事故。严格掌握针刺禁忌症，是确保针灸临床安全的重要措施。",source:"《针灸学》",points:["针刺禁忌","针灸操作"]},
+  {id:"zj_s_205",type:"short",category:"针灸学",subCategory:"特定穴",difficulty:3,question:"简述下合穴的概念及临床应用。",answer:"下合穴是指六腑之气下合于足三阳经的六个腧穴，又称'六腑下合穴'。\n一、组成：\n1.胃下合于足三里（足阳明经）\n2.大肠下合于上巨虚（足阳明经）\n3.小肠下合于下巨虚（足阳明经）\n4.胆下合于阳陵泉（足少阳经）\n5.膀胱下合于委中（足太阳经）\n6.三焦下合于委阳（足太阳经）\n二、分布特点：下合穴都分布在足三阳经膝关节及其以下部位。胃、胆、膀胱的下合穴位于本经，大肠、小肠的下合穴同位于胃经，三焦的下合穴位于膀胱经。\n三、理论依据：《灵枢·本输》指出'六腑皆出于足三阳，上合于手者也'，说明手三阳经的大肠、小肠、三焦之气，皆下合于足三阳经。\n四、临床应用：下合穴主要用于治疗六腑病证。《灵枢·邪气脏腑病形》云'合治内腑'。具体应用为：\n1.足三里治胃病（胃痛、呕吐、噎膈、泄泻、痢疾、便秘等）\n2.上巨虚治大肠病（腹痛、腹泻、痢疾、便秘、肠痈等）\n3.下巨虚治小肠病（腹痛、痢疾、泄泻等）\n4.阳陵泉治胆病（胁痛、口苦、呕吐、黄疸、胆囊炎、胆石症等）\n5.委中治膀胱病（小便不利、遗尿、癃闭、腰背痛等）\n6.委阳治三焦病（水肿、小便不利、腹胀等）\n下合穴是针灸治疗六腑疾病的重要穴位，临床应用广泛，疗效确切。",explanation:"下合穴是特定穴的重要组成部分，'合治内腑'是针灸治疗六腑疾病的重要理论依据。",source:"《针灸学》",points:["下合穴","特定穴"]},
+  // ===== 题库扩充：中医基础理论综合题 =====
+  {id:"jc_s_301",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:3,question:"'脾主升清'的确切内涵是？",options:["脾的阳气上升，将水谷精微等营养物质吸收并上输于心肺头目，以营养濡润全身","脾将水液布散全身","脾将食物残渣排出体外","脾将血液固摄于脉中"],answer:"脾的阳气上升，将水谷精微等营养物质吸收并上输于心肺头目，以营养濡润全身",explanation:"脾主升清是指脾的气机运动特点以上升为主，能将水谷精微等营养物质吸收并上输于心肺头目，以营养濡润全身。'清'即指水谷精微等营养物质。脾的升清作用与胃的降浊作用相对而言，一升一降，相反相成，共同完成饮食物的消化吸收及其精微的输布。脾气升清，则水谷精微得以输布全身，脏腑组织得养，功能活动正常；脾气不升，则水谷不能运化，气血生化无源，可见神疲乏力、头目眩晕、腹胀泄泻等症；脾气下陷则见久泄脱肛、内脏下垂等。临床治疗脾气下陷常用补中益气汤升阳举陷。",source:"《中医基础理论》",points:["脾","脾主升清"]},
+  {id:"jc_s_302",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:3,question:"'肝主疏泄'最基本的生理功能是？",options:["调畅气机","促进脾胃运化","调畅情志","促进血液与津液运行"],answer:"调畅气机",explanation:"肝主疏泄是指肝具有疏通、舒畅、条达以保持全身气机疏通畅达，通而不滞，散而不郁的作用。肝主疏泄最基本的生理功能是调畅气机。气机即气的升降出入运动。肝的疏泄功能，对全身各脏腑组织的气机升降出入之间的平衡协调，起着重要的疏通调节作用。肝的疏泄功能正常，则气机调畅、气血和调、经络通利，脏腑组织的活动也就正常协调。若肝失疏泄，气机不畅则可见胸胁、两乳或少腹等局部胀痛不适；若升发太过，肝气上逆则可见头目胀痛、面红目赤、易怒等；肝气郁结，久则气滞血瘀，可见胁下痞块、刺痛、妇女痛经、闭经、癥瘕积聚等。脾胃运化、情志调畅、血液运行、津液输布、男子排精女子排卵等均有赖于气机调畅，故调畅气机是肝主疏泄的最基本功能。",source:"《中医基础理论》",points:["肝","肝主疏泄","气机"]},
+  {id:"jc_s_303",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:3,question:"'肾主纳气'的主要生理作用是？",options:["使肺的呼吸保持一定的深度，防止呼吸表浅","促进气血运行","促进水液代谢","促进生殖发育"],answer:"使肺的呼吸保持一定的深度，防止呼吸表浅",explanation:"肾主纳气是指肾气有摄纳肺所吸入的自然界清气，保持吸气的深度，防止呼吸表浅的作用。人体的呼吸功能，虽为肺所主，但必须依赖于肾的纳气作用，才能保持呼吸的深度，使体内外气体得以充分交换。故《类证治裁》云：'肺为气之主，肾为气之根，肺主出气，肾主纳气，阴阳相交，呼吸乃和。'肾的纳气功能，实际上是肾气的封藏作用在呼吸运动中的具体体现。肾精充足，肾气充沛，摄纳有权，则呼吸均匀和调，气息深缓；若肾精不足，肾气亏虚，摄纳无权，则肺气上浮而不能下行，出现呼吸表浅、动则气喘、呼多吸少或呼吸困难等症，即所谓'肾不纳气'。治疗当补肾纳气，常用人参蛤蚧散、金匮肾气丸等方。",source:"《中医基础理论》",points:["肾","肾主纳气"]},
+  {id:"jc_s_304",type:"multiple",category:"中医基础理论",subCategory:"气血津液",difficulty:3,question:"以下关于'气'的功能，正确的是？",options:["推动与调控作用","温煦与凉润作用","防御作用与固摄作用","中介作用"],answer:["推动与调控作用","温煦与凉润作用","防御作用与固摄作用","中介作用"],explanation:"气的生理功能主要有五个方面：1.推动与调控作用：气具有激发和推动作用，能推动人体生长发育、各脏腑组织器官的功能活动、血液的生成与运行、津液的生成输布与排泄；同时气又有调控作用，使以上活动稳定有序。2.温煦与凉润作用：气的温煦作用是指气可以通过气化产生热量，使人体温暖，驱除寒冷；凉润作用是指阴气具有寒凉、柔润、制热的特性。3.防御作用：气既能护卫肌表，防御外邪入侵，同时也可以祛除侵入人体内的病邪。4.固摄作用：气对体内血、津液、精等液态物质的固护、统摄和控制作用，防止其无故流失。5.中介作用：气能感应传导信息以维系机体的整体联系。气的各项功能各有所主，又相互配合，共同维持正常的生命活动。",source:"《中医基础理论》",points:["气","气的功能"]},
+  {id:"jc_s_305",type:"truefalse",category:"中医基础理论",subCategory:"阴阳五行",difficulty:2,question:"'阴病治阳'适用于阴虚证。",options:["正确","错误"],answer:"错误",explanation:"'阴病治阳'是指当阳虚不足以制阴而致阴气相对偏盛的虚寒证时，治疗当以补阳为主。因阳虚是病之本，阴盛是病之标，故以治阳（补阳）为主，从而达到治疗疾病的目的。即王冰所谓'益火之源，以消阴翳'。与之相对，'阳病治阴'是指当阴虚不足以制阳而致阳气相对偏亢的虚热证时，治疗当以滋阴为主，即'壮水之主，以制阳光'。简言之：阴病治阳——阳虚则阴盛——治阳（补阳）——益火之源，以消阴翳；阳病治阴——阴虚则阳盛——治阴（补阴）——壮水之主，以制阳光。本题将二者混淆，故答案为错误。",source:"《中医基础理论》",points:["阴阳学说","治则治法"]},
+  {id:"jc_s_306",type:"short",category:"中医基础理论",subCategory:"病因",difficulty:3,question:"简述瘀血的概念、形成原因及致病特点。",answer:"瘀血是指体内因血行滞缓或血液停积而形成的病理产物，又称'恶血'、'衃血'、'蓄血'、'败血'、'污血'等。瘀血又是具有致病性的继发性病因。\n一、瘀血的形成：\n主要有两方面因素：一是因气虚、气滞、血寒、血热等原因，使血行不畅而凝滞。二是由于内外伤、气虚失摄或血热妄行等原因引起血离经脉，积存于体内而形成瘀血。\n1.血出致瘀：各种外伤，致使血离经脉，积于体内而成瘀血。\n2.气滞致瘀：气行则血行，气滞则血瘀。情志不舒，或外邪阻遏气机，致血行受阻而成瘀。\n3.气虚致瘀：气虚则血行无力，血液停积而成瘀。\n4.血寒致瘀：血得温则行，得寒则凝。寒邪入血，血行迟缓而凝涩，成瘀血。\n5.血热致瘀：血热互结，煎灼血液，使血液黏稠而运行不畅，或血热妄行而血出积于体内。\n6.津液亏虚致瘀：津液亏虚，血液黏稠，血行不畅而成瘀。\n二、瘀血的致病特点：\n1.易于阻滞气机：瘀血一旦形成，必然影响和加重气机郁滞，所谓'血瘀必兼气滞'。\n2.影响血脉运行：瘀血可阻滞经脉，影响血行，甚至闭塞经脉，致脏腑组织失去濡养。\n3.影响新血生成：瘀血阻滞，影响气血的正常运行，致脏腑功能失调，影响新血生成，所谓'瘀血不去，新血不生'。\n4.病位固定，病证繁多：瘀血致病具有病位相对固定、病证繁多的特点。\n瘀血致病的症状特点：疼痛多为刺痛，痛处固定不移，拒按，夜间痛甚；肿块固定不移，在体表则色青紫或青黄，在体内则为癥积；出血色多紫暗，或夹有瘀血块；面色黧黑，唇甲青紫，舌质紫暗或有瘀点瘀斑，脉涩、结代等。",explanation:"瘀血是中医重要的病理产物和继发性病因，其致病广泛，是多种疾病的病理基础。",source:"《中医基础理论》",points:["瘀血","病因病机"]},
+  // ===== 题库扩充：经络穴位综合题 =====
+  {id:"jl_s_301",type:"single",category:"经络穴位",subCategory:"特定穴",difficulty:3,question:"八脉交会穴中，与督脉相通的是？",options:["后溪","申脉","临泣","外关"],answer:"后溪",explanation:"八脉交会穴是指十二经脉与奇经八脉相通的八个腧穴，又称'交经八穴'、'八脉八穴'。具体为：1.后溪（手太阳小肠经）——通督脉；2.申脉（足太阳膀胱经）——通阳跷脉；3.足临泣（足少阳胆经）——通带脉；4.外关（手少阳三焦经）——通阳维脉；5.列缺（手太阴肺经）——通任脉；6.照海（足少阴肾经）——通阴跷脉；7.公孙（足太阴脾经）——通冲脉；8.内关（手厥阴心包经）——通阴维脉。八脉交会穴在临床上常配伍应用，即上下配穴法：公孙配内关治胃、心、胸病；后溪配申脉治目内眦、颈项、耳、肩膊、小肠、膀胱病；临泣配外关治目外眦、耳后、颊、颈、肩病；列缺配照海治肺系、咽喉、胸膈病。",source:"《针灸学》",points:["八脉交会穴","特定穴"]},
+  {id:"jl_s_302",type:"single",category:"经络穴位",subCategory:"腧穴定位",difficulty:3,question:"足三里穴定位在犊鼻下3寸，胫骨前嵴外一横指，此处'一横指'是指？",options:["被取穴者本人的中指第二节横纹间的距离","被取穴者本人的拇指指间关节宽度","被取穴者本人食指、中指、无名指、小指四指并拢的宽度","标准长度1寸"],answer:"被取穴者本人的中指第二节横纹间的距离",explanation:"腧穴定位中的'横指同身寸'又称'一夫法'，是指将被取穴者本人食指、中指、无名指和小指并拢，以中指中节横纹为准，其四指的宽度作为3寸。而'一横指'通常指被取穴者本人中指第二节横纹间的距离，即1寸；或以拇指指间关节的宽度作为1寸（拇指同身寸）。足三里定位：在小腿外侧，犊鼻下3寸，胫骨前嵴外一横指（中指）处，犊鼻与解溪连线上。此处'一横指'为被取穴者本人中指第二节横纹间的距离，体现了针灸取穴'以痛为腧'、'因人取穴'的原则。取穴时应根据被取穴者自身手指的宽度来量取，而非固定的厘米数。",source:"《针灸学》",points:["腧穴定位","同身寸"]},
+  {id:"jl_s_303",type:"multiple",category:"经络穴位",subCategory:"奇经八脉",difficulty:3,question:"以下关于奇经八脉的论述，正确的是？",options:["奇经八脉是督脉、任脉、冲脉、带脉、阴维脉、阳维脉、阴跷脉、阳跷脉的总称","奇经八脉与十二正经不同，既不直属脏腑，又无表里配合关系，'别道奇行'，故称'奇经'","奇经八脉除任、督二脉外，其余六脉均无本经腧穴","奇经八脉的主要作用是统率、主导作用；沟通、联络作用；蓄积、渗灌十二经气血作用"],answer:["奇经八脉是督脉、任脉、冲脉、带脉、阴维脉、阳维脉、阴跷脉、阳跷脉的总称","奇经八脉与十二正经不同，既不直属脏腑，又无表里配合关系，'别道奇行'，故称'奇经'","奇经八脉除任、督二脉外，其余六脉均无本经腧穴","奇经八脉的主要作用是统率、主导作用；沟通、联络作用；蓄积、渗灌十二经气血作用"],explanation:"奇经八脉是督脉、任脉、冲脉、带脉、阴维脉、阳维脉、阴跷脉、阳跷脉的总称。奇经八脉与十二正经不同，既不直属脏腑，又无表里配合关系，'别道奇行'，故称'奇经'。奇经八脉除任、督二脉外，其余六脉均无本经腧穴，称为'奇经无穴'。奇经八脉的主要作用：1.统率、主导作用：督脉总督一身阳经，为'阳脉之海'；任脉总任一身阴经，为'阴脉之海'；冲脉为'十二经脉之海'、'血海'。2.沟通、联络作用：奇经八脉在循行过程中，与十二经脉交叉相接，加强了十二经脉之间的联系。3.蓄积、渗灌作用：奇经八脉对十二经气血具有蓄积和渗灌的调节作用，有如湖泊与河流的关系。当十二经脉及脏腑气血旺盛时，奇经八脉能加以蓄积；当人体功能活动需要时，奇经八脉又能渗灌供应。",source:"《针灸学》",points:["奇经八脉"]},
+  {id:"jl_s_304",type:"short",category:"经络穴位",subCategory:"腧穴主治",difficulty:3,question:"简述腧穴的主治特点。",answer:"腧穴是人体脏腑经络气血输注出入的特殊部位，也是针灸、推拿等疗法的刺激点。腧穴的主治特点主要有三方面：\n一、近治作用：\n是指腧穴具有治疗其所在部位局部及邻近组织、器官病证的作用。这是一切腧穴主治作用所具有的共同特点。如眼区的睛明、承泣、四白、球后诸穴，均能治眼病；耳区的听宫、听会、翳风、耳门诸穴，均能治耳病；胃脘部的中脘、建里、梁门诸穴，均能治胃病。正所谓'腧穴所在，主治所在'。\n二、远治作用：\n是指腧穴具有治疗其远隔部位的脏腑、组织器官病证的作用。腧穴不仅能治局部病证，而且能治本经循行所到达的远隔部位的脏腑、组织、器官的病证。如合谷穴，不仅能治上肢病证，而且能治颈部和头面部病证；足三里穴不仅能治下肢病证，而且能治脾胃病证及与脾胃有关的全身性疾病。十四经脉，尤其是十二经脉在四肢肘膝关节以下的腧穴，远治作用尤为突出，正所谓'经脉所过，主治所及'。\n三、特殊作用：\n是指某些腧穴具有双向的良性调节作用和相对的特异治疗作用。所谓双向良性调节作用是指同一腧穴对机体不同的病理状态，可以起到两种相反而有效的治疗作用。如天枢穴既能止泻，又能通便；内关穴既能治心动过速，又能治心动过缓；合谷穴既能发汗，又能止汗；足三里既能泻实，又能补虚。所谓相对特异性治疗作用是指某些腧穴的治疗作用具有相对特异性。如大椎退热、至阴矫正胎位、人中醒神开窍、四缝治小儿疳积等。\n腧穴的主治作用体现了中医学的整体观念和经络理论，对临床选穴具有重要指导意义。",explanation:"腧穴主治特点是针灸学的核心理论，掌握腧穴主治特点是针灸临床的基础。",source:"《针灸学》",points:["腧穴","主治特点"]},
+  // ===== 题库扩充：中药学综合题 =====
+  {id:"zy_s_301",type:"single",category:"中药学",subCategory:"中药性能",difficulty:3,question:"中药归经的理论基础是？",options:["脏腑经络学说","阴阳学说","五行学说","气血津液学说"],answer:"脏腑经络学说",explanation:"归经是指药物对于机体某部分的选择性作用，即某药对某些脏腑经络有特殊的亲和作用，因而对这些部位的病证起着主要的、特殊的治疗作用，指明了药物治病的适应范围。归经理论是以脏腑经络学说为基础，以所治具体病证为依据而形成的。因为经络具有沟通人体内外表里的作用，在生理上运行气血、协调阴阳；在病理上，病邪可以通过经络由表入里、由里出表或相互传变。所以在发生病变时，体表的病证可以通过经络而影响内在脏腑，而脏腑的病变也可以通过经络反映到体表。某一脏腑或某一经络发生病变时，必有其特有的证候表现，如肺经病变多表现为咳喘；心经病变多表现为心悸、失眠；肝经病变多表现为胁痛、抽搐；脾（胃）病变多表现为腹胀、泄泻等。药物通过对脏腑经络病变的治疗作用，说明了药物对脏腑经络的选择作用，从而形成了归经理论。如桔梗、杏仁能治胸闷、咳喘，说明它们归肺经；朱砂能治心悸、失眠，说明它归心经；柴胡能治胁痛、往来寒热，说明它归肝胆经；白术能治腹胀、泄泻，说明它归脾胃经。",source:"《中药学》",points:["归经","中药性能"]},
+  {id:"zy_s_302",type:"single",category:"中药学",subCategory:"活血化瘀药",difficulty:3,question:"川芎的功效是？",options:["活血行气，祛风止痛","活血通经，祛瘀止痛","活血祛瘀，润肠通便，止咳平喘","活血止痛，行气解郁，清心凉血，利胆退黄"],answer:"活血行气，祛风止痛",explanation:"川芎为伞形科植物川芎的干燥根茎。性味辛，温。归肝、胆、心包经。功效活血行气，祛风止痛。主治：1.血瘀气滞痛证：本品辛散温通，既能活血化瘀，又能行气止痛，为'血中之气药'，具通达气血功效，故治气滞血瘀之胸胁、腹部诸痛。若治心脉瘀阻之胸痹心痛，常与丹参、桂枝、檀香等同用；若治肝郁气滞之胁痛，常配柴胡、白芍、香附等。2.头痛，风湿痹痛：本品辛温升散，能'上行头目'，祛风止痛，为治头痛要药，无论风寒、风热、风湿、血虚、血瘀头痛均可随证配伍用之，故李东垣言'头痛须用川芎'。本品辛散温通，能祛风通络止痛，又可治风湿痹痛，常配独活、秦艽、防风、桂枝等药同用。此外，本品'下调经水，中开郁结'，为妇科要药，能活血调经，可用治多种妇产科的疾病。如治血瘀经闭、痛经，常与赤芍、桃仁等同用；治月经不调、产后瘀阻腹痛，可与当归、益母草等配用。注意：阴虚火旺、上盛下虚及气虚之人忌服。",source:"《中药学》",points:["川芎","活血化瘀药"]},
+  {id:"zy_s_303",type:"single",category:"中药学",subCategory:"安神药",difficulty:3,question:"朱砂的功效是？",options:["清心镇惊，安神，明目，解毒","镇惊安神，平肝潜阳，聪耳明目，纳气平喘","安神益智，祛痰，消肿","养心安神，润肠通便"],answer:"清心镇惊，安神，明目，解毒",explanation:"朱砂为硫化物类矿物辰砂族辰砂，主含硫化汞（HgS）。性味甘，微寒；有毒。归心经。功效清心镇惊，安神，明目，解毒。主治：1.心神不宁，心悸，失眠：本品甘寒质重，寒能降火，重可镇怯，专入心经，既可重镇安神，又能清心安神，为镇心、清火、安神定志之药。可治心火亢盛，内扰神明之心神不宁、惊悸怔忡、烦躁不眠者。2.惊风，癫痫：本品重镇，有镇惊安神之功。用治高热神昏、惊厥，常与牛黄、麝香等开窍、息风药物同用。3.疮疡肿毒，咽喉肿痛，口舌生疮：本品性寒，不论内服、外用，均有清热解毒作用，用治疮疡肿毒及咽喉肿痛、口舌生疮等。4.此外，本品还可用治肾虚遗精、滑精、带下等。注意：本品有毒，内服不可过量或持续服用，孕妇及肝功能不全者禁服。入药只宜生用，忌火煅（火煅则析出水银，有剧毒）。",source:"《中药学》",points:["朱砂","安神药"]},
+  {id:"zy_s_304",type:"multiple",category:"中药学",subCategory:"清热药",difficulty:3,question:"以下属于清热凉血药的是？",options:["生地黄","玄参","牡丹皮","黄芩"],answer:["生地黄","玄参","牡丹皮"],explanation:"清热凉血药是指以清解营分、血分热邪为主要作用的药物。本类药物性味多为甘苦寒或咸寒，多归心、肝经，具有清解营分、血分热邪的作用。主要用于营分、血分实热证，如温热病热入营血，症见身热夜甚、心烦不寐、神昏谵语、斑疹隐隐、舌绛、脉细数等；或血热妄行所致的吐血、衄血、尿血、便血等出血证。部分药物还可用于阴虚发热。1.生地黄：甘、苦，寒。归心、肝、肾经。功效清热凉血，养阴生津。主治热入营血、温毒发斑、血热出血、热病伤阴、舌绛烦渴、阴虚发热、内热消渴、肠燥便秘。2.玄参：甘、苦、咸，微寒。归肺、胃、肾经。功效清热凉血，滋阴降火，解毒散结。主治热入营血、温毒发斑、热病伤阴、舌绛烦渴、津伤便秘、骨蒸劳嗽、目赤、咽痛、白喉、瘰疬、痈肿疮毒。3.牡丹皮：苦、辛，微寒。归心、肝、肾经。功效清热凉血，活血化瘀。主治热入营血、温毒发斑、血热吐衄、温病伤阴、阴虚发热、夜热早凉、无汗骨蒸、血滞经闭痛经、跌扑伤痛、痈肿疮毒。4.黄芩为清热燥湿药，功效清热燥湿、泻火解毒、止血、安胎，主要用于湿热证及肺热咳嗽等。",source:"《中药学》",points:["清热凉血药","清热药"]},
+  {id:"zy_s_305",type:"short",category:"中药学",subCategory:"补虚药",difficulty:3,question:"简述当归的功效与主治。",answer:"当归为伞形科植物当归的干燥根。性味甘、辛，温。归肝、心、脾经。功效补血活血，调经止痛，润肠通便。\n一、补血活血：\n本品甘温质润，为补血之圣药。1.血虚萎黄、眩晕心悸：治心脾两虚、气血不足、心悸失眠，常配黄芪、人参、白术、茯神、酸枣仁等，如归脾汤。2.血虚或血虚而兼有瘀滞的月经不调、痛经、经闭：本品补血活血，调经止痛，常与补血调经药同用，为妇科补血调经之要药，如四物汤。\n二、调经止痛：\n1.血虚血瘀之月经不调、痛经、经闭：本品辛行温通，为活血行气之要药。既能补血，又能活血，兼能散寒止痛，为血虚、血瘀、血寒诸痛证之要药。2.虚寒腹痛：本品辛温散寒，补血活血，善治血虚血瘀有寒之腹痛。3.风湿痹痛、跌扑损伤、痈疽疮疡：本品辛行温通，又能活血通络止痛，为外科所常用。\n三、润肠通便：\n血虚肠燥便秘：本品补血润肠通便，治血虚肠燥便秘，常与肉苁蓉、牛膝、升麻等同用，如济川煎。\n此外，传统认为当归身补血、当归尾活血、全当归补血活血。本品行散之性较强，温盛中满、大便泄泻者忌服。当归是临床最常用的补血药，被誉为'补血圣药'、'妇科要药'。",explanation:"当归是补血药的代表，临床应用广泛，其补血与活血兼备的功效特点是其核心。",source:"《中药学》",points:["当归","补血药"]},
+  {id:"zy_s_306",type:"truefalse",category:"中药学",subCategory:"用药禁忌",difficulty:2,question:"'十八反'中，甘草反甘遂、大戟、海藻、芫花。",options:["正确","错误"],answer:"正确",explanation:"十八反是中药配伍禁忌的重要内容，具体为：1.乌头（包括川乌、草乌、附子）反半夏、瓜蒌（全瓜蒌、瓜蒌皮、瓜蒌仁、天花粉）、贝母（川贝、浙贝）、白蔹、白及。2.甘草反甘遂、大戟、海藻、芫花。3.藜芦反人参、沙参、丹参、玄参、苦参、细辛、芍药（赤芍、白芍）。十八反歌诀：'本草明言十八反，半蒌贝蔹及攻乌，藻戟遂芫俱战草，诸参辛芍叛藜芦。'本题'甘草反甘遂、大戟、海藻、芫花'与十八反内容一致，故答案为正确。对于十八反所列药物，目前虽有不少医家认为其中有些药物可同用（如海藻玉壶汤中海藻与甘草同用），但在缺乏充分根据和应用经验之前，仍应遵循传统用药禁忌原则。",source:"《中药学》",points:["十八反","用药禁忌"]},
+  // ===== 题库扩充：方剂学综合题 =====
+  {id:"fj_s_301",type:"single",category:"方剂学",subCategory:"补益剂",difficulty:3,question:"补中益气汤的组成是？",options:["黄芪、炙甘草、人参、当归、陈皮、升麻、柴胡、白术","黄芪、炙甘草、人参、当归、陈皮、升麻、柴胡、白芍","黄芪、人参、白术、茯苓、炙甘草、当归、陈皮","黄芪、人参、白术、茯苓、炙甘草、当归、川芎"],answer:"黄芪、炙甘草、人参、当归、陈皮、升麻、柴胡、白术",explanation:"补中益气汤出自《内外伤辨惑论》，为补气升阳代表方。组成：黄芪（18g）、炙甘草（9g）、人参（6g）、当归（3g）、陈皮（6g）、升麻（6g）、柴胡（6g）、白术（9g）。功用补中益气，升阳举陷。主治：1.脾虚气陷证：饮食减少，体倦肢软，少气懒言，面色萎黄，大便稀溏，舌淡，脉虚；以及脱肛、子宫脱垂、久泻、久痢、崩漏等。2.气虚发热证：身热自汗，渴喜热饮，气短乏力，舌淡，脉虚大无力。方中重用黄芪，补中益气，升阳固表，为君药。配伍人参、炙甘草、白术补气健脾为臣，以增强黄芪补益中气之功。血为气之母，气虚时久，营血亦亏，故用当归养血和营，协人参、黄芪以补气养血；陈皮理气和胃，使诸药补而不滞，共为佐药。并以少量升麻、柴胡升阳举陷，协助君药以升提下陷之中气，共为佐使。炙甘草调和诸药，亦为使药。诸药合用，使气虚得补，气陷得升，则诸症自愈。本方为补气升阳、甘温除热的代表方，临床应用以体倦乏力、少气懒言、面色萎黄、脉虚软无力为辨证要点。",source:"《方剂学》",points:["补中益气汤","补益剂"]},
+  {id:"fj_s_302",type:"single",category:"方剂学",subCategory:"和解剂",difficulty:3,question:"逍遥散的组成是？",options:["柴胡、当归、白芍、白术、茯苓、炙甘草、生姜、薄荷","柴胡、当归、白芍、白术、茯苓、炙甘草","柴胡、当归、白芍、白术、茯苓、炙甘草、陈皮","柴胡、当归、白芍、白术、茯苓、炙甘草、半夏"],answer:"柴胡、当归、白芍、白术、茯苓、炙甘草、生姜、薄荷",explanation:"逍遥散出自《太平惠民和剂局方》，为疏肝养血健脾代表方。组成：柴胡（9g）、当归（9g）、白芍（9g）、白术（9g）、茯苓（9g）、炙甘草（5g）、生姜（3片）、薄荷（6g）。功用疏肝解郁，养血健脾。主治肝郁血虚脾弱证：两胁作痛，头痛目眩，口燥咽干，神疲食少，或月经不调，乳房胀痛，脉弦而虚者。方中以柴胡疏肝解郁，使肝气得以条达为君药。当归甘辛苦温，养血和血；白芍酸苦微寒，养血敛阴，柔肝缓急；归、芍与柴胡同用，补肝体而助肝用，使血和则肝和，血充则肝柔，共为臣药。白术、茯苓、甘草健脾益气，非但实土以抑木，且使营血生化有源，共为佐药。加薄荷少许，疏散郁遏之气，透达肝经郁热；烧生姜温运和中，且能辛散达郁，亦为佐药。炙甘草调和诸药，兼为使药。诸药合用，使肝郁得疏，血虚得养，脾弱得复，气血兼顾，肝脾同调，为调肝养血之名方。本方为疏肝健脾的代表方，又是妇科调经的常用方。临床以两胁作痛、神疲食少、月经不调、脉弦而虚为辨证要点。",source:"《方剂学》",points:["逍遥散","和解剂"]},
+  {id:"fj_s_303",type:"multiple",category:"方剂学",subCategory:"祛湿剂",difficulty:3,question:"以下组成中含茯苓、白术、甘草的方剂是？",options:["五苓散","参苓白术散","真武汤","藿香正气散"],answer:["五苓散","参苓白术散","藿香正气散"],explanation:"茯苓、白术、甘草三药为临床常用组合，具有健脾祛湿之效，广泛应用于多种方剂。1.五苓散：组成猪苓、泽泻、白术、茯苓、桂枝，方中含白术、茯苓，无甘草。2.参苓白术散：组成莲子肉、薏苡仁、缩砂仁、桔梗、白扁豆、白茯苓、人参、甘草、白术、山药，方中含茯苓、白术、甘草，功用益气健脾、渗湿止泻。3.真武汤：组成附子、白术、茯苓、芍药、生姜，方中含白术、茯苓，无甘草。4.藿香正气散：组成大腹皮、白芷、紫苏、茯苓、半夏曲、白术、陈皮、厚朴、苦桔梗、藿香、甘草，方中含茯苓、白术、甘草，功用解表化湿、理气和中。由以上分析可知，参苓白术散与藿香正气散均含茯苓、白术、甘草三药，五苓散、真武汤含茯苓、白术而无甘草。答案应包含参苓白术散与藿香正气散。",source:"《方剂学》",points:["方剂组成","祛湿剂"]},
+  {id:"fj_s_304",type:"short",category:"方剂学",subCategory:"清热剂",difficulty:3,question:"简述龙胆泻肝汤的组成、功用、主治与方义。",answer:"龙胆泻肝汤出自《医方集解》，为清肝胆实火、泻下焦湿热的代表方。\n一、组成：龙胆草（酒炒）（6g）、黄芩（炒）（9g）、栀子（酒炒）（9g）、泽泻（12g）、木通（6g）、车前子（9g）、当归（酒炒）（3g）、生地黄（酒炒）（9g）、柴胡（6g）、生甘草（6g）。\n二、功用：清泻肝胆实火，清利肝经湿热。\n三、主治：\n1.肝胆实火上炎证：头痛目赤，胁痛，口苦，耳聋，耳肿，舌红苔黄，脉弦数有力。\n2.肝经湿热下注证：阴肿，阴痒，筋痿，阴汗，小便淋浊，或妇女带下黄臭，舌红苔黄腻，脉弦数有力。\n四、方义：方中龙胆草大苦大寒，既能泻肝胆实火，又能利肝胆湿热，泻火除湿，两擅其功，故为君药。黄芩、栀子苦寒泻火，燥湿清热，共为臣药。泽泻、木通、车前子清热利湿，使湿热从水道排除。肝主藏血，肝经有热，本易耗伤阴血，加用苦寒燥湿，再耗其阴，故用生地、当归滋阴养血，以使标本兼顾。方用柴胡，是为引诸药入肝胆而设。甘草有调和诸药之效。综观全方，是泻中有补，利中有滋，以使火降热清，湿浊分清，循经所发诸证乃克痊愈。\n本方为肝胆实火上炎或湿热下注之证而设，临床以头痛目赤、胁痛口苦、尿赤、舌红苔黄、脉弦数有力为辨证要点。本方药物多为苦寒之性，内服每易有伤脾胃，故对脾胃虚寒和阴虚阳亢之证，或多服、久服皆非所宜。",explanation:"龙胆泻肝汤是清热剂的代表方，其苦寒清泻与滋阴养血兼顾的配伍特点具有重要临床意义。",source:"《方剂学》",points:["龙胆泻肝汤","清热剂"]},
+  {id:"fj_s_305",type:"truefalse",category:"方剂学",subCategory:"温里剂",difficulty:2,question:"理中丸的组成是人参、干姜、白术、炙甘草。",options:["正确","错误"],answer:"正确",explanation:"理中丸出自《伤寒论》，为温中祛寒代表方。组成：人参（15g）、干姜（15g）、白术（15g）、炙甘草（15g）。功用温中祛寒，补气健脾。主治：1.脾胃虚寒证：脘腹绵绵作痛，喜温喜按，呕吐，大便稀溏，脘痞食少，畏寒肢冷，口不渴，舌淡苔白润，脉沉细或沉迟无力。2.阳虚失血证：便血、吐血、衄血或崩漏等，血色暗淡，质清稀，面色㿠白，气短神疲，脉沉细或虚大无力。3.脾胃虚寒所致的胸痹；或病后多涎唾；或小儿慢惊等。方中干姜为君，大辛大热，温脾阳，祛寒邪，扶阳抑阴。人参为臣，性味甘温，补气健脾。君臣相配，温中健脾。脾为湿土，虚则易生湿浊，故用甘温苦燥之白术为佐，健脾燥湿。炙甘草与诸药等量，其意有三：一为合参、术以助益气健脾；二为缓急止痛；三为调和药性，是佐药而兼使药之用。四药配伍，共奏温中散寒、补气健脾之功。本方是治疗中焦脾胃虚寒的基础方，临床以脘腹绵绵作痛、呕吐便溏、畏寒肢冷、舌淡苔白、脉沉细为辨证要点。",source:"《方剂学》",points:["理中丸","温里剂"]},
+  // ===== 题库扩充：中医诊断学综合题 =====
+  {id:"zd_s_301",type:"single",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:3,question:"肺气虚证与肺阴虚证的共同症状是？",options:["咳喘无力，声低懒言，自汗，舌淡脉虚","干咳无痰，或痰少而黏，口燥咽干，舌红少苔，脉细数","咳嗽，痰清稀色白，胸闷，形寒肢冷，舌淡苔白滑，脉弱","咳嗽"],answer:"咳嗽",explanation:"肺气虚证是指肺气虚弱，呼吸无力，卫外不固，以咳喘无力、吐痰清稀及气虚表现为主要特征的证。临床表现为咳嗽无力，气短而喘，动则尤甚，咯痰清稀，声低懒言，或有自汗、畏风，易于感冒，神疲体倦，面色淡白，舌淡苔白，脉弱。肺阴虚证是指肺阴亏虚，虚热内生，肺失滋润，清肃失司，以干咳无痰、或痰少而黏及阴虚表现为主要特征的证。临床表现为干咳无痰，或痰少而黏、不易咯出，或痰中带血，声音嘶哑，口燥咽干，形体消瘦，五心烦热，潮热盗汗，两颧潮红，舌红少苔乏津，脉细数。二者共同症状为咳嗽，不同之处在于肺气虚以咳喘无力、吐痰清稀及气虚表现为主，属虚证、寒证；肺阴虚以干咳无痰、痰少而黏及阴虚内热表现为主，属虚证、热证。咳嗽是肺脏病证最主要的共同症状，无论虚实寒热均可出现。",source:"《中医诊断学》",points:["肺气虚","肺阴虚","脏腑辨证"]},
+  {id:"zd_s_302",type:"multiple",category:"中医诊断学",subCategory:"八纲辨证",difficulty:3,question:"以下关于'表证'的叙述，正确的是？",options:["表证是指六淫、疫疠等邪气，经皮毛、口鼻侵入机体的初期阶段，正气抗邪于肤表浅层，以新起恶寒发热为主要表现的轻浅证候","表证见于外感病初期，具有起病急、病程短、病情较轻的特点","表证的临床表现为新起恶风寒，或恶寒发热，头身疼痛，喷嚏，鼻塞，流涕，咽喉痒痛，微有咳嗽、气喘，舌淡红，苔薄白，脉浮","表证治疗当以发汗解表为法"],answer:["表证是指六淫、疫疠等邪气，经皮毛、口鼻侵入机体的初期阶段，正气抗邪于肤表浅层，以新起恶寒发热为主要表现的轻浅证候","表证见于外感病初期，具有起病急、病程短、病情较轻的特点","表证的临床表现为新起恶风寒，或恶寒发热，头身疼痛，喷嚏，鼻塞，流涕，咽喉痒痛，微有咳嗽、气喘，舌淡红，苔薄白，脉浮","表证治疗当以发汗解表为法"],explanation:"表证是中医八纲辨证中辨别病位内外浅深的重要内容之一。表证是指六淫、疫疠等邪气，经皮毛、口鼻侵入机体的初期阶段，正气抗邪于肤表浅层，以新起恶寒发热为主要表现的轻浅证候。表证见于外感病初期，具有起病急、病程短、病情较轻的特点。表证的临床表现为新起恶风寒，或恶寒发热，头身疼痛，喷嚏，鼻塞，流涕，咽喉痒痛，微有咳嗽、气喘，舌淡红，苔薄白，脉浮。表证的主要辨证依据是新起恶寒发热并见、脉浮，而以内脏证候不明显为特点。表证有表寒、表热、表虚、表实之分。表证治疗当以发汗解表为法，使在表之邪随汗而解。若表邪不解，可由表入里，转为里证。表证与里证的鉴别要点主要是寒热表现、内脏证候是否明显及舌象、脉象变化。掌握表证的诊断对临床辨证论治具有重要意义。",source:"《中医诊断学》",points:["表证","八纲辨证"]},
+  {id:"zd_s_303",type:"short",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:3,question:"简述心气虚、心阳虚、心阳暴脱三证的鉴别。",answer:"心气虚、心阳虚、心阳暴脱三证为心脏虚证发展的三个不同阶段，病情由轻到重，三者既有联系又有区别，临床鉴别要点如下：\n一、相同点：\n三证均以心脏功能减退为主要病理基础，故共同症状为心悸怔忡、胸闷气短、活动后加重、自汗、脉细弱或结代等。\n二、不同点：\n1.心气虚证：\n以心悸、神疲、气短、自汗、面色淡白、舌淡苔白、脉虚等气虚表现为主，虚寒症状不明显。病势最轻。\n2.心阳虚证：\n在心气虚基础上进一步发展，兼见形寒肢冷、面色苍白或青紫、舌淡胖苔白滑、脉沉迟无力或结代等阳虚寒盛表现。心阳虚较心气虚为重。\n3.心阳暴脱证：\n在心阳虚基础上突然出现冷汗淋漓、四肢厥冷、呼吸微弱、面色苍白、口唇青紫、神志模糊或昏迷、脉微欲绝等危重证候。是心阳虚进一步发展、阳气虚衰、亡阳欲脱之危候。\n三、鉴别要点：\n心气虚证与心阳虚证均可见心悸气短、自汗等，其鉴别要点在于有无虚寒症状：心气虚证仅见气虚见症，无明显寒象；心阳虚证则在气虚基础上出现畏寒肢冷、心胸闷痛、舌淡胖、脉沉迟等虚寒表现。心阳虚证与心阳暴脱证的鉴别要点在于是否出现亡阳危重表现：心阳暴脱证是在心阳虚基础上突然出现四肢厥冷、冷汗淋漓、脉微欲绝等亡阳表现，为疾病的危重阶段。\n临床掌握三证鉴别，对判断病情轻重、预后转归具有重要意义。",explanation:"心气虚、心阳虚、心阳暴脱三证是心脏虚损发展的三个阶段，其鉴别诊断对临床救治有重要指导意义。",source:"《中医诊断学》",points:["心气虚","心阳虚","心阳暴脱","脏腑辨证"]},
+  {id:"zd_s_304",type:"truefalse",category:"中医诊断学",subCategory:"望诊",difficulty:2,question:"面色淡白无华，唇舌色淡，多属血虚证。",options:"正确","错误"],answer:"正确",explanation:"面色淡白无华，唇舌色淡，多属血虚证或失血证。面色淡白是指面色比正常人色淡，缺乏血色的表现。白主虚证、寒证、失血证。具体表现及意义：1.面色淡白无华，唇舌色淡：多属血虚证或失血证。因营血亏虚，气血不能上荣于面所致。2.面色㿠白（面色白而虚浮）：多属阳虚证或阳虚水泛。3.面色苍白（白中透青）：多属阳气暴脱之亡阳证，或阴寒凝滞之实寒证，或大失血之人。4.面色淡白消瘦：多属气虚血少。5.面色淡白肥胖：多属阳虚痰湿内停。本题'面色淡白无华，唇舌色淡，多属血虚证'与中医望诊理论一致，故答案为正确。望面色是中医望诊的重要内容，对判断气血盛衰、病性寒热、病位浅深有重要参考价值。",source:"《中医诊断学》",points:["望面色","望诊"]},
+  // ===== 题库扩充：针灸学综合题 =====
+  {id:"zj_s_301",type:"single",category:"针灸学",subCategory:"针灸治疗",difficulty:3,question:"针灸治疗胃痛的主穴是？",options:["中脘、足三里、内关、公孙","中脘、足三里、合谷、太冲","中脘、足三里、脾俞、胃俞","中脘、足三里、内关、太冲"],answer:"中脘、足三里、内关、公孙",explanation:"胃痛，又称胃脘痛，是指以上腹胃脘部近心窝处疼痛为主要症状的病证。针灸治疗胃痛以和胃止痛为治法。主穴：中脘、足三里、内关、公孙。方义：中脘为胃之募穴、腑之会穴，可健运中州、调理气机，为治胃病要穴；足三里为足阳明胃经合穴、胃之下合穴，'合治内腑'，可疏调胃腑气机、和胃止痛；内关为手厥阴心包经络穴，又为八脉交会穴之一，通阴维脉，可宽胸理气、解郁降逆，善治胸胃病；公孙为足太阴脾经络穴，又为八脉交会穴之一，通冲脉，与内关相配，专治心、胸、胃病。四穴合用，共奏理气和胃、止痛之功。辨证配穴：寒邪犯胃配胃俞、神阙；饮食停滞配下脘、梁门；肝气犯胃配太冲、期门；气滞血瘀配膈俞、三阴交；脾胃虚寒配脾俞、胃俞、关元；胃阴不足配三阴交、内庭。操作：毫针泻法，寒邪犯胃、脾胃虚寒者可用灸法。胃痛患者应注意饮食调摄，避免生冷、辛辣、油腻等刺激性食物，保持心情舒畅，避免情志刺激。",source:"《针灸学》",points:["胃痛","针灸治疗"]},
+  {id:"zj_s_302",type:"single",category:"针灸学",subCategory:"特定穴",difficulty:3,question:"募穴的定义和分布规律是？",options:["脏腑之气结聚于胸腹部的腧穴，位于胸腹部，与相应脏腑所在部位相近","脏腑之气输注于背腰部的腧穴，位于背腰部","六腑之气下合于足三阳经的腧穴，位于下肢膝部附近","五脏六腑之气输注于背部的腧穴"],answer:"脏腑之气结聚于胸腹部的腧穴，位于胸腹部，与相应脏腑所在部位相近",explanation:"募穴是脏腑之气结聚于胸腹部的腧穴。'募'有募集、结聚之意。募穴位于胸腹部，又称'腹募穴'。其分布与相应脏腑所在部位相近，即每一脏腑均有各自的募穴。具体为：肺募中府、心包募膻中、心募巨阙、肝募期门、脾募章门、肾募京门、胃募中脘、胆募日月、大肠募天枢、小肠募关元、三焦募石门、膀胱募中极。募穴在临床上主要用于治疗相应脏腑的病证，如肺募中府治肺病，胃募中脘治胃病，肝募期门治肝病等。募穴还用于诊断脏腑病证，如《灵枢·百病始生》云'察其所痛，左右上下，知其寒温，何经所在'，脏腑有病时，常在相应募穴出现压痛、敏感等反应。募穴与背俞穴常配合使用，称为'俞募配穴法'，如肺病取肺俞配中府，胃病取胃俞配中脘，一阴一阳，一表一里，相互配合，疗效更佳。",source:"《针灸学》",points:["募穴","特定穴"]},
+  {id:"zj_s_303",type:"multiple",category:"针灸学",subCategory:"针灸治疗",difficulty:3,question:"针灸治疗痛经的主穴是？",options:["三阴交","中极","次髎","地机"],answer:["三阴交","中极","次髎","地机"],explanation:"痛经是指妇女在行经前后，或正值行经期间，小腹及腰部疼痛，甚至剧痛难忍，常可伴面色苍白、头面冷汗淋漓、手足厥冷、泛恶呕吐等症，并随着月经周期发作。针灸治疗痛经以行气活血、调经止痛为治法。主穴：三阴交、中极、次髎、地机、十七椎。方义：三阴交为足三阴经交会穴，可通经而止痛；中极为任脉经穴，可通调冲任之气，散寒行气；次髎为治疗痛经的经验效穴，位于骶部，邻近胞宫，有活血调经、通络止痛之功；地机为脾经郄穴，可养血调经、活血止痛；十七椎为经外奇穴，是治疗痛经的经验效穴。辨证配穴：寒凝血瘀配关元、归来；气滞血瘀配太冲、血海；气血虚弱配足三里、脾俞；肾气亏损配肾俞、太溪。操作：毫针泻法，寒凝者加艾灸。针灸治疗痛经疗效确切，一般主张在经前3-5天开始针灸，至月经来潮后停止，连续治疗3个月经周期效果更佳。经期应注意保暖，避免寒冷刺激，注意经期卫生，保持心情舒畅。",source:"《针灸学》",points:["痛经","针灸治疗"]},
+  {id:"zj_s_304",type:"short",category:"针灸学",subCategory:"特定穴",difficulty:3,question:"简述原络配穴法的概念及临床应用。",answer:"原络配穴法是针灸配穴方法之一，属于表里经配穴法的一种具体应用。\n一、概念：\n原络配穴法是以脏腑经络的表里关系为依据，取病变经脉的原穴与其相表里经脉的络穴相互配合使用的方法。\n二、原穴与络穴：\n1.原穴：是脏腑原气输注、经过和留止于十二经脉四肢部的腧穴，又称'十二原'。原穴与脏腑关系密切，是反映脏腑生理病理变化的重要腧穴。十二经原穴：肺原太渊、大肠原合谷、胃原冲阳、脾原太白、心原神门、小肠原腕骨、膀胱原京骨、肾原太溪、心包原大陵、三焦原阳池、胆原丘墟、肝原太冲。\n2.络穴：是络脉从本经别出的部位的腧穴，具有联络表里两经的作用。十二经及任督二脉各有一络穴，加上脾之大络，共为'十五络穴'。\n三、临床应用：\n1.先病经脉取原穴，后病或相表里经脉取络穴。如肺经先病，取其原穴太渊为主，以其相表里的大肠经络穴偏历为客；反之，大肠经先病，取其原穴合谷为主，以肺经络穴列缺为客。\n2.常用于表里经脉同病或相关疾病的治疗。如咽痛、咳嗽，可取肺原太渊、大肠络偏历；胃痛、呕吐、腹泻，可取胃原冲阳、脾络公孙；心悸、失眠，可取心原神门、小肠络支正；腰痛、小便不利，可取膀胱原京骨、肾络大钟等。\n3.原络配穴法临床应用广泛，疗效确切，体现了中医'标本兼治'、'表里同治'的思想。\n原络配穴法是针灸临床最常用的配穴方法之一，掌握原穴、络穴的定位及主治特点，对临床针灸辨证施治具有重要意义。",explanation:"原络配穴法是针灸配穴法的重要内容，体现了经络表里关系在临床治疗中的应用。",source:"《针灸学》",points:["原络配穴法","配穴法"]},
+  {id:"zj_s_305",type:"truefalse",category:"针灸学",subCategory:"腧穴定位",difficulty:2,question:"合谷穴位于手背，第1、2掌骨间，当第2掌骨桡侧的中点处。",options:"正确","错误"],answer:"正确",explanation:"合谷穴是手阳明大肠经的原穴，为临床最常用的腧穴之一。定位：在手背，第1、2掌骨间，当第2掌骨桡侧的中点处。简便取穴：以一手的拇指指骨关节横纹，放在另一手拇、食指之间的指蹼缘上，当拇指尖下是穴。合谷穴主治：1.头痛、目赤肿痛、鼻衄、齿痛、口眼歪斜、耳聋、痄腮、咽喉肿痛等头面五官诸疾（面口合谷收）；2.发热恶寒等外感病证；3.热病无汗或多汗；4.经闭、滞产等妇产科病证；5.上肢疼痛、不遂；6.牙拔除术、甲状腺手术等口面五官及颈部手术针麻常用穴。合谷穴具有疏风解表、通络止痛、开窍醒神之功，是治疗头面五官疾病的要穴，配太冲称'四关穴'，有平肝息风、镇静安神之功。孕妇慎用合谷穴（有引起堕胎之弊）。本题所述合谷穴定位与针灸学教材一致，故答案为正确。",source:"《针灸学》",points:["合谷","腧穴定位"]},
+  // ===== 题库扩充：综合深度题（第2批）=====
+  {id:"jc_s_401",type:"single",category:"中医基础理论",subCategory:"阴阳五行",difficulty:3,question:"'重阴必阳，重阳必阴'说明了阴阳之间的何种关系？",options:["阴阳相互转化","阴阳对立制约","阴阳互根互用","阴阳消长平衡"],answer:"阴阳相互转化",explanation:"'重阴必阳，重阳必阴'是阴阳相互转化规律的典型体现。阴阳转化是指事物的总体属性，在一定条件下可以向其相反的方向转化，即属阳的事物可以转化为属阴的事物，属阴的事物可以转化为属阳的事物。阴阳相互转化，一般都产生于事物发展变化的'物极'阶段，即所谓'物极必反'。因此，在事物的发展过程中，如果说阴阳消长是一个量变的过程，阴阳转化则是在量变基础上的质变。'重阴必阳，重阳必阴'的'重'即'极'之义，是阴阳转化的内在条件。阴阳转化的发生必须具备一定的条件，中医学称之为'重'或'极'，即《素问·阴阳应象大论》所谓'重寒则热，重热则寒'、'寒极生热，热极生寒'。这些都说明了阴阳之间在一定条件下的相互转化关系。例如：四季中由夏至秋到冬，气候由炎热逐渐变寒，是属阳的事物转化为属阴的事物；由冬至春到夏，气候由寒冷逐渐变热，是属阴的事物转化为属阳的事物。在病理变化中，高热的病人，属阳热实证，在极热的情况下，可突然出现四肢厥冷、脉微欲绝的阴寒危象，此即由阳转阴，重阳必阴；反之，寒饮中阻之病人，属阴寒之证，在一定条件下，可化热而成热证，此即由阴转阳，重阴必阳。阴阳转化理论对临床辨证论治具有重要指导意义。",source:"《中医基础理论》",points:["阴阳学说","阴阳转化"]},
+  {id:"jc_s_402",type:"single",category:"中医基础理论",subCategory:"藏象学说",difficulty:3,question:"'心为五脏六腑之大主'的理论依据主要是？",options:["心主藏神，统帅全身脏腑功能","心主血脉，推动血液运行","心为阳脏，主通明","心在志为喜"],answer:"心主藏神，统帅全身脏腑功能",explanation:"心藏神，是指心具有统帅全身脏腑、经络、形体、官窍的生理活动和主司精神、意识、思维、情志等心理活动的功能。故《素问·灵兰秘典论》说：'心者，君主之官也，神明出焉。'《灵枢·邪客》也说：'心者，五脏六腑之大主也，精神之所舍也。'心主藏神的生理功能包括两个方面：一是主司精神意识思维活动，即心接受和反映外界客观事物，进行精神意识思维活动；二是统帅全身脏腑、经络、形体、官窍的生理活动，即心能调节和控制各脏腑组织的生理功能。心主藏神功能正常，则精神振奋、神志清晰、思维敏捷、记忆力强，各脏腑功能协调；心主藏神功能失常，则见精神萎靡、反应迟钝、健忘、失眠、多梦，甚则神志昏迷，各脏腑功能失调。正因心藏神、主神明，统帅全身脏腑功能活动，故称心为'五脏六腑之大主'。心主血脉是心的另一重要生理功能，但不是'心为五脏六腑之大主'的主要理论依据。心为阳脏主通明、心在志为喜均为心的生理特性或情志表现，非本题所问。",source:"《中医基础理论》",points:["藏象","心","心主藏神"]},
+  {id:"jl_s_401",type:"single",category:"经络穴位",subCategory:"十二正经",difficulty:3,question:"手三阴经的循行走向是？",options:["从胸走手","从手走头","从头走足","从足走腹胸"],answer:"从胸走手",explanation:"十二经脉的循行走向规律为：手三阴经从胸走手，手三阳经从手走头，足三阳经从头走足，足三阴经从足走腹胸。《灵枢·逆顺肥瘦》概括为：'手之三阴，从藏走手；手之三阳，从手走头；足之三阳，从头走足；足之三阴，从足走腹。'掌握十二经脉的循行走向，对针灸临床配穴、理解经络气血运行及病理传变均具有重要意义。例如：根据经络走向的迎随补泻原则，针刺时若针尖顺着经脉循行方向刺入为补法，逆着经脉循行方向刺入为泻法。理解十二经脉走向规律，也是理解十二经脉交接规律（相表里的阴经与阳经在四肢末端交接，同名的阳经与阳经在头面部交接，相互衔接的阴经与阴经在胸中交接）的基础。掌握十二经脉循行走向规律是学习经络腧穴的核心内容之一。",source:"《针灸学》",points:["十二经脉","循行走向"]},
+  {id:"zy_s_401",type:"single",category:"中药学",subCategory:"补益药",difficulty:3,question:"'能大补元气，为拯危救脱要药'的是？",options:["人参","黄芪","白术","党参"],answer:"人参",explanation:"人参为五加科植物人参的干燥根和根茎。性味甘、微苦，微温。归脾、肺、心、肾经。功效：大补元气，复脉固脱，补脾益肺，生津养血，安神益智。人参的最大特点是'大补元气'，用于治疗因大汗、大吐、大泻、大失血或大病、久病所致元气虚极欲脱、气短神疲、脉微欲绝的重危证候，为拯危救脱之要药。正如《本草新编》所说：'人参能回阳气于垂绝，却虚邪于俄顷。'临床应用：1.气虚欲脱证：单用本品浓煎服，即独参汤，有大补元气、复脉固脱之效；若气虚欲脱兼见亡阳者，可与附子同用，即参附汤。2.脾肺气虚证：为补脾益肺要药，治脾气虚之倦怠乏力、食少便溏，常配白术、茯苓、甘草等；治肺气虚之短气喘促、声低懒言，常配黄芪、五味子等。3.气津两伤口渴及消渴证：常配麦冬、五味子等，如生脉散。4.气血亏虚久病虚羸：常配当归、熟地等。5.心气不足之心悸怔忡、失眠健忘：常配酸枣仁、茯神等。注意：实证、热证而正气不虚者忌服；反藜芦，畏五灵脂，恶皂荚，均忌同用；服用人参时不宜同时吃萝卜或喝茶，以免影响药力。人参自古被誉为'百草之王'，是补气药的代表。",source:"《中药学》",points:["人参","补益药"]},
+  {id:"fj_s_401",type:"single",category:"方剂学",subCategory:"解表剂",difficulty:3,question:"'辛凉透表，清热解毒'是哪一首方剂的功用？",options:["银翘散","桑菊饮","麻黄汤","桂枝汤"],answer:"银翘散",explanation:"银翘散出自《温病条辨》，为辛凉解表代表方。组成：连翘一两（30g）、银花一两（30g）、苦桔梗六钱（18g）、薄荷六钱（18g）、竹叶四钱（12g）、生甘草五钱（15g）、芥穗四钱（12g）、淡豆豉五钱（15g）、牛蒡子六钱（18g）。用法：共杵为散，每服六钱（18g），鲜苇根汤煎，香气大出，即取服，勿过煮。病重者约二时一服，日三服，夜一服；轻者三时一服，日二服，夜一服；病不解者，作再服。功用：辛凉透表，清热解毒。主治：温病初起。发热无汗，或有汗不畅，微恶风寒，头痛口渴，咳嗽咽痛，舌尖红，苔薄白或薄黄，脉浮数。方义：本方所治温病初起，乃风热之邪客于肺卫所致。治宜辛凉透表、清热解毒。方中重用金银花、连翘为君，既能辛凉透邪清热，又能芳香辟秽解毒。薄荷、牛蒡子味辛而性凉，疏散风热，清利头目，且可解毒利咽；荆芥穗、淡豆豉辛而微温，助君药发散表邪，透热外出，此两者虽属辛温，但辛而不烈，温而不燥，与大队辛凉药配伍，可增强辛散透表之力，俱为臣药。芦根、竹叶清热生津，桔梗开宣肺气而止咳利咽，同为佐药。甘草调和诸药，护胃安中，为使药。本方配伍特点：一是辛凉之中配伍少量辛温之品，既有利于透邪，又不悖辛凉之旨；二是疏散风邪与清热解毒、芳香辟秽之品相配，具有外散风热、内清热毒、辟秽化浊之功。《温病条辨》称本方为'辛凉平剂'，为治疗温病初起的常用方。",source:"《方剂学》",points:["银翘散","解表剂"]},
+  {id:"zd_s_401",type:"single",category:"中医诊断学",subCategory:"八纲辨证",difficulty:3,question:"虚证与实证的鉴别要点是？",options:["病程长与短、体质壮与弱、精神萎靡与兴奋、声高与声低、痛处拒按与喜按、脉实与脉虚","发热恶寒与但热不寒","口渴与不渴","面色红与面色白"],answer:"病程长与短、体质壮与弱、精神萎靡与兴奋、声高与声低、痛处拒按与喜按、脉实与脉虚",explanation:"虚证与实证的鉴别要点可从以下几方面进行：1.病程：新病、病程短者，多属实证；久病、病程长者，多属虚证。2.体质：平素体质壮实者，多属实证；平素体质虚弱者，多属虚证。3.精神：精神萎靡、神疲乏力者，多属虚证；精神兴奋、烦躁不安者，多属实证。4.声息：语声低微、呼吸微弱者，多属虚证；语声高亢洪亮、呼吸气粗者，多属实证。5.疼痛：疼痛隐隐、缠绵不休、喜揉喜按者，多属虚证；疼痛剧烈、痛势急迫、拒按或按之痛甚者，多属实证。6.舌象：舌淡嫩、苔少或无苔者，多属虚证；舌质苍老、苔厚腻或黄燥者，多属实证。7.脉象：脉虚弱无力者，多属虚证；脉实有力者，多属实证。8.二便：大便稀溏、小便清长者，多属虚证；大便秘结或下利里急后重、小便短赤者，多属实证。9.发热：高热不退、蒸蒸发热者，多属实证；低热不退、五心烦热者，多属虚证。10.恶寒：恶寒重、得温不解者，多属实证；畏寒肢冷、得温则缓者，多属虚证。临床辨证时应综合分析，不可孤立地根据某一症状做出判断。此外，临床上还常见虚实错杂证（如虚中夹实、实中夹虚）和虚实真假证（如真实假虚、真虚假实），辨证时尤当注意。",source:"《中医诊断学》",points:["八纲辨证","虚实辨证"]},
+  {id:"zj_s_401",type:"single",category:"针灸学",subCategory:"针灸治疗",difficulty:3,question:"针灸治疗中风中经络的治则是？",options:["醒脑开窍，滋补肝肾，疏通经络","平肝息风，化痰通络","益气活血，化瘀通络","回阳救逆，醒脑开窍"],answer:"醒脑开窍，滋补肝肾，疏通经络",explanation:"中风是以突然昏仆、不省人事，伴口眼歪斜、言语不利、半身不遂为主症的一种病证，或不经昏仆而仅以半身不遂、口眼歪斜为主要临床表现的病证。临床上根据病位深浅和病情轻重，分为中经络和中脏腑两大类。中经络者病位较浅，病情较轻，一般无神志改变，仅表现为半身不遂、口眼歪斜、语言不利等；中脏腑者病位较深，病情较重，主要表现为突然昏仆、不省人事等神志改变。针灸治疗中风中经络以醒脑开窍、滋补肝肾、疏通经络为治则。主穴：内关、水沟、三阴交、极泉、尺泽、委中。方义：心主血脉藏神，内关为心包经络穴，可调理心神、疏通气血；脑为元神之府，督脉入络脑，水沟为督脉穴，可醒脑开窍、调神导气；三阴交为足三阴经交会穴，可滋补肝肾；极泉、尺泽、委中，疏通肢体经络。辨证配穴：肝阳暴亢配太冲、太溪；风痰阻络配丰隆、合谷；痰热腑实配曲池、内庭、丰隆；气虚血瘀配足三里、气海；阴虚风动配太溪、风池。操作：水沟用雀啄法，以眼球湿润为度；三阴交沿胫骨内侧缘与皮肤成45度角斜刺，用提插补法；极泉在原穴位置下1寸心经上取穴，避开腋毛，直刺，用提插泻法，以患者上肢有麻胀和抽动感为度；尺泽、委中直刺，提插泻法使肢体有抽动感。内关用捻转泻法。针灸对中风恢复期和后遗症期疗效确切，配合康复训练效果更佳。",source:"《针灸学》",points:["中风","针灸治则"]},
+  // ===== 题库扩充：综合深度题（第3批）=====
+  {id:"jc_s_403",type:"multiple",category:"中医基础理论",subCategory:"藏象学说",difficulty:3,question:"以下属于'脾主运化'功能内容的是？",options:["运化水谷精微","运化水液","运化血液","运化宗气"],answer:["运化水谷精微","运化水液"],explanation:"脾主运化是脾最基本的生理功能，'运'即转输，'化'即消化吸收。脾主运化包括两个方面：1.运化水谷：是指脾具有消化饮食、化生水谷精微，并将其转输至全身各脏腑组织的作用。脾运化水谷的功能旺盛，则气血生化有源，脏腑组织得以充分濡养，表现为食欲旺盛、消化吸收良好、身体强健；反之，脾失健运，则运化无权，可见腹胀、食欲不振、大便溏薄、倦怠乏力、形体消瘦等症。故《素问·六节藏象论》说：'脾者，仓廪之本，营之居也。'2.运化水液：是指脾具有运化水液，调节体内水液代谢平衡的作用。脾运化水液的功能正常，则水液在体内得以正常输布和排泄，不致产生水湿痰饮等病理产物；反之，脾失健运，运化水液功能失常，水液停滞体内，则产生湿、痰、饮等病理产物，甚则导致水肿。故《素问·至真要大论》说：'诸湿肿满，皆属于脾。'运化血液、运化宗气均不属于脾主运化的内容。血由脾化生（脾为气血生化之源），但血的运行依赖心气的推动、脾气的统摄等多方面因素；宗气由肺吸入的清气与脾运化的水谷精气结合而成，积聚于胸中，非脾所独运。脾主运化理论对临床治疗消化系统疾病和水液代谢疾病具有重要指导意义。",source:"《中医基础理论》",points:["脾","脾主运化"]},
+  {id:"jl_s_402",type:"multiple",category:"经络穴位",subCategory:"奇经八脉",difficulty:3,question:"以下关于任脉的论述正确的是？",options:["任脉行于腹胸正中，总任一身阴经，为'阴脉之海'","任脉与女子妊娠有关，故称'任主胞胎'","任脉共有24个腧穴","任脉起于胞中，下出会阴，经阴阜，沿腹部正中线上行，经咽喉，至下颌部，环绕口唇，沿面颊，分行至目眶下"],answer:["任脉行于腹胸正中，总任一身阴经，为'阴脉之海'","任脉与女子妊娠有关，故称'任主胞胎'","任脉共有24个腧穴","任脉起于胞中，下出会阴，经阴阜，沿腹部正中线上行，经咽喉，至下颌部，环绕口唇，沿面颊，分行至目眶下"],explanation:"任脉为奇经八脉之一，其经络循行与生理功能特点如下：1.循行部位：起于胞中，下出会阴，经阴阜，沿腹部正中线上行，经胸部正中、咽喉，至下颌部，环绕口唇，沿面颊，分行至目眶下。其分支从胞中出，向后与冲脉偕行于脊柱前。2.主要腧穴：共24穴，包括会阴、曲骨、中极、关元、石门、气海、阴交、神阙、水分、下脘、建里、中脘、上脘、巨阙、鸠尾、中庭、膻中、玉堂、紫宫、华盖、璇玑、天突、廉泉、承浆。3.生理功能：总任一身阴经。由于任脉与足三阴经交会于中极、关元，与手三阴经通过阴维脉交会，故凡精血津液等属阴的物质，均由任脉所司，故称任脉为'阴脉之海'。4.与生殖功能的关系：任脉起于胞中，与女子月经来潮及妊养胎儿有关，故称'任主胞胎'。《素问·上古天真论》云：'女子七岁，肾气盛，齿更发长；二七而天癸至，任脉通，太冲脉盛，月事以时下，故有子……七七任脉虚，太冲脉衰少，天癸竭，地道不通，故形坏而无子也。'明确指出了任脉在女子生殖功能中的重要作用。任脉在临床上常用于治疗月经不调、痛经、经闭、带下、不孕、遗精、阳痿、疝气、小便不利、遗尿、腹痛、泄泻、脱肛、眩晕、中风脱证等。",source:"《针灸学》",points:["任脉","奇经八脉"]},
+  {id:"zy_s_402",type:"multiple",category:"中药学",subCategory:"清热药",difficulty:3,question:"以下属于'白虎汤'组成药物的是？",options:["石膏","知母","炙甘草","粳米"],answer:["石膏","知母","炙甘草","粳米"],explanation:"白虎汤出自《伤寒论》，为清热剂清气分热代表方。组成：石膏（碎）一斤（50g）、知母六两（18g）、炙甘草二两（6g）、粳米六合（9g）。用法：上四味，以水一斗，煮米熟汤成，去滓，温服一升，日三服。功用：清热生津。主治：气分热盛证。壮热面赤，烦渴引饮，汗出恶热，脉洪大有力。方义：本方原为阳明气分热盛证而设，亦可用治温病气分热盛证。方中石膏辛甘大寒，入肺胃二经，功善清解，透热出表，以除阳明气分之热，为君药。知母苦寒质润，既助石膏清肺胃之热，又滋阴润燥救已伤之阴津，为臣药。二药相须为用，清气分热、生津止渴之力尤强。炙甘草、粳米益胃生津，防止大寒伤中之弊，为佐使药。四药共奏清热生津之功。本方为治疗阳明气分热盛证之基础方，临床以'四大症'（身大热、汗大出、口大渴、脉洪大）为辨证要点。白虎汤的使用注意：表证未解的无汗发热、口不渴者；血虚发热或气虚发热者，均不宜使用。本方为大寒之剂，不可过量或久服，恐伤脾胃阳气。",source:"《方剂学》",points:["白虎汤","清热剂"]},
+  {id:"zd_s_402",type:"short",category:"中医诊断学",subCategory:"脏腑辨证",difficulty:3,question:"简述肝风内动四证的鉴别。",answer:"肝风内动是指以眩晕欲仆、抽搐、震颤等具有'动摇'特点为主的一类证候。临床常见有肝阳化风、热极生风、阴虚动风、血虚生风四证，其鉴别要点如下：
+一、肝阳化风证：
+成因：多由肝阳上亢发展而来。
+临床表现：眩晕欲仆，头摇而痛，项强肢颤，语言謇涩，手足麻木，步履不正，或卒然昏倒，不省人事，口眼歪斜，半身不遂，舌强不语，喉中痰鸣，舌红苔白或腻，脉弦有力。
+辨证要点：以素有眩晕、头胀头痛等肝阳上亢表现，又突见动风之象为辨证依据。
+二、热极生风证：
+成因：多由外感温热病邪，邪热亢盛，燔灼肝经所致。
+临床表现：高热烦躁，躁扰如狂，神昏谵语，手足抽搐，颈项强直，两目上视，甚则角弓反张，牙关紧闭，舌红绛，苔黄燥，脉弦数。
+辨证要点：以高热与动风之象并见为辨证依据。
+三、阴虚动风证：
+成因：多由外感热病后期，阴液亏损，或久病耗伤阴液，肝筋失养所致。
+临床表现：手足蠕动，眩晕耳鸣，口燥咽干，形体消瘦，五心烦热，潮热盗汗，舌红少津，脉弦细数。
+辨证要点：以阴虚（潮热盗汗、五心烦热、舌红少苔、脉细数）与动风之象并见为辨证依据。
+四、血虚生风证：
+成因：多由久病血虚，或急、慢性失血，致营血亏虚，肝筋失养所致。
+临床表现：手足震颤，肌肉瞤动，关节拘急不利，肢体麻木，眩晕耳鸣，面色无华，爪甲不荣，舌淡苔白，脉细弱。
+辨证要点：以血虚（面色无华、舌淡、脉细）与动风之象并见为辨证依据。
+五、四证鉴别要点：
+1.肝阳化风证：性质属上实下虚证，以眩晕、头摇、肢颤、或卒然昏倒为特征。
+2.热极生风证：性质属实热证，以高热、神昏、抽搐、角弓反张为特征。
+3.阴虚动风证：性质属虚热证，以手足蠕动、五心烦热、潮热盗汗为特征。
+4.血虚生风证：性质属血虚证，以手足震颤、肌肉瞤动、肢体麻木、面色无华为特征。
+临床辨证应根据病史、临床表现、舌脉变化等综合判断。",explanation:"肝风内动四证是中医脏腑辨证的重要内容，掌握其鉴别要点对临床辨证论治具有重要意义。",source:"《中医诊断学》",points:["肝风内动","脏腑辨证"]},
+  {id:"zj_s_402",type:"short",category:"针灸学",subCategory:"特定穴",difficulty:3,question:"简述俞募配穴法的概念及临床应用。",answer:"俞募配穴法是针灸配穴方法之一，属于前后配穴法的范畴，具有重要的临床应用价值。
+一、概念：
+俞募配穴法是以脏腑经络理论为指导，将病变脏腑的背俞穴与募穴配合应用的方法。
+二、俞穴与募穴的概念：
+1.背俞穴：是脏腑之气输注于背腰部的腧穴，又称'俞穴'。背俞穴位于背腰部膀胱经第一侧线上，大体依脏腑位置而上下排列，分别冠以脏腑之名。共12个：肺俞、厥阴俞、心俞、肝俞、胆俞、脾俞、胃俞、三焦俞、肾俞、大肠俞、小肠俞、膀胱俞。
+2.募穴：是脏腑之气结聚于胸腹部的腧穴，又称'腹募穴'。募穴位于胸腹部，与相应脏腑所在部位相近。共12个：肺募中府、心包募膻中、心募巨阙、肝募期门、胆募日月、脾募章门、胃募中脘、三焦募石门、肾募京门、大肠募天枢、小肠募关元、膀胱募中极。
+三、理论依据：
+俞募配穴法的理论基础是'阴阳经络，气相交贯；脏腑腹背，气相通应'。《难经本义》云：'阴阳经络，气相交贯；脏腑腹背，气相通应。'说明脏腑之气与俞募穴是相互贯通的。俞穴位于背腰部（属阳），募穴位于胸腹部（属阴），一阴一阳，一前一后，相互协调。
+四、临床应用：
+1.用于治疗相应脏腑病证：某一脏腑发生病变时，可取其俞穴和募穴配合治疗。如肺病取肺俞配中府；心病取心俞配巨阙；脾病取脾俞配章门；胃病取胃俞配中脘；肝病取肝俞配期门；胆病取胆俞配日月；肾病取肾俞配京门；大肠病取大肠俞配天枢；小肠病取小肠俞配关元；膀胱病取膀胱俞配中极；三焦病取三焦俞配石门；心包病取厥阴俞配膻中。
+2.用于诊断脏腑病证：《灵枢·百病始生》云：'察其所痛，左右上下，知其寒温，何经所在。'脏腑有病时，常在相应的俞募穴出现压痛、酸胀、敏感或结节、条索状物等阳性反应，有助于相应脏腑病证的诊断。
+3.俞募配穴法的特点：前后配穴，一阴一阳，相互协调，对脏腑病证具有良好的治疗效果，尤其对脏腑慢性病证疗效更佳。
+俞募配穴法是针灸临床最常用的配穴方法之一，掌握俞穴和募穴的定位及主治特点，对针灸辨证施治具有重要意义。",explanation:"俞募配穴法是针灸配穴法的重要内容，体现了中医阴阳协调、前后呼应的治疗思想。",source:"《针灸学》",points:["俞募配穴法","配穴法"]},
+  {id:"jc_s_404",type:"short",category:"中医基础理论",subCategory:"气血津液",difficulty:3,question:"简述'气为血之帅，血为气之母'的含义。",answer:"'气为血之帅，血为气之母'是中医学对气与血关系的高度概括，揭示了气与血在生理上的相互依存、相互为用的密切关系，对临床辨证论治具有重要指导意义。
+一、气为血之帅：
+是指气对血的统率作用，主要体现在三个方面：
+1.气能生血：气的运动变化是血液生成的动力。从摄入的食物转化成水谷精微，再从水谷精微转化成营气和津液，最后从营气和津液转化成赤色的血液，均离不开气的运动变化。因此，气盛则血充，气虚则血少。临床治疗血虚病证时，常配伍补气药物以益气生血，即基于此理，如当归补血汤中重用黄芪补气生血。
+2.气能行血：血液的运行，依赖于气的推动作用。血在脉中循行，内至脏腑，外达皮肉筋骨，全赖于气的推动。气行则血行，气滞则血瘀。临床常见的气虚血瘀、气滞血瘀之证，治疗常配补气、行气药物，即基于此理。
+3.气能摄血：气对血液具有统摄作用，使血液循行于脉中而不逸出脉外。气的这一功能主要是通过脾气的统摄作用实现的。若气虚不能摄血，则可导致各种出血证，如便血、尿血、崩漏等。临床治疗出血证，常以益气摄血为法，如归脾汤治疗气虚出血之证。
+二、血为气之母：
+是指血对气的化生和运载作用，主要体现在两个方面：
+1.血能载气：气存在于血中，依附于血而不致散失，赖血之运载而运行全身。大失血时，气随之大量耗散，则出现'气随血脱'的危重证候，治疗当以益气固脱为急。
+2.血能养气：血不断为气的生成和功能活动提供营养，使气得到充分的补给。血盛则气旺，血虚则气少。临床血虚之证，常兼有气虚表现。
+三、临床意义：
+气血关系失调常见气滞血瘀、气虚血瘀、气血两虚、气不摄血、气随血脱等证型。治疗时应根据气血关系，合理运用益气、养血、行气、活血、止血等法。如气滞血瘀证，治宜行气活血；气虚血瘀证，治宜益气活血；气血两虚证，治宜益气养血；气不摄血证，治宜益气摄血；气随血脱证，治宜益气固脱。
+'气为血之帅，血为气之母'这一理论，是中医气血理论的核心，对临床各科病证的辨证论治均具有普遍指导意义。",explanation:"气血关系是中医理论的核心内容之一，对临床辨证论治具有重要指导意义。",source:"《中医基础理论》",points:["气血津液","气血关系"]},
+  {id:"zy_s_403",type:"short",category:"中药学",subCategory:"解表药",difficulty:3,question:"简述麻黄与桂枝功效主治的异同。",answer:"麻黄与桂枝均为辛温解表药，都具有发散风寒之功，同可用治风寒感冒之恶寒发热、头身疼痛、无汗脉浮紧等证，二者常相须为用，如麻黄汤。然而，二者功效主治又有不同，具体鉴别如下：
+一、相同点：
+1.性味：二者均辛温，归肺经。
+2.功效：均能发散风寒，用于外感风寒表证。
+3.主治：风寒感冒之恶寒发热、头身疼痛、无汗脉浮紧等。
+二、不同点：
+1.麻黄：
+(1)性味：辛、微苦，温。归肺、膀胱经。
+(2)功效：发汗解表，宣肺平喘，利水消肿。
+(3)特点：麻黄辛温发散之性强，为辛温解表之峻品，发汗解表力强，为发汗解表第一要药，多用于风寒外束、腠理闭密的外感风寒表实证（恶寒发热、无汗、脉浮紧）。此外，麻黄还能：
+①宣肺平喘：用于肺气壅遏的咳嗽气喘证，为治肺气壅遏所致喘咳的要药，如三拗汤。
+②利水消肿：用于水肿而兼有表证者（风水水肿），如越婢加术汤。
+③温散寒邪：用治风寒痹证及阴疽、痰核等。
+(4)使用注意：表虚自汗、阴虚盗汗、肾不纳气的虚喘者均当慎用。
+2.桂枝：
+(1)性味：辛、甘，温。归心、肺、膀胱经。
+(2)功效：发汗解肌，温通经脉，助阳化气，平冲降逆。
+(3)特点：桂枝辛甘温煦，甘温通阳扶卫，其开腠发汗之力较麻黄温和，而善于宣阳气于卫分，畅营血于肌表，故有助卫实表、发汗解肌之功，对外感风寒，不论表实无汗、表虚有汗，均可使用。如治风寒表实证，常与麻黄同用；治风寒表虚证，常与白芍同用，如桂枝汤。此外，桂枝还能：
+①温通经脉：用于寒凝血滞诸痛证，如胸痹心痛、脘腹冷痛、血寒经闭、痛经、风寒湿痹等。
+②助阳化气：用于阳虚证，如脾阳不振之痰饮、蓄水证及肾阳不足之畏寒肢冷、腰膝酸软等。
+③平冲降逆：用于心阳不振、阴寒上乘所致的心悸、奔豚等证。
+(4)使用注意：本品辛温助热，易伤阴动血，凡外感热病、阴虚火旺、血热妄行诸证忌用。孕妇及月经过多者慎用。
+三、鉴别要点：
+1.发汗之力：麻黄发汗力强，主治风寒表实证；桂枝发汗力较缓，风寒表实证、表虚证均可用。
+2.平喘之功：麻黄宣肺平喘力强，为治肺气壅遏喘咳要药；桂枝无直接平喘之功，但能温阳化气，可用于阳虚水饮凌心射肺之证。
+3.利水之效：麻黄利水消肿，用于风水水肿；桂枝助阳化气利水，用于痰饮、蓄水证。
+4.温通之性：麻黄偏于温散寒邪，用于风寒痹证；桂枝偏于温通经脉、助阳化气，用于寒凝血滞诸痛及阳虚诸证。
+掌握麻黄与桂枝的异同，对临床辨证选药、合理配伍具有重要意义。",source:"《中药学》",points:["麻黄","桂枝","解表药"]},
+  {id:"fj_s_402",type:"short",category:"方剂学",subCategory:"补益剂",difficulty:3,question:"简述四物汤的组成、功用、主治及方义。",answer:"四物汤出自《太平惠民和剂局方》，为补血调经的基础方，被誉为'补血之圣方'、'调经之要方'。
+一、组成：
+熟地黄（12g）、当归（9g）、白芍（9g）、川芎（6g）。
+二、用法：
+水煎服。
+三、功用：
+补血调血。
+四、主治：
+营血虚滞证。面色萎黄，头晕目眩，心悸失眠，月经不调，量少或经闭不行，脐腹作痛，舌淡，脉细弦或细涩。
+五、病机分析：
+本方证由营血亏虚，血行不畅所致。营血亏虚，不能上荣于面，则面色萎黄、头晕目眩；血不养心，心神不宁，则心悸失眠；冲为血海，任主胞胎，营血亏虚，冲任失养，则月经不调、量少色淡，甚则经闭不行；血虚血滞，血行不畅，则脐腹作痛；舌淡、脉细弦或细涩为血虚血滞之征。
+六、方义：
+方中熟地黄味甘厚味，质润滋腻，为补血之要药，滋阴养血，为君药。当归甘辛温，补血活血，调经止痛，既助熟地黄补血之力，又行营血之滞，为臣药。白芍苦酸甘微寒，养血敛阴，柔肝止痛，与当归相合，养血和血之力益彰；川芎辛温香窜，活血行气，祛风止痛，为血中气药，与当归相配，活血行滞，使血行则血止，血行则痛止，共为佐药。四药配伍，共奏补血调血之功。
+本方的配伍特点：以熟地黄、白芍阴柔补血之品（血中血药）与辛香之当归、川芎（血中气药）相配，动静相宜，补血而不滞血，行血而不伤血，温而不燥，滋而不腻，成为补血调血之良方。
+七、临床应用：
+1.辨证要点：本方是补血调经的基础方，临床以面色萎黄、头晕目眩、心悸失眠、月经不调、舌淡、脉细为辨证要点。
+2.加减变化：
+①若兼气虚者，加人参、黄芪以补气生血（圣愈汤）。
+②若血瘀甚者，加桃仁、红花以活血祛瘀（桃红四物汤）。
+③若血虚有寒者，加肉桂、炮姜以温经散寒。
+④若血虚有热者，加黄芩、丹皮以清热凉血。
+⑤若妊娠胎漏者，加阿胶、艾叶以养血止血安胎（胶艾汤）。
+⑥若肝郁血虚脾弱者，加柴胡、白术、茯苓、甘草等以疏肝健脾（逍遥散）。
+八、使用注意：
+阴虚发热及脾胃虚弱、食少便溏者慎用。
+四物汤是补血剂的代表方，后世在此基础上衍化出众多补血调经方剂，在临床上具有广泛的应用价值。",explanation:"四物汤是补血调经的基础方，其配伍特点和临床应用对学习方剂学具有重要意义。",source:"《方剂学》",points:["四物汤","补益剂","补血"]},,
+  {id:"jc_s_501",type:"single",category:"中医基础理论",subCategory:"经络学说",difficulty:3,question:"《灵枢·经脉》中'经脉者，所以能决死生，处百病，调虚实，不可不通'强调了什么？",options:["经络的重要生理病理及治疗意义","经络的循行分布规律","经络与脏腑的络属关系","十二经脉的交接规律"],answer:"经络的重要生理病理及治疗意义",explanation:"此句出自《灵枢·经脉》，是中医经络学说的核心论断之一，强调了经络在人体生理、病理及治疗中的极端重要性。其内涵可从三方面理解：1.决死生：经络是气血运行的通路，内属于脏腑，外络于肢节。经络通畅、气血调和，则脏腑功能正常、机体健康；若经络阻滞、气血逆乱，则脏腑功能失调、病变丛生。通过诊察经络的异常变化（如脉象、腧穴压痛、经络色泽等），可判断疾病的轻重预后。2.处百病：经络是病邪传变的通路。外邪可通过经络由表入里、由浅入深；内脏病变也可通过经络反映于体表（如肝病者两胁下痛引少腹）。掌握经络理论，可分析疾病的病位、病性及传变规律。3.调虚实：经络是针灸、推拿等治疗方法作用的部位。通过刺激腧穴、调节经络气血，可达到补虚泻实、调整脏腑功能的目的。如《灵枢·九针十二原》所说：虚实之要，九针最妙，补泻之时，以针为之。这一论述不仅说明了经络的生理功能，更强调了其在诊断、治疗中的关键作用，是针灸学及整个中医理论体系的重要理论基础。",source:"《黄帝内经》",points:["经络学说","针灸"]},
+  {id:"jc_s_502",type:"single",category:"中医基础理论",subCategory:"病因病机",difficulty:3,question:"《素问·调经论》'寒湿之中人也，皮肤不收，肌肉坚紧，营血泣，卫气去'主要说明什么？",options:["寒湿之邪伤人的病理机制","营卫失调的病机","气血亏虚的病机","阴阳失调的病机"],answer:"寒湿之邪伤人的病理机制",explanation:"此句出自《素问·调经论》，详细描述了寒湿之邪侵犯人体后的病理变化。具体分析：1.皮肤不收：寒湿之邪侵袭肌表，卫气受损，不能温养固护肌表，导致皮肤松弛、失于致密。2.肌肉坚紧：寒邪凝滞收引，湿邪黏滞重着，寒湿合邪侵袭肌肉筋脉，致气血凝滞、筋脉拘急，故见肌肉坚紧、疼痛不适。3.营血泣：泣即涩滞之意。寒邪入于血脉，寒性凝滞，使血液运行涩滞不畅，甚则瘀阻不通，发为疼痛、青紫等症。4.卫气去：卫气属阳，行于脉外，具有温分肉、充皮肤、肥腠理、司开合的作用。寒湿为阴邪，最易损伤阳气，故卫气受损而离去，不能正常发挥温煦、固外功能。此段经文系统阐述了寒湿之邪伤人的具体病理机制，体现了《内经》审察病机、无失气宜的辨证思想。临床治疗寒湿之证，当以温阳散寒、祛湿通络为法，配合温通经络、调和营卫之品。常用方剂如麻黄汤、桂枝汤、羌活胜湿汤、独活寄生汤等。同时也说明了善诊者察色按脉、先别阴阳、审清浊而知部分、视喘息听音声而知所苦、观权衡规矩而知病所主、按尺寸观浮沉滑涩而知病所生的诊断重要性。",source:"《黄帝内经》",points:["病因病机","寒湿证"]},
+  {id:"jl_s_501",type:"single",category:"经络穴位",subCategory:"腧穴理论",difficulty:3,question:"《灵枢·九针十二原》'五脏有六腑，六腑有十二原，十二原出于四关，四关主治五脏'中的'四关'是指？",options:["四肢肘膝关节以下部位","四肢末端指趾部位","两耳、两目、两手、两足","左右两侧合谷、太冲"],answer:"四肢肘膝关节以下部位",explanation:"此句出自《灵枢·九针十二原》，是中医腧穴理论的重要论述。四关在《内经》中原指四肢肘膝关节以下的部位，即两肘、两膝，因其是十二经脉之气出入离合的关键部位，是四肢重要的关卡、枢纽，故名四关。具体含义分析：1.十二原出于四关：十二原穴是脏腑原气经过和留止的部位，而原穴皆位于四肢肘膝关节以下（阴经原穴即本经输穴，阳经另设原穴），如肺之原穴太渊、心之原穴神门、肝之原穴太冲、脾之原穴太白、肾之原穴太溪等，均位于腕踝关节附近；六腑原穴如胃之原穴冲阳、胆之原穴丘墟、膀胱之原穴京骨等也在足背、踝部。2.四关主治五脏：由于原穴与脏腑关系密切，是脏腑原气输注、经过和留止之处，故可治疗相应脏腑病证。《灵枢·九针十二原》云：五脏有疾也，应出十二原，而原各有所出，明知其原，睹其应，而知五脏之害矣。说明了原穴在诊断和治疗五脏病证中的重要作用。3.临床意义：原穴是临床最常用的腧穴之一，可单用或与他穴配伍治疗相应脏腑病证。此外，四关在后世针灸学中又有了新的发展，明代杨继洲《针灸大成》将合谷、太冲两穴合称四关穴，认为此四穴可开阖气机、通经活络、调和气血，是治疗多种病证的重要配穴方法。现代临床常用合谷、太冲配伍治疗头痛、眩晕、失眠、郁证、痹证、中风后遗症等多种病证，疗效确切。",source:"《针灸学》",points:["腧穴","原穴","四关穴"]},
+  {id:"zy_s_501",type:"single",category:"中药学",subCategory:"补虚药",difficulty:3,question:"《本草纲目》称'补中有动，行中有补，诚血中之气药，亦血中之圣药也'指的是？",options:["当归","熟地黄","白芍","阿胶"],answer:"当归",explanation:"此语出自李时珍《本草纲目》，是对当归功效特点的高度概括。当归药用历史悠久，始载于《神农本草经》，被列为中品，历代本草均有详细论述。其功效特点分析如下：1.补中有动：当归甘温质润，既能补血，又能活血。补血而不滞血，活血而不伤血，补血之中兼具活血之效。2.行中有补：当归辛温走散，能行气活血，然其辛散之中又有甘补之性，活血之中又能补血，使血行而不耗血。3.血中之气药：当归味辛能散能行，为血中气药。血得气则行，气滞则血瘀，当归既能补血又能行气活血，恰中气血关系之要。4.血中之圣药：当归是补血药的代表，被誉为补血圣药、妇科要药。临床上，当归用途广泛：①血虚诸证：面色萎黄、眩晕心悸、失眠健忘等，常配黄芪（当归补血汤）、熟地、白芍（四物汤）。②血虚或血瘀之月经不调、经闭、痛经，为妇科调经要药。③虚寒腹痛：当归温经散寒、活血止痛，配桂枝、生姜（当归生姜羊肉汤）。④风寒痹痛、肢体麻木：配羌活、桂枝、秦艽等。⑤痈疽疮疡：配金银花、连翘、赤芍等。⑥血虚肠燥便秘：配肉苁蓉、火麻仁等。当归的用法：一般生用，为加强活血作用则酒炒用；通常补血用当归身，活血用当归尾，和血（补血活血）用全当归。使用注意：湿盛中满、大便泄泻者忌服。",source:"《中药学》",points:["当归","补血药"]},
+  {id:"fj_s_501",type:"single",category:"方剂学",subCategory:"清热剂",difficulty:3,question:"黄连解毒汤的组方原则是？",options:["苦寒直折，泻火解毒","清热生津，益气和胃","清热解毒，凉血散瘀","清热利湿，利胆退黄"],answer:"苦寒直折，泻火解毒",explanation:"黄连解毒汤出自《外台秘要》，为清热剂的代表方，被誉为苦寒直折之祖方。组成：黄连三两（9g）、黄芩、黄柏各二两（各6g）、栀子十四枚（9g）。用法：上四味切，以水六升，煮取二升，分二服。功用：泻火解毒。主治：三焦火毒热盛证。大热烦躁，口燥咽干，错语不眠；或热病吐血、衄血；或热甚发斑，或身热下利，或湿热黄疸；或外科痈疡疔毒，小便黄赤，舌红苔黄，脉数有力。本方证乃火毒充斥三焦所致。热盛伤津，故口燥咽干；热扰心神，故烦躁、错语不眠；热伤血络，血热妄行，故吐血衄血、发斑；热壅肌肉，则为痈肿疔毒。治宜泻火解毒。方中以大苦大寒之黄连清泻心火为君，兼泻中焦之火。臣以黄芩清上焦之火，黄柏泻下焦之火。栀子清泻三焦之火，导热下行，引邪热从小便而出，为佐使。四药合用，苦寒直折，三焦之火邪去而热毒解，诸症可愈。本方的配伍特点：苦寒直折，泻火解毒。本方集苦寒之芩、连、柏、栀于一方，是有余折之的治法，为清热泻火解毒的基础方。辨证要点：本方为治疗火热毒盛充斥三焦的常用方。临床以大热烦躁、口燥咽干、舌红苔黄、脉数有力为辨证要点。加减变化：便秘者，加大黄以泻下焦实热；吐血、衄血、发斑者，酌加玄参、生地、丹皮以清热凉血；瘀热发黄者，加茵陈、大黄以清热祛湿退黄；疔疮肿毒者，加蒲公英、金银花、连翘以清热解毒。现代应用：本方常用于败血症、脓毒血症、痢疾、肺炎、泌尿系感染、流行性脑脊髓膜炎、乙型脑炎以及感染性炎症等属热毒为患者。使用注意：本方为大苦大寒之剂，久服或过量易伤脾胃，非火盛者不宜使用。",source:"《方剂学》",points:["黄连解毒汤","清热剂"]},
+  {id:"zd_s_501",type:"single",category:"中医诊断学",subCategory:"八纲辨证",difficulty:3,question:"以下关于寒热真假的鉴别要点，最关键的是？",options:["身热与不热","口渴与不渴","脉之有力无力及舌之老嫩","面色红与不红"],answer:"脉之有力无力及舌之老嫩",explanation:"寒热真假是八纲辨证中极为重要的内容，也是临床辨证的难点之一。当病情发展到寒极或热极的时候，有时会出现与疾病本质相反的一些假象，即所谓阴盛格阳（真寒假热）、阳盛格阴（真热假寒）。寒热真假的鉴别要点如下：1.假象多出现在四肢、皮肤、面色等外部表现；而脏腑、气血、津液、舌象、脉象等方面的内在表现，往往反映着疾病的本质。因此，辨证时应以里证、舌象、脉象等为主要依据，这是鉴别寒热真假的关键。2.真寒假热证（阴盛格阳）：本质是阴寒内盛，格阳于外。其表现为：身热但欲盖衣被、口渴但喜热饮、脉大但按之无力、面赤但两颧潮红娇嫩（戴阳）、小便清长、大便稀溏、舌淡苔白等。3.真热假寒证（阳盛格阴）：本质是邪热炽盛，阳盛格阴于外。其表现为：四肢厥冷但身热不恶寒、反恶热、口渴喜冷饮、脉沉数有力、小便短赤、大便燥结、舌红苔黄等。4.鉴别要点：①脉象：真热假寒脉多沉数有力、滑数有力；真寒假热脉多沉细无力、或浮大无根、或脉微欲绝。②舌象：真热假寒舌多红绛、苔黄燥；真寒假热舌多淡白、苔白润。③小便：真热假寒小便多短赤；真寒假热小便多清长。④是否口渴及饮水喜恶：真热假寒口渴喜冷饮；真寒假热口不渴或渴喜热饮。⑤是否恶寒及衣被喜恶：真热假寒虽四肢厥冷但身热恶热、不欲盖被；真寒假热身热但欲盖衣被。在所有鉴别点中，脉象的有力无力、舌象的老嫩润燥最为关键，因为这些是内在本质的直接反映。《景岳全书·传忠录》说：凡察寒热之真假者，不可凭脉之浮沉，须察其有力无力；不可凭证之疑似，须察其根本。掌握寒热真假的鉴别，对准确辨证、避免误治具有重要意义。",source:"《中医诊断学》",points:["寒热真假","八纲辨证"]},
+  {id:"zj_s_501",type:"single",category:"针灸学",subCategory:"针灸治疗",difficulty:3,question:"针灸治疗面瘫（贝尔氏麻痹）的基本原则是？",options:["祛风通络，疏调经筋","平肝熄风，清热化痰","益气活血，化瘀通络","补益肝肾，舒筋活络"],answer:"祛风通络，疏调经筋",explanation:"面瘫（贝尔氏麻痹）是以口眼向一侧歪斜为主要临床表现的病证，中医学称之为口僻、口眼歪斜、吊线风等。针灸治疗本病疗效确切，是目前临床最常用、最有效的治疗方法之一。一、病因病机：本病多由劳作过度，机体正气不足，脉络空虚，卫外不固，风寒或风热之邪乘虚入中面部经络，气血痹阻，经筋失于濡养，以致面部肌肉弛缓无力，受对侧牵拉，而成歪斜。病位在面部，与手足阳明、少阳经、经筋密切相关。基本病机是经气痹阻，经筋功能失调。二、辨证要点：1.急性期（发病后1-2周）：起病突然，每在睡眠醒来时，发现一侧面部板滞、麻木、瘫痪，不能作蹙额、皱眉、露齿、鼓颊等动作；口角向健侧歪斜，漱口漏水，进餐时食物常常停滞在病侧齿颊之间；病侧额纹、鼻唇沟消失，眼睑闭合不全，迎风流泪。部分患者初起时有耳后、耳下及面部疼痛，还可出现患侧舌前2/3味觉减退或消失、听觉过敏等症。2.恢复期（发病后2周-6个月）：面部板滞、麻木、瘫痪等症状逐渐好转，但恢复较慢。3.后遗症期（发病6个月以上）：部分患者可遗留面肌痉挛、面肌联合运动、鳄泪症等后遗症。三、治疗原则：祛风通络，疏调经筋。以局部穴和手足阳明经穴为主。四、针灸处方及方义：主穴：阳白、四白、颧髎、颊车、地仓、翳风、合谷、太冲。方义：面部腧穴可疏调局部经筋气血，活血通络；合谷、太冲为循经远端取穴，合谷善治头面诸疾（面口合谷收），太冲平肝息风、通络止痛，二者相配名为四关穴，可加强祛风通络之力。翳风祛风通络、善治耳后疼痛。五、辨证加减：1.风寒证：加风池、风门，针用泻法，或加艾灸。2.风热证：加曲池、外关，针用泻法。3.恢复期及后遗症：加足三里、三阴交、关元、气海，针用补法，以益气养血、扶正补虚。六、操作要点：1.急性期：面部腧穴手法宜轻、宜浅、宜少，远端腧穴手法宜重，针用泻法。2.恢复期：面部腧穴加用温针灸、皮肤针叩刺。3.后遗症期：可加用电针、拔罐、皮肤针、穴位注射等综合治疗。七、现代研究：针灸治疗面瘫机制可能与以下因素有关：1.改善局部血液循环，促进神经炎症水肿的消退；2.促进神经功能恢复，加速神经再生；3.调节免疫功能，增强机体抗病能力；4.缓解面肌痉挛，促进面肌功能恢复。八、预后与注意：1.针灸治疗本病疗效肯定，一般发病后1-2周开始治疗者恢复较快、预后较好；2.发病早期应注意休息，避免劳累，避风寒，忌辛辣刺激性食物；3.眼睑闭合不全者应注意保护角膜，防止角膜炎；4.部分患者可因治疗不当或病情较重而遗留后遗症，应注意早期规范治疗。针灸治疗面瘫历史悠久，历代针灸文献均有详细记载，积累了丰富经验，是针灸临床的优势病种。",source:"《针灸学》",points:["面瘫","针灸治疗"]},,
+  {id:"jc_s_601",type:"short",category:"中医基础理论",subCategory:"藏象学说",difficulty:3,question:"简述脾胃的生理功能及其相互关系。","answer":"脾胃是人体消化系统的主要脏器，被称为'后天之本'、'气血生化之源'。二者同居中焦，以膜相连，经脉相互络属，构成表里关系。在生理上，二者一纳一化、一升一降、一燥一湿，相反相成，共同完成饮食物的消化吸收及其精微的输布，从而滋养全身。
+一、脾的主要生理功能：
+1.脾主运化：是指脾具有把水谷（饮食物）化为精微，并将精微物质转输至全身的生理功能。包括运化水谷和运化水液两个方面。运化水谷，是指对饮食物的消化吸收；运化水液，是指脾对水液的吸收、转输和布散作用。
+2.脾主升清：是指脾气的运动特点，以上升为主，故说'脾气主升'。'清'是指水谷精微等营养物质。脾的升清功能，是指水谷精微等营养物质的吸收和上输于心、肺、头目，通过心肺的作用化生气血，以营养全身。
+3.脾主统血：是指脾有统摄、控制血液在脉中正常运行而不逸出脉外的功能。脾统血的作用机理，实际上是气的固摄作用的体现。
+4.脾在志为思、在液为涎、在体合肌肉、主四肢、在窍为口、其华在唇。
+二、胃的主要生理功能：
+1.胃主受纳、腐熟水谷：受纳，是接受和容纳的意思。腐熟，是饮食物经过胃的初步消化，形成食糜的意思。饮食入口，经过食管，容纳于胃，故称胃为'太仓'、'水谷之海'。
+2.胃主通降，以降为和：胃主通降，是指胃的气机宜通畅、下降的特点。胃为'水谷之海'，饮食物入胃，经过胃的腐熟后，必须下行而入小肠，进一步消化吸收。所以说，胃主通降，以降为和。
+3.胃在志为思、在液为涎、在体合肌肉、主四肢、在窍为口、其华在唇（与脾相同）。
+三、脾与胃的关系：
+1.纳运相成：脾主运化，胃主受纳。胃的'纳'是为脾的'运'做准备；而脾的'运'又为胃的继续'纳'提供了条件。所以纳与运相辅相成，共同完成饮食物的消化吸收及其精微的输布。
+2.升降相因：脾主升，胃主降。脾气升则水谷精微得以输布；胃气降则水谷及其糟粕得以下行。脾升胃降，相互为用，相反相成，共同完成饮食物的消化吸收及其精微的输布。《临证指南医案》说：'脾宜升则健，胃宜降则和。'
+3.燥湿相济：脾为阴脏，其性喜燥而恶湿；胃为阳腑，其性喜润而恶燥。脾喜燥恶湿，与胃喜润恶燥相对而言。脾属太阴，其气湿，故脾病多湿；胃属阳明，其气燥，故胃病多燥。脾湿胃燥，燥湿相济，共同完成饮食物的消化吸收及其精微的输布。
+四、病理上的相互影响：
+1.纳运失常：脾失健运，可导致胃的受纳腐熟功能失常，而见食欲不振、食后腹胀等；反之，胃失受纳腐熟，也可影响脾的运化功能，而见脘腹胀满、泄泻等。
+2.升降失常：脾不升清，可致胃失和降；胃失和降，也可影响脾的升清。《素问·阴阳应象大论》说：'清气在下，则生飧泄；浊气在上，则生嗔胀。'
+3.燥湿失调：湿邪困脾，可影响胃的受纳腐熟功能；胃燥津伤，也可影响脾的运化功能。
+掌握脾胃的生理功能及其相互关系，对于理解中医消化系统的生理病理及指导临床辨证论治具有重要意义。","explanation":"脾胃是人体后天之本，其功能协调是人体健康的重要保证。","source:"《中医基础理论》",points:["脾","胃","藏象","脾胃关系"]},
+  {id:"jl_s_601",type:"short",category:"经络穴位",subCategory:"十二正经",difficulty:3,question:"简述十二经脉的循行走向与交接规律。","answer":"十二经脉是经络系统的主体，具有表里经脉相合、与相应脏腑络属的主要特征。十二经脉的循行走向与交接规律是理解经络系统的基础。
+一、十二经脉的名称：
+十二经脉的名称由手足、阴阳、脏腑三部分组成，即：手太阴肺经、手阳明大肠经、足阳明胃经、足太阴脾经、手少阴心经、手太阳小肠经、足太阳膀胱经、足少阴肾经、手厥阴心包经、手少阳三焦经、足少阳胆经、足厥阴肝经。
+二、十二经脉的走向规律：
+《灵枢·逆顺肥瘦》说：'手之三阴，从藏走手；手之三阳，从手走头；足之三阳，从头走足；足之三阴，从足走腹（胸）。'具体来说：
+1.手三阴经：从胸走手，即从胸部走向手指末端，交于手三阳经。
+2.手三阳经：从手走头，即从手指末端走向头面部，交于足三阳经。
+3.足三阳经：从头走足，即从头面部走向足趾末端，交于足三阴经。
+4.足三阴经：从足走腹（胸），即从足趾末端走向腹腔、胸腔，交于手三阴经。
+三、十二经脉的交接规律：
+1.相为表里的阴经与阳经在四肢部交接：
+①手太阴肺经与手阳明大肠经交接于食指端（商阳穴）。
+②手少阴心经与手太阳小肠经交接于小指端（少冲穴）。
+③手厥阴心包经与手少阳三焦经交接于无名指端（关冲穴）。
+④足阳明胃经与足太阴脾经交接于足大趾端（隐白穴）。
+⑤足太阳膀胱经与足少阴肾经交接于足小趾端（至阴穴）。
+⑥足少阳胆经与足厥阴肝经交接于足大趾丛毛之际（大敦穴）。
+2.同名的手足阳经在头面部交接：
+①手阳明大肠经与足阳明胃经交接于鼻翼旁（迎香穴）。
+②手太阳小肠经与足太阳膀胱经交接于目内眦（睛明穴）。
+③手少阳三焦经与足少阳胆经交接于目外眦（瞳子髎穴）。
+3.手足阴经在胸部交接：
+①足太阴脾经与手少阴心经交接于心中。
+②足少阴肾经与手厥阴心包经交接于胸中。
+③足厥阴肝经与手太阴肺经交接于肺中。
+四、十二经脉的循环流注顺序：
+十二经脉的流注顺序是：从手太阴肺经开始，依次流至手阳明大肠经、足阳明胃经、足太阴脾经、手少阴心经、手太阳小肠经、足太阳膀胱经、足少阴肾经、手厥阴心包经、手少阳三焦经、足少阳胆经、足厥阴肝经，再流至手太阴肺经，如此首尾相贯，如环无端。
+为了便于记忆，十二经脉流注歌诀如下：
+'肺大胃脾心小肠，膀肾包焦胆肝藏。'
+五、十二经脉循行走向与交接规律的临床意义：
+1.指导针灸取穴：根据经络走向，选取相应腧穴进行治疗，如'循经取穴'、'迎随补泻'等。
+2.指导辨证归经：根据疾病出现的部位与症状，分析归属于哪条经脉，为辨证论治提供依据。
+3.指导疾病传变：根据经络循行与交接规律，可推断疾病的发展变化与传变趋势。
+4.指导养生保健：可根据经络循行时间，采取相应的养生保健措施（子午流注）。
+掌握十二经脉的循行走向与交接规律，是学习针灸推拿、临床实践的基础。","explanation":"十二经脉的循行走向与交接规律是经络学说的核心内容，对针灸临床具有重要指导意义。","source:"《针灸学》",points:["十二经脉","循行走向","交接规律"]},
+  {id:"zy_s_601",type:"short",category:"中药学",subCategory:"总论",difficulty:3,question:"简述中药的配伍关系（七情）。","answer":"中药的配伍关系，古人将其概括为'七情'，即单行、相须、相使、相畏、相杀、相恶、相反七个方面。除单行外，其余六项都是说明药物配伍关系的。
+一、单行：
+就是单用一味药来治疗疾病。病情比较单纯，选用一味针对性较强的药物即能获得疗效。如独参汤，单用一味人参，治疗大失血所引起的元气虚脱的危重病证；清金散，单用一味黄芩，治疗轻度的肺热咳血。《神农本草经》说：'药性有宜单行者，有宜相须者。'
+二、相须：
+就是性能功效相类似的药物配合应用，可以增强原有疗效。如石膏配知母，能增强清热泻火的作用；大黄配芒硝，能增强泻下通便的作用；麻黄配桂枝，能增强发汗解表、祛风散寒的作用；附子配干姜，能增强温中回阳的作用。相须是同类不可离的配伍关系。
+三、相使：
+就是在性能功效方面有某些共性，或性能功效虽不相同，但是治疗目的一致的药物配合应用，而以一种药为主，另一种药为辅，能提高主药的疗效。如补气利水的黄芪与利水健脾的茯苓配合时，茯苓能提高黄芪补气利水的治疗效果；黄连配木香治湿热泻痢、腹痛里急，黄连为清热燥湿、解毒止痢的主药，木香调中宣滞、行气止痛，可增强黄连治疗湿热泻痢的效果；雷丸驱虫，配伍泻下通便的大黄，可增强雷丸的驱虫效果。
+四、相畏：
+就是一种药物的毒性反应或副作用，能被另一种药物减轻或消除。如生半夏和生南星的毒性能被生姜减轻或消除，所以说生半夏和生南星畏生姜。这是利用配伍减轻或消除毒性或副作用的方法，是临床用药需要考虑的配伍关系之一。
+五、相杀：
+就是一种药物能减轻或消除另一种药物的毒性或副作用。如生姜能减轻或消除生半夏和生南星的毒性或副作用，所以说生姜杀生半夏和生南星的毒。由此可知，相畏、相杀实际上是同一配伍关系的两种提法，是药物间相互对待而言的。
+六、相恶：
+就是两药合用，一种药物能使另一种药物原有功效降低，甚至丧失。如人参恶莱菔子，因莱菔子能削弱人参的补气作用；生姜恶黄芩，因黄芩能削弱生姜的温胃止呕作用。
+七、相反：
+就是两种药物合用，能产生或增强毒性反应或副作用。如'十八反'、'十九畏'中的若干药物（见用药禁忌）。
+八、七情配伍的意义：
+1.相须、相使表示增效：临床用药时应充分利用这种配伍关系，以提高疗效。
+2.相畏、相杀表示减毒：临床应用毒性药或烈性药时，必须考虑选用。
+3.相恶表示减效：用药时应加以注意。
+4.相反表示增毒：原则上应绝对禁止。
+九、临床用药原则：
+1.在配伍应用的情况下，一般说来，用药时尽量充分利用相须、相使的配伍关系，以提高疗效。
+2.在应用毒性药或烈性药时，必须考虑选用相畏、相杀的配伍关系，以保证用药安全。
+3.在药物配伍中，应注意避免使用相恶、相反的配伍关系，以避免降低疗效或产生毒副作用。
+4.注意药物配伍中的主辅关系，分清主次，充分发挥药物的治疗作用。
+掌握中药的配伍关系，对指导临床合理用药、提高疗效、避免毒副作用具有重要意义。","explanation":"中药七情配伍是中药药性理论的重要内容，是临床用药必须掌握的基本知识。","source:"《中药学》",points:["七情","配伍","中药"]},
+  {id:"fj_s_601",type:"short",category:"方剂学",subCategory:"解表剂",difficulty:3,question:"简述桂枝汤的组成、功用、主治、方义及临床应用。","answer":"桂枝汤出自《伤寒论》，被誉为'群方之冠'，是辛温解表剂的代表方，也是调和营卫、调和阴阳、调和脾胃的代表方。
+一、组成与用法：
+组成：桂枝（去皮）三两（9g）、芍药三两（9g）、炙甘草二两（6g）、生姜（切）三两（9g）、大枣（擘）十二枚（3枚）。
+用法：上五味，㕮咀三味，以水七升，微火煮取三升，去滓，适寒温，服一升。服已须臾，啜热稀粥一升余，以助药力。温覆令一时许，遍身微似有汗者益佳，不可令如水流漓，病必不除。若一服汗出病差，停后服，不必尽剂。若不汗，更服依前法。又不汗，后服小促其间。半日许，令三服尽。若病重者，一日一夜服，周时观之。服一剂尽，病证犹在者，更作服。若汗不出，乃服至二、三剂。禁生冷、黏滑、肉面、五辛、酒酪、臭恶等物。
+二、功用：解肌发表，调和营卫。
+三、主治：
+外感风寒表虚证。恶风发热，汗出头痛，鼻鸣干呕，苔白不渴，脉浮缓或浮弱者。
+四、病机分析：
+本方证为外感风寒，营卫不和所致。外感风寒，风邪伤卫，卫气失其固外开合之职，故恶风、汗出；卫气与邪气相争则发热；营阴不能内守，津液外泄则汗出；汗出肌腠疏松，营阴不足，故脉浮缓而弱。
+五、方义分析（重点阐述调和营卫、调和阴阳）：
+方中桂枝为君，辛温发散，解肌发表，温通卫阳，散外感之风寒。芍药为臣，味酸苦性微寒，益阴敛营，与桂枝合用，一散一收，调和营卫：桂枝辛散温通，可发汗解肌；芍药酸苦微寒，能敛阴和营，二者相配，散中有收，汗中寓补，使表邪得解，营卫调和。生姜辛温，既助桂枝辛散表邪，又和胃止呕；大枣甘平，既能益气补中，又能滋脾生津。姜、枣相合，还可以升腾脾胃生发之气而调和营卫，共为佐药。炙甘草益气和中、调和诸药，合桂枝辛甘化阳以实卫，合芍药酸甘化阴以和营，功兼佐使之用。
+本方的配伍特点是：散中有收，汗中寓补，刚柔相济，阴阳并调。本方服后啜热稀粥，是借谷气助药力，益胃气以滋汗源，使外邪速去而正不伤。
+六、桂枝汤与麻黄汤的比较：
+相同点：二者均为辛温解表剂，均能发散风寒，用于外感风寒证。
+不同点：1.麻黄汤中麻黄、桂枝并用，发汗力强，为辛温解表之峻剂，适用于外感风寒表实证（恶寒发热、无汗而喘、脉浮紧）；2.桂枝汤中桂枝与芍药并用，发汗力较麻黄汤缓和，为辛温解表之调和剂，适用于外感风寒表虚证（恶风发热、汗出、脉浮缓）。
+七、加减变化：
+1.桂枝加葛根汤：桂枝汤加葛根。功用解肌发表，升津舒筋。主治风寒客于太阳经输，营卫不和之证。
+2.桂枝加厚朴杏子汤：桂枝汤加厚朴、杏仁。功用解肌发表，降气平喘。主治宿有喘病，又感风寒而见桂枝汤证者。
+3.桂枝加桂汤：桂枝汤加重桂枝用量。功用温通心阳，平冲降逆。主治太阳病误用温针或因发汗太过而发奔豚。
+4.桂枝加芍药汤：桂枝汤倍用芍药。功用调和气血，缓急止痛。主治太阳病误下，邪陷太阴，腹满时痛者。
+八、现代应用：
+1.用于普通感冒、流行性感冒、原因不明的低热、多形红斑、皮肤瘙痒症、荨麻疹等属营卫不和者。
+2.用于消化性溃疡、慢性胃炎、胃肠神经官能症、妊娠呕吐等属脾胃虚寒、营卫不和者。
+3.用于自主神经功能紊乱、盗汗、自汗等属营卫不和者。
+九、使用注意：
+1.表实无汗、表寒里热、温病发热者，均不宜使用。
+2.服药期间忌食生冷、黏腻、酒肉、臭恶等物。
+桂枝汤是《伤寒论》的第一方，其调和营卫、调和阴阳、调和脾胃的配伍思想对后世方剂学发展有深远影响。","explanation":"桂枝汤被誉为群方之冠，其调和营卫、调和阴阳的配伍思想是方剂学的精髓。","source:"《方剂学》",points:["桂枝汤","解表剂","调和营卫"]},
+  {id:"zd_s_601",type:"short",category:"中医诊断学",subCategory:"望诊",difficulty:3,question:"简述望面色的主要内容及临床意义。","answer":"望面色，是指观察面部的颜色与光泽，以了解病情的诊断方法。面部是脏腑气血的外荣，与人体脏腑经络有密切联系，故望面色可以了解脏腑气血的盛衰和邪气的性质、部位及病情的轻重。
+一、望面色的原理：
+1.面部与脏腑经络的联系：面部是人体各部分精气之所聚，与脏腑经络有密切联系。《灵枢·邪气脏腑病形》说：'十二经脉，三百六十五络，其血气皆上于面而走空窍。'
+2.面色与气血的关系：面色的变化，主要与气血的盛衰和运行状态有关。气血充足，面色红润有光泽；气血不足，面色淡白无华；气血瘀滞，面色青紫晦暗。
+3.面色与阴阳的关系：阳盛则面色红赤，阳虚则面色㿠白；阴虚则面色潮红，阴盛则面色青紫。
+二、常色与病色：
+1.常色：是指健康人面部皮肤的色泽。其特点是明润、含蓄。明润，是指面色明亮润泽，表明精气充足，津血不衰；含蓄，是指面色隐含于皮肤之内，而不特别显露，表明精气内含而不外泄。
+①主色：是指人生来就有的基本面色，属个体素质，一生基本不变。如有些人面色稍黑、稍白、稍黄等，均属正常。
+②客色：是指因各种因素（如季节、气候、昼夜、情绪、饮酒、运动等）引起的面色变化。如春季面色稍青、夏季稍红、长夏稍黄、秋季稍白、冬季稍黑；酒后面色稍红；运动后面色稍赤等。客色变化是暂时的，不属病态。
+2.病色：是指疾病状态下面部出现的异常色泽。其特点是晦暗、暴露。晦暗，即面部皮肤枯槁发暗而无光泽，表明精气已衰，胃气不能上荣；暴露，即某种面色异常明显地显露于外，表明病邪外显，病情较重。
+三、五色主病：
+五色，即青、赤、黄、白、黑五种面色。五色主病，是指根据面部出现的五色变化来推断疾病的证候。
+1.青色：主寒证、痛证、瘀血证、惊风证。
+青为气血不通、经脉瘀阻之色。面色苍白或青黑，多属寒凝气滞、经脉瘀阻；面色青灰，口唇青紫，多属心气虚衰、心血瘀阻；小儿眉间、鼻柱、唇周发青，多属惊风或惊风先兆。
+2.赤色：主热证，亦可见于戴阳证。
+赤为血液充盈于皮肤脉络之色。满面通红，多属外感发热，或脏腑阳盛的实热证；两颧潮红，多属阴虚阳亢的虚热证；久病、重病面色苍白却时而泛红如妆，多属戴阳证，是阳虚阴盛、虚阳浮越的危重证候。
+3.黄色：主脾虚证、湿证。
+黄为脾虚湿蕴之色。面色淡黄，枯槁无华，称为萎黄，多属脾胃气虚，营血不能上荣之故；面色黄而虚浮，称为黄胖，多是脾气虚衰、湿邪内阻所致；面目一身俱黄，称为黄疸。黄而鲜明如橘子色者，为阳黄，多属湿热；黄而晦暗如烟熏者，为阴黄，多属寒湿。
+4.白色：主虚证、寒证、失血证。
+白为气血不荣之候。面色淡白无华，唇舌色淡，多属血虚证或失血证；面色㿠白（白而虚浮），多属阳虚证；面色苍白（白中透青），多属阳气暴脱之亡阳证，或阴寒凝滞、血行不畅之实寒证，或大失血之人。
+5.黑色：主肾虚证、寒证、水饮证、瘀血证。
+黑为阴寒水盛之色。面黑暗淡，多属肾阳虚；面黑干焦，多属肾阴虚；眼眶周围发黑，多属肾虚水饮或寒湿带下；面色黧黑、肌肤甲错，多属瘀血日久。
+四、望面色的注意事项：
+1.注意光线：望面色应在充足的自然光下进行，避免在光线较暗或有色灯光下观察，以免造成错觉。
+2.注意个体差异：人的肤色有白、黄、黑等差异，应注意结合个体的常色进行判断。
+3.注意与病色相结合：望面色应结合望形态、望神志、望舌等其他望诊内容，综合判断病情。
+4.注意动态观察：病情是不断发展变化的，面色也会随之改变。应注意动态观察面色的变化，以判断病情进退。
+望面色是中医望诊的重要内容，简单易行而又具有重要诊断价值，掌握五色主病的规律，对临床辨证论治具有重要意义。","explanation":"望面色是中医望诊的重要组成部分，五色主病是中医诊断学的核心内容之一。","source:"《中医诊断学》",points:["望诊","面色","五色主病"]},
+  {id:"zj_s_601",type:"short",category:"针灸学",subCategory:"腧穴总论",difficulty:3,question:"简述腧穴的分类及各类腧穴的特点。","answer":"腧穴是人体脏腑经络之气输注出入的特殊部位，也是针灸、推拿等疗法的刺激点。腧穴的分类方法有多种，目前常用的分类方法是将腧穴分为十四经穴、经外奇穴、阿是穴三类。
+一、十四经穴：
+1.定义：是指具有固定的名称和位置，且归属于十二经脉与任、督二脉的腧穴，简称'经穴'。
+2.特点：①有固定的名称和明确的位置；②归属于十四经脉系统；③具有主治本经病证的共同作用；④有固定的主治规律。
+3.数量：目前国家标准经穴为361个。其中：
+①手太阴肺经：11穴（中府、云门、天府、侠白、尺泽、孔最、列缺、经渠、太渊、鱼际、少商）
+②手阳明大肠经：20穴（商阳、二间、三间、合谷、阳溪、偏历、温溜、下廉、上廉、手三里、曲池、肘髎、手五里、臂臑、肩髃、巨骨、天鼎、扶突、禾髎、迎香）
+③足阳明胃经：45穴
+④足太阴脾经：21穴
+⑤手少阴心经：9穴
+⑥手太阳小肠经：19穴
+⑦足太阳膀胱经：67穴
+⑧足少阴肾经：27穴
+⑨手厥阴心包经：9穴
+⑩手少阳三焦经：23穴
+⑪足少阳胆经：44穴
+⑫足厥阴肝经：14穴
+⑬督脉：28穴
+⑭任脉：24穴
+4.主治特点：十四经穴主治各经及其所属脏腑的病证，同时也能治疗与本经相关的其他脏腑、组织、器官的病证。
+二、经外奇穴：
+1.定义：是指既有一定的名称，又有明确的位置，但尚未归入或不便归入十四经系统的腧穴，又称'经外穴'、'奇穴'。
+2.特点：①有固定的名称和明确的位置；②未归入十四经脉系统；③多数对某些病证有特殊疗效，主治范围较单纯；④有些奇穴后来被补充到十四经中（如膏肓俞、风市等）。
+3.常见经外奇穴举例：
+①四神聪：在头顶部，当百会前后左右各1寸，共4穴。主治头痛、眩晕、失眠、健忘、癫痫等。
+②印堂：在额部，当两眉头之中间。主治头痛、眩晕、鼻渊、鼻衄、小儿惊风、失眠等。
+③太阳：在颞部，当眉梢与目外眦之间，向后约1横指的凹陷处。主治头痛、目疾、面瘫等。
+④鱼腰：在额部，瞳孔直上，眉毛中。主治眉棱骨痛、目赤肿痛、眼睑下垂、眼目歪斜等。
+⑤夹脊：在背腰部，当第1胸椎至第5腰椎棘突下两侧，后正中线旁开0.5寸，一侧17穴，左右共34穴。主治范围较广，上胸部穴治心肺、上肢病证；下胸部穴治胃肠病证；腰部穴治腰腹及下肢病证。
+⑥十宣：在手十指尖端，距指甲游离缘0.1寸（指寸），左右共10穴。主治昏迷、癫痫、高热、咽喉肿痛等。
+⑦八邪：在手背侧，微握拳，第1～5指间，指蹼缘后方赤白肉际处，左右共8穴。主治手背肿痛、手指麻木、头项强痛、咽痛、齿痛、目痛、烦热等。
+⑧八风：在足背侧，第1～5趾间，趾蹼缘后方赤白肉际处，左右共8穴。主治足跗肿痛、脚弱无力、头痛、牙痛、疟疾、毒蛇咬伤等。
+三、阿是穴：
+1.定义：是指既无固定名称，亦无固定位置，而是以压痛点或其他反应点作为针灸施术部位的一类腧穴，又称'天应穴'、'不定穴'、'压痛点'等。
+2.特点：①无固定名称和位置；②以压痛点或其他反应点为腧穴；③主治局部病证为主；④取穴简便、灵活。
+3.历史沿革：阿是穴名称始见于唐代孙思邈《备急千金要方》，书中记载：'有阿是之法，言人有病痛，即令捏其上，若里当其处，不问孔穴，即得便快成痛处，即云阿是，灸刺皆验，故曰阿是穴也。'但这类取穴方法早在《内经》中就有记载，如'以痛为输'即是此意。
+4.临床应用：阿是穴临床上多用于疼痛性病证，如头痛、胁痛、腹痛、腰腿痛、痹证等，也可用于某些内脏病证。
+四、三类腧穴的关系与意义：
+1.十四经穴是腧穴的主要部分，是针灸临床最常用的腧穴。
+2.经外奇穴是十四经穴的补充，扩大了腧穴的主治范围。
+3.阿是穴体现了腧穴的灵活性和实用性，是腧穴的原始形式。
+4.三类腧穴相互配合，共同构成了针灸治疗的腧穴系统。
+掌握腧穴的分类及其特点，是针灸临床辨证取穴、合理用穴的基础。","explanation":"腧穴的分类是针灸学的基础理论，掌握各类腧穴的特点对临床实践具有重要指导意义。","source:"《针灸学》",points:["腧穴","分类","十四经穴","经外奇穴","阿是穴"]},
+  {id:"jc_s_602",type:"truefalse",category:"中医基础理论",subCategory:"阴阳五行",difficulty:2,question:"五行相生的顺序是木生火、火生土、土生金、金生水、水生木。",options:["正确","错误"],answer:"正确",explanation:"五行相生是指五行之间存在着有序的递相资生、助长和促进的关系。五行相生的顺序是：木生火（木性温暖，火隐伏其中，钻木而生火，所以木生火）、火生土（火性灼热，能够焚化木，木燃烧后变成灰土，所以火生土）、土生金（金气需要依靠山石而存在，金石虽然是山，但山生金，金需要依靠山石而生长，所以土生金）、金生水（金气属少阴之精，气温流升而为云，得阴气凝肃而为水，金有润泽之性，金属受热后可以熔化为液体，所以金生水）、水生木（水味甘润，能够滋养木气，木需要水的滋润才能生长，所以水生木）。五行相生的关系是'生我'者为母，'我生'者为子。在相生关系中，任何一行都具有'生我'、'我生'两方面的关系，即'母子关系'。五行相生是五行学说的基本内容之一，对中医学理论体系的形成和发展具有深远影响。临床应用：1.滋水涵木：滋肾阴以养肝阴的方法，又称滋肾养肝法、滋补肝肾法。适用于肾阴亏损而肝阴不足，以及肝阳上亢之证。2.益火补土：温肾阳以补脾阳的方法，又称温肾健脾法、温补脾肾法。适用于肾阳衰微而致脾阳不振之证。3.培土生金：健脾生气以补益肺气的方法，又称补养脾肺法。适用于脾胃虚弱，不能滋养肺脏而肺虚脾弱之候。4.金水相生：滋养肺肾之阴的方法，又称补肺滋肾法、滋养肺肾法。适用于肺虚不能输布津液以滋肾，或肾阴不足，精气不能上滋于肺，而致肺肾阴虚者。",source:"《中医基础理论》",points:["五行","相生"]},
+  {id:"jl_s_602",type:"truefalse",category:"经络穴位",subCategory:"特定穴",difficulty:2,question:"合谷穴是手阳明大肠经的原穴，也是四总穴之一，主治头面五官病证。",options:["正确","错误"],answer:"正确",explanation:"合谷穴是手阳明大肠经的原穴，位于手背，第1、2掌骨间，当第2掌骨桡侧的中点处。简便取穴法：以一手的拇指指骨关节横纹，放在另一手拇、食指之间的指蹼缘上，当拇指尖下是穴。合谷穴是四总穴之一，'面口合谷收'，善于治疗头面五官诸疾，是临床最常用的腧穴之一。其主治范围包括：1.头痛、目赤肿痛、鼻衄、齿痛、口眼歪斜、耳聋、痄腮、咽喉肿痛等头面五官诸疾；2.发热恶寒等外感病证；3.热病无汗或多汗；4.经闭、滞产、月经不调、痛经、胎衣不下等妇产科病证；5.上肢疼痛、不遂、手指肿痛、麻木等；6.胃痛、腹痛、呕吐、便秘、痢疾等胃肠病证；7.小儿惊风、痉证、癫狂痫等神志病证；8.皮肤瘙痒、瘾疹、荨麻疹等皮肤病证；9.牙拔除术、甲状腺手术等口面五官及颈部手术针麻常用穴。合谷穴的配伍应用：1.配太冲，名四关穴，有平肝息风、镇静安神、通络止痛之功，主治头痛、眩晕、失眠、狂痫、四肢抽搐等。2.配曲池，有疏风解表、清热止痛之功，主治外感发热、头痛、咽痛、上肢痹痛等。3.配三阴交，有调经活血、催产之功，主治月经不调、痛经、经闭、滞产等。4.配颊车、地仓，有通经活络之功，主治口眼歪斜、牙痛、痄腮等。操作方法：直刺0.5～1.0寸，可灸。孕妇禁针（有引起堕胎之弊）。现代研究：合谷穴具有镇痛、镇静、抗炎、提高免疫力、调节胃肠功能、调节血压等作用，是针灸临床研究的重点穴位之一。",source:"《针灸学》",points:["合谷","原穴","四总穴"]},
+  {id:"zy_s_602",type:"truefalse",category:"中药学",subCategory:"用药禁忌",difficulty:2,question:"'十八反'中乌头反贝母、瓜蒌、半夏、白蔹、白及。",options:["正确","错误"],answer:"正确",explanation:"十八反是中药配伍禁忌的重要内容之一，最早见于金代张子和《儒门事亲》。具体内容是：本草明言十八反，半蒌贝蔹及攻乌，藻戟遂芫俱战草，诸参辛芍叛藜芦。即：1.乌头（包括川乌、草乌、附子）反半夏、瓜蒌（全瓜蒌、瓜蒌皮、瓜蒌仁、天花粉）、贝母（川贝、浙贝）、白蔹、白及。2.甘草反甘遂、大戟、海藻、芫花。3.藜芦反人参、沙参、丹参、玄参、苦参、细辛、芍药（赤芍、白芍）。关于十八反的历史沿革：1.《神农本草经》最早记载药物配伍禁忌，提到'勿用相恶、相反者'。2.梁代陶弘景《本草经集注》系统总结了前人对药物配伍禁忌的认识。3.宋代以后，关于十八反、十九畏的内容逐渐定型。关于十八反的现代认识：1.目前，十八反作为传统配伍禁忌，在大多数情况下仍为临床用药所遵循。2.但也有部分医家认为，十八反所列药物并非绝对禁忌，在特定情况下可以同用。如《金匮要略》甘遂半夏汤中甘遂与甘草同用，治疗留饮；海藻玉壶汤中海藻与甘草同用，治疗瘿瘤。3.现代药理研究对十八反进行了大量研究，但结果尚不一致。有些研究表明，十八反药物同用确实会增加毒性或降低疗效；而另一些研究则表明，在特定条件下同用未见明显毒性增加。4.目前，对于十八反的认识仍需进一步深入研究。在没有充分证据否定十八反之前，临床用药应遵循传统原则，尽量避免十八反药物同用。如确需使用，应在有经验医师指导下，密切观察患者反应，确保用药安全。","source:"《中药学》",points:["十八反","用药禁忌"]},
+  {id:"fj_s_602",type:"truefalse",category:"方剂学",subCategory:"补益剂",difficulty:2,question:"四君子汤由人参、白术、茯苓、炙甘草组成，功用益气健脾，为补气基础方。",options:["正确","错误"],answer:"正确",explanation:"四君子汤出自《太平惠民和剂局方》，是补气剂的代表方和基础方。组成：人参、白术、茯苓（去皮）各二钱（各9g）、炙甘草一钱（6g）。用法：上为细末。每服二钱（6g），水一盏，煎至七分，通口服，不拘时候；入盐少许，白汤点亦得（现代用法：水煎服）。功用：益气健脾。主治：脾胃气虚证。面色萎黄，语声低微，气短乏力，食少便溏，舌淡苔白，脉虚弱。本方证由脾胃气虚，运化乏力所致。脾胃为后天之本，气血生化之源，脾胃虚弱，气血生化不足，故见面色萎黄、语声低微、气短乏力；脾失健运，胃纳不振，湿浊内生，故饮食减少、大便溏薄；舌淡苔白、脉虚弱均为脾胃气虚之征。方义分析：方中人参为君，甘温益气，健脾养胃。臣以苦温之白术，健脾燥湿，加强益气助运之力。佐以甘淡茯苓，健脾渗湿，苓、术相配，则健脾祛湿之功益著。使以炙甘草，益气和中，调和诸药。四药配伍，共奏益气健脾之功。本方的配伍特点是：药力平和，温而不燥，补而不滞，恰合中和之旨，故以'君子'为名。临床应用：1.辨证要点：本方是治疗脾胃气虚的常用方、基础方。临床以面白食少、气短乏力、舌淡苔白、脉虚弱为辨证要点。2.加减变化：①异功散：本方加陈皮，功兼理气和胃，主治脾胃气虚兼气滞证。②六君子汤：本方加陈皮、半夏，功兼燥湿化痰，主治脾胃气虚兼痰湿证。③香砂六君子汤：本方加木香、砂仁、陈皮、半夏，功兼行气化痰，主治脾胃气虚、痰阻气滞证。④参苓白术散：本方加莲子肉、薏苡仁、缩砂仁、桔梗、白扁豆、山药、大枣，功兼渗湿止泻，主治脾虚湿盛证。3.现代应用：本方常用于慢性胃炎、消化性溃疡、胃肠功能紊乱、慢性肝炎、慢性胰腺炎、慢性肾炎、慢性支气管炎、功能性子宫出血等属脾胃气虚者。4.使用注意：阴虚或实热者忌用。四君子汤是补气剂的基础方，后世众多补气方剂均由此方衍化而来，被称为'补气第一方'。","source:"《方剂学》",points:["四君子汤","补益剂","补气"]},
+  {id:"zd_s_602",type:"truefalse",category:"中医诊断学",subCategory:"闻诊",difficulty:2,question:"闻诊中'谵语'表现为神志不清、语无伦次、声高有力，多属实证、热证。",options:["正确","错误"],answer:"正确",explanation:"闻诊是通过听声音和嗅气味来诊断疾病的方法。听声音包括听患者的语声、呼吸、咳嗽、呕吐、呃逆、嗳气、太息、喷嚏、呵欠、肠鸣等各种声响。关于语言异常，主要有以下几种：1.谵语：表现为神志不清、语无伦次、声高有力。多属实证、热证，常见于外感热病、阳明腑实证、痰热扰心等。《伤寒论》说：'实则谵语。'2.郑声：表现为神志不清、语言重复、时断时续、语声低弱模糊。多属虚证，常见于久病、重病后期，心气大伤、精神散乱之证。《伤寒论》说：'虚则郑声。'3.独语：表现为自言自语、喃喃不休、见人语止、首尾不续。多属虚证，常见于心气不足、神失所养，或气郁痰结、阻蔽心窍之癫证、郁证。4.错语：表现为神志清楚而语言时有错乱，语后自知言错。多属虚证，常见于心气不足、神失所养，或痰湿、瘀血、气滞阻碍心窍所致。5.狂言：表现为精神错乱、语无伦次、狂躁妄言、登高而歌、弃衣而走。多属阳证、实证、热证，常见于痰火扰心之狂证。6.言謇：表现为神志清楚、思维正常而吐字困难、或吐字不清。多属风痰阻络之证，常见于中风先兆或中风后遗症。7.失语：表现为完全不能言语。多属实证，常见于中风、脑部病变等。谵语与郑声的鉴别：谵语多属实热，表现为声高有力、语无伦次；郑声多属虚证，表现为语声低弱、语言重复。二者均见于神志不清的状态下，但一实一虚，迥然不同。闻诊是中医诊断学的重要组成部分，通过听声音可以辨别疾病的虚实寒热，对临床辨证论治具有重要意义。",source:"《中医诊断学》",points:["闻诊","谵语","语言异常"]},
+  {id:"zj_s_602",type:"truefalse",category:"针灸学",subCategory:"针灸操作",difficulty:2,question:"针刺操作的基本步骤是：消毒、进针、行针、得气、留针、出针。",options:["正确","错误"],answer:"正确",explanation:"针刺操作是针灸临床的基本技能，其基本步骤包括消毒、进针、行针、得气、留针、出针六个主要环节。一、消毒：针刺前必须做好消毒工作，包括针具消毒、腧穴部位消毒和医者手指消毒。消毒是预防感染、保证针灸安全的重要环节。二、进针：是指将针刺入腧穴皮下的操作过程。进针的方法主要有：1.单手进针法：用刺手拇、食指持针，中指端紧靠穴位，指腹抵住针体中部，当拇、食指向下用力时，中指也随之屈曲，将针刺入，直至所需深度。2.双手进针法：①指切进针法：用左手拇指或食指端切按在腧穴位置的旁边，右手持针，紧靠左手指甲面将针刺入腧穴。②夹持进针法：用左手拇、食二指持捏消毒干棉球，夹住针身下端，将针尖固定在所刺腧穴的皮肤表面位置，右手捻动针柄，将针刺入腧穴。③舒张进针法：用左手拇、食二指将所刺腧穴部位的皮肤向两侧撑开，使皮肤绷紧，右手持针，使针从左手拇、食二指的中间刺入。④提捏进针法：用左手拇、食二指将针刺腧穴部位的皮肤捏起，右手持针，从捏起的上端将针刺入。三、行针：是指将针刺入腧穴后，为了使患者产生针刺感应，或进一步调整针感的强弱，以及使针感向某一方向扩散、传导而采取的操作方法，又称'运针'。行针的基本手法有提插法和捻转法。四、得气：是指将针刺入腧穴后所产生的经气感应，又称'针感'。得气时，医者会感到针下有徐和或沉紧的感觉；同时，患者也会在针下出现相应的酸、麻、胀、重等感觉，或沿着一定部位，向一定方向扩散传导的感觉。得气与否与疗效密切相关，《灵枢·九针十二原》说：'气至而有效。'五、留针：是指将针刺入腧穴行针施术后，使针留置穴内。留针的目的是为了加强针刺的作用和便于继续行针施术。一般病证留针15～30分钟，慢性病、疼痛性疾病可适当延长留针时间。六、出针：是指在行针或留针后，将针退出的操作方法。出针时，一般是以左手拇、食指按住针孔周围皮肤，右手持针轻微捻转并慢慢提至皮下，然后迅速拔出，并用消毒干棉球按压针孔，以防出血。掌握针刺操作的基本步骤和方法，是针灸临床的基本要求，也是取得良好疗效的重要保证。","source:"《针灸学》",points:["针刺操作","针灸"]}
+];
