@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "resource:manifest": "node scripts/generate-resource-manifest.mjs --input=public --output=public/assets/runtime-manifest.json",
+    "selftest:light-shell": "node scripts/selftest-light-shell.mjs",
     "cap:copy": "npx cap copy",
     "cap:sync": "npx cap sync",
     "cap:android": "npx cap open android"
