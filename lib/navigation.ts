@@ -5,73 +5,58 @@
  * 在 Capacitor WebView 和浏览器中都能正常工作的导航
  */
 
-function getBasePath(): string {
-  if (typeof window === 'undefined') return ''
-  const pathname = window.location.pathname
-  if (pathname.startsWith('/app/') || pathname === '/app') return '/app'
-  return ''
+function isCapacitor(): boolean {
+  if (typeof window === 'undefined') return false
+  // Capacitor 8.x 的检测方式
+  return !!(window as any).Capacitor && (window as any).Capacitor.isNative !== undefined
+    ? (window as any).Capacitor.isNative
+    : !!(window as any).Capacitor
 }
 
 function resolvePath(path: string): string {
-  const basePath = getBasePath()
-  const normalizedPath = path.startsWith('/') ? path : '/' + path
-  
   // 如果是完整URL，直接返回
   if (path.startsWith('http://') || path.startsWith('https://')) {
     return path
   }
   
-  return basePath + normalizedPath
+  // 标准化路径
+  const normalizedPath = path.startsWith('/') ? path : '/' + path
+  
+  // 在 Capacitor 中，不需要 basePath
+  if (isCapacitor()) {
+    return normalizedPath
+  }
+  
+  // Web 版本也不需要 basePath（已移除 basePath 配置）
+  return normalizedPath
 }
 
 export function navigateTo(path: string): void {
   const fullPath = resolvePath(path)
   
-  // 检查是否在 Capacitor WebView 中
-  const isCapacitor = typeof window !== 'undefined' && (window as any).Capacitor
+  console.log('[Navigation] Navigating to:', fullPath, 'isCapacitor:', isCapacitor())
   
   try {
-    if (isCapacitor) {
-      // 在 Capacitor 中，直接使用 location.replace 更可靠
-      window.location.replace(fullPath)
-      return
-    }
-  } catch (e) {
-    console.warn('Capacitor navigation failed:', e)
-  }
-
-  try {
-    // 策略1: 使用 location.replace 直接替换，不保留历史记录
+    // 使用 location.assign 进行导航，这在 Capacitor WebView 中最可靠
     if (typeof window !== 'undefined' && window.location) {
-      window.location.replace(fullPath)
+      window.location.assign(fullPath)
       return
     }
   } catch (e) {
-    console.warn('location.replace failed:', e)
+    console.warn('[Navigation] location.assign failed:', e)
   }
 
   try {
-    // 策略2: history.replaceState + 刷新
-    if (typeof window !== 'undefined' && window.history) {
-      window.history.replaceState({}, '', fullPath)
-      window.location.reload()
-      return
-    }
-  } catch (e) {
-    console.warn('history.replaceState failed:', e)
-  }
-
-  try {
-    // 策略3: 直接设置 href
+    // 备用方案: location.href
     if (typeof window !== 'undefined' && window.location) {
       window.location.href = fullPath
       return
     }
   } catch (e) {
-    console.warn('location.href failed:', e)
+    console.warn('[Navigation] location.href failed:', e)
   }
 
-  console.error('All navigation methods failed for:', fullPath)
+  console.error('[Navigation] All navigation methods failed for:', fullPath)
 }
 
 export function getCurrentPath(): string {
