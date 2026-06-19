@@ -1,12 +1,14 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { 
   Search, ChevronLeft, Camera, Scan, User, Brain, 
   BookOpen, MapPin, Pill, FileText, Stethoscope,
   Heart, Dumbbell, Apple, Sparkles, GraduationCap,
   Calculator, Clock, Zap, Bot, Shield, AlertTriangle
 } from "lucide-react"
+import { TCM_ANALYSIS_RULES } from "@/lib/tcm-analysis-rules"
 
 // 隐私保护声明
 const PRIVACY_NOTICE = {
@@ -19,6 +21,9 @@ const PRIVACY_NOTICE = {
 // 中医百科功能
 const TCM_BAIKE = [
   { id: "jingluo", name: "经络穴位", icon: MapPin, desc: "十二经络与常用穴位", color: "#0891b2" },
+  { id: "tcm-3d-anatomy", name: "3D人体解剖", icon: Scan, desc: "分层显隐与病灶问诊", color: "#0891b2" },
+  { id: "tcm-acupuncture-sim", name: "虚拟针灸", icon: Zap, desc: "取穴方案与刺入模拟", color: "#0891b2" },
+  { id: "tcm-bone-reset", name: "正骨模拟", icon: Dumbbell, desc: "错位复位交互训练", color: "#0891b2" },
   { id: "jingdian", name: "经典书城", icon: BookOpen, desc: "中医古籍原文与译文", color: "#0891b2" },
   { id: "jibing", name: "疾病百科", icon: Search, desc: "常见疾病辨证施治", color: "#0891b2" },
   { id: "yian", name: "医案查询", icon: FileText, desc: "名家医案实录", color: "#0891b2" },
@@ -61,6 +66,7 @@ interface TCMPageProps {
 }
 
 export function TCMPage({ onNavigateToTool }: TCMPageProps) {
+  const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const [activeTab, setActiveTab] = useState("all")
   const [showAIPanel, setShowAIPanel] = useState(false)
@@ -75,27 +81,35 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
     { id: "xuexi", name: "学习工具" },
   ]
 
-  // 模拟AI分析
+  // 本地规则分析
   const handleAIAnalysis = async (type: string, input: string) => {
     setIsAnalyzing(true)
     setAiResult(null)
     
-    // 模拟AI分析延迟
+    // 本地分析流程演示延迟
     await new Promise(resolve => setTimeout(resolve, 2000))
     
-    // 根据不同类型返回不同的分析结果
-    const results: Record<string, string> = {
-      "ai-tongue": `【舌诊分析结果】\n\n舌质：淡红\n舌苔：薄白\n舌形：正常\n\n【辨证提示】\n此舌象提示气血调和，脏腑功能正常。若有不适，建议结合其他四诊综合判断。\n\n【调理建议】\n1. 饮食清淡，避免辛辣油腻\n2. 作息规律，避免熬夜\n3. 适当运动，增强体质\n\n【古籍参考】\n《伤寒论》："舌上白滑苔者，里寒也。"\n《温病条辨》："舌绛而干，当滋阴清热。"`,
-      "ai-constitution": `【体质检测结果】\n\n主要体质：气虚质（65%）\n兼夹体质：阳虚质（20%）、痰湿质（15%）\n\n【体质特征】\n- 容易疲劳，气短懒言\n- 容易感冒，抵抗力较弱\n- 舌淡红，边有齿痕\n\n【调理方案】\n1. 食疗：山药、黄芪、党参炖鸡\n2. 运动：八段锦、太极拳\n3. 穴位：足三里、气海、关元\n\n【推荐方剂】\n四君子汤加减：人参、白术、茯苓、甘草\n\n【易学关联】\n根据您的出生时辰，日主属木，需补土气，建议艾灸脾俞、胃俞穴。`,
-      "ai-face": `【面诊分析结果】\n\n面色：偏白\n眼周：略有青黑\n唇色：淡红\n\n【脏腑提示】\n- 面白无华提示气血不足\n- 眼周青黑提示肾气不足或睡眠不佳\n- 唇色淡提示脾胃虚弱\n\n【调理建议】\n1. 补益气血：当归、黄芪、枸杞泡茶\n2. 改善睡眠：酸枣仁、远志、茯神\n3. 健脾养胃：四神汤（山药、芡实、莲子、茯苓）\n\n【穴位推荐】\n三阴交、血海、足三里`,
-      "ai-pulse": `【脉象分析结果】\n\n脉位：中取\n脉率：正常（约72次/分）\n脉象特征：弦细\n\n【辨证分析】\n弦脉主肝胆病、痛证、痰饮\n细脉主气血两虚、湿证\n\n【可能证型】\n肝郁气滞兼气血不足\n\n【建议方剂】\n逍遥散加减：柴胡、当归、白芍、白术、茯苓、甘草、薄荷、生姜\n\n【古籍参考】\n《濒湖脉学》："弦脉端直以长，如按琴弦。"`,
-    }
-    
-    setAiResult(results[type] || "分析完成，请结合实际情况综合判断。")
+    const result = TCM_ANALYSIS_RULES[type]
+    setAiResult(result?.content || "分析完成，请结合实际情况综合判断。")
     setIsAnalyzing(false)
   }
 
   const handleToolClick = (toolId: string) => {
+    if (toolId === "tcm-3d-anatomy") {
+      router.push("/tcm-3d-anatomy")
+      return
+    }
+
+    if (toolId === "tcm-acupuncture-sim") {
+      router.push("/tcm-acupuncture-sim")
+      return
+    }
+
+    if (toolId === "tcm-bone-reset") {
+      router.push("/tcm-bone-reset")
+      return
+    }
+
     if (toolId.startsWith("ai-") || toolId === "ai-analysis") {
       setSelectedAITool(toolId)
       setShowAIPanel(true)
@@ -353,7 +367,7 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
                       className="w-full py-4 bg-[#f59e0b] rounded-xl text-white font-medium flex items-center justify-center gap-2"
                     >
                       <User className="w-5 h-5" />
-                      开始测试
+                      开始检测
                     </button>
                   )}
                   {selectedAITool === "ai-pulse" && (

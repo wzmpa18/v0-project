@@ -7,6 +7,8 @@ import { SHEN_SHA, checkShenSha } from "@/lib/bazi-data"
 import { BA_MEN, JIU_XING, BA_SHEN_YANG, SAN_QI_LIU_YI } from "@/lib/qimen-data"
 import { GUA_64, LIU_SHOU, getLiuQin, BA_GUA_NA_JIA } from "@/lib/liuyao-data"
 import { BaziResult } from "@/components/bazi/bazi-result"
+import { calculateBaziByCommercialKernel } from "@/lib/yixue/bazi-engine"
+import { LIU_WENYUAN_PROFILE } from "@/lib/yixue/liu-wenyuan-profile"
 
 // 天干
 const TIAN_GAN = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
@@ -226,77 +228,66 @@ export function PaipanPage({ onNavigateToTool }: PaipanPageProps = {}) {
     return result.length > 0 ? result : ["无特殊神煞"]
   }
 
-  // 计算八字
-  const calculateBaZi = () => {
+  // 计算八字（商用内核：缘份居API优先，本地开源引擎回退）
+  const calculateBaZi = async () => {
     setIsCalculating(true)
     
     try {
-      let solar: typeof Solar.prototype
-      if (calendarType === "lunar") {
-        const lunar = Lunar.fromYmd(year, month, day)
-        solar = lunar.getSolar()
-      } else {
-        solar = Solar.fromYmd(year, month, day)
-      }
-      
-      const lunar = solar.getLunar()
-      const eightChar = lunar.getEightChar()
-      eightChar.setSect(lateZiShi ? 1 : 2)
-      
-      const yearGan = eightChar.getYearGan()
-      const yearZhi = eightChar.getYearZhi()
-      const monthGan = eightChar.getMonthGan()
-      const monthZhi = eightChar.getMonthZhi()
-      const dayGan = eightChar.getDayGan()
-      const dayZhi = eightChar.getDayZhi()
-      
-      const shiChenIndex = Math.floor((hour + 1) % 24 / 2)
-      const hourZhi = DI_ZHI[shiChenIndex]
-      const dayGanIndex = TIAN_GAN.indexOf(dayGan)
-      const hourGanIndex = (dayGanIndex % 5) * 2 + shiChenIndex
-      const hourGan = TIAN_GAN[hourGanIndex % 10]
-      
-      const yearGanZhi = yearGan + yearZhi
-      const monthGanZhi = monthGan + monthZhi
-      const dayGanZhi = dayGan + dayZhi
-      const hourGanZhi = hourGan + hourZhi
-      
-      const yun = eightChar.getYun(gender === "male")
-      const daYunList = yun.getDaYun()
-      const daYun = daYunList.slice(1, 11).map((dy: any) => {
-        const ganZhi = dy.getGanZhi()
-        // getGanZhi() 返回字符串如 "甲子"，需要拆分
-        const ganZhiStr = typeof ganZhi === "string" ? ganZhi : ganZhi.toString()
-        return {
-          age: dy.getStartAge(),
-          gan: ganZhiStr[0] || "甲",
-          zhi: ganZhiStr[1] || "子",
-        }
+      const kernelResult = await calculateBaziByCommercialKernel({
+        name,
+        gender,
+        calendarType,
+        year,
+        month,
+        day,
+        hour,
+        useTrueSolarTime,
+        birthCity,
       })
-      
-      const qiYunAge = yun.getStartYear()
-      
+
+      const yearGan = kernelResult.siZhu.year.gan
+      const yearZhi = kernelResult.siZhu.year.zhi
+      const monthGan = kernelResult.siZhu.month.gan
+      const monthZhi = kernelResult.siZhu.month.zhi
+      const dayGan = kernelResult.siZhu.day.gan
+      const dayZhi = kernelResult.siZhu.day.zhi
+      const hourGan = kernelResult.siZhu.hour.gan
+      const hourZhi = kernelResult.siZhu.hour.zhi
+
+      const flatShenSha = [
+        ...(kernelResult.shenSha.year || []),
+        ...(kernelResult.shenSha.month || []),
+        ...(kernelResult.shenSha.day || []),
+        ...(kernelResult.shenSha.hour || []),
+      ]
+
+      const daYun = kernelResult.daYun.map((dy) => ({
+        age: dy.age,
+        gan: dy.gan,
+        zhi: dy.zhi,
+      }))
+
       const baseResult = {
         yearGan, yearZhi, monthGan, monthZhi, dayGan, dayZhi, hourGan, hourZhi,
-        yearNaYin: NA_YIN[yearGanZhi] || "",
-        monthNaYin: NA_YIN[monthGanZhi] || "",
-        dayNaYin: NA_YIN[dayGanZhi] || "",
-        hourNaYin: NA_YIN[hourGanZhi] || "",
-        yearCangGan: CANG_GAN[yearZhi] || [],
-        monthCangGan: CANG_GAN[monthZhi] || [],
-        dayCangGan: CANG_GAN[dayZhi] || [],
-        hourCangGan: CANG_GAN[hourZhi] || [],
-        yearShiShen: getShiShen(dayGan, yearGan),
-        monthShiShen: getShiShen(dayGan, monthGan),
-        dayShiShen: "日元",
-        hourShiShen: getShiShen(dayGan, hourGan),
+        yearNaYin: kernelResult.siZhu.year.naYin,
+        monthNaYin: kernelResult.siZhu.month.naYin,
+        dayNaYin: kernelResult.siZhu.day.naYin,
+        hourNaYin: kernelResult.siZhu.hour.naYin,
+        yearCangGan: kernelResult.siZhu.year.cangGan,
+        monthCangGan: kernelResult.siZhu.month.cangGan,
+        dayCangGan: kernelResult.siZhu.day.cangGan,
+        hourCangGan: kernelResult.siZhu.hour.cangGan,
+        yearShiShen: kernelResult.siZhu.year.shiShen,
+        monthShiShen: kernelResult.siZhu.month.shiShen,
+        dayShiShen: kernelResult.siZhu.day.shiShen,
+        hourShiShen: kernelResult.siZhu.hour.shiShen,
         daYun,
-        qiYunAge,
-        taiYuan: calcTaiYuan(monthGan, monthZhi),
-        mingGong: calcMingGong(monthZhi, hourZhi),
-        shenGong: calcShenGong(monthZhi, hourZhi),
-        kongWang: calcKongWang(dayGan, dayZhi),
-        shenSha: calcShenSha({ yearGan, yearZhi, monthGan, monthZhi, dayGan, dayZhi, hourGan, hourZhi }),
+        qiYunAge: daYun[0]?.age || 0,
+        taiYuan: kernelResult.taiYuan,
+        mingGong: kernelResult.mingGong,
+        shenGong: kernelResult.shenGong,
+        kongWang: kernelResult.kongWang,
+        shenSha: flatShenSha,
       }
       
       setBaziResult({
@@ -310,28 +301,21 @@ export function PaipanPage({ onNavigateToTool }: PaipanPageProps = {}) {
       setDetailResultData({
         name,
         gender,
-        lunarDate: lunar.toString(),
-        solarDate: solar.toYmd(),
-        trueSolarTime: useTrueSolarTime ? `${birthCity} 真太阳时` : undefined,
-        siZhu: {
-          year: { gan: yearGan, zhi: yearZhi, cangGan: CANG_GAN[yearZhi] || [], shiShen: getShiShen(dayGan, yearGan), naYin: NA_YIN[yearGanZhi] || "" },
-          month: { gan: monthGan, zhi: monthZhi, cangGan: CANG_GAN[monthZhi] || [], shiShen: getShiShen(dayGan, monthGan), naYin: NA_YIN[monthGanZhi] || "" },
-          day: { gan: dayGan, zhi: dayZhi, cangGan: CANG_GAN[dayZhi] || [], shiShen: "日主", naYin: NA_YIN[dayGanZhi] || "" },
-          hour: { gan: hourGan, zhi: hourZhi, cangGan: CANG_GAN[hourZhi] || [], shiShen: getShiShen(dayGan, hourGan), naYin: NA_YIN[hourGanZhi] || "" },
-        },
-        taiYuan: calcTaiYuan(monthGan, monthZhi),
-        mingGong: calcMingGong(monthZhi, hourZhi),
-        shenGong: calcShenGong(monthZhi, hourZhi),
-        kongWang: calcKongWang(dayGan, dayZhi),
-        shenSha: {
-          year: calcShenSha({ yearGan, yearZhi, monthGan, monthZhi, dayGan, dayZhi, hourGan, hourZhi }).filter((_, i) => i % 4 === 0),
-          month: calcShenSha({ yearGan, yearZhi, monthGan, monthZhi, dayGan, dayZhi, hourGan, hourZhi }).filter((_, i) => i % 4 === 1),
-          day: calcShenSha({ yearGan, yearZhi, monthGan, monthZhi, dayGan, dayZhi, hourGan, hourZhi }).filter((_, i) => i % 4 === 2),
-          hour: calcShenSha({ yearGan, yearZhi, monthGan, monthZhi, dayGan, dayZhi, hourGan, hourZhi }).filter((_, i) => i % 4 === 3),
-        },
+        lunarDate: kernelResult.lunarDate,
+        solarDate: kernelResult.solarDate,
+        trueSolarTime: kernelResult.trueSolarTime,
+        siZhu: kernelResult.siZhu,
+        taiYuan: kernelResult.taiYuan,
+        mingGong: kernelResult.mingGong,
+        shenGong: kernelResult.shenGong,
+        kongWang: kernelResult.kongWang,
+        shenSha: kernelResult.shenSha,
         daYun,
-        jieQi: lunar.getPrevJieQi()?.getName() || "未知节气",
+        jieQi: "按内核返回节气推算",
         age,
+        kernel: kernelResult.kernel,
+        ruleSetVersion: kernelResult.ruleSetVersion,
+        theory: LIU_WENYUAN_PROFILE.displayName,
       })
       setShowDetailResult(true)
     } catch (error) {

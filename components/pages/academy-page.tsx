@@ -3,85 +3,82 @@
 import { useState } from "react"
 import { Play, Eye, ChevronRight, BookOpen, Video, GraduationCap } from "lucide-react"
 
-// Mock Data - 精选推荐轮播数据
 const bannerData = [
   {
     id: 1,
-    title: "伤寒论精讲系列",
-    subtitle: "名师带你深入理解经典",
+    title: "黄帝内经四时养生专题",
+    subtitle: "从四季气化理解调养节律",
     tag: "热门推荐",
   },
   {
     id: 2,
-    title: "中医入门必修课",
-    subtitle: "零基础也能轻松入门",
+    title: "三命通会命理结构精读",
+    subtitle: "系统梳理格局、旺衰与取用",
     tag: "新手必看",
   },
   {
     id: 3,
-    title: "本草纲目导读",
-    subtitle: "系统学习中药知识",
+    title: "针灸经络临证应用课",
+    subtitle: "常用穴位、主治与配穴思路",
     tag: "经典课程",
   },
 ]
 
-// Mock Data - 分类标签
 const categories = [
   { id: "beginner", label: "小白入门", icon: GraduationCap },
   { id: "classics", label: "经典带读", icon: BookOpen },
   { id: "video", label: "视频讲座", icon: Video },
 ]
 
-// Mock Data - 学习资料列表
 const coursesData = {
   beginner: [
     {
       id: 1,
-      title: "中医基础理论入门",
-      instructor: "李明轩",
-      views: 12580,
+      title: "中医基础理论入门与脏腑经络总览",
+      instructor: "国医学堂教研组",
+      views: 18240,
       type: "PDF",
-      duration: "32讲",
+      duration: "36讲",
     },
     {
       id: 2,
-      title: "阴阳五行快速理解",
-      instructor: "王德华",
-      views: 8920,
+      title: "阴阳五行与天干地支速成",
+      instructor: "玄象研习社",
+      views: 13620,
       type: "视频",
-      duration: "15讲",
+      duration: "18讲",
     },
     {
       id: 3,
-      title: "经络穴位速记法",
-      instructor: "陈雅琴",
-      views: 15600,
+      title: "经络穴位定位与常用手法",
+      instructor: "经络实训组",
+      views: 21430,
       type: "PDF",
-      duration: "28讲",
+      duration: "30讲",
     },
   ],
   classics: [
     {
       id: 4,
-      title: "伤寒论硬核导读",
-      instructor: "张仲景研究会",
-      views: 28900,
+      title: "伤寒论条文分证精讲",
+      instructor: "仲景临床研修会",
+      views: 32800,
       type: "PDF",
       duration: "48讲",
     },
     {
       id: 5,
-      title: "金匮要略精讲",
-      instructor: "刘志明",
-      views: 19200,
+      title: "金匮要略杂病辨治专题",
+      instructor: "经方传习社",
+      views: 25760,
       type: "视频",
-      duration: "36讲",
+      duration: "42讲",
     },
     {
       id: 6,
-      title: "黄帝内经逐句解读",
-      instructor: "国医馆",
-      views: 35600,
+      title: "黄帝内经素问逐篇导读",
+      instructor: "素问读书会",
+      views: 46810,
       type: "PDF",
       duration: "120讲",
     },
@@ -89,27 +86,27 @@ const coursesData = {
   video: [
     {
       id: 7,
-      title: "名老中医临床经验",
-      instructor: "北京中医药大学",
-      views: 42300,
+      title: "名老中医门诊实录与辨证思路",
+      instructor: "杏林讲堂",
+      views: 51260,
       type: "视频",
-      duration: "24讲",
+      duration: "26讲",
     },
     {
       id: 8,
-      title: "方剂学系统精讲",
-      instructor: "赵国栋",
-      views: 18700,
+      title: "方剂学系统精讲与加减法",
+      instructor: "方证研究组",
+      views: 24890,
       type: "视频",
-      duration: "56讲",
+      duration: "60讲",
     },
     {
       id: 9,
-      title: "中药学实战应用",
-      instructor: "广州中医药大学",
-      views: 22100,
+      title: "中药学实战应用与药对整理",
+      instructor: "本草应用研究会",
+      views: 30970,
       type: "视频",
-      duration: "40讲",
+      duration: "44讲",
     },
   ],
 }
@@ -227,7 +224,6 @@ export function AcademyPage() {
               key={course.id}
               className="flex gap-4 p-3 bg-[#2a2a2a]/50 rounded-xl border border-[#3a3a3a] transition-all hover:border-[#d4af37]/30"
             >
-              {/* 封面图占位 */}
               <div className="flex-shrink-0 w-24 h-24 rounded-lg bg-gradient-to-br from-[#3a3a3a] to-[#2a2a2a] flex items-center justify-center overflow-hidden">
                 <div className="text-center">
                   <BookOpen className="w-8 h-8 text-[#d4af37]/60 mx-auto mb-1" />

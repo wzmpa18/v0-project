@@ -8,6 +8,13 @@ export interface JingFang {
   name: string
   alias?: string[]
   source: string  // 出处
+  sourceRef?: {
+    work: string
+    chapter?: string
+    clause?: string
+    edition: string
+  }
+  version?: string
   composition: { herb: string; dosage: string }[]  // 组成
   preparation: string  // 煎服法
   indication: string  // 主治
@@ -22,6 +29,8 @@ export const JING_FANG_DATA: JingFang[] = [
     name: "桂枝汤",
     alias: ["和剂之王"],
     source: "《伤寒论》",
+    sourceRef: { work: "《伤寒论》", chapter: "辨太阳病脉证并治上", clause: "第12-13条", edition: "人民卫生出版社点校本（待人工核验）" },
+    version: "jingfang-v1.0.0",
     composition: [
       { herb: "桂枝", dosage: "三两" },
       { herb: "芍药", dosage: "三两" },
@@ -38,6 +47,8 @@ export const JING_FANG_DATA: JingFang[] = [
     id: "mahuangtang",
     name: "麻黄汤",
     source: "《伤寒论》",
+    sourceRef: { work: "《伤寒论》", chapter: "辨太阳病脉证并治上", clause: "第35条", edition: "人民卫生出版社点校本（待人工核验）" },
+    version: "jingfang-v1.0.0",
     composition: [
       { herb: "麻黄", dosage: "三两去节" },
       { herb: "桂枝", dosage: "二两去皮" },
@@ -54,6 +65,8 @@ export const JING_FANG_DATA: JingFang[] = [
     name: "小柴胡汤",
     alias: ["少阳主方"],
     source: "《伤寒论》",
+    sourceRef: { work: "《伤寒论》", chapter: "辨太阳病脉证并治中", clause: "第96条", edition: "人民卫生出版社点校本（待人工核验）" },
+    version: "jingfang-v1.0.0",
     composition: [
       { herb: "柴胡", dosage: "半斤" },
       { herb: "黄芩", dosage: "三两" },
@@ -72,6 +85,8 @@ export const JING_FANG_DATA: JingFang[] = [
     id: "dachengqi",
     name: "大承气汤",
     source: "《伤寒论》",
+    sourceRef: { work: "《伤寒论》", chapter: "辨阳明病脉证并治", clause: "第212条", edition: "人民卫生出版社点校本（待人工核验）" },
+    version: "jingfang-v1.0.0",
     composition: [
       { herb: "大黄", dosage: "四两酒洗" },
       { herb: "厚朴", dosage: "半斤炙去皮" },
@@ -87,6 +102,8 @@ export const JING_FANG_DATA: JingFang[] = [
     id: "sini",
     name: "四逆汤",
     source: "《伤寒论》",
+    sourceRef: { work: "《伤寒论》", chapter: "辨少阴病脉证并治", clause: "第323条", edition: "人民卫生出版社点校本（待人工核验）" },
+    version: "jingfang-v1.0.0",
     composition: [
       { herb: "附子", dosage: "一枚生用去皮破八片" },
       { herb: "干姜", dosage: "一两半" },
@@ -101,6 +118,8 @@ export const JING_FANG_DATA: JingFang[] = [
     id: "gegen",
     name: "葛根汤",
     source: "《伤寒论》",
+    sourceRef: { work: "《伤寒论》", chapter: "辨太阳病脉证并治上", clause: "相关条", edition: "人民卫生出版社点校本（待人工核验）" },
+    version: "jingfang-v1.0.0",
     composition: [
       { herb: "葛根", dosage: "四两" },
       { herb: "麻黄", dosage: "三两去节" },
@@ -119,6 +138,8 @@ export const JING_FANG_DATA: JingFang[] = [
     id: "baihu",
     name: "白虎汤",
     source: "《伤寒论》",
+    sourceRef: { work: "《伤寒论》", chapter: "辨阳明病脉证并治", clause: "相关条", edition: "人民卫生出版社点校本（待人工核验）" },
+    version: "jingfang-v1.0.0",
     composition: [
       { herb: "石膏", dosage: "一斤碎" },
       { herb: "知母", dosage: "六两" },
@@ -135,6 +156,8 @@ export const JING_FANG_DATA: JingFang[] = [
     name: "理中汤",
     alias: ["理中丸"],
     source: "《伤寒论》",
+    sourceRef: { work: "《伤寒论》", chapter: "霍乱病相关条", clause: "相关条", edition: "人民卫生出版社点校本（待人工核验）" },
+    version: "jingfang-v1.0.0",
     composition: [
       { herb: "人参", dosage: "三两" },
       { herb: "干姜", dosage: "三两" },
@@ -150,6 +173,8 @@ export const JING_FANG_DATA: JingFang[] = [
     id: "wuling",
     name: "五苓散",
     source: "《伤寒论》",
+    sourceRef: { work: "《伤寒论》", chapter: "辨太阳病脉证并治上", clause: "相关条", edition: "人民卫生出版社点校本（待人工核验）" },
+    version: "jingfang-v1.0.0",
     composition: [
       { herb: "猪苓", dosage: "十八铢去皮" },
       { herb: "泽泻", dosage: "一两六铢" },
@@ -166,6 +191,8 @@ export const JING_FANG_DATA: JingFang[] = [
     id: "banxiaxiexin",
     name: "半夏泻心汤",
     source: "《伤寒论》",
+    sourceRef: { work: "《伤寒论》", chapter: "辨太阳病脉证并治中", clause: "相关条", edition: "人民卫生出版社点校本（待人工核验）" },
+    version: "jingfang-v1.0.0",
     composition: [
       { herb: "半夏", dosage: "半升洗" },
       { herb: "黄芩", dosage: "三两" },
@@ -184,6 +211,8 @@ export const JING_FANG_DATA: JingFang[] = [
     id: "zhenwu",
     name: "真武汤",
     source: "《伤寒论》",
+    sourceRef: { work: "《伤寒论》", chapter: "辨太阳病脉证并治下", clause: "相关条", edition: "人民卫生出版社点校本（待人工核验）" },
+    version: "jingfang-v1.0.0",
     composition: [
       { herb: "茯苓", dosage: "三两" },
       { herb: "芍药", dosage: "三两" },
@@ -200,6 +229,8 @@ export const JING_FANG_DATA: JingFang[] = [
     id: "guizhifuzi",
     name: "桂枝附子汤",
     source: "《伤寒论》",
+    sourceRef: { work: "《伤寒论》", chapter: "辨太阳病脉证并治下", clause: "相关条", edition: "人民卫生出版社点校本（待人工核验）" },
+    version: "jingfang-v1.0.0",
     composition: [
       { herb: "桂枝", dosage: "四两去皮" },
       { herb: "附子", dosage: "三枚炮去皮破" },
@@ -216,6 +247,8 @@ export const JING_FANG_DATA: JingFang[] = [
     id: "mahuangfuzi",
     name: "麻黄附子细辛汤",
     source: "《伤寒论》",
+    sourceRef: { work: "《伤寒论》", chapter: "辨少阴病脉证并治", clause: "第301条", edition: "人民卫生出版社点校本（待人工核验）" },
+    version: "jingfang-v1.0.0",
     composition: [
       { herb: "麻黄", dosage: "二两去节" },
       { herb: "细辛", dosage: "二两" },
@@ -230,6 +263,8 @@ export const JING_FANG_DATA: JingFang[] = [
     id: "wumei",
     name: "乌梅丸",
     source: "《伤寒论》",
+    sourceRef: { work: "《伤寒论》", chapter: "辨厥阴病脉证并治", clause: "第338条", edition: "人民卫生出版社点校本（待人工核验）" },
+    version: "jingfang-v1.0.0",
     composition: [
       { herb: "乌梅", dosage: "三百枚" },
       { herb: "细辛", dosage: "六两" },
@@ -251,6 +286,8 @@ export const JING_FANG_DATA: JingFang[] = [
     id: "xiaojianzhong",
     name: "小建中汤",
     source: "《伤寒论》",
+    sourceRef: { work: "《伤寒论》", chapter: "辨太阳病脉证并治中", clause: "相关条", edition: "人民卫生出版社点校本（待人工核验）" },
+    version: "jingfang-v1.0.0",
     composition: [
       { herb: "桂枝", dosage: "三两去皮" },
       { herb: "甘草", dosage: "二两炙" },
@@ -512,6 +549,13 @@ export interface BenCao {
   effect: string  // 功效
   indication: string  // 主治
   dosage: string  // 用量
+  sourceRef?: {
+    work: string
+    chapter?: string
+    clause?: string
+    edition: string
+  }
+  version?: string
   caution?: string  // 禁忌
   original?: string  // 《本经》原文
 }
@@ -527,6 +571,8 @@ export const BEN_CAO_DATA: BenCao[] = [
     effect: "回阳救逆，补火助阳，散寒止痛",
     indication: "亡阳虚脱，肢冷脉微，阳痿宫冷，心腹冷痛，虚寒吐泻",
     dosage: "3-15g，先煎久煎",
+    sourceRef: { work: "《神农本草经》", chapter: "下品", clause: "附子条", edition: "中华书局点校本（待人工核验）" },
+    version: "bencao-v1.0.0",
     caution: "阴虚阳亢者忌用，孕妇禁用",
     original: "味辛温。主风寒咳逆邪气，温中，金疮，破症坚积聚，血瘕，寒湿痿躄，拘挛膝痛，不能行步。"
   },
@@ -538,6 +584,8 @@ export const BEN_CAO_DATA: BenCao[] = [
     effect: "温中散寒，回阳通脉，温肺化饮",
     indication: "脘腹冷痛，呕吐泄泻，亡阳厥逆，寒饮喘咳",
     dosage: "3-10g",
+    sourceRef: { work: "《神农本草经》", chapter: "中品", clause: "干姜条", edition: "中华书局点校本（待人工核验）" },
+    version: "bencao-v1.0.0",
     original: "味辛温。主胸满咳逆上气，温中止血，出汗，逐风湿痹，肠澼下利。"
   },
   {
@@ -548,6 +596,8 @@ export const BEN_CAO_DATA: BenCao[] = [
     effect: "清热燥湿，泻火解毒",
     indication: "湿热痞满，呕吐吞酸，泻痢腹痛，高热神昏，心烦不寐，血热吐衄",
     dosage: "2-5g",
+    sourceRef: { work: "《神农本草经》", chapter: "上品", clause: "黄连条", edition: "中华书局点校本（待人工核验）" },
+    version: "bencao-v1.0.0",
     original: "味苦寒。主热气目痛，眦伤泣出，明目，肠澼腹痛下利，妇人阴中肿痛。"
   },
   {
@@ -559,6 +609,8 @@ export const BEN_CAO_DATA: BenCao[] = [
     effect: "泻下攻积，清热泻火，凉血解毒，逐瘀通经",
     indication: "实热便秘，积滞腹痛，泻痢不爽，湿热黄疸，血热吐衄，目赤咽肿",
     dosage: "3-15g，后下",
+    sourceRef: { work: "《神农本草经》", chapter: "下品", clause: "大黄条", edition: "中华书局点校本（待人工核验）" },
+    version: "bencao-v1.0.0",
     caution: "孕妇及月经期、哺乳期慎用",
     original: "味苦寒。主下瘀血，血闭寒热，破症瘕积聚，留饮宿食，荡涤肠胃，推陈致新，通利水谷，调中化食，安和五脏。"
   },
@@ -571,6 +623,8 @@ export const BEN_CAO_DATA: BenCao[] = [
     effect: "大补元气，复脉固脱，补脾益肺，生津养血，安神益智",
     indication: "体虚欲脱，肢冷脉微，脾虚食少，肺虚喘咳，津伤口渴，内热消渴",
     dosage: "3-9g，另煎兑服",
+    sourceRef: { work: "《神农本草经》", chapter: "上品", clause: "人参条", edition: "中华书局点校本（待人工核验）" },
+    version: "bencao-v1.0.0",
     caution: "实证、热证忌用，不宜与藜芦同用",
     original: "味甘微寒。主补五脏，安精神，定魂魄，止惊悸，除邪气，明目，开心益智。"
   },
@@ -582,6 +636,8 @@ export const BEN_CAO_DATA: BenCao[] = [
     effect: "发汗解肌，温通经脉，助阳化气，平冲降逆",
     indication: "风寒感冒，脘腹冷痛，血寒经闭，关节痹痛，痰饮水肿，心悸奔豚",
     dosage: "3-10g",
+    sourceRef: { work: "《神农本草经》", chapter: "上品", clause: "桂枝条", edition: "中华书局点校本（待人工核验）" },
+    version: "bencao-v1.0.0",
     original: "味辛温。主上气咳逆，结气喉痹吐吸，利关节，补中益气。"
   },
   {
@@ -592,6 +648,8 @@ export const BEN_CAO_DATA: BenCao[] = [
     effect: "发汗散寒，宣肺平喘，利水消肿",
     indication: "风寒感冒，胸闷喘咳，风水浮肿，风湿痹痛，阴疽痰核",
     dosage: "2-10g",
+    sourceRef: { work: "《神农本草经》", chapter: "中品", clause: "麻黄条", edition: "中华书局点校本（待人工核验）" },
+    version: "bencao-v1.0.0",
     caution: "体虚自汗、盗汗及虚喘者忌用",
     original: "味苦温。主中风伤寒头痛，温疟，发表出汗，去邪热气，止咳逆上气，除寒热，破症坚积聚。"
   },
@@ -604,6 +662,8 @@ export const BEN_CAO_DATA: BenCao[] = [
     effect: "补脾益气，清热解毒，祛痰止咳，缓急止痛，调和诸药",
     indication: "脾胃虚弱，倦怠乏力，心悸气短，咳嗽痰多，脘腹四肢挛急疼痛，痈肿疮毒",
     dosage: "2-10g",
+    sourceRef: { work: "《神农本草经》", chapter: "上品", clause: "甘草条", edition: "中华书局点校本（待人工核验）" },
+    version: "bencao-v1.0.0",
     caution: "不宜与海藻、甘遂、大戟、芫花同用",
     original: "味甘平。主五脏六腑寒热邪气，坚筋骨，长肌肉，倍力，金疮肿，解毒。"
   },
@@ -615,6 +675,8 @@ export const BEN_CAO_DATA: BenCao[] = [
     effect: "清热凉血，养阴生津",
     indication: "热入营血，温毒发斑，吐血衄血，热病伤阴，舌绛烦渴，津伤便秘，阴虚发热",
     dosage: "10-15g",
+    sourceRef: { work: "《神农本草经》", chapter: "上品", clause: "地黄条", edition: "中华书局点校本（待人工核验）" },
+    version: "bencao-v1.0.0",
     original: "味甘寒。主折跌绝筋，伤中，逐血痹，填骨髓，长肌肉，作汤除寒热积聚，除痹。"
   },
   {
@@ -625,6 +687,8 @@ export const BEN_CAO_DATA: BenCao[] = [
     effect: "补气升阳，固表止汗，利水消肿，生津养血，行滞通痹，托毒排脓，敛疮生肌",
     indication: "气虚乏力，食少便溏，中气下陷，久泻脱肛，便血崩漏，表虚自汗，气虚水肿",
     dosage: "9-30g",
+    sourceRef: { work: "《神农本草经》", chapter: "上品", clause: "黄芪条", edition: "中华书局点校本（待人工核验）" },
+    version: "bencao-v1.0.0",
     original: "味甘微温。主痈疽久败疮，排脓止痛，大风癞疾，五痔鼠瘘，补虚，小儿百病。"
   },
   {
@@ -635,6 +699,8 @@ export const BEN_CAO_DATA: BenCao[] = [
     effect: "补血活血，调经止痛，润肠通便",
     indication: "血虚萎黄，眩晕心悸，月经不调，经闭痛经，虚寒腹痛，肠燥便秘，风湿痹痛",
     dosage: "6-12g",
+    sourceRef: { work: "《神农本草经》", chapter: "中品", clause: "当归条", edition: "中华书局点校本（待人工核验）" },
+    version: "bencao-v1.0.0",
     original: "味甘温。主咳逆上气，温疟寒热洗洗在皮肤中，妇人漏下绝子，诸恶疮疡金疮，煮饮之。"
   },
   {
@@ -834,6 +900,39 @@ export const BEN_CAO_DATA: BenCao[] = [
     original: "味甘平。主心腹邪气，安中养脾，助十二经，平胃气，通九窍，补少气少津液，身中不足，大惊，四肢重，和百药。"
   }
 ]
+
+const DEFAULT_JINGFANG_EDITION = "人民卫生出版社点校本（待人工核验）"
+const DEFAULT_BENCAO_EDITION = "中华书局点校本（待人工核验）"
+
+for (const item of JING_FANG_DATA as Array<JingFang & { sourceRef?: JingFang["sourceRef"]; version?: string }>) {
+  if (!item.sourceRef) {
+    item.sourceRef = {
+      work: item.source || "《伤寒论》",
+      chapter: "待人工补充",
+      clause: "待人工补充",
+      edition: DEFAULT_JINGFANG_EDITION,
+    }
+  }
+
+  if (!item.version) {
+    item.version = "jingfang-v1.0.0"
+  }
+}
+
+for (const item of BEN_CAO_DATA as Array<BenCao & { sourceRef?: BenCao["sourceRef"]; version?: string }>) {
+  if (!item.sourceRef) {
+    item.sourceRef = {
+      work: "《神农本草经》",
+      chapter: "待人工补充",
+      clause: `${item.name}条（待人工核验）`,
+      edition: DEFAULT_BENCAO_EDITION,
+    }
+  }
+
+  if (!item.version) {
+    item.version = "bencao-v1.0.0"
+  }
+}
 
 // 搜索经方（支持方名、症状、辨证关键词）
 export function searchJingFang(keyword: string): JingFang[] {

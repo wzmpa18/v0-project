@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Noto_Serif_SC } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
+import { AppRuntimeGuard } from '@/components/app-runtime-guard'
 import './globals.css'
 
 const notoSerifSC = Noto_Serif_SC({ 
@@ -12,7 +12,6 @@ const notoSerifSC = Noto_Serif_SC({
 export const metadata: Metadata = {
   title: '国学综合 - 传承千年智慧',
   description: '集排盘系统、经方本草、古籍文献于一体的国学综合应用',
-  generator: 'v0.app',
   icons: {
     icon: [
       {
@@ -48,8 +47,8 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" className="bg-[#1a1a1a]">
       <body className={`${notoSerifSC.variable} font-sans antialiased bg-[#1a1a1a] text-[#f5f5f7]`}>
+        <AppRuntimeGuard />
         {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
   )

@@ -326,7 +326,7 @@ export function LuRenPage({ onBack }: LuRenPageProps) {
           <div className="p-4">
             <div className="bg-[#1f1f1f] rounded-xl border border-[#333] p-4">
               <div className="text-sm text-[#888] text-center py-8">
-                档案功能开发中...
+                当前档案页用于整理排盘记录与参考断语，暂无新增内容。
               </div>
             </div>
           </div>

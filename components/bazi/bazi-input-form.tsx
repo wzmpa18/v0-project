@@ -21,6 +21,7 @@ export function BaziInputForm({ onCalculate }: BaziInputFormProps) {
   const [timezone, setTimezone] = useState("北京时间")
   const [group, setGroup] = useState("全部")
   const [saveToRecord, setSaveToRecord] = useState(true)
+  const [showNotice, setShowNotice] = useState(true)
   
   // 当前时间的八字
   const [currentBazi, setCurrentBazi] = useState({ year: "", month: "", day: "", hour: "" })
@@ -106,18 +107,19 @@ export function BaziInputForm({ onCalculate }: BaziInputFormProps) {
       {/* 顶部标题栏 */}
       <div className="bg-[#f5f5f0] px-4 py-3 flex items-center justify-between border-b border-gray-200">
         <div className="w-8" />
-        <h1 className="text-lg font-medium text-gray-800">问真排盘</h1>
+        <h1 className="text-lg font-medium text-gray-800">八字排盘</h1>
         <div className="w-8" />
       </div>
 
-      {/* 广告横幅占位 */}
-      <div className="mx-4 mt-3 bg-white rounded-lg p-3 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-2 text-gray-500">
-          <span className="text-lg">🔊</span>
-          <span className="text-sm">吉真紫微斗数App，包...</span>
+      {showNotice && (
+        <div className="mx-4 mt-3 bg-white rounded-lg p-3 flex items-center justify-between shadow-sm">
+          <div className="flex items-center gap-2 text-gray-500">
+            <span className="text-lg">📘</span>
+            <span className="text-sm">排盘结果仅供传统文化学习交流，请结合现实理性参考。</span>
+          </div>
+          <button onClick={() => setShowNotice(false)} className="text-gray-400 text-xl" aria-label="关闭提示">×</button>
         </div>
-        <button className="text-gray-400 text-xl">×</button>
-      </div>
+      )}
 
       {/* 输入表单卡片 */}
       <div className="mx-4 mt-3 bg-white rounded-2xl shadow-sm overflow-hidden">

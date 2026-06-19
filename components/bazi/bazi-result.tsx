@@ -11,7 +11,7 @@ import {
   analyzeGanZhiRelations 
 } from "@/lib/bazi-guji-data"
 
-// 五行颜色映射 - 匹配问真八字
+// 五行颜色映射
 const WUXING_COLOR: Record<string, string> = {
   "木": "#22c55e", "火": "#ef4444", "土": "#a16207", "金": "#ca8a04", "水": "#3b82f6",
 }
@@ -35,6 +35,15 @@ const getGanColor = (gan: string) => WUXING_COLOR[TIAN_GAN_WUXING[gan]] || "#333
 const getZhiColor = (zhi: string) => WUXING_COLOR[DI_ZHI_WUXING[zhi]] || "#333"
 const getGanEmoji = (gan: string) => WUXING_EMOJI[TIAN_GAN_WUXING[gan]] || ""
 const getZhiEmoji = (zhi: string) => WUXING_EMOJI[DI_ZHI_WUXING[zhi]] || ""
+
+const TIAN_GAN_ORDER = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
+const DI_ZHI_ORDER = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
+
+function getYearGanZhi(year: number) {
+  const gan = TIAN_GAN_ORDER[(year - 4) % 10]
+  const zhi = DI_ZHI_ORDER[(year - 4) % 12]
+  return { gan, zhi }
+}
 
 // 十神颜色
 const getShiShenColor = (shiShen: string): string => {
@@ -77,13 +86,19 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
     intro: ""
   })
 
-  // 四柱数据
-  const siZhu = result?.siZhu || {
-    year: { gan: "己", zhi: "巳", shiShen: "伤官", cangGan: ["丙", "庚", "戊"], naYin: "大林木" },
-    month: { gan: "丙", zhi: "子", shiShen: "比肩", cangGan: ["癸"], naYin: "涧下水" },
-    day: { gan: "丙", zhi: "寅", shiShen: "元男", cangGan: ["甲", "丙", "戊"], naYin: "炉中火" },
-    hour: { gan: "戊", zhi: "子", shiShen: "食神", cangGan: ["癸"], naYin: "霹雳火" },
+  if (!result?.siZhu) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center p-6 text-center">
+        <div>
+          <div className="text-lg font-medium text-gray-800 mb-2">暂无可展示的排盘结果</div>
+          <div className="text-sm text-gray-500">请先完成排盘，再进入结果页查看详细数据。</div>
+        </div>
+      </div>
+    )
   }
+
+  // 四柱数据
+  const siZhu = result.siZhu
 
   const dayGan = siZhu.day.gan
   const monthZhi = siZhu.month.zhi
@@ -107,53 +122,60 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
 
   // 神煞数据
   const shenShaData = {
-    year: ["天厨贵人", "德秀贵人", "天德贵人", "禄神", "亡神"],
-    month: ["太极贵人", "月德合", "桃花", "天喜", "披麻"],
-    day: ["阴差阳错", "天乙贵人", "德秀贵人", "元辰"],
-    hour: ["太极贵人", "文昌贵人", "天厨贵人", "天乙贵人", "福星贵人", "空亡", "飞刃", "劫煞", "驿马", "词馆"]
+    year: Array.isArray(result?.shenSha?.year) ? result.shenSha.year : [],
+    month: Array.isArray(result?.shenSha?.month) ? result.shenSha.month : [],
+    day: Array.isArray(result?.shenSha?.day) ? result.shenSha.day : [],
+    hour: Array.isArray(result?.shenSha?.hour) ? result.shenSha.hour : [],
   }
 
   // 大运数据
-  const daYunData = result?.daYun || [
-    { year: 1990, ageRange: "2~10岁", gan: "小", zhi: "运" },
-    { year: 1998, ageRange: "10岁", gan: "乙", zhi: "亥", s1: "印", s2: "杀" },
-    { year: 2008, ageRange: "20岁", gan: "甲", zhi: "戌", s1: "枭", s2: "食" },
-    { year: 2018, ageRange: "30岁", gan: "癸", zhi: "酉", s1: "官", s2: "财", highlight: true },
-    { year: 2028, ageRange: "40岁", gan: "壬", zhi: "申", s1: "杀", s2: "才" },
-    { year: 2038, ageRange: "50岁", gan: "辛", zhi: "未", s1: "财", s2: "伤" },
-    { year: 2048, ageRange: "60岁", gan: "庚", zhi: "午", s1: "才", s2: "劫" },
-    { year: 2058, ageRange: "70岁", gan: "己", zhi: "巳", s1: "伤", s2: "比" },
-    { year: 2068, ageRange: "80岁", gan: "戊", zhi: "辰", s1: "食", s2: "食" },
-    { year: 2078, ageRange: "90岁", gan: "丁", zhi: "卯", s1: "劫", s2: "印" },
-  ]
+  const daYunData = Array.isArray(result?.daYun)
+    ? result.daYun.map((dy: any, idx: number) => ({
+        year: Number(dy.startYear || 0),
+        ageRange: `${Number(dy.age || dy.startAge || 0)}岁`,
+        gan: dy.gan,
+        zhi: dy.zhi,
+        s1: "",
+        s2: "",
+        highlight: idx === 2,
+      }))
+    : []
 
   // 流年数据
-  const liuNianData = [
-    { year: 2018, gan: "戊", zhi: "戌", s1: "食", s2: "食", xiaoYun: "己未" },
-    { year: 2019, gan: "己", zhi: "亥", s1: "伤", s2: "杀", xiaoYun: "戊午" },
-    { year: 2020, gan: "庚", zhi: "子", s1: "才", s2: "官", xiaoYun: "丁巳" },
-    { year: 2021, gan: "辛", zhi: "丑", s1: "财", s2: "伤", xiaoYun: "丙辰" },
-    { year: 2022, gan: "壬", zhi: "寅", s1: "杀", s2: "枭", xiaoYun: "乙卯" },
-    { year: 2023, gan: "癸", zhi: "卯", s1: "官", s2: "印", xiaoYun: "甲寅" },
-    { year: 2024, gan: "甲", zhi: "辰", s1: "枭", s2: "食", xiaoYun: "癸丑" },
-    { year: 2025, gan: "乙", zhi: "巳", s1: "印", s2: "比", xiaoYun: "王子" },
-    { year: 2026, gan: "丙", zhi: "午", s1: "比", s2: "劫", xiaoYun: "辛亥", highlight: true },
-    { year: 2027, gan: "丁", zhi: "未", s1: "劫", s2: "伤", xiaoYun: "庚戌" },
-  ]
+  const currentYear = new Date().getFullYear()
+  const liuNianData = Array.from({ length: 10 }, (_, i) => {
+    const year = currentYear - 4 + i
+    const { gan, zhi } = getYearGanZhi(year)
+    return {
+      year,
+      gan,
+      zhi,
+      s1: "",
+      s2: "",
+      xiaoYun: "",
+      highlight: year === currentYear,
+    }
+  })
 
   // 流月数据
-  const liuYueData = [
-    { name: "立春", date: "2/4", gan: "庚", zhi: "寅", s1: "才", s2: "枭" },
-    { name: "惊蛰", date: "3/5", gan: "辛", zhi: "卯", s1: "财", s2: "印" },
-    { name: "清明", date: "4/5", gan: "壬", zhi: "辰", s1: "杀", s2: "食" },
-    { name: "立夏", date: "5/5", gan: "癸", zhi: "巳", s1: "官", s2: "比" },
-    { name: "芒种", date: "6/5", gan: "甲", zhi: "午", s1: "枭", s2: "劫" },
-    { name: "小暑", date: "7/7", gan: "乙", zhi: "未", s1: "印", s2: "伤" },
-    { name: "立秋", date: "8/7", gan: "丙", zhi: "申", s1: "比", s2: "才" },
-    { name: "白露", date: "9/7", gan: "丁", zhi: "酉", s1: "劫", s2: "财" },
-    { name: "寒露", date: "10/8", gan: "戊", zhi: "戌", s1: "食", s2: "食" },
-    { name: "立冬", date: "11/7", gan: "己", zhi: "亥", s1: "伤", s2: "杀" },
+  const jieQiMonths = [
+    { name: "立春", date: "2/4" },
+    { name: "惊蛰", date: "3/5" },
+    { name: "清明", date: "4/5" },
+    { name: "立夏", date: "5/5" },
+    { name: "芒种", date: "6/5" },
+    { name: "小暑", date: "7/7" },
+    { name: "立秋", date: "8/7" },
+    { name: "白露", date: "9/7" },
+    { name: "寒露", date: "10/8" },
+    { name: "立冬", date: "11/7" },
   ]
+
+  const liuYueData = jieQiMonths.map((item, idx) => {
+    const gan = TIAN_GAN_ORDER[(idx + (currentYear - 4)) % 10]
+    const zhi = DI_ZHI_ORDER[(idx + 2) % 12]
+    return { ...item, gan, zhi, s1: "", s2: "" }
+  })
 
   // 五行统计 - 基于真实八字计算
   const calculateWuxingCount = () => {
@@ -250,7 +272,7 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
         <button onClick={onBack} className="p-1">
           <ChevronLeft className="w-6 h-6 text-gray-600" />
         </button>
-        <h1 className="text-lg font-medium">问真八字</h1>
+        <h1 className="text-lg font-medium">八字排盘</h1>
         <button className="p-1">
           <MoreHorizontal className="w-6 h-6 text-gray-600" />
         </button>
@@ -685,28 +707,28 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
                   <td className="py-2 text-[#a16207] align-top">神煞</td>
                   <td className="py-2 align-top">
                     <div className="space-y-0.5 text-xs text-[#a16207]">
-                      {shenShaData.year.slice(0, 5).map((ss, i) => (
+                      {shenShaData.year.slice(0, 5).map((ss: string, i: number) => (
                         <div key={i}>{ss}</div>
                       ))}
                     </div>
                   </td>
                   <td className="py-2 align-top">
                     <div className="space-y-0.5 text-xs text-[#a16207]">
-                      {shenShaData.month.slice(0, 6).map((ss, i) => (
+                      {shenShaData.month.slice(0, 6).map((ss: string, i: number) => (
                         <div key={i}>{ss}</div>
                       ))}
                     </div>
                   </td>
                   <td className="py-2 align-top">
                     <div className="space-y-0.5 text-xs text-[#a16207]">
-                      {shenShaData.day.slice(0, 4).map((ss, i) => (
+                      {shenShaData.day.slice(0, 4).map((ss: string, i: number) => (
                         <div key={i}>{ss}</div>
                       ))}
                     </div>
                   </td>
                   <td className="py-2 align-top">
                     <div className="space-y-0.5 text-xs text-[#a16207]">
-                      {shenShaData.hour.map((ss, i) => (
+                      {shenShaData.hour.map((ss: string, i: number) => (
                         <div key={i}>{ss}</div>
                       ))}
                     </div>
@@ -986,7 +1008,7 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
               </div>
               <div className="flex-1 overflow-x-auto">
                 <div className="flex">
-                  {daYunData.map((dy, i) => (
+                  {daYunData.map((dy: any, i: number) => (
                     <div 
                       key={i} 
                       className={`flex-shrink-0 w-14 text-center py-2 ${dy.highlight ? 'bg-gray-100 rounded' : ''}`}
@@ -1100,7 +1122,7 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
               </div>
             </div>
             <div className="mt-2 text-[#f5f5f7]/60 text-sm">
-              {daYunData.filter(d => d.gan !== "小").map(d => `${d.gan}${d.zhi}`).join(" - ")}
+              {daYunData.filter((d: any) => d.gan !== "小").map((d: any) => `${d.gan}${d.zhi}`).join(" - ")}
             </div>
           </div>
 
@@ -1226,7 +1248,7 @@ export function BaziResult({ result, onBack }: BaziResultProps) {
 
             <div className="p-4">
               <p className="text-sm text-[#a16207] mb-3">
-                （请复制以下AI提示词，粘贴到 DeepSeek、ChatGPT、豆包等第三方AI大模型中使用）
+                （请复制以下AI提示词，粘贴到你使用的第三方AI大模型中）
               </p>
 
               <div className="bg-gray-50 p-3 rounded-lg text-sm text-gray-600 mb-4">

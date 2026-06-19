@@ -1,0 +1,6 @@
+{
+  "appId": "com.getcapacitor.myapp",
+  "appName": "国学综合",
+  "webDir": "out",
+  "bundledWebRuntime": false
+}

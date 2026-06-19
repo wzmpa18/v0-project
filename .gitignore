@@ -8,3 +8,11 @@ node_modules
 .next/
 .env*.local
 .DS_Store
+tsconfig.tsbuildinfo
+
+# Android / Capacitor
+android/.gradle/
+android/.idea/
+android/local.properties
+android/app/build/
+android/build/

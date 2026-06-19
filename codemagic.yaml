@@ -1,0 +1,80 @@
+workflows:
+  release-android:
+    name: Release Android
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    environment:
+      vars:
+        JAVA_VERSION: 21.0.0
+        NODE_VERSION: 20.18.0
+    scripts:
+      - name: Enable Corepack
+        script: |
+          corepack enable
+      - name: Ensure UTF-8 without BOM guidance
+        script: |
+          echo "Keep Gradle files encoded as UTF-8 without BOM"
+      - name: Install dependencies
+        script: |
+          corepack pnpm install --frozen-lockfile
+      - name: Build web app
+        script: |
+          corepack pnpm build
+      - name: Sync Capacitor Android
+        script: |
+          corepack pnpm exec cap sync android
+      - name: Build Android release APK
+        script: |
+          cd android
+          if [ -f ./gradle/wrapper/gradle-wrapper.jar ]; then
+            chmod +x gradlew
+            ./gradlew assembleRelease
+          else
+            gradle assembleRelease
+          fi
+      - name: Build Android release AAB
+        script: |
+          cd android
+          if [ -f ./gradle/wrapper/gradle-wrapper.jar ]; then
+            chmod +x gradlew
+            ./gradlew bundleRelease
+          else
+            gradle bundleRelease
+          fi
+    artifacts:
+      - android/app/build/outputs/**/*.apk
+      - android/app/build/outputs/**/*.aab
+
+  release-ios:
+    name: Release iOS
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    environment:
+      vars:
+        JAVA_VERSION: 21.0.0
+        NODE_VERSION: 20.18.0
+    scripts:
+      - name: Enable Corepack
+        script: |
+          corepack enable
+      - name: Install dependencies
+        script: |
+          corepack pnpm install --frozen-lockfile
+      - name: Build web app
+        script: |
+          corepack pnpm build
+      - name: Sync Capacitor iOS
+        script: |
+          corepack pnpm exec cap sync ios
+      - name: Build iOS archive
+        script: |
+          if [ -d ios/App ]; then
+            cd ios/App
+            xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos -archivePath $CM_BUILD_DIR/App.xcarchive archive
+          else
+            echo "ios/App not found. Please create iOS shell by running: npx cap add ios"
+            exit 1
+          fi
+    artifacts:
+      - ios/App/build/**/*.ipa
+      - /tmp/xcodebuild_logs/*.log

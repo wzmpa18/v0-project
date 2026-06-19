@@ -16,6 +16,7 @@ import { MeiHuaPage } from "@/components/pages/meihua-page"
 import { BaZhaiPage } from "@/components/pages/bazhai-page"
 import { XuanKongPage } from "@/components/pages/xuankong-page"
 import { ZhuGePage } from "@/components/pages/zhuge-page"
+import { Tcm3DPage } from "@/components/pages/tcm-3d-page"
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("paipan")
@@ -55,6 +56,12 @@ export default function Home() {
       // 中医百科相关 - 跳转到经方页面
       setActiveTab("herbal")
       setActiveTool(null)
+    } else if (toolId === "tcm-3d-anatomy") {
+      setActiveTool("tcm-3d-anatomy")
+    } else if (toolId === "tcm-acupuncture-sim") {
+      setActiveTool("tcm-acupuncture-sim")
+    } else if (toolId === "tcm-bone-reset") {
+      setActiveTool("tcm-bone-reset")
     } else {
       setActiveTool(toolId)
     }
@@ -86,12 +93,18 @@ export default function Home() {
           return <XuanKongPage onBack={handleBackToToolbox} />
         case "zhuge":
           return <ZhuGePage onBack={handleBackToToolbox} />
+        case "tcm-3d-anatomy":
+          return <Tcm3DPage onBack={handleBackToToolbox} onNavigateToTool={handleToolNavigate} initialTab="anatomy" />
+        case "tcm-acupuncture-sim":
+          return <Tcm3DPage onBack={handleBackToToolbox} onNavigateToTool={handleToolNavigate} initialTab="acupuncture" />
+        case "tcm-bone-reset":
+          return <Tcm3DPage onBack={handleBackToToolbox} onNavigateToTool={handleToolNavigate} initialTab="bone-setting" />
         default:
           return (
             <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center px-4 bg-[#1a1a1a]">
               <div className="text-4xl mb-4">🔧</div>
-              <div className="text-[#d4af37] text-lg font-medium mb-2">功能开发中</div>
-              <div className="text-[#888] text-sm text-center mb-6">该工具正在紧锣密鼓地开发中，敬请期待</div>
+              <div className="text-[#d4af37] text-lg font-medium mb-2">暂未匹配到对应模块</div>
+              <div className="text-[#888] text-sm text-center mb-6">请返回工具箱或检查入口配置后重试</div>
               <button
                 onClick={handleBackToToolbox}
                 className="px-6 py-2 bg-[#252525] border border-[#333] rounded-xl text-[#f5f5f7] text-sm"
@@ -111,6 +124,8 @@ export default function Home() {
         return <TCMPage onNavigateToTool={handleToolNavigate} />
       case "herbal":
         return <HerbalPage />
+      case "ai":
+        return <TCMPage onNavigateToTool={handleToolNavigate} />
       case "study":
         return <StudyPage />
       case "profile":
@@ -133,7 +148,7 @@ export default function Home() {
       {/* 底部导航 - 子工具页面时隐藏 */}
       {!activeTool && (
         <BottomNav activeTab={activeTab} onTabChange={(tab) => {
-          setActiveTab(tab)
+          setActiveTab(tab === "ai" ? "tcm" : tab)
           setActiveTool(null)
         }} />
       )}
