@@ -36,34 +36,6 @@ workflows:
         script: |
           cd "$CM_BUILD_DIR"
           npx --yes pnpm@${PNPM_VERSION} exec cap sync android
-      - name: Prepare Android signing keystore
-        script: |
-          set -euo pipefail
-          cd "$CM_BUILD_DIR/android/app"
-
-          if [ -f "guoxue-release.keystore" ]; then
-            echo "Using repo keystore at android/app/guoxue-release.keystore"
-            exit 0
-          fi
-
-          candidate_paths=(
-            "${MYAPP_UPLOAD_STORE_FILE:-}"
-            "${FCI_BUILD_STORE_FILE:-}"
-            "${CM_KEYSTORE_PATH:-}"
-            "$CM_BUILD_DIR/android/app/guoxue-release.keystore"
-            "$CM_BUILD_DIR/guoxue-release.keystore"
-          )
-
-          for candidate in "${candidate_paths[@]}"; do
-            if [ -n "$candidate" ] && [ -f "$candidate" ]; then
-              cp "$candidate" "$CM_BUILD_DIR/android/app/guoxue-release.keystore"
-              echo "Keystore prepared from: $candidate"
-              exit 0
-            fi
-          done
-
-          echo "Keystore file not found. Please upload it in Codemagic Code Signing or set MYAPP_UPLOAD_STORE_FILE/FCI_BUILD_STORE_FILE to the absolute path."
-          exit 1
       - name: Build Android release APK
         script: |
           cd "$CM_BUILD_DIR/android"
