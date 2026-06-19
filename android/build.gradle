@@ -1,7 +1,7 @@
 buildscript {
     ext {
         kotlin_version = '2.2.20'
-        androidxCoreKTXVersion = '1.17.0'
+        androidxCoreKTXVersion = '1.13.1'
     }
     repositories {
         google()
@@ -17,13 +17,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-    }
-}
-
-subprojects {
-    tasks.withType(JavaCompile).configureEach {
-        sourceCompatibility = JavaVersion.VERSION_17.toString()
-        targetCompatibility = JavaVersion.VERSION_17.toString()
     }
 }
 
