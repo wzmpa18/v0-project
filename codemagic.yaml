@@ -32,6 +32,9 @@ workflows:
       - name: Build Android release APK
         script: |
           cd "$CM_BUILD_DIR/android"
+          export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+          export PATH="$JAVA_HOME/bin:$PATH"
+          java -version
           if [ -f ./gradle/wrapper/gradle-wrapper.jar ]; then
             chmod +x gradlew
             ./gradlew assembleRelease
@@ -41,6 +44,9 @@ workflows:
       - name: Build Android release AAB
         script: |
           cd "$CM_BUILD_DIR/android"
+          export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+          export PATH="$JAVA_HOME/bin:$PATH"
+          java -version
           if [ -f ./gradle/wrapper/gradle-wrapper.jar ]; then
             chmod +x gradlew
             ./gradlew bundleRelease
