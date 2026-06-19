@@ -12,8 +12,7 @@ workflows:
       - name: Setup pnpm
         script: |
           cd "$CM_BUILD_DIR"
-          npm install -g pnpm@${PNPM_VERSION}
-          pnpm --version
+          npx --yes pnpm@${PNPM_VERSION} --version
       - name: Ensure UTF-8 without BOM guidance
         script: |
           cd "$CM_BUILD_DIR"
@@ -21,15 +20,15 @@ workflows:
       - name: Install dependencies
         script: |
           cd "$CM_BUILD_DIR"
-          pnpm install --frozen-lockfile
+          npx --yes pnpm@${PNPM_VERSION} install --frozen-lockfile
       - name: Build web app
         script: |
           cd "$CM_BUILD_DIR"
-          pnpm build
+          npx --yes pnpm@${PNPM_VERSION} build
       - name: Sync Capacitor Android
         script: |
           cd "$CM_BUILD_DIR"
-          pnpm exec cap sync android
+          npx --yes pnpm@${PNPM_VERSION} exec cap sync android
       - name: Build Android release APK
         script: |
           cd "$CM_BUILD_DIR/android"
@@ -65,20 +64,19 @@ workflows:
       - name: Setup pnpm
         script: |
           cd "$CM_BUILD_DIR"
-          npm install -g pnpm@${PNPM_VERSION}
-          pnpm --version
+          npx --yes pnpm@${PNPM_VERSION} --version
       - name: Install dependencies
         script: |
           cd "$CM_BUILD_DIR"
-          pnpm install --frozen-lockfile
+          npx --yes pnpm@${PNPM_VERSION} install --frozen-lockfile
       - name: Build web app
         script: |
           cd "$CM_BUILD_DIR"
-          pnpm build
+          npx --yes pnpm@${PNPM_VERSION} build
       - name: Sync Capacitor iOS
         script: |
           cd "$CM_BUILD_DIR"
-          pnpm exec cap sync ios
+          npx --yes pnpm@${PNPM_VERSION} exec cap sync ios
       - name: Build iOS archive
         script: |
           if [ -d ios/App ]; then
