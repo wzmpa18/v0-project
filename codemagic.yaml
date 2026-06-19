@@ -9,11 +9,10 @@ workflows:
         NODE_VERSION: 20.18.0
         PNPM_VERSION: 9.12.3
     scripts:
-      - name: Enable Corepack
+      - name: Setup pnpm
         script: |
           cd "$CM_BUILD_DIR"
-          corepack enable
-          corepack prepare pnpm@${PNPM_VERSION} --activate
+          npm install -g pnpm@${PNPM_VERSION}
           pnpm --version
       - name: Ensure UTF-8 without BOM guidance
         script: |
@@ -63,11 +62,10 @@ workflows:
         NODE_VERSION: 20.18.0
         PNPM_VERSION: 9.12.3
     scripts:
-      - name: Enable Corepack
+      - name: Setup pnpm
         script: |
           cd "$CM_BUILD_DIR"
-          corepack enable
-          corepack prepare pnpm@${PNPM_VERSION} --activate
+          npm install -g pnpm@${PNPM_VERSION}
           pnpm --version
       - name: Install dependencies
         script: |
