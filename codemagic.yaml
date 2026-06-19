@@ -5,27 +5,35 @@ workflows:
     instance_type: mac_mini_m2
     environment:
       vars:
-        JAVA_VERSION: 21.0.0
+        JAVA_VERSION: "21.0.0"
         NODE_VERSION: 20.18.0
+        PNPM_VERSION: 9.12.3
     scripts:
       - name: Enable Corepack
         script: |
+          cd "$CM_BUILD_DIR"
           corepack enable
+          corepack prepare pnpm@${PNPM_VERSION} --activate
+          pnpm --version
       - name: Ensure UTF-8 without BOM guidance
         script: |
+          cd "$CM_BUILD_DIR"
           echo "Keep Gradle files encoded as UTF-8 without BOM"
       - name: Install dependencies
         script: |
-          corepack pnpm install --frozen-lockfile
+          cd "$CM_BUILD_DIR"
+          pnpm install --frozen-lockfile
       - name: Build web app
         script: |
-          corepack pnpm build
+          cd "$CM_BUILD_DIR"
+          pnpm build
       - name: Sync Capacitor Android
         script: |
-          corepack pnpm exec cap sync android
+          cd "$CM_BUILD_DIR"
+          pnpm exec cap sync android
       - name: Build Android release APK
         script: |
-          cd android
+          cd "$CM_BUILD_DIR/android"
           if [ -f ./gradle/wrapper/gradle-wrapper.jar ]; then
             chmod +x gradlew
             ./gradlew assembleRelease
@@ -34,7 +42,7 @@ workflows:
           fi
       - name: Build Android release AAB
         script: |
-          cd android
+          cd "$CM_BUILD_DIR/android"
           if [ -f ./gradle/wrapper/gradle-wrapper.jar ]; then
             chmod +x gradlew
             ./gradlew bundleRelease
@@ -51,21 +59,28 @@ workflows:
     instance_type: mac_mini_m2
     environment:
       vars:
-        JAVA_VERSION: 21.0.0
+        JAVA_VERSION: "21.0.0"
         NODE_VERSION: 20.18.0
+        PNPM_VERSION: 9.12.3
     scripts:
       - name: Enable Corepack
         script: |
+          cd "$CM_BUILD_DIR"
           corepack enable
+          corepack prepare pnpm@${PNPM_VERSION} --activate
+          pnpm --version
       - name: Install dependencies
         script: |
-          corepack pnpm install --frozen-lockfile
+          cd "$CM_BUILD_DIR"
+          pnpm install --frozen-lockfile
       - name: Build web app
         script: |
-          corepack pnpm build
+          cd "$CM_BUILD_DIR"
+          pnpm build
       - name: Sync Capacitor iOS
         script: |
-          corepack pnpm exec cap sync ios
+          cd "$CM_BUILD_DIR"
+          pnpm exec cap sync ios
       - name: Build iOS archive
         script: |
           if [ -d ios/App ]; then
