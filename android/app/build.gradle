@@ -1,9 +1,23 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
+def releaseStoreFile = project.findProperty('MYAPP_UPLOAD_STORE_FILE') ?: System.getenv('MYAPP_UPLOAD_STORE_FILE') ?: 'guoxue-release.keystore'
+def releaseStorePassword = project.findProperty('MYAPP_UPLOAD_STORE_PASSWORD') ?: System.getenv('MYAPP_UPLOAD_STORE_PASSWORD') ?: 'guoxue888'
+def releaseKeyAlias = project.findProperty('MYAPP_UPLOAD_KEY_ALIAS') ?: System.getenv('MYAPP_UPLOAD_KEY_ALIAS') ?: 'guoxuechuan'
+def releaseKeyPassword = project.findProperty('MYAPP_UPLOAD_KEY_PASSWORD') ?: System.getenv('MYAPP_UPLOAD_KEY_PASSWORD') ?: 'guoxue888'
+
 android {
     namespace = 'com.getcapacitor.myapp'
     compileSdk = cdvCompileSdkVersion
+
+    signingConfigs {
+        release {
+            storeFile file(releaseStoreFile)
+            storePassword releaseStorePassword
+            keyAlias releaseKeyAlias
+            keyPassword releaseKeyPassword
+        }
+    }
 
     defaultConfig {
         applicationId "com.getcapacitor.myapp"
@@ -26,6 +40,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
