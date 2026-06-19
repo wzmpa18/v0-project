@@ -3,7 +3,7 @@ ext {
     compileSdkVersion = 35
     targetSdkVersion = 35
     androidxAppCompatVersion = '1.7.0'
-    androidxCoreKTXVersion = '1.17.0'
+    androidxCoreKTXVersion = '1.13.1'
     androidxActivityVersion = '1.9.3'
     androidxFragmentVersion = '1.8.6'
     coreSplashScreenVersion = '1.2.0'
