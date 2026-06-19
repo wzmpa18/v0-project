@@ -2,15 +2,5 @@
   "appId": "com.getcapacitor.myapp",
   "appName": "国学综合",
   "webDir": "out",
-  "bundledWebRuntime": false,
-  "server": {
-    "url": "https://app.guoxueyun.com",
-    "cleartext": false,
-    "allowNavigation": [
-      "app.guoxueyun.com",
-      "api.guoxueyun.com",
-      "ai.guoxueyun.com",
-      "res.guoxueyun.com"
-    ]
-  }
+  "bundledWebRuntime": false
 }

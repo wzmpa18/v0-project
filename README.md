@@ -25,12 +25,10 @@ pnpm start
 
 ## 网络与资源扩展
 
-- 全局网络入口使用环境变量配置：`NEXT_PUBLIC_APP_SHELL_URL`、`NEXT_PUBLIC_API_BASE_URL`、`NEXT_PUBLIC_AI_API_BASE_URL`、`NEXT_PUBLIC_RESOURCE_BASE_URL`。
+- 全局网络入口使用环境变量配置：`NEXT_PUBLIC_API_BASE_URL`、`NEXT_PUBLIC_RESOURCE_BASE_URL`。
 - 可切换资源模式：`NEXT_PUBLIC_REMOTE_RESOURCE_MODE=bundled|remote`。
 - 离线缓存前缀可配置：`NEXT_PUBLIC_OFFLINE_CACHE_PREFIX`。
 - 可开启资源加密开关：`NEXT_PUBLIC_ENABLE_ENCRYPTED_RESOURCES=true`。
-- 请求韧性统一配置：`NEXT_PUBLIC_API_TIMEOUT_MS`、`NEXT_PUBLIC_API_RETRY_TIMES`、`NEXT_PUBLIC_API_RATE_LIMIT_PER_MINUTE`。
-- 段子批量接口路径：`NEXT_PUBLIC_DUANZI_BATCH_API_PATH`。
 
 ## 壳 APK 架构预留
 
@@ -46,16 +44,11 @@ pnpm start
 
 ## Codemagic 流程摘要
 
-- 安装依赖：`corepack pnpm install --frozen-lockfile`
-- 前端导出：`corepack pnpm build`
-- 同步壳工程：`corepack pnpm exec cap sync android`
+- 安装依赖：`npm install`
+- 前端导出：`npm run build`
+- 同步壳工程：`npx cap sync android`
 - APK 构建：`cd android && ./gradlew assembleRelease`
 - AAB 构建：`cd android && ./gradlew bundleRelease`
-
-## 轻壳自检命令
-
-- 资源清单生成：`pnpm resource:manifest`
-- 轻壳链路自检：`pnpm selftest:light-shell`
 
 ## 商用改造文档
 

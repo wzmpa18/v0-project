@@ -35,26 +35,12 @@ pnpm build
 pnpm start
 ```
 
-### 2.3 生成资源清单与哈希
-```bash
-pnpm resource:manifest
-```
-
-脚本会输出 `public/assets/runtime-manifest.json`，包含资源分类、文件大小与 SHA-256 哈希。
-
-### 2.4 轻壳链路自检
-```bash
-pnpm selftest:light-shell
-```
-
-覆盖项包括：资源哈希、离线缓存契约、网络监听、超时重试/鉴权/限流契约。
-
 ## 3. Codemagic 触发 Android 与 iOS 打包
 
 ### 3.1 Android
 1. 将代码推送到远端仓库。
 2. 在 Codemagic 选择工作流 release-android。
-3. 执行步骤：corepack pnpm install --frozen-lockfile -> corepack pnpm build -> corepack pnpm exec cap sync android -> Gradle 产出 APK/AAB。
+3. 执行步骤：安装依赖 -> 构建网页资源 -> npx cap sync android -> Gradle 产出 APK/AAB。
 4. 制品路径：android/app/build/outputs/**。
 
 ### 3.2 iOS
@@ -93,7 +79,6 @@ server {
 
 ### 4.3 客户端配置建议
 - 在 .env.local 中配置 NEXT_PUBLIC_RESOURCE_BASE_URL 与 NEXT_PUBLIC_API_BASE_URL。
-- 同时配置 NEXT_PUBLIC_AI_API_BASE_URL、NEXT_PUBLIC_DUANZI_BATCH_API_PATH、NEXT_PUBLIC_API_AUTH_TOKEN。
 - 若客户端需要热切换服务器，可通过运行时配置（本地存储）覆盖地址。
 - 生产环境不应把密钥放入前端环境变量；密钥应仅保存在服务端。
 

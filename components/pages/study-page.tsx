@@ -1,10 +1,7 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
-import { Search, BookOpen, Play, FileText, Award, ChevronRight, Clock, Eye, X } from "lucide-react"
-import { createCacheKey, readCacheValue, saveCacheValue } from "@/lib/offline-cache"
-import { fetchDuanziBatch, type DuanziDirection, type DuanziItem } from "@/lib/duanzi-service"
-import { getRuntimeConfig } from "@/lib/app-config"
+import { useState } from "react"
+import { Search, BookOpen, Play, FileText, Award, ChevronRight, Clock, Eye, Star, Filter, X } from "lucide-react"
 
 // 学习分类
 const STUDY_CATEGORIES = [
@@ -77,54 +74,6 @@ const LECTURE_COURSES = [
   { id: 12, title: "紫微斗数系统课程", teacher: "紫微研究会", category: "yixue", duration: "28:00:00", views: 32000, free: false, tag: "进阶" },
 ]
 
-const DUANZI_DIRECTIONS: Array<{ id: DuanziDirection; label: string; hint: string }> = [
-  { id: "beginner", label: "入门方向", hint: "概念拆解" },
-  { id: "classics", label: "经典方向", hint: "古籍场景化" },
-  { id: "clinical", label: "临证方向", hint: "辨证落地" },
-  { id: "yangsheng", label: "养生方向", hint: "生活化实践" },
-  { id: "yixue", label: "易学方向", hint: "决策场景" },
-]
-
-const CATEGORY_TO_DIRECTION: Record<string, DuanziDirection> = {
-  all: "beginner",
-  classics: "classics",
-  lecture: "clinical",
-  yixue: "yixue",
-  tcm: "clinical",
-  yangsheng: "yangsheng",
-}
-
-interface DuzaniDirectionState {
-  items: DuanziItem[]
-  nextCursor: string | null
-  hasMore: boolean
-  loading: boolean
-  loaded: boolean
-  error: string
-}
-
-function createDirectionState(): DuzaniDirectionState {
-  return {
-    items: [],
-    nextCursor: null,
-    hasMore: true,
-    loading: false,
-    loaded: false,
-    error: "",
-  }
-}
-
-function mergeDuanziItems(existing: DuanziItem[], incoming: DuanziItem[]): DuanziItem[] {
-  const map = new Map<string, DuanziItem>()
-  for (const item of existing) {
-    map.set(item.id, item)
-  }
-  for (const item of incoming) {
-    map.set(item.id, item)
-  }
-  return Array.from(map.values())
-}
-
 interface StudyPageProps {
   onNavigateToClassic?: (bookId: string) => void
 }
@@ -135,16 +84,6 @@ export function StudyPage({ onNavigateToClassic }: StudyPageProps) {
   const [searchText, setSearchText] = useState("")
   const [showBookDetail, setShowBookDetail] = useState<typeof CLASSICS_BOOKS[0] | null>(null)
   const [showCourseDetail, setShowCourseDetail] = useState<typeof LECTURE_COURSES[0] | null>(null)
-  const [activeDuanziDirection, setActiveDuanziDirection] = useState<DuanziDirection>("beginner")
-  const [duanziState, setDuanziState] = useState<Record<DuanziDirection, DuzaniDirectionState>>({
-    beginner: createDirectionState(),
-    classics: createDirectionState(),
-    clinical: createDirectionState(),
-    yangsheng: createDirectionState(),
-    yixue: createDirectionState(),
-  })
-
-  const cacheKey = useMemo(() => createCacheKey(getRuntimeConfig().offlineCachePrefix, "study-duanzi-v1"), [])
 
   // 过滤书籍
   const filteredBooks = CLASSICS_BOOKS.filter(book => {
@@ -160,87 +99,6 @@ export function StudyPage({ onNavigateToClassic }: StudyPageProps) {
     if (activeSubTag !== "全部" && !course.tag.includes(activeSubTag) && !course.teacher.includes(activeSubTag)) return false
     return true
   })
-
-  const currentDuanzi = duanziState[activeDuanziDirection]
-
-  const updateDirectionState = (direction: DuanziDirection, patch: Partial<DuzaniDirectionState>) => {
-    setDuanziState((previous) => ({
-      ...previous,
-      [direction]: {
-        ...previous[direction],
-        ...patch,
-      },
-    }))
-  }
-
-  const loadDuanzi = async (direction: DuanziDirection, mode: "initial" | "more" | "switch-refresh") => {
-    const snapshot = duanziState[direction]
-    if (snapshot.loading) {
-      return
-    }
-
-    if (mode !== "initial" && !snapshot.hasMore) {
-      return
-    }
-
-    updateDirectionState(direction, { loading: true, error: "" })
-
-    try {
-      const batch = await fetchDuanziBatch(direction, mode === "initial" ? null : snapshot.nextCursor, mode === "more" ? 6 : 4)
-      const mergedItems = mergeDuanziItems(snapshot.items, batch.items)
-
-      updateDirectionState(direction, {
-        items: mergedItems,
-        nextCursor: batch.nextCursor,
-        hasMore: batch.hasMore,
-        loaded: true,
-        loading: false,
-        error: "",
-      })
-    } catch (error) {
-      updateDirectionState(direction, {
-        loading: false,
-        loaded: true,
-        error: error instanceof Error ? error.message : "段子加载失败",
-      })
-    }
-  }
-
-  useEffect(() => {
-    const cached = readCacheValue<Record<DuanziDirection, DuzaniDirectionState>>(cacheKey)
-    if (!cached) {
-      return
-    }
-
-    setDuanziState({
-      beginner: cached.beginner ?? createDirectionState(),
-      classics: cached.classics ?? createDirectionState(),
-      clinical: cached.clinical ?? createDirectionState(),
-      yangsheng: cached.yangsheng ?? createDirectionState(),
-      yixue: cached.yixue ?? createDirectionState(),
-    })
-  }, [cacheKey])
-
-  useEffect(() => {
-    saveCacheValue(cacheKey, duanziState)
-  }, [cacheKey, duanziState])
-
-  useEffect(() => {
-    const mappedDirection = CATEGORY_TO_DIRECTION[activeCategory] ?? "beginner"
-    setActiveDuanziDirection(mappedDirection)
-  }, [activeCategory])
-
-  useEffect(() => {
-    const directionState = duanziState[activeDuanziDirection]
-    if (!directionState.loaded && !directionState.loading) {
-      loadDuanzi(activeDuanziDirection, "initial")
-      return
-    }
-
-    if (directionState.loaded && directionState.hasMore && !directionState.loading) {
-      loadDuanzi(activeDuanziDirection, "switch-refresh")
-    }
-  }, [activeDuanziDirection])
 
   return (
     <div className="min-h-[calc(100vh-4rem)] pb-24 bg-[#1a1a1a]">
@@ -410,80 +268,6 @@ export function StudyPage({ onNavigateToClassic }: StudyPageProps) {
               <span className="text-[10px] text-gray-400">{tool.name}</span>
             </button>
           ))}
-        </div>
-      </div>
-
-      {/* 场景段子 */}
-      <div className="px-4 py-3">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-white font-medium flex items-center gap-2">
-            <FileText className="w-4 h-4 text-[#d4af37]" />
-            场景段子
-          </h3>
-          <button
-            onClick={() => loadDuanzi(activeDuanziDirection, "switch-refresh")}
-            className="text-xs text-[#d4af37]"
-          >
-            拉取新段子
-          </button>
-        </div>
-
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-          {DUANZI_DIRECTIONS.map((direction) => (
-            <button
-              key={direction.id}
-              onClick={() => setActiveDuanziDirection(direction.id)}
-              className={`flex-shrink-0 rounded-full border px-3 py-1.5 text-xs transition-all ${
-                activeDuanziDirection === direction.id
-                  ? "border-[#d4af37]/60 bg-[#d4af37]/15 text-[#f5f5f7]"
-                  : "border-[#333] bg-[#252525] text-gray-400"
-              }`}
-            >
-              {direction.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="space-y-2 pt-2">
-          {currentDuanzi.items.length === 0 && currentDuanzi.loading && (
-            <div className="rounded-lg border border-[#333] bg-[#252525] px-3 py-4 text-xs text-gray-400">
-              正在按方向拉取段子...
-            </div>
-          )}
-
-          {currentDuanzi.items.map((item) => (
-            <article key={item.id} className="rounded-xl border border-[#333] bg-[#252525] p-3">
-              <div className="mb-1 flex items-center justify-between">
-                <h4 className="text-sm font-medium text-white">{item.title}</h4>
-                <span className="text-[10px] text-gray-500">{DUANZI_DIRECTIONS.find((d) => d.id === item.direction)?.hint}</span>
-              </div>
-              <p className="text-xs leading-relaxed text-gray-300">{item.content}</p>
-              <div className="mt-2 flex flex-wrap gap-1">
-                {item.tags.map((tag) => (
-                  <span key={`${item.id}-${tag}`} className="rounded bg-[#1f1f1f] px-1.5 py-0.5 text-[10px] text-gray-400">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            </article>
-          ))}
-        </div>
-
-        {currentDuanzi.error && (
-          <div className="mt-2 rounded-lg border border-[#c8102e]/40 bg-[#c8102e]/10 px-3 py-2 text-xs text-[#f9b4bf]">
-            {currentDuanzi.error}
-          </div>
-        )}
-
-        <div className="mt-3 flex items-center justify-between">
-          <span className="text-[11px] text-gray-500">切换方向会优先读取本地缓存，再增量拉取新内容</span>
-          <button
-            onClick={() => loadDuanzi(activeDuanziDirection, "more")}
-            disabled={currentDuanzi.loading || !currentDuanzi.hasMore}
-            className="rounded-md border border-[#d4af37]/40 px-3 py-1.5 text-xs text-[#d4af37] disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            {currentDuanzi.loading ? "加载中..." : currentDuanzi.hasMore ? "加载更多" : "已到底"}
-          </button>
         </div>
       </div>
 
