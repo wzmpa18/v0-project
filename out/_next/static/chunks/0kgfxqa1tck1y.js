@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,64264,t=>{"use strict";var e=t.i(43476),i=t.i(18566),o=t.i(21973);t.s(["default",0,function(){let t=(0,i.useRouter)();return(0,e.jsx)(o.Tcm3DPage,{initialTab:"bone-setting",onBack:()=>t.push("/")})}])}]);
