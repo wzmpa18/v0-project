@@ -18,8 +18,8 @@ interface RuntimeEndpointOverride {
 const DEFAULT_CONFIG: RuntimeConfig = {
   appName: '国学综合',
   appId: 'com.getcapacitor.myapp',
-  apiBaseUrl: '',
-  resourceBaseUrl: '',
+  apiBaseUrl: 'https://yandao-1300262413.cos.ap-guangzhou.myqcloud.com',
+  resourceBaseUrl: 'https://yandao-1300262413.cos.ap-guangzhou.myqcloud.com',
   remoteResourceMode: 'remote',
   offlineCachePrefix: 'guoxue-cache',
   enableEncryptedResources: false,
