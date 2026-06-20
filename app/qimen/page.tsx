@@ -1,7 +1,7 @@
 "use client"
 
-import { QimenPage } from "@/components/pages/qimen-page"
+import { QimenPageStandalone } from "@/components/pages/qimen-page-new"
 
 export default function QimenRoute() {
-  return <QimenPage />
+  return <QimenPageStandalone />
 }
