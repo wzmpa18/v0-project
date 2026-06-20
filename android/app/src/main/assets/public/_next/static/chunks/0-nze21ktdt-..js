@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,13704,o=>{"use strict";var t=o.i(43476),i=o.i(18566),e=o.i(21973);o.s(["default",0,function(){let o=(0,i.useRouter)();return(0,t.jsx)(e.Tcm3DPage,{initialTab:"anatomy",onBack:()=>o.push("/"),onNavigateToTool:t=>{"jingluo"===t&&o.push("/")}})}])}]);

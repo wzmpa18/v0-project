@@ -16,6 +16,25 @@ workflows:
         # MYAPP_UPLOAD_KEY_ALIAS
         # MYAPP_UPLOAD_KEY_PASSWORD
     scripts:
+      - name: Pre-build validation (reject localhost in config)
+        script: |
+          cd "$CM_BUILD_DIR"
+          echo "=== Checking for localhost in capacitor config ==="
+          if grep -q "localhost" capacitor.config.json 2>/dev/null; then
+            echo "FATAL: capacitor.config.json contains 'localhost' - production builds must not use local dev addresses"
+            grep -n "localhost" capacitor.config.json
+            exit 1
+          fi
+          if grep -q "127.0.0.1" capacitor.config.json 2>/dev/null; then
+            echo "FATAL: capacitor.config.json contains '127.0.0.1' - production builds must not use local dev addresses"
+            exit 1
+          fi
+          echo "=== Checking MainActivity.java for localhost ==="
+          if grep -q "localhost" android/app/src/main/java/com/getcapacitor/myapp/MainActivity.java 2>/dev/null; then
+            echo "FATAL: MainActivity.java contains 'localhost' references"
+            exit 1
+          fi
+          echo "Validation passed: no localhost references found in production config"
       - name: Setup pnpm
         script: |
           cd "$CM_BUILD_DIR"

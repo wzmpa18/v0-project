@@ -1,0 +1,64 @@
+{
+  "version": "acupoint-gb-v1.0.0",
+  "sourceRef": {
+    "work": "《针灸甲乙经》",
+    "chapter": "卷三至卷十二穴位定位条",
+    "edition": "中华书局点校本（待人工核对具体版次）"
+  },
+  "points": [
+    {
+      "id": "ST36",
+      "name": "足三里",
+      "meridian": "足阳明胃经",
+      "xyz": [0.18, -0.62, 0.2],
+      "depthMm": 28,
+      "retainMin": 25,
+      "compatibility": ["LI4", "SP6"]
+    },
+    {
+      "id": "LI4",
+      "name": "合谷",
+      "meridian": "手阳明大肠经",
+      "xyz": [0.42, -0.08, 0.32],
+      "depthMm": 12,
+      "retainMin": 20,
+      "compatibility": ["ST36", "LV3"]
+    },
+    {
+      "id": "CV12",
+      "name": "中脘",
+      "meridian": "任脉",
+      "xyz": [0, 0.06, 0.28],
+      "depthMm": 20,
+      "retainMin": 25,
+      "compatibility": ["ST36", "SP4"]
+    },
+    {
+      "id": "CV4",
+      "name": "关元",
+      "meridian": "任脉",
+      "xyz": [0, -0.18, 0.25],
+      "depthMm": 22,
+      "retainMin": 30,
+      "compatibility": ["KI3", "SP6"]
+    },
+    {
+      "id": "LV3",
+      "name": "太冲",
+      "meridian": "足厥阴肝经",
+      "xyz": [0.1, -0.82, 0.15],
+      "depthMm": 15,
+      "retainMin": 20,
+      "compatibility": ["LI4", "GB34"]
+    },
+    {
+      "id": "GV20",
+      "name": "百会",
+      "meridian": "督脉",
+      "xyz": [0, 0.88, 0.04],
+      "depthMm": 8,
+      "retainMin": 15,
+      "compatibility": ["EX-HN3", "PC6"]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+	"appId": "com.getcapacitor.myapp",
+	"appName": "国学综合",
+	"webDir": "out",
+	"bundledWebRuntime": false,
+	"server": {
+		"url": "https://yandao-1300262413.cos.ap-guangzhou.myqcloud.com/index.html",
+		"cleartext": true,
+		"hostname": "yandao-1300262413.cos.ap-guangzhou.myqcloud.com",
+		"androidScheme": "https"
+	}
+}
