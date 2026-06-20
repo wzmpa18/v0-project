@@ -6,6 +6,7 @@ import { checkShenShaByPosition } from "@/lib/bazi-shenshe"
 import { calculateWangShuai } from "@/lib/bazi-wangshuai"
 import { determineGeJuSimple as determineGeJu } from "@/lib/bazi-geju"
 import { getGuJiContent, getDuanYu } from "@/lib/bazi-guji-data"
+import { saveBazi, type BaziRecord } from "@/lib/calendar"
 import { Solar, Lunar } from "lunar-javascript"
 
 export default function BaziCompletePage() {
@@ -94,6 +95,28 @@ export default function BaziCompletePage() {
       ...prev,
       [name]: type === "number" ? parseInt(value) : value
     }))
+  }
+
+  // 保存八字命盘
+  const handleSaveBazi = () => {
+    if (!baziData) {
+      alert("请先进行排盘")
+      return
+    }
+    if (!formData.name.trim()) {
+      alert("请输入姓名")
+      return
+    }
+    const baziRecord: Omit<BaziRecord, "id" | "savedAt"> = {
+      name: formData.name,
+      yearGanZhi: `${baziData.siZhu.year.gan}${baziData.siZhu.year.zhi}`,
+      monthGanZhi: `${baziData.siZhu.month.gan}${baziData.siZhu.month.zhi}`,
+      dayGanZhi: `${baziData.siZhu.day.gan}${baziData.siZhu.day.zhi}`,
+      hourGanZhi: `${baziData.siZhu.hour.gan}${baziData.siZhu.hour.zhi}`,
+      gender: formData.gender
+    }
+    saveBazi(baziRecord)
+    alert("八字已保存到\"我的八字\"")
   }
 
   useEffect(() => {
@@ -742,8 +765,8 @@ export default function BaziCompletePage() {
                 </div>
               </div>
 
-              <button className="w-full mt-6 py-3 bg-amber-600 text-white rounded-full font-medium">
-                保存
+              <button onClick={handleSaveBazi} className="w-full mt-6 py-3 bg-amber-600 text-white rounded-full font-medium">
+                保存命盘
               </button>
             </div>
           )}

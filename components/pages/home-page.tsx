@@ -220,71 +220,90 @@ export function HomePage() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-900/30 to-blue-950/50 rounded-xl p-3 border border-blue-800/30 mb-2.5">
-          <div className="flex items-center justify-between mb-2.5">
-            <span className="text-sm font-bold text-blue-200">每日运势</span>
-            <span className="text-xs text-blue-400/70">丙午日</span>
+        {/* 每日运势卡片 - 根据今日日柱动态计算 */}
+        {todayInfo && (
+          <div className="bg-gradient-to-br from-blue-900/30 to-blue-950/50 rounded-xl p-3 border border-blue-800/30 mb-2.5">
+            <div className="flex items-center justify-between mb-2.5">
+              <span className="text-sm font-bold text-blue-200">每日运势</span>
+              <span className="text-xs text-blue-400/70">{todayInfo.dayGanZhi}日</span>
+            </div>
+            {/* 根据日干五行属性计算运势评分 */}
+            {(() => {
+              const dayGan = todayInfo.dayGan
+              // 日干五行：甲乙木、丙丁火、戊己土、庚辛金、壬癸水
+              const wuxingMap: Record<string, { score: number; career: number; wealth: number; health: number; love: number }> = {
+                "甲": { score: 85, career: 5, wealth: 4, health: 4, love: 3 },
+                "乙": { score: 80, career: 4, wealth: 4, health: 5, love: 4 },
+                "丙": { score: 90, career: 5, wealth: 5, health: 3, love: 4 },
+                "丁": { score: 85, career: 4, wealth: 4, health: 4, love: 5 },
+                "戊": { score: 75, career: 4, wealth: 3, health: 3, love: 4 },
+                "己": { score: 70, career: 3, wealth: 4, health: 4, love: 3 },
+                "庚": { score: 80, career: 4, wealth: 3, health: 5, love: 4 },
+                "辛": { score: 78, career: 3, wealth: 5, health: 4, love: 3 },
+                "壬": { score: 82, career: 4, wealth: 4, health: 4, love: 4 },
+                "癸": { score: 75, career: 3, wealth: 3, health: 5, love: 4 },
+              }
+              const dayScore = wuxingMap[dayGan] || { score: 75, career: 4, wealth: 3, health: 4, love: 3 }
+              const renderStars = (count: number) => (
+                <div className="flex justify-center">
+                  {[1, 2, 3].map(i => (
+                    <Star key={i} className={`w-4 h-4 ${i <= count ? 'text-yellow-400 fill-yellow-400' : 'text-gray-600'}`} />
+                  ))}
+                </div>
+              )
+              return (
+                <div className="grid grid-cols-4 gap-2">
+                  <div className="bg-blue-800/30 rounded-lg p-2 text-center border border-blue-700/30">
+                    <div className="text-xs text-blue-200/70 mb-1">事业</div>
+                    {renderStars(dayScore.career)}
+                  </div>
+                  <div className="bg-blue-800/30 rounded-lg p-2 text-center border border-blue-700/30">
+                    <div className="text-xs text-blue-200/70 mb-1">财运</div>
+                    {renderStars(dayScore.wealth)}
+                  </div>
+                  <div className="bg-blue-800/30 rounded-lg p-2 text-center border border-blue-700/30">
+                    <div className="text-xs text-blue-200/70 mb-1">健康</div>
+                    {renderStars(dayScore.health)}
+                  </div>
+                  <div className="bg-blue-800/30 rounded-lg p-2 text-center border border-blue-700/30">
+                    <div className="text-xs text-blue-200/70 mb-1">感情</div>
+                    {renderStars(dayScore.love)}
+                  </div>
+                </div>
+              )
+            })()}
           </div>
-          <div className="grid grid-cols-4 gap-2">
-            <div className="bg-blue-800/30 rounded-lg p-2 text-center border border-blue-700/30">
-              <div className="text-xs text-blue-200/70 mb-1">事业</div>
-              <div className="flex justify-center">
-                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-              </div>
-            </div>
-            <div className="bg-blue-800/30 rounded-lg p-2 text-center border border-blue-700/30">
-              <div className="text-xs text-blue-200/70 mb-1">财运</div>
-              <div className="flex justify-center">
-                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                <Star className="w-4 h-4 text-gray-600" />
-              </div>
-            </div>
-            <div className="bg-blue-800/30 rounded-lg p-2 text-center border border-blue-700/30">
-              <div className="text-xs text-blue-200/70 mb-1">健康</div>
-              <div className="flex justify-center">
-                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-              </div>
-            </div>
-            <div className="bg-blue-800/30 rounded-lg p-2 text-center border border-blue-700/30">
-              <div className="text-xs text-blue-200/70 mb-1">感情</div>
-              <div className="flex justify-center">
-                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                <Star className="w-4 h-4 text-gray-600" />
-                <Star className="w-4 h-4 text-gray-600" />
-              </div>
-            </div>
-          </div>
-        </div>
+        )}
 
         <div className="bg-gradient-to-br from-rose-900/30 to-rose-950/50 rounded-xl p-3 border border-rose-800/30 mt-2.5">
-          <div className="flex items-center gap-1.5 mb-2.5">
-            <Flame className="w-4 h-4 text-rose-500" />
-            <span className="text-sm font-bold text-rose-200">国学经典</span>
+          <div className="flex items-center justify-between mb-2.5">
+            <div className="flex items-center gap-1.5">
+              <Flame className="w-4 h-4 text-rose-500" />
+              <span className="text-sm font-bold text-rose-200">国学经典</span>
+            </div>
+            <button onClick={() => navigateTo("/classics")} className="flex items-center gap-0.5 text-xs text-rose-400/70">
+              更多 <ChevronRight className="w-3 h-3" />
+            </button>
           </div>
           <div className="grid grid-cols-3 gap-2">
-            <div className="bg-rose-800/30 rounded-lg p-2 text-center border border-rose-700/30">
+            <button onClick={() => navigateTo("/classics")} className="bg-rose-800/30 rounded-lg p-2 text-center border border-rose-700/30 active:scale-95 transition-transform">
               <span className="text-xs text-rose-100/80">《易经》</span>
-            </div>
-            <div className="bg-rose-800/30 rounded-lg p-2 text-center border border-rose-700/30">
+            </button>
+            <button onClick={() => navigateTo("/classics")} className="bg-rose-800/30 rounded-lg p-2 text-center border border-rose-700/30 active:scale-95 transition-transform">
               <span className="text-xs text-rose-100/80">《道德经》</span>
-            </div>
-            <div className="bg-rose-800/30 rounded-lg p-2 text-center border border-rose-700/30">
+            </button>
+            <button onClick={() => navigateTo("/classics")} className="bg-rose-800/30 rounded-lg p-2 text-center border border-rose-700/30 active:scale-95 transition-transform">
               <span className="text-xs text-rose-100/80">《黄帝内经》</span>
-            </div>
-            <div className="bg-rose-800/30 rounded-lg p-2 text-center border border-rose-700/30">
+            </button>
+            <button onClick={() => navigateTo("/classics")} className="bg-rose-800/30 rounded-lg p-2 text-center border border-rose-700/30 active:scale-95 transition-transform">
               <span className="text-xs text-rose-100/80">《伤寒论》</span>
-            </div>
-            <div className="bg-rose-800/30 rounded-lg p-2 text-center border border-rose-700/30">
+            </button>
+            <button onClick={() => navigateTo("/classics")} className="bg-rose-800/30 rounded-lg p-2 text-center border border-rose-700/30 active:scale-95 transition-transform">
               <span className="text-xs text-rose-100/80">《金匮要略》</span>
-            </div>
-            <div className="bg-rose-800/30 rounded-lg p-2 text-center border border-rose-700/30">
+            </button>
+            <button onClick={() => navigateTo("/classics")} className="bg-rose-800/30 rounded-lg p-2 text-center border border-rose-700/30 active:scale-95 transition-transform">
               <span className="text-xs text-rose-100/80">《本草纲目》</span>
-            </div>
+            </button>
           </div>
         </div>
 
