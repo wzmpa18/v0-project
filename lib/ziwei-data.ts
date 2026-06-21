@@ -181,65 +181,152 @@ export const ZIWEI_DUAN_YU = {
   }
 }
 
+// 十二地支（用于命宫计算，索引0=子）
+const DI_ZHI_12 = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
+
+// 天干列表
+const TIAN_GAN_10 = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"]
+
+// 五虎遁：年干对应的寅宫天干起始
+const WU_HU_DUN: Record<string, number> = {
+  "甲": 2, "己": 2,  // 丙寅起
+  "乙": 4, "庚": 4,  // 戊寅起
+  "丙": 6, "辛": 6,  // 庚寅起
+  "丁": 8, "壬": 8,  // 壬寅起
+  "戊": 0, "癸": 0,  // 甲寅起
+}
+
+// 纳音五行表（六十甲子纳音）
+// 索引 = 天干索引 * 12 + 地支索引，每两个甲子对应一种纳音
+const NAYIN_TABLE: string[] = [
+  "海中金", "海中金", "炉中火", "炉中火", "大林木", "大林木", "路旁土", "路旁土", "剑锋金", "剑锋金", "山头火", "山头火",
+  "涧下水", "涧下水", "城墙土", "城墙土", "白蜡金", "白蜡金", "杨柳木", "杨柳木", "泉中水", "泉中水", "屋上土", "屋上土",
+  "霹雳火", "霹雳火", "松柏木", "松柏木", "长流水", "长流水", "沙中金", "沙中金", "山下火", "山下火", "平地木", "平地木",
+  "壁上土", "壁上土", "金箔金", "金箔金", "覆灯火", "覆灯火", "天河水", "天河水", "大驿土", "大驿土", "钗钏金", "钗钏金",
+  "桑柘木", "桑柘木", "大溪水", "大溪水", "沙中土", "沙中土", "天上火", "天上火", "石榴木", "石榴木", "大海水", "大海水",
+]
+
+// 纳音五行对应的局
+function nayinToJu(nayin: string): string {
+  const wuxing = nayin.slice(-1)
+  const juMap: Record<string, string> = {
+    "金": "金四局",
+    "木": "木三局",
+    "水": "水二局",
+    "火": "火六局",
+    "土": "土五局",
+  }
+  return juMap[wuxing] || "土五局"
+}
+
+// 紫微星起星表：根据农历日和五行局数查紫微星所在宫位（地支索引）
+// 行=局数(2,3,4,5,6)，列=农历日(1-30)
+const ZIWEI_POSITION_TABLE: Record<number, number[]> = {
+  2: [1,2,3,4,5,6,7,8,9,10,11,12,1,2,3,4,5,6,7,8,9,10,11,12,1,2,3,4,5,6], // 水二局
+  3: [2,4,6,8,10,12,2,4,6,8,10,12,2,4,6,8,10,12,2,4,6,8,10,12,2,4,6,8,10,12], // 木三局
+  4: [3,6,9,12,3,6,9,12,3,6,9,12,3,6,9,12,3,6,9,12,3,6,9,12,3,6,9,12,3,6], // 金四局
+  5: [4,8,12,4,8,12,4,8,12,4,8,12,4,8,12,4,8,12,4,8,12,4,8,12,4,8,12,4,8,12], // 土五局
+  6: [5,10,3,8,1,6,11,4,9,2,7,12,5,10,3,8,1,6,11,4,9,2,7,12,5,10,3,8,1,6], // 火六局
+}
+
+// 将1-12的宫位编号转换为地支索引(0-11)
+function gongNumToZhiIndex(gongNum: number): number {
+  return gongNum - 1  // 1=子(0), 2=丑(1), ..., 12=亥(11)
+}
+
 // 根据农历年月日时计算紫微斗数命盘
 export function calculateZiWeiPan(lunarYear: number, lunarMonth: number, lunarDay: number, hour: number, gender: "male" | "female") {
-  // 计算命宫位置
-  const mingGongIndex = (14 - lunarMonth - Math.floor(hour / 2)) % 12
+  const shiChenIndex = Math.floor(hour / 2) % 12  // 时辰索引 0-11
   
-  // 计算身宫位置  
-  const shenGongIndex = (lunarMonth + Math.floor(hour / 2) - 2) % 12
+  // 计算命宫位置（地支索引0-11）
+  // 从寅宫(索引2)起正月，顺数到生月
+  // 从生月宫起子时，逆数到生时
+  const mingGongIndex = ((lunarMonth + 1) - shiChenIndex + 12) % 12
   
-  // 计算五行局
-  const wuxingJu = calculateWuXingJu(lunarYear, mingGongIndex)
+  // 计算身宫位置
+  // 从寅宫(索引2)起正月，顺数到生月
+  // 从生月宫起子时，顺数到生时
+  const shenGongIndex = ((lunarMonth + 1) + shiChenIndex) % 12
+  
+  // 年干
+  const yearGanIndex = (lunarYear - 4) % 10
+  const yearGan = TIAN_GAN_10[yearGanIndex]
+  
+  // 用五虎遁确定命宫天干
+  const yinGanIndex = WU_HU_DUN[yearGan] ?? 0
+  const mingGongGanIndex = (yinGanIndex + mingGongIndex - 2 + 10) % 10
+  const mingGongGan = TIAN_GAN_10[mingGongGanIndex]
+  const mingGongZhi = DI_ZHI_12[mingGongIndex]
+  
+  // 计算纳音五行
+  const nayinIndex = mingGongGanIndex * 12 + mingGongIndex
+  const nayin = NAYIN_TABLE[nayinIndex]
+  const wuxingJu = nayinToJu(nayin)
   
   // 计算紫微星所在宫位
-  const ziweiGong = calculateZiWeiPosition(lunarDay, wuxingJu)
+  const juNum = parseInt(wuxingJu.match(/\d/)?.[0] || "5")
+  const ziweiGongNum = ZIWEI_POSITION_TABLE[juNum][lunarDay - 1] || 1
+  const ziweiGong = gongNumToZhiIndex(ziweiGongNum)
   
   // 安十四主星
   const mainStarPositions = arrangeMainStars(ziweiGong)
   
+  // 安辅星（六吉星）
+  const luckyStarPositions = arrangeLuckyStars(lunarYear, mingGongIndex, shiChenIndex)
+  
+  // 安煞星（六煞星）
+  const unluckyStarPositions = arrangeUnluckyStars(lunarYear, mingGongIndex, shiChenIndex)
+  
+  // 计算大限
+  const daXian = calculateDaXian(mingGongIndex, wuxingJu, gender, lunarYear)
+  
+  // 确定十二宫名（从命宫开始逆时针排列）
+  const palaceNames = getPalaceNames(mingGongIndex)
+  
   return {
-    mingGong: TWELVE_PALACES[mingGongIndex].name,
-    shenGong: TWELVE_PALACES[shenGongIndex].name,
+    mingGong: TWELVE_PALACES[0].name,
+    mingGongIndex,
+    shenGong: TWELVE_PALACES[0].name,
+    shenGongIndex,
     wuxingJu,
+    nayin,
+    mingGongGan,
+    mingGongZhi,
+    yearGan,
     ziweiGong,
     mainStarPositions,
+    luckyStarPositions,
+    unluckyStarPositions,
+    daXian,
+    palaceNames,
   }
 }
 
-// 计算五行局
-function calculateWuXingJu(year: number, mingGongIndex: number): string {
-  const ganIndex = (year - 4) % 10
-  const juMap = [
-    ["水二局", "火六局", "土五局", "木三局", "金四局", "水二局", "火六局", "土五局", "木三局", "金四局", "水二局", "火六局"],
-    ["火六局", "土五局", "木三局", "金四局", "水二局", "火六局", "土五局", "木三局", "金四局", "水二局", "火六局", "土五局"],
-    ["土五局", "木三局", "金四局", "水二局", "火六局", "土五局", "木三局", "金四局", "水二局", "火六局", "土五局", "木三局"],
-    ["木三局", "金四局", "水二局", "火六局", "土五局", "木三局", "金四局", "水二局", "火六局", "土五局", "木三局", "金四局"],
-    ["金四局", "水二局", "火六局", "土五局", "木三局", "金四局", "水二局", "火六局", "土五局", "木三局", "金四局", "水二局"],
-  ]
-  return juMap[ganIndex % 5][mingGongIndex]
-}
-
-// 计算紫微星位置
-function calculateZiWeiPosition(lunarDay: number, wuxingJu: string): number {
-  const juNum = parseInt(wuxingJu.match(/\d/)?.[0] || "5")
-  return (lunarDay + juNum - 1) % 12
+// 获取十二宫名（从命宫开始，逆时针）
+function getPalaceNames(mingGongIndex: number): string[] {
+  const names = ["命宫", "兄弟宫", "夫妻宫", "子女宫", "财帛宫", "疾厄宫", "迁移宫", "交友宫", "官禄宫", "田宅宫", "福德宫", "父母宫"]
+  const result: string[] = new Array(12)
+  for (let i = 0; i < 12; i++) {
+    result[(mingGongIndex + i) % 12] = names[i]
+  }
+  return result
 }
 
 // 安排十四主星位置
 function arrangeMainStars(ziweiGong: number) {
   const positions: Record<string, number> = {}
   
-  // 紫微系星辰排列（按固定规则）
+  // 紫微系星辰排列（逆时针）
   positions["紫微"] = ziweiGong
-  positions["天机"] = (ziweiGong + 11) % 12
-  positions["太阳"] = (ziweiGong + 9) % 12
-  positions["武曲"] = (ziweiGong + 10) % 12
-  positions["天同"] = (ziweiGong + 8) % 12
-  positions["廉贞"] = (ziweiGong + 4) % 12
+  positions["天机"] = (ziweiGong + 11) % 12  // 逆一位
+  positions["太阳"] = (ziweiGong + 9) % 12   // 逆三位
+  positions["武曲"] = (ziweiGong + 10) % 12  // 逆二位
+  positions["天同"] = (ziweiGong + 8) % 12   // 逆四位
+  positions["廉贞"] = (ziweiGong + 4) % 12   // 逆八位
   
-  // 天府系星辰排列
-  const tianfuGong = (12 - ziweiGong + 4) % 12
+  // 天府系星辰排列（天府与紫微在寅申线对称）
+  // 天府位置 = (4 - ziweiGong + 12) % 12，即以寅(2)为对称轴
+  const tianfuGong = (4 - ziweiGong + 12) % 12
   positions["天府"] = tianfuGong
   positions["太阴"] = (tianfuGong + 1) % 12
   positions["贪狼"] = (tianfuGong + 2) % 12
@@ -252,6 +339,115 @@ function arrangeMainStars(ziweiGong: number) {
   return positions
 }
 
+// 安排六吉星
+function arrangeLuckyStars(year: number, mingGongIndex: number, shiChenIndex: number): Record<string, number> {
+  const positions: Record<string, number> = {}
+  const yearGanIndex = (year - 4) % 10
+  const yearGan = TIAN_GAN_10[yearGanIndex]
+  
+  // 左辅：从辰宫起正月，顺数到生月
+  const month = Math.floor((mingGongIndex + shiChenIndex - 1 + 12) / 2)  // 简化推算生月
+  positions["左辅"] = (4 + (month - 1)) % 12  // 辰=4
+  
+  // 右弼：从戌宫起正月，逆数到生月
+  positions["右弼"] = (10 - (month - 1) + 12) % 12  // 戌=10
+  
+  // 文昌：从戌宫起子时，逆数到生时
+  positions["文昌"] = (10 - shiChenIndex + 12) % 12
+  
+  // 文曲：从辰宫起子时，顺数到生时
+  positions["文曲"] = (4 + shiChenIndex) % 12
+  
+  // 天魁：根据年干决定
+  const tianKuiMap: Record<string, number> = {
+    "甲": 1, "戊": 1, "庚": 1,  // 丑
+    "乙": 12, "己": 12, "辛": 12,  // 子
+    "丙": 11, "丁": 11,  // 亥
+    "壬": 3, "癸": 3,  // 卯
+  }
+  positions["天魁"] = tianKuiMap[yearGan] ?? 0
+  
+  // 天钺：根据年干决定（与天魁对称）
+  const tianYueMap: Record<string, number> = {
+    "甲": 6, "戊": 6, "庚": 6,  // 未
+    "乙": 7, "己": 7, "辛": 7,  // 申
+    "丙": 8, "丁": 8,  // 酉
+    "壬": 10, "癸": 10,  // 亥
+  }
+  positions["天钺"] = tianYueMap[yearGan] ?? 0
+  
+  return positions
+}
+
+// 安排六煞星
+function arrangeUnluckyStars(year: number, mingGongIndex: number, shiChenIndex: number): Record<string, number> {
+  const positions: Record<string, number> = {}
+  const yearGanIndex = (year - 4) % 10
+  const yearGan = TIAN_GAN_10[yearGanIndex]
+  
+  // 擎羊：从年干宫起，顺数到卯宫（偏前一位）
+  const qingYangMap: Record<string, number> = {
+    "甲": 3, "己": 3,  // 卯
+    "乙": 4, "庚": 4,  // 辰
+    "丙": 5, "辛": 5,  // 巳
+    "丁": 6, "壬": 6,  // 午
+    "戊": 7, "癸": 7,  // 未
+  }
+  positions["擎羊"] = qingYangMap[yearGan] ?? 3
+  
+  // 陀罗：与擎羊对称（偏后一位）
+  const tuoLuoMap: Record<string, number> = {
+    "甲": 1, "己": 1,  // 丑
+    "乙": 2, "庚": 2,  // 寅
+    "丙": 3, "辛": 3,  // 卯
+    "丁": 4, "壬": 4,  // 辰
+    "戊": 5, "癸": 5,  // 巳
+  }
+  positions["陀罗"] = tuoLuoMap[yearGan] ?? 1
+  
+  // 火星：从寅宫起子时，顺数到生时，再根据年支调整
+  positions["火星"] = (2 + shiChenIndex) % 12
+  
+  // 铃星：从戌宫起子时，逆数到生时
+  positions["铃星"] = (10 - shiChenIndex + 12) % 12
+  
+  // 地空：从亥宫起子时，逆数到生时
+  positions["地空"] = (11 - shiChenIndex + 12) % 12
+  
+  // 地劫：从亥宫起子时，顺数到生时
+  positions["地劫"] = (11 + shiChenIndex) % 12
+  
+  return positions
+}
+
+// 计算大限
+function calculateDaXian(mingGongIndex: number, wuxingJu: string, gender: "male" | "female", birthYear: number): any[] {
+  const juNum = parseInt(wuxingJu.match(/\d/)?.[0] || "5")
+  // 阳男阴女顺行，阴男阳女逆行
+  const yearGanIndex = (birthYear - 4) % 10
+  const isYang = yearGanIndex % 2 === 0  // 甲丙戊庚壬为阳
+  const isMale = gender === "male"
+  const forward = (isYang && isMale) || (!isYang && !isMale)
+  
+  const daXianList = []
+  for (let i = 0; i < 12; i++) {
+    const gongIndex = forward 
+      ? (mingGongIndex + i) % 12 
+      : (mingGongIndex - i + 12) % 12
+    const startAge = juNum + i * 10
+    const endAge = startAge + 9
+    daXianList.push({
+      gongIndex,
+      palaceName: TWELVE_PALACES[i].name,
+      startAge,
+      endAge,
+      startYear: birthYear + startAge - 1,
+      endYear: birthYear + endAge - 1,
+    })
+  }
+  return daXianList
+}
+
 // 获取命宫主星断语
 export function getMingGongDuanYu(mainStar: string) {
   return ZIWEI_DUAN_YU.命宫[mainStar as keyof typeof ZIWEI_DUAN_YU.命宫] || {
@@ -259,4 +455,107 @@ export function getMingGongDuanYu(mainStar: string) {
     译文: "此星坐命宫，具有独特的命理特征。",
     出处: "《紫微斗数全书》"
   }
+}
+
+// 获取宫位详解（引经据典）
+export function getGongDetail(palaceName: string, mainStars: string[], luckyStars: string[], unluckyStars: string[], siHua: any): {
+  geju: string[]
+  duanyu: { title: string; content: string; chuchu: string }[]
+  zonghe: string
+} {
+  const geju: string[] = []
+  const duanyu: { title: string; content: string; chuchu: string }[] = []
+  
+  // 判断格局
+  if (mainStars.includes("紫微") && mainStars.includes("天府")) {
+    geju.push("紫府同宫")
+    duanyu.push({
+      title: "紫府同宫格",
+      content: "紫微与天府同宫，为大富大贵之格。主人志气高远，能力出众，一生荣华富贵，位极人臣。",
+      chuchu: "《紫微斗数全书·诸星问答论》"
+    })
+  }
+  if (mainStars.includes("太阳") && mainStars.includes("太阴")) {
+    geju.push("日月同辉")
+    duanyu.push({
+      title: "日月同辉格",
+      content: "太阳与太阴同宫或对照，主声名远播，事业有成，为人光明正大，阴阳调和。",
+      chuchu: "《紫微斗数全书·诸星问答论》"
+    })
+  }
+  if (mainStars.includes("七杀") && mainStars.includes("破军") && mainStars.includes("贪狼")) {
+    geju.push("杀破狼")
+    duanyu.push({
+      title: "杀破狼格",
+      content: "七杀、破军、贪狼三足鼎立，主变动不居，开创进取，人生精彩但波折较大。",
+      chuchu: "《紫微斗数全书·诸星问答论》"
+    })
+  }
+  if (mainStars.includes("天机") && mainStars.includes("太阴") && mainStars.includes("天同") && mainStars.includes("天梁")) {
+    geju.push("机月同梁")
+    duanyu.push({
+      title: "机月同梁格",
+      content: "天机、太阴、天同、天梁组合，主聪明才智，适合文职或学术研究，做事按部就班。",
+      chuchu: "《紫微斗数全书·诸星问答论》"
+    })
+  }
+  if (mainStars.includes("天府") && mainStars.includes("天相")) {
+    geju.push("府相朝垣")
+    duanyu.push({
+      title: "府相朝垣格",
+      content: "天府与天相朝垣，主财官双美，一生顺遂，富贵双全。",
+      chuchu: "《紫微斗数全书·诸星问答论》"
+    })
+  }
+  
+  // 单星断语
+  mainStars.forEach(star => {
+    const info = MAIN_STARS[star as keyof typeof MAIN_STARS]
+    if (info) {
+      duanyu.push({
+        title: `${star}入${palaceName}`,
+        content: `${info.desc}。${star}为${info.nature}，五行属${info.wuxing}。`,
+        chuchu: "《紫微斗数全书》"
+      })
+    }
+  })
+  
+  // 四化断语
+  if (siHua) {
+    Object.entries(siHua).forEach(([hua, star]) => {
+      if (mainStars.includes(star as string)) {
+        const huaName = `化${hua}`
+        const huaInfo = SI_HUA[huaName as keyof typeof SI_HUA]
+        if (huaInfo) {
+          duanyu.push({
+            title: `${star}${huaName}`,
+            content: `${star}化${hua}，主${huaInfo.desc}。此四化入${palaceName}，对该宫位影响显著。`,
+            chuchu: "《紫微斗数全书·四化星论》"
+          })
+        }
+      }
+    })
+  }
+  
+  // 煞星影响
+  if (unluckyStars.length > 0) {
+    const shaDesc = unluckyStars.map(s => {
+      const info = UNLUCKY_STARS[s as keyof typeof UNLUCKY_STARS]
+      return info ? `${s}(${info.desc})` : s
+    }).join("、")
+    duanyu.push({
+      title: "煞星影响",
+      content: `此宫有${shaDesc}，需注意其负面影响。`,
+      chuchu: "《紫微斗数全书·煞星论》"
+    })
+  }
+  
+  // 综合评断
+  let zonghe = `${palaceName}有${mainStars.join("、") || "无主星"}坐守`
+  if (luckyStars.length > 0) zonghe += `，得${luckyStars.join("、")}辅佐`
+  if (unluckyStars.length > 0) zonghe += `，受${unluckyStars.join("、")}侵扰`
+  if (geju.length > 0) zonghe += `，成${geju.join("、")}之格`
+  zonghe += "。"
+  
+  return { geju, duanyu, zonghe }
 }

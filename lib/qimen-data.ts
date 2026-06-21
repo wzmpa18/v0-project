@@ -393,3 +393,193 @@ export function calculateMingLiQiMen(date: Date, gender: "male" | "female") {
   const qiMen = calculateYinPanQiMen(date)
   return { qiMen }
 }
+
+// 获取奇门宫位详解（引经据典）
+export function getQimenGongDetail(
+  palaceNum: number,
+  palaceName: string,
+  position: string,
+  tianGan: string,
+  diGan: string,
+  men: string,
+  xing: string,
+  shen: string,
+  isZhiFu: boolean,
+  isZhiShi: boolean
+): {
+  geju: string[]
+  duanyu: { title: string; content: string; chuchu: string }[]
+  zonghe: string
+} {
+  const geju: string[] = []
+  const duanyu: { title: string; content: string; chuchu: string }[] = []
+
+  // 宫位基本信息
+  const gongInfo = JIU_GONG.find(g => g.number === palaceNum)
+  if (gongInfo) {
+    duanyu.push({
+      title: `${palaceName}${palaceNum}宫`,
+      content: `${palaceName}${palaceNum}宫，方位${position}，五行属${gongInfo.wuxing}。八卦符号${gongInfo.symbol}。`,
+      chuchu: "《奇门遁甲统宗大全·九宫论》"
+    })
+  }
+
+  // 八门断语
+  const menInfo = BA_MEN.find(m => m.name === men)
+  if (menInfo) {
+    const menDescMap: Record<string, string> = {
+      "休门": "休门属水，主休息、安定、贵人相助。宜求谒贵人、安葬、和合，不宜出击。",
+      "生门": "生门属土，主生长、财运、健康。宜经营求财、婚姻、建造，大吉。",
+      "伤门": "伤门属木，主伤害、疾病、争斗。不宜出行、嫁娶、经商，宜狩猎、追捕。",
+      "杜门": "杜门属木，主阻塞、隐藏、保密。宜躲避、藏匿、保密之事，不宜出行。",
+      "景门": "景门属火，主文书、口舌、光明。宜上书、献策、考试，不宜争讼。",
+      "死门": "死门属土，主死亡、丧事、停滞。不宜吉事，宜吊丧、送葬、行刑。",
+      "惊门": "惊门属金，主惊恐、口舌、官司。不宜谋事，宜捕捉、斗讼。",
+      "开门": "开门属金，主开启、事业、远行。宜远行、求职、开业、嫁娶，大吉。",
+    }
+    duanyu.push({
+      title: `八门·${men}`,
+      content: menDescMap[men] || `${men}，${menInfo.desc}。此门为${menInfo.nature}门。`,
+      chuchu: "《奇门遁甲统宗大全·八门论》"
+    })
+  }
+
+  // 九星断语
+  const xingInfo = JIU_XING.find(x => x.name === xing)
+  if (xingInfo) {
+    const xingDescMap: Record<string, string> = {
+      "天蓬": "天蓬星属水，主盗贼、冒险、变动。临宫不宜出行、经商，宜掩捕盗贼。",
+      "天芮": "天芮星属土，主疾病、学生、医药。临宫主病灾，宜求医问药、拜师求学。",
+      "天冲": "天冲星属木，主行动、冲击、竞争。临宫宜出征、报仇，不宜嫁娶。",
+      "天辅": "天辅星属木，主贵人、文化、教育。临宫大吉，宜求学、上任、婚姻。",
+      "天禽": "天禽星属土，主中央、调和、稳定。临宫主万事调和，宜祭祀、祈福。",
+      "天心": "天心星属金，主智慧、决策、医病。临宫宜求医、治病、谋事。",
+      "天柱": "天柱星属金，主口舌、破败、权威。临宫不宜出行，宜驻守、争讼。",
+      "天任": "天任星属土，主承载、稳重、信任。临宫吉，宜求财、嫁娶、种植。",
+      "天英": "天英星属火，主火灾、光明、急躁。临宫主口舌是非，宜出行不宜静守。",
+    }
+    duanyu.push({
+      title: `九星·${xing}`,
+      content: xingDescMap[xing] || `${xing}，${xingInfo.desc}。此星为${xingInfo.nature}星。`,
+      chuchu: "《奇门遁甲统宗大全·九星论》"
+    })
+  }
+
+  // 八神断语
+  const shenInfo = BA_SHEN.find(s => s.name === shen)
+  if (shenInfo) {
+    const shenDescMap: Record<string, string> = {
+      "值符": "值符为八神之首，主贵人、权威、庇护。所到之处，百恶消散，最宜求谋。",
+      "螣蛇": "螣蛇主虚诈、怪异、惊恐。临宫主虚惊、怪梦、口舌虚惊。",
+      "太阴": "太阴主阴私、隐藏、女人。临宫宜暗谋、藏匿、女人之事。",
+      "六合": "六合主和合、婚姻、合作。临宫宜婚姻、交易、合伙、谈判。",
+      "白虎": "白虎主凶猛、血光、疾病。临宫主血光之灾、官司、刑伤。",
+      "玄武": "玄武主盗贼、暗昧、阴谋。临宫主盗贼、丢失、口舌是非。",
+      "九地": "九地主地户、稳定、隐藏。临宫宜防守、屯兵、藏匿。",
+      "九天": "九天主天门、高远、行动。临宫宜出击、远行、高飞。",
+    }
+    duanyu.push({
+      title: `八神·${shen}`,
+      content: shenDescMap[shen] || `${shen}，${shenInfo.desc}。`,
+      chuchu: "《奇门遁甲统宗大全·八神论》"
+    })
+  }
+
+  // 天地盘干组合格局判断
+  const ganCombo = tianGan + diGan
+  const ganGejuMap: Record<string, { name: string; desc: string; chuchu: string }> = {
+    "戊戊": { name: "伏吟", desc: "天盘戊加地盘戊，主伏吟，凡事停滞，不宜妄动。", chuchu: "《奇门遁甲统宗大全》" },
+    "乙乙": { name: "日奇伏吟", desc: "天盘乙加地盘乙，主伏吟，凡事静守为吉。", chuchu: "《奇门遁甲统宗大全》" },
+    "丙丙": { name: "月奇伏吟", desc: "天盘丙加地盘丙，主伏吟，文书迟滞。", chuchu: "《奇门遁甲统宗大全》" },
+    "丁丁": { name: "星奇伏吟", desc: "天盘丁加地盘丁，主伏吟，凡事安宁。", chuchu: "《奇门遁甲统宗大全》" },
+    "戊乙": { name: "青龙合灵", desc: "天盘戊加地盘乙，主和合，凡事顺利。", chuchu: "《奇门遁甲统宗大全》" },
+    "乙戊": { name: "利阴害阳", desc: "天盘乙加地盘戊，主阴害阳，凡事不利。", chuchu: "《奇门遁甲秘笈大全》" },
+    "戊丙": { name: "青龙回首", desc: "天盘戊加地盘丙，主青龙回首，百事皆吉。", chuchu: "《奇门遁甲统宗大全》" },
+    "丙戊": { name: "飞鸟跌穴", desc: "天盘丙加地盘戊，主飞鸟跌穴，百事皆吉。", chuchu: "《奇门遁甲统宗大全》" },
+    "戊丁": { name: "青龙耀明", desc: "天盘戊加地盘丁，主青龙耀明，谒贵大吉。", chuchu: "《奇门遁甲统宗大全》" },
+    "丁戊": { name: "青龙转光", desc: "天盘丁加地盘戊，主青龙转光，贵人升迁。", chuchu: "《奇门遁甲秘笈大全》" },
+    "乙丙": { name: "日月并行", desc: "天盘乙加地盘丙，主日月并行，谋为皆吉。", chuchu: "《奇门遁甲统宗大全》" },
+    "丙乙": { name: "日月相悖", desc: "天盘丙加地盘乙，主日月相悖，谋为不顺。", chuchu: "《奇门遁甲秘笈大全》" },
+    "乙丁": { name: "人遁", desc: "天盘乙加地盘丁，主人遁，宜暗谋机密事。", chuchu: "《奇门遁甲统宗大全》" },
+    "丁乙": { name: "人遁", desc: "天盘丁加地盘乙，主人遁，宜暗谋机密事。", chuchu: "《奇门遁甲统宗大全》" },
+    "丙丁": { name: "星奇朱雀", desc: "天盘丙加地盘丁，主星奇朱雀，文书信息至。", chuchu: "《奇门遁甲统宗大全》" },
+    "丁丙": { name: "星随月转", desc: "天盘丁加地盘丙，主星随月转，贵人提携。", chuchu: "《奇门遁甲秘笈大全》" },
+    "庚庚": { name: "太白入荧", desc: "天盘庚加地盘庚，主太白入荧，客主相残。", chuchu: "《奇门遁甲统宗大全》" },
+    "庚癸": { name: "大格", desc: "天盘庚加地盘癸，主大格，道路堵塞，出行受阻。", chuchu: "《奇门遁甲统宗大全》" },
+    "庚壬": { name: "小格", desc: "天盘庚加地盘壬，主小格，小事阻隔，做事不顺。", chuchu: "《奇门遁甲统宗大全》" },
+    "庚戊": { name: "太白逢星", desc: "天盘庚加地盘戊，主太白逢星，官非刑狱。", chuchu: "《奇门遁甲秘笈大全》" },
+    "庚乙": { name: "太白逢星", desc: "天盘庚加地盘乙，主太白逢星，谋为不利。", chuchu: "《奇门遁甲秘笈大全》" },
+    "庚丙": { name: "太白入荧", desc: "天盘庚加地盘丙，主太白入荧，贼来为客。", chuchu: "《奇门遁甲统宗大全》" },
+    "庚丁": { name: "太白逢星", desc: "天盘庚加地盘丁，主太白逢星，文书阻隔。", chuchu: "《奇门遁甲秘笈大全》" },
+  }
+
+  if (ganGejuMap[ganCombo]) {
+    geju.push(ganGejuMap[ganCombo].name)
+    duanyu.push({
+      title: ganGejuMap[ganCombo].name,
+      content: ganGejuMap[ganCombo].desc,
+      chuchu: ganGejuMap[ganCombo].chuchu
+    })
+  }
+
+  // 值符值使断语
+  if (isZhiFu) {
+    duanyu.push({
+      title: "值符宫位",
+      content: "此宫为值符所在，主事之源。值符为八神之首，所到之处百恶消散，最宜求谋大事。天盘星即为值符所乘之星，主当下之事之核心趋势。",
+      chuchu: "《奇门遁甲统宗大全·值符论》"
+    })
+  }
+  if (isZhiShi) {
+    duanyu.push({
+      title: "值使宫位",
+      content: "此宫为值使所在，主事之行。值使为八门之首，所到之处主事之执行与发展。值使门主当下之事的执行方向和结果。",
+      chuchu: "《奇门遁甲统宗大全·值使论》"
+    })
+  }
+
+  // 门星组合判断
+  const menXingCombo = `${men}${xing}`
+  const menXingMap: Record<string, string> = {
+    "休门天蓬": "休门配天蓬，一白水星同宫，主安闲但防盗贼。",
+    "生门天任": "生门配天任，主生长茂盛，大吉之配。",
+    "开门天心": "开门配天心，金宫金星，主事业开创，大吉。",
+    "景门天英": "景门配天英，火宫火星，主文书光明但防火灾。",
+    "死门天芮": "死门配天芮，土宫土星，主病丧之象，大凶。",
+    "惊门天柱": "惊门配天柱，金宫金星，主口舌惊恐。",
+    "伤门天冲": "伤门配天冲，木宫木星，主冲击争斗。",
+    "杜门天辅": "杜门配天辅，木宫木星，主隐藏但得贵人。",
+  }
+  if (menXingMap[menXingCombo]) {
+    duanyu.push({
+      title: "门星组合",
+      content: menXingMap[menXingCombo],
+      chuchu: "《奇门遁甲统宗大全·门星论》"
+    })
+  }
+
+  // 综合评断
+  let zonghe = `${palaceName}${palaceNum}宫（${position}方），天盘${tianGan}加地盘${diGan}`
+  zonghe += `，${shen}、${xing}、${men}同宫`
+  if (isZhiFu) zonghe += "，为值符所在"
+  if (isZhiShi) zonghe += "，为值使所在"
+  if (geju.length > 0) zonghe += `，成${geju.join("、")}之格`
+  
+  // 吉凶判断
+  const jimen = ["休门", "生门", "开门"]
+  const jixing = ["天辅", "天禽", "天心", "天任"]
+  const jishen = ["值符", "太阴", "六合", "九地", "九天"]
+  let jiCount = 0, xiongCount = 0
+  if (jimen.includes(men)) jiCount++
+  else xiongCount++
+  if (jixing.includes(xing)) jiCount++
+  else xiongCount++
+  if (jishen.includes(shen)) jiCount++
+  else xiongCount++
+  
+  if (jiCount > xiongCount) zonghe += "。综合判断，此宫偏吉，宜行事宜谋。"
+  else if (xiongCount > jiCount) zonghe += "。综合判断，此宫偏凶，不宜妄动，宜静守。"
+  else zonghe += "。综合判断，此宫吉凶参半，需谨慎行事。"
+
+  return { geju, duanyu, zonghe }
+}
