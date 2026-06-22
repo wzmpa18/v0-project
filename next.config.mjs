@@ -8,6 +8,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  turbopack: {
+    root: process.cwd(),
+  },
+  allowedDevOrigins: ['127.0.0.1', 'localhost'],
 }
 
 export default nextConfig
