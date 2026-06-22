@@ -109,7 +109,21 @@ export function TCMPage({ onNavigateToTool }: TCMPageProps) {
       setViewMode("formula")
     } else if (toolId === "ai-pulse") {
       setViewMode("shichen")
-    } else if (toolId.startsWith("ai-") || toolId === "ai-analysis") {
+    } else if (toolId === "wuyun") {
+      // 五运六气：跳转到独立页面
+      if (typeof window !== "undefined") {
+        window.location.href = "/wuyunliuqi"
+      }
+    } else if (toolId === "baduanjin" || toolId === "yaosan" || toolId === "calculator") {
+      // 八段锦、药膳养生、计量换算：功能开发中提示
+      if (typeof window !== "undefined") {
+        alert("功能开发中，敬请期待")
+      }
+    } else if (toolId === "ai-analysis") {
+      // AI综合分析：打开AI面板并设置标题
+      setSelectedAITool("ai-analysis")
+      setShowAIPanel(true)
+    } else if (toolId.startsWith("ai-")) {
       setSelectedAITool(toolId)
       setShowAIPanel(true)
     } else if (onNavigateToTool) {
