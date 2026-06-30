@@ -1,0 +1,27 @@
+name: 部署言道科技主站
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'deploy/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 部署到服务器
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 82.156.228.87
+          port: 22
+          username: root
+          password: WUzhimin123
+          source: "deploy/index.html,deploy/app.html,deploy/app-pages/,deploy/app-download/"
+          target: /www/yandao-app/current/
+          strip_components: 1
+          overwrite: true
