@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>国学传承 - 言道科技</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #0a1628; color: #e8edf5; line-height: 1.6; }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+    nav { background: rgba(10,22,40,0.95); border-bottom: 1px solid rgba(64,128,255,0.15); padding: 16px 0; }
+    nav .container { display: flex; align-items: center; gap: 16px; }
+    nav a { color: #4dabf7; text-decoration: none; font-size: 14px; }
+    nav .separator { color: #667; }
+    nav h1 { font-size: 18px; color: #fff; }
+    .hero { padding: 80px 0 60px; text-align: center; }
+    .hero .app-icon { width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, #f59f00, #fcc419); display: inline-flex; align-items: center; justify-content: center; font-size: 40px; margin-bottom: 20px; }
+    .hero h2 { font-size: 36px; color: #fff; margin-bottom: 12px; }
+    .hero p { font-size: 18px; color: #8899b4; margin-bottom: 32px; }
+    .hero .download-btn { display: inline-block; padding: 16px 48px; background: linear-gradient(135deg, #f59f00, #fcc419); color: #1a1a2e; border-radius: 8px; font-size: 18px; font-weight: 700; text-decoration: none; transition: all 0.3s; }
+    .hero .download-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(245,159,0,0.3); }
+    .features { padding: 60px 0; }
+    .features h3 { text-align: center; font-size: 24px; color: #fff; margin-bottom: 40px; }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .feature-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 24px; text-align: center; }
+    .feature-item .icon { font-size: 32px; margin-bottom: 12px; }
+    .feature-item h4 { font-size: 16px; color: #fff; margin-bottom: 8px; }
+    .feature-item p { font-size: 13px; color: #8899b4; }
+    .screenshots { padding: 60px 0; background: rgba(255,255,255,0.02); }
+    .screenshots h3 { text-align: center; font-size: 24px; color: #fff; margin-bottom: 40px; }
+    .tool-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .tool-item { background: rgba(245,159,0,0.08); border: 1px solid rgba(245,159,0,0.2); border-radius: 8px; padding: 12px; text-align: center; font-size: 14px; color: #c8d6e5; }
+    footer { border-top: 1px solid rgba(255,255,255,0.08); padding: 40px 0; text-align: center; }
+    footer .copyright { font-size: 13px; color: #667; }
+    footer .beian { font-size: 13px; color: #667; margin-top: 8px; }
+    footer .beian a { color: #667; text-decoration: none; }
+    @media (max-width: 768px) { .feature-grid { grid-template-columns: 1fr; } .tool-list { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <nav><div class="container"><a href="/app.html">首页</a><span class="separator">/</span><h1>国学传承</h1></div></nav>
+  <section class="hero"><div class="container"><div class="app-icon">📚</div><h2>国学传承</h2><p>传统文化与易学工具集 · 经典研读 · 诗词欣赏 · 中医经络</p><a href="/app-download/guoxue/guoxue.apk" class="download-btn">下载 Android 版</a></div></section>
+  <section class="features"><div class="container"><h3>核心功能</h3><div class="feature-grid">
+    <div class="feature-item"><div class="icon">🔮</div><h4>易学工具</h4><p>八字排盘、紫微斗数、奇门遁甲、六爻纳甲等36+工具</p></div>
+    <div class="feature-item"><div class="icon">🏥</div><h4>中医养生</h4><p>经络穴位查询、经典方剂、体质辨识、3D人体模型</p></div>
+    <div class="feature-item"><div class="icon">📖</div><h4>古籍研读</h4><p>《渊海子平》《三命通会》《滴天髓》等经典原文</p></div>
+    <div class="feature-item"><div class="icon">🤖</div><h4>AI分析</h4><p>智能命理分析、古籍断语匹配、个性化解读</p></div>
+    <div class="feature-item"><div class="icon">📝</div><h4>诗词欣赏</h4><p>唐诗宋词元曲，经典名篇赏析</p></div>
+    <div class="feature-item"><div class="icon">🎓</div><h4>学习系统</h4><p>中医考题、易学知识、经典理论系统学习</p></div>
+  </div></div></section>
+  <section class="screenshots"><div class="container"><h3>易学工具列表</h3><div class="tool-list">
+    <div class="tool-item">八字排盘</div><div class="tool-item">紫微斗数</div><div class="tool-item">奇门遁甲</div><div class="tool-item">六爻纳甲</div>
+    <div class="tool-item">梅花易数</div><div class="tool-item">大六壬</div><div class="tool-item">太乙神数</div><div class="tool-item">小成图</div>
+    <div class="tool-item">铁板神数</div><div class="tool-item">河洛理数</div><div class="tool-item">诸葛神数</div><div class="tool-item">邵子神数</div>
+    <div class="tool-item">合婚合盘</div><div class="tool-item">阳盘命理</div><div class="tool-item">阴盘奇门</div><div class="tool-item">山向奇门</div>
+    <div class="tool-item">姓名学</div><div class="tool-item">手机号分析</div><div class="tool-item">风水堪舆</div><div class="tool-item">万年历</div>
+    <div class="tool-item">测字</div><div class="tool-item">解梦</div><div class="tool-item">节气</div><div class="tool-item">在线咨询</div>
+  </div></div></section>
+  <footer><div class="container"><div class="copyright">© 2024-2026 东莞言道科技有限公司 版权所有</div><div class="beian"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">粤ICP备2026071165号-2</a></div></div></footer>
+</body>
+</html>
