@@ -1,27 +1,47 @@
-name: 部署言道科技主站
+name: 部署医易命理主站到 yandao.vip
 
 on:
   push:
     branches:
       - main
-    paths:
-      - 'deploy/**'
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
 
-      - name: 部署到服务器
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 构建 Next.js 静态站点
+        run: npm run build
+
+      - name: 清除服务器旧文件
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: 82.156.228.87
+          port: 22
+          username: root
+          password: WUzhimin123
+          script: |
+            rm -rf /www/yandao-app/current/*
+            echo "服务器目录已清空"
+
+      - name: 部署 out/ 到服务器
         uses: appleboy/scp-action@v0.1.7
         with:
           host: 82.156.228.87
           port: 22
           username: root
           password: WUzhimin123
-          source: "deploy/index.html,deploy/app.html,deploy/app-pages/,deploy/app-download/"
+          source: "out/*"
           target: /www/yandao-app/current/
           strip_components: 1
           overwrite: true
